@@ -1,0 +1,176 @@
+/* ===== Payments Page ===== */
+
+.payments-page {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ---- Stat Cards ---- */
+.pay-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+.pay-stat-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 28px 20px;
+  text-align: center;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+  transition: box-shadow 0.2s;
+}
+
+.pay-stat-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.pay-stat-num {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.pay-stat-num.dark   { color: #111827; }
+.pay-stat-num.orange { color: #f59e0b; }
+.pay-stat-num.green  { color: #10b981; }
+.pay-stat-num.red    { color: #ef4444; }
+
+.pay-stat-label {
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* ---- Escrow Box ---- */
+.escrow-box {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 28px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.escrow-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.escrow-icon {
+  font-size: 22px;
+  color: #3b82f6;
+}
+
+.escrow-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* ---- Table ---- */
+.pay-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.pay-table th {
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 500;
+  color: #9ca3af;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.pay-table td {
+  padding: 18px 14px;
+  font-size: 14px;
+  border-bottom: 1px solid #f3f4f6;
+  vertical-align: middle;
+}
+
+.pay-table tr:last-child td {
+  border-bottom: none;
+}
+
+.pay-table tr:hover td {
+  background: #fafafa;
+}
+
+.pay-project {
+  font-weight: 700;
+  color: #111827;
+  font-size: 15px;
+}
+
+.pay-route {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.pay-total {
+  font-weight: 600;
+  color: #111827;
+}
+
+.pay-released {
+  font-weight: 600;
+  color: #10b981;
+}
+
+.pay-held {
+  font-weight: 600;
+  color: #f59e0b;
+}
+
+/* ---- Status Badges ---- */
+.pay-status {
+  display: inline-block;
+  padding: 5px 14px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+.status-active   { background: #d1fae5; color: #059669; }
+.status-disputed { background: #fee2e2; color: #dc2626; }
+
+/* ---- Actions ---- */
+.pay-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pay-btn {
+  background: transparent;
+  border: none;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  transition: opacity 0.2s;
+}
+
+.view-btn {
+  color: #374151;
+}
+
+.view-btn:hover {
+  color: #111827;
+  opacity: 0.8;
+}
+
+.resolve-btn {
+  color: #f59e0b;
+}
+
+.resolve-btn:hover {
+  opacity: 0.75;
+}

@@ -1,0 +1,82 @@
+.navbar {
+  width: 100%;
+  background-color: rgb(255, 251, 248)rgb(255, 251, 248); /* gray-100 */
+  border-bottom: 1px solid #d1d5db; /* gray-300 */
+}
+
+.navbar-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 16px 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Logo */
+.logo {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.logo-arc {
+  color: #1960d2; /* blue-500 */
+}
+
+.logo-lancer {
+  color: #4a3b87; /* purple-500 */
+}
+
+/* Buttons Section */
+.nav-buttons {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-link {
+  background: none;
+  border: none;
+  font-weight: 500;
+  color: #374151; /* gray-700 */
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #000;
+}
+
+/* Outline Button */
+.btn-outline {
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background-color: white;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-outline:hover {
+  background-color: #f3f4f6;
+}
+
+/* Primary Button */
+.btn-primary {
+  padding: 8px 20px;
+  border-radius: 8px;
+  border: none;
+  background-color: #3b82f6;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.2);
+}
+
+.btn-primary:hover {
+  background-color: #2563eb;
+}
