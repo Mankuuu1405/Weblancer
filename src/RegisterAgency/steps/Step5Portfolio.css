@@ -1,0 +1,130 @@
+/* ===== Step 5 — Portfolio ===== */
+
+.s5-card {
+  background: white;
+  border: 1px solid #e8eaf0;
+  border-radius: 16px;
+  padding: 36px 40px 40px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+}
+
+.s5-title    { font-size: 22px; font-weight: 800; color: #111827; margin-bottom: 6px; }
+.s5-subtitle { font-size: 14px; color: #6b7280; margin-bottom: 22px; }
+
+.s5-badge {
+  display: inline-block;
+  background: #f0f2f7;
+  color: #6b7280;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 5px 14px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+  margin-bottom: 28px;
+  border: 1px solid #e5e7eb;
+}
+
+.s5-form-group { margin-bottom: 22px; }
+
+.s5-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.s5-label-hint { font-weight: 400; color: #9ca3af; font-size: 13px; }
+
+/* Upload box */
+.s5-upload-box {
+  border: 2px dashed #d1d5db;
+  border-radius: 12px;
+  padding: 34px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: #fafafa;
+}
+
+.s5-upload-box:hover {
+  border-color: #4f7cff;
+  background: #f8faff;
+}
+
+.s5-upload-icon {
+  font-size: 34px;
+  color: #9ca3af;
+  margin-bottom: 10px;
+}
+
+.s5-upload-text { font-size: 14px; color: #6b7280; font-weight: 500; }
+.s5-upload-sub  { font-size: 12px; color: #9ca3af; margin-top: 4px; }
+
+/* Links */
+.s5-link-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+
+.s5-input {
+  flex: 1;
+  padding: 13px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #374151;
+  background: white;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.s5-input:focus {
+  border-color: #4f7cff;
+  box-shadow: 0 0 0 3px rgba(79,124,255,0.1);
+}
+
+.s5-input::placeholder { color: #c0c4cc; }
+
+.s5-remove-icon {
+  font-size: 18px;
+  color: #9ca3af;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: color 0.2s;
+}
+
+.s5-remove-icon:hover { color: #ef4444; }
+
+.s5-add-btn {
+  background: none;
+  border: none;
+  color: #4f7cff;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+}
+
+.s5-textarea {
+  width: 100%;
+  padding: 13px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #374151;
+  outline: none;
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.6;
+  transition: border-color 0.2s;
+}
+
+.s5-textarea:focus {
+  border-color: #4f7cff;
+  box-shadow: 0 0 0 3px rgba(79,124,255,0.1);
+}
+
+.s5-char { font-size: 12px; color: #9ca3af; margin-top: 5px; }
