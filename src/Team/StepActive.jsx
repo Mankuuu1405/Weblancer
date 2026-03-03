@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const teamDirectory = [
   { initial:"J", bg:"bg-blue-100",  color:"text-blue-600", name:"John Doe",   role:"AGENCY ADMIN", roleColor:"text-orange-500", status:"ACTIVE" },
@@ -13,6 +13,13 @@ const restrictions = [
 ];
 
 export default function StepActive({ onGoToDashboard }) {
+  const navigate = useNavigate();
+
+  const handleDashboard = () => {
+    if (onGoToDashboard) onGoToDashboard();
+    navigate("/agency/dashboard");
+  };
+
   return (
     <div>
       <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6">You're All Set!</h2>
@@ -71,7 +78,7 @@ export default function StepActive({ onGoToDashboard }) {
 
       {/* CTA */}
       <button
-        onClick={onGoToDashboard}
+        onClick={handleDashboard}
         className="w-full flex items-center justify-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 rounded-xl transition-colors text-sm"
       >
         Go to My Dashboard →

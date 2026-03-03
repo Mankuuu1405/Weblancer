@@ -136,7 +136,7 @@ const Step9GoLive = ({ formData = {}, prev = () => {} }) => {
         {/* Bottom buttons */}
         <div className="flex flex-col sm:flex-row gap-3 pt-5">
           <button
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/agency/dashboard")}
             className="flex-1 bg-[#4f7cff] hover:bg-[#3b6bef] text-white border-none rounded-xl px-6 py-4 text-sm font-bold cursor-pointer shadow-[0_4px_14px_rgba(79,124,255,0.3)] flex items-center justify-center gap-2 transition-all"
           >
             Go to Dashboard →
