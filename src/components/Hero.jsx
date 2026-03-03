@@ -11,9 +11,7 @@ import { BsShieldCheck } from "react-icons/bs";
 import { BsCurrencyDollar } from "react-icons/bs";
 import { BsShield } from "react-icons/bs";
 
-const Hero = () => {
-  const navigate = useNavigate();
-
+const Hero = ({ onAdminClick }) => {
   return (
     <section className="hero">
       <div className="hero-container">
@@ -34,7 +32,8 @@ const Hero = () => {
         </p>
 
         <div className="hero-buttons">
-          <button className="btn primary">
+          {/* ✅ Added onClick here */}
+          <button className="btn primary" onClick={onFreelancerClick}>
             <FaUser />
             Join as Freelancer
             <FiArrowRight />
@@ -50,50 +49,52 @@ const Hero = () => {
             Register Agency
           </button>
         </div>
+        
 
         <div className="hero-links">
-          <div className="link-item" onClick={() => navigate("/admin")}>
-            <RiShieldCheckLine />
-            Admin Panel
-          </div>
+          <div className="link-item" onClick={onAdminClick}>
+  <RiShieldCheckLine />
+  Admin Panel
+</div>
           <div className="link-item">
             <BiMessageSquareDetail />
             ProjectStream Demo
           </div>
         </div>
 
-        <div className="comparison-box">
-          <h2 className="comparison-title">ArcLancer vs The Rest</h2>
-          <div className="comparison-list">
-            <div className="comparison-row">
-              <div className="comp-item comp-competitor">
-                <span className="comp-name">Upwork:</span>
-                <span className="comp-desc">Post & hope</span>
-              </div>
-              <FiArrowRight className="comp-arrow" />
-              <div className="comp-item comp-arclancer">
-                <span>AI-guided always</span>
-              </div>
+<div className="comparison-box">
+          <h2>ArcLancer vs The Rest</h2>
+
+          <div className="comparison-row">
+            <div className="comparison-left">
+              <span>Upwork:</span>
+              <span>Post & hope</span>
             </div>
-            <div className="comparison-row">
-              <div className="comp-item comp-competitor">
-                <span className="comp-name">Fiverr:</span>
-                <span className="comp-desc">Gig browsing</span>
-              </div>
-              <FiArrowRight className="comp-arrow" />
-              <div className="comp-item comp-arclancer">
-                <span>Curated matching</span>
-              </div>
+            <div className="comparison-right">
+              <span className="arrow">→</span>
+              <span>AI-guided always</span>
             </div>
-            <div className="comparison-row">
-              <div className="comp-item comp-competitor">
-                <span className="comp-name">Truelancer:</span>
-                <span className="comp-desc">Manual trust</span>
-              </div>
-              <FiArrowRight className="comp-arrow" />
-              <div className="comp-item comp-arclancer">
-                <span>AI-verified trust</span>
-              </div>
+          </div>
+
+          <div className="comparison-row">
+            <div className="comparison-left">
+              <span>Fiverr:</span>
+              <span>Gig browsing</span>
+            </div>
+            <div className="comparison-right">
+              <span className="arrow">→</span>
+              <span>Curated matching</span>
+            </div>
+          </div>
+
+          <div className="comparison-row">
+            <div className="comparison-left">
+              <span>Truelancer:</span>
+              <span>Manual trust</span>
+            </div>
+            <div className="comparison-right">
+              <span className="arrow">→</span>
+              <span>AI-verified trust</span>
             </div>
           </div>
         </div>
@@ -129,33 +130,45 @@ const Hero = () => {
           </div>
         </div>
 
-        <div className="stats-section">
-          <div className="stat-item">
-            <h3>8,500+</h3>
-            <p>Verified Professionals</p>
-          </div>
-          <div className="stat-item">
-            <h3>94%</h3>
-            <p>Completion Rate</p>
-          </div>
-          <div className="stat-item">
-            <h3>$12M+</h3>
-            <p>Paid to Talent</p>
-          </div>
-          <div className="stat-item rating">
-            <h3>4.8 <span className="star">★</span></h3>
-            <p>Avg Rating</p>
-          </div>
-        </div>
+      {/* ================= Stats Section ================= */}
 
-        <div className="cta-box">
-          <p>🚀 Ready to build your verified professional profile?</p>
-          <button className="btn primary">
-            Get Started Free
-            <span style={{ marginLeft: "8px" }}>→</span>
-          </button>
-        </div>
+<div className="stats-section">
 
+  <div className="stat-item">
+    <h3>8,500+</h3>
+    <p>Verified Professionals</p>
+  </div>
+
+  <div className="stat-item">
+    <h3>94%</h3>
+    <p>Completion Rate</p>
+  </div>
+
+  <div className="stat-item">
+    <h3>$12M+</h3>
+    <p>Paid to Talent</p>
+  </div>
+
+  <div className="stat-item rating">
+    <h3>4.8 <span className="star">★</span></h3>
+    <p>Avg Rating</p>
+  </div>
+
+</div>
+
+
+{/* ================= CTA Box ================= */}
+
+<div className="cta-box">
+  <p>
+    🚀 Ready to build your verified professional profile?
+  </p>
+
+  <button className="btn primary">
+    Get Started Free
+    <span style={{ marginLeft: "8px" }}>→</span>
+  </button>
+</div>
       </div>
     </section>
   );
