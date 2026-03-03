@@ -3,19 +3,29 @@ import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import AdminPanel from "./AdminPanel/AdminPanel";
 import RegisterAgency from "./RegisterAgency/RegisterAgency";
-import "./AdminPanel/AdminPanel.css";
+import AgencyProfile from "./RegisterAgency/AgencyProfile";
+import AgencyDashboard from "./RegisterAgency/AgencyDashboard";
+import TeamOnboarding from "./Team/TeamOnboarding";
 
 export default function App() {
-  const [page, setPage] = useState("home");
-
-  if (page === "admin") {
-    return <AdminPanel onHome={() => setPage("home")} />;
-  }
-
   return (
-    <div className="font-sans antialiased">
-      <Navbar onAdminClick={() => setPage("admin")} />
-      <Hero onAdminClick={() => setPage("admin")} />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <div className="font-sans antialiased">
+              <Navbar />
+              <Hero />
+            </div>
+          }
+        />
+        <Route path="/admin" element={<AdminPanel />} />
+        <Route path="/register-agency" element={<RegisterAgency />} />
+        <Route path="/agency/:id" element={<AgencyProfile />} />
+        <Route path="/dashboard" element={<AgencyDashboard />} />
+        <Route path="/invite-team" element={<TeamOnboarding />} />
+      </Routes>
+    </BrowserRouter>
   );
 }

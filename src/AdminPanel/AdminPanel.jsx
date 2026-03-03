@@ -1,5 +1,6 @@
 // AdminPanel.jsx
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Projects from './pages/Projects';
 import Users from './pages/Users';
@@ -21,29 +22,21 @@ const tabs = [
   { id: 'legal', label: 'Legal Pages', icon: '📄' },
 ];
 
-const AdminPanel = ({ onHome }) => {
+const AdminPanel = () => {
   const [activeTab, setActiveTab] = useState('projects');
+  const navigate = useNavigate();
 
   const renderPage = () => {
     switch (activeTab) {
-      case 'projects':
-        return <Projects />;
-      case 'users':
-        return <Users />;
-      case 'support':
-        return <Support />;
-      case 'payments':
-        return <Payments />;
-      case 'monitoring':
-        return <Monitoring />;
-      case 'background':
-        return <BackgroundTasks />;
-      case 'security':
-        return <Security />;
-      case 'legal':
-        return <LegalPages />;
-      default:
-        return <Projects />;
+      case 'projects':   return <Projects />;
+      case 'users':      return <Users />;
+      case 'support':    return <Support />;
+      case 'payments':   return <Payments />;
+      case 'monitoring': return <Monitoring />;
+      case 'background': return <BackgroundTasks />;
+      case 'security':   return <Security />;
+      case 'legal':      return <LegalPages />;
+      default:           return <Projects />;
     }
   };
 
@@ -58,7 +51,7 @@ const AdminPanel = ({ onHome }) => {
             ADMIN
           </span>
           <button
-            onClick={onHome}
+            onClick={() => navigate('/')}
             className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
           >
             Home
