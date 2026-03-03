@@ -1,9 +1,9 @@
 import { useState } from "react";
-import AboutTab        from "./Public Profile/AboutTab";
-import SkillsScoresTab from "./Public Profile/SkillsScoresTab";
-import PortfolioTab    from "./Public Profile/PortfolioTab";
-import ReviewsTab      from "./Public Profile/ReviewsTab";
-import TrustTab        from "./Public Profile/TrustTab";
+import AboutTab        from "./AboutTab";
+import SkillsScoresTab from "./SkillsScoresTab";
+import PortfolioTab    from "./PortfolioTab";
+import ReviewsTab      from "./ReviewsTab";
+import TrustTab        from "./TrustTab";
 
 function SkillBadge({ label, type }) {
   const styles = {
