@@ -56,10 +56,10 @@ const Hero = () => {
             <RiShieldCheckLine />
             Admin Panel
           </div>
-          <div className="link-item">
-            <BiMessageSquareDetail />
-            ProjectStream Demo
-          </div>
+          <div className="link-item" onClick={() => navigate("/project-stream")}>
+  <BiMessageSquareDetail />
+  ProjectStream Demo
+</div>
         </div>
 
         <div className="comparison-box">
