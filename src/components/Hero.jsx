@@ -64,7 +64,10 @@ const Hero = () => {
           >
             <RiShieldCheckLine /> Admin Panel
           </div>
-          <div className="flex items-center gap-2 cursor-pointer px-5 py-2.5 rounded-xl hover:bg-[#9bb9ff70] hover:text-[#113a91] transition-all">
+          <div
+            className="flex items-center gap-2 cursor-pointer px-5 py-2.5 rounded-xl hover:bg-[#9bb9ff70] hover:text-[#113a91] transition-all"
+            onClick={() => navigate("/project-stream")}
+          >
             <BiMessageSquareDetail /> ProjectStream Demo
           </div>
         </div>
