@@ -97,7 +97,7 @@ function StatusBadge({ status }) {
 // ── Upcoming Meeting Card ──────────────────────────────
 function UpcomingCard({ meeting }) {
   return (
-    <div className="bg-white border border-gray-200 rounded-xl px-5 py-4 shadow-sm">
+    <div className="bg-white border border-gray-200 rounded-xl px-3 md:px-5 py-3 md:py-4 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-start gap-2 mb-1 flex-wrap">
@@ -107,10 +107,10 @@ function UpcomingCard({ meeting }) {
               <span className="font-normal text-gray-700">— {meeting.desc}</span>
             </p>
           </div>
-          <p className="text-xs text-gray-400 mt-1 ml-6">
+          <p className="text-xs text-gray-400 mt-1 ml-4 md:ml-6">
             {meeting.date} · {meeting.time}
           </p>
-          <p className="text-xs text-gray-400 mt-0.5 ml-6">
+          <p className="text-xs text-gray-400 mt-0.5 ml-4 md:ml-6">
             Participants: {meeting.participants.join(" · ")}
           </p>
         </div>
@@ -120,7 +120,7 @@ function UpcomingCard({ meeting }) {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex flex-wrap gap-2 mt-3 ml-6">
+      <div className="flex flex-wrap gap-2 mt-3 ml-4 md:ml-6">
         {meeting.canJoin && (
           <button className="inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-4 py-2 rounded-lg transition-colors">
             Join
@@ -143,7 +143,7 @@ function UpcomingCard({ meeting }) {
 // ── Past Meeting Card ──────────────────────────────────
 function PastCard({ meeting }) {
   return (
-    <div className="bg-white border border-gray-200 rounded-xl px-5 py-4 shadow-sm">
+    <div className="bg-white border border-gray-200 rounded-xl px-3 md:px-5 py-3 md:py-4 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
@@ -163,7 +163,7 @@ function PastCard({ meeting }) {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex flex-wrap gap-2 mt-3 ml-6">
+      <div className="flex flex-wrap gap-2 mt-3 ml-4 md:ml-6">
         <button className="inline-flex items-center gap-1.5 border border-gray-200 rounded-lg px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors">
           <IconDoc /> View Summary
         </button>
@@ -183,21 +183,21 @@ export default function MeetingsView() {
     <div className="flex flex-col flex-1 overflow-hidden bg-gray-50">
 
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200 flex-shrink-0">
+      <div className="flex flex-wrap items-center justify-between gap-2 px-3 md:px-6 py-3 md:py-4 bg-white border-b border-gray-200 flex-shrink-0">
         <div className="flex items-center gap-2 text-gray-900">
           <IconCalendar />
           <h2 className="text-base font-bold">Meetings</h2>
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors shadow-sm"
+          className="inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs md:text-sm font-semibold px-3 md:px-4 py-2 rounded-lg transition-colors shadow-sm"
         >
-          <IconPlus /> Schedule New Meeting
+          <IconPlus /> <span className="hidden sm:inline">Schedule </span>New Meeting
         </button>
       </div>
 
       {/* Scrollable Content */}
-      <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
+      <div className="flex-1 overflow-y-auto px-3 md:px-6 py-4 space-y-5">
 
         {/* Upcoming */}
         <div>

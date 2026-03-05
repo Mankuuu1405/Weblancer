@@ -144,7 +144,7 @@ const IconRequest = () => (
 // ── File Row Component ─────────────────────────────────
 function FileRow({ file }) {
   return (
-    <div className={"bg-white border border-gray-200 rounded-xl px-5 py-4 " + (file.older ? "opacity-70" : "")}>
+    <div className={"bg-white border border-gray-200 rounded-xl px-3 md:px-5 py-3 md:py-4 " + (file.older ? "opacity-70" : "")}>
       <div className="flex items-start gap-3">
         {/* Icon */}
         <div className="mt-0.5 flex-shrink-0">
@@ -212,12 +212,12 @@ export default function FilesView() {
     <div className="flex flex-col flex-1 overflow-hidden bg-gray-50">
 
       {/* ── Header ── */}
-      <div className="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200 flex-shrink-0">
+      <div className="flex flex-wrap items-center justify-between gap-2 px-3 md:px-6 py-3 md:py-4 bg-white border-b border-gray-200 flex-shrink-0">
         <div className="flex items-center gap-2">
           <span className="text-xl">📁</span>
-          <h2 className="text-base font-bold text-gray-900">Project Files</h2>
+          <h2 className="text-sm md:text-base font-bold text-gray-900">Project Files</h2>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button className="inline-flex items-center gap-1.5 border border-gray-200 rounded-lg px-3 py-1.5 text-xs font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors">
             <IconUpload /> Upload File
           </button>
@@ -228,7 +228,7 @@ export default function FilesView() {
       </div>
 
       {/* ── Scrollable Content ── */}
-      <div className="flex-1 overflow-y-auto px-6 py-5 space-y-8">
+      <div className="flex-1 overflow-y-auto px-3 md:px-6 py-4 space-y-6 md:space-y-8">
 
         {/* Milestones */}
         {milestones.map((ms) => (
@@ -268,7 +268,7 @@ export default function FilesView() {
           </div>
           <div className="space-y-3">
             {projectDocs.map((doc) => (
-              <div key={doc.id} className="bg-white border border-gray-200 rounded-xl px-5 py-3.5 flex items-center gap-3">
+              <div key={doc.id} className="bg-white border border-gray-200 rounded-xl px-3 md:px-5 py-3 flex items-center gap-3">
                 <IconDoc />
                 <span className="text-sm font-medium text-gray-700 flex-1">{doc.name}</span>
                 <button className="border border-gray-200 rounded-lg px-3 py-1.5 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors">

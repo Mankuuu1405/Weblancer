@@ -35,9 +35,9 @@ export default function TimelineView() {
     <div className="flex flex-col flex-1 overflow-hidden bg-gray-50">
 
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200 flex-shrink-0">
-        <h2 className="text-base font-bold text-gray-900">Project Timeline</h2>
-        <div className="flex items-center gap-3">
+      <div className="flex flex-wrap items-center justify-between gap-2 px-3 md:px-6 py-3 md:py-4 bg-white border-b border-gray-200 flex-shrink-0">
+        <h2 className="text-sm md:text-base font-bold text-gray-900">Project Timeline</h2>
+        <div className="flex flex-wrap items-center gap-2 md:gap-3">
           <div className="flex items-center gap-1.5 border border-gray-200 rounded-lg px-3 py-1.5 text-xs font-medium text-gray-600 bg-white hover:bg-gray-50">
             <IconFilter />
             <select
@@ -58,7 +58,7 @@ export default function TimelineView() {
       </div>
 
       {/* Scrollable Timeline */}
-      <div className="flex-1 overflow-y-auto px-6 py-5 space-y-6">
+      <div className="flex-1 overflow-y-auto px-3 md:px-6 py-4 space-y-5 md:space-y-6">
         {filteredGroups.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-40 text-gray-400">
             <p className="text-sm font-medium">No events found for this filter.</p>
@@ -73,11 +73,11 @@ export default function TimelineView() {
               </div>
 
               {/* Events */}
-              <div className="ml-1.5 border-l-2 border-gray-200 pl-6 space-y-3">
+              <div className="ml-1.5 border-l-2 border-gray-200 pl-4 md:pl-6 space-y-3">
                 {group.events.map((ev) => (
                   <div
                     key={ev.id}
-                    className="relative bg-white border border-gray-200 rounded-xl px-4 py-3 shadow-sm hover:shadow-md transition-shadow"
+                    className="relative bg-white border border-gray-200 rounded-xl px-3 md:px-4 py-2.5 md:py-3 shadow-sm hover:shadow-md transition-shadow"
                   >
                     <span className="absolute -left-[33px] top-4 w-2.5 h-2.5 rounded-full bg-gray-300 border-2 border-white" />
                     <div className="flex items-start justify-between gap-3">

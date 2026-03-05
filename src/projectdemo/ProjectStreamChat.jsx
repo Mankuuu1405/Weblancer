@@ -14,7 +14,7 @@ const IconPinMsg = () => (<svg width="12" height="12" viewBox="0 0 24 24" fill="
 // ── Avatar ─────────────────────────────────────────────
 function Avatar({ name, color }) {
   const bg = color === "red" ? "bg-red-500" : color === "green" ? "bg-green-500" : "bg-blue-500";
-  return <div className={"w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0 " + bg}>{name[0]}</div>;
+  return <div className={"w-8 h-8 md:w-9 md:h-9 rounded-full flex items-center justify-center text-white font-bold text-xs md:text-sm flex-shrink-0 " + bg}>{name[0]}</div>;
 }
 
 // ── Role Badge ─────────────────────────────────────────
@@ -34,7 +34,7 @@ function TypeBadge({ type }) {
 function SystemMsg({ icon, text, date, green }) {
   return (
     <div className="flex justify-center my-3">
-      <div className={"max-w-lg text-center px-5 py-3 rounded-2xl " + (green ? "bg-green-50 border border-green-100" : "bg-gray-100")}>
+      <div className={"max-w-xs md:max-w-lg text-center px-3 md:px-5 py-3 rounded-2xl " + (green ? "bg-green-50 border border-green-100" : "bg-gray-100")}>
         <p className="text-sm text-gray-600">{icon} {text}</p>
         {date && <p className="text-xs text-gray-400 mt-1">{date}</p>}
       </div>
@@ -58,7 +58,7 @@ function ChatMessage({ msg }) {
   const borderMap = { ADMIN: "border-l-red-400", CLIENT: "border-l-green-400", FREELANCER: "border-l-blue-400" };
   const bgMap = { ADMIN: "bg-red-50", CLIENT: "bg-green-50", FREELANCER: "bg-blue-50" };
   return (
-    <div className={"rounded-xl border-l-4 px-4 py-3 mb-3 border border-gray-100 " + (borderMap[msg.role] || "border-l-gray-300") + " " + (bgMap[msg.role] || "bg-white")}>
+    <div className={"rounded-xl border-l-4 px-3 md:px-4 py-2.5 md:py-3 mb-3 border border-gray-100 " + (borderMap[msg.role] || "border-l-gray-300") + " " + (bgMap[msg.role] || "bg-white")}>
       <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
         <div className="flex items-center gap-2 flex-wrap">
           <Avatar name={msg.author} color={msg.role === "ADMIN" ? "red" : msg.role === "CLIENT" ? "green" : "blue"} />
@@ -74,16 +74,16 @@ function ChatMessage({ msg }) {
         </div>
       </div>
       {msg.lockedDecision && (
-        <p className="text-xs text-yellow-600 font-semibold mb-2 ml-11">🔒 LOCKED DECISION — Cannot be edited or reversed</p>
+        <p className="text-xs text-yellow-600 font-semibold mb-2 ml-8 md:ml-11">🔒 LOCKED DECISION — Cannot be edited or reversed</p>
       )}
-      <div className="ml-11">
+      <div className="ml-8 md:ml-11">
         <p className="text-sm text-gray-800 leading-relaxed whitespace-pre-line">{msg.body}</p>
         {msg.attachments && (
           <div className="mt-3 space-y-2">
             {msg.attachments.map((a, i) => (
               <div key={i} className="flex items-center gap-3 bg-white border border-gray-200 rounded-lg px-3 py-2.5">
                 <IconFile />
-                <span className="text-sm text-gray-700 flex-1">{a.name}</span>
+                <span className="text-sm text-gray-700 flex-1 truncate min-w-0">{a.name}</span>
                 <span className="text-xs text-gray-400">{a.size}</span>
                 <button className="inline-flex items-center gap-1 text-xs font-semibold text-gray-600 hover:text-blue-600 border border-gray-200 rounded-md px-2 py-1">
                   <IconDownload /> Download
@@ -110,7 +110,7 @@ function ChatMessage({ msg }) {
 // ── Support Card ───────────────────────────────────────
 function SupportCard() {
   return (
-    <div className="bg-white border border-gray-200 rounded-xl px-5 py-4 mb-3">
+    <div className="bg-white border border-gray-200 rounded-xl px-3 md:px-5 py-3 md:py-4 mb-3">
       <p className="text-sm font-bold text-gray-900 mb-3">🎫 <span className="text-gray-500 font-mono text-xs">[SYSTEM]</span> Support Request Opened</p>
       <div className="space-y-1 text-sm text-gray-700 mb-3">
         <p><span className="text-gray-500">Ticket:</span> <span className="font-semibold">#SUP-20260318-1042</span></p>
@@ -141,7 +141,7 @@ function SupportCard() {
 // ── Meeting Request Card ───────────────────────────────
 function MeetingRequestCard() {
   return (
-    <div className="bg-white border border-gray-200 rounded-xl px-5 py-4 mb-3">
+    <div className="bg-white border border-gray-200 rounded-xl px-3 md:px-5 py-3 md:py-4 mb-3">
       <p className="text-sm font-bold text-gray-900 mb-3">🗓️ <span className="text-gray-500 font-mono text-xs">[SYSTEM]</span> Meeting Requested</p>
       <div className="space-y-1 text-sm text-gray-700 mb-3">
         <p><span className="text-gray-500">Type:</span> 🔍 Requirement Clarification</p>
@@ -178,7 +178,7 @@ function MeetingRequestCard() {
 // ── Meeting Confirmed Card ─────────────────────────────
 function MeetingConfirmedCard() {
   return (
-    <div className="bg-white border border-gray-200 rounded-xl px-5 py-4 mb-3">
+    <div className="bg-white border border-gray-200 rounded-xl px-3 md:px-5 py-3 md:py-4 mb-3">
       <p className="text-sm font-bold text-gray-900 mb-3">🗓️ <span className="text-gray-500 font-mono text-xs">[SYSTEM]</span> Meeting Confirmed ✅</p>
       <div className="space-y-1 text-sm text-gray-700 mb-3">
         <p><span className="text-gray-500">Type:</span> 💬 Project Discussion</p>
@@ -213,7 +213,7 @@ function MeetingConfirmedCard() {
 // ── Meeting Starting Soon ──────────────────────────────
 function MeetingStartingSoonCard() {
   return (
-    <div className="bg-blue-50 border border-blue-100 rounded-xl px-5 py-4 mb-3">
+    <div className="bg-blue-50 border border-blue-100 rounded-xl px-3 md:px-5 py-3 md:py-4 mb-3">
       <p className="text-sm font-bold text-gray-900 mb-2">🗓️ Meeting Starting Soon!</p>
       <p className="text-sm text-gray-700 font-medium">💬 Project Discussion — Mar 20, 2:00 PM IST</p>
       <p className="text-xs text-gray-500 mb-4">Starts in: 24151 minutes</p>
@@ -247,7 +247,7 @@ function MeetingNotesCard() {
         </div>
         <span className="text-xs text-gray-400">Feb 18, 4:45 PM</span>
       </div>
-      <div className="px-5 py-4">
+      <div className="px-3 md:px-5 py-3 md:py-4">
         <p className="text-xs font-bold text-gray-500 tracking-widest mb-3">[OFFICIAL MEETING NOTES]</p>
         <div className="border-b border-gray-100 pb-3 mb-3">
           <p className="text-sm font-bold text-gray-900 mb-1">📋 Meeting Summary — Delivery Review</p>
@@ -276,7 +276,7 @@ function MeetingNotesCard() {
 // ── Project Completed ──────────────────────────────────
 function ProjectCompletedCard() {
   return (
-    <div className="bg-white border border-gray-200 rounded-xl px-5 py-4 mb-3">
+    <div className="bg-white border border-gray-200 rounded-xl px-3 md:px-5 py-3 md:py-4 mb-3">
       <p className="text-sm font-bold text-gray-900 mb-3">🎉 <span className="text-gray-500 font-mono text-xs">[SYSTEM]</span> Project Completed!</p>
       <div className="text-sm text-gray-700 space-y-1 mb-3">
         <p>All 4 milestones have been approved.</p>
@@ -301,7 +301,7 @@ function ProjectCompletedCard() {
 // ── Pinned Banner ──────────────────────────────────────
 function PinnedBanner({ collapsed, onToggle }) {
   return (
-    <div className="bg-white border-b border-gray-200 px-4 py-2.5 flex items-center gap-2 flex-shrink-0 cursor-pointer hover:bg-gray-50" onClick={onToggle}>
+    <div className="bg-white border-b border-gray-200 px-3 md:px-4 py-2 md:py-2.5 flex items-center gap-2 flex-shrink-0 cursor-pointer hover:bg-gray-50" onClick={onToggle}>
       <span className="text-red-400"><IconPin /></span>
       <span className="text-sm font-semibold text-gray-700">📌 Pinned (5)</span>
       <span className="ml-auto text-gray-400 text-xs">{collapsed ? "▼" : "▲"}</span>
@@ -312,7 +312,7 @@ function PinnedBanner({ collapsed, onToggle }) {
 // ── Composer ───────────────────────────────────────────
 function Composer() {
   return (
-    <div className="border-t border-gray-200 bg-white px-4 py-3 flex-shrink-0">
+    <div className="border-t border-gray-200 bg-white px-2 md:px-4 py-2 md:py-3 flex-shrink-0">
       <div className="flex items-center gap-2 mb-2 text-xs text-gray-500">
         <span className="font-medium">Type:</span>
         <select className="border border-gray-200 rounded-lg px-2 py-1 text-xs text-gray-700 bg-white focus:outline-none focus:ring-1 focus:ring-blue-300">
@@ -372,7 +372,7 @@ export default function ProjectStreamChat() {
   return (
     <div className="flex flex-col flex-1 overflow-hidden bg-gray-50">
       <PinnedBanner collapsed={collapsed} onToggle={() => setCollapsed(v => !v)} />
-      <div className="flex-1 overflow-y-auto px-4 py-3">
+      <div className="flex-1 overflow-y-auto px-2 md:px-4 py-3">
         {MESSAGES.map(m => {
           if (m.kind === "sys") return <SystemMsg key={m.id} icon={m.icon} text={m.text} date={m.date} green={m.green} />;
           if (m.kind === "date") return <DateDivider key={m.id} label={m.label} />;

@@ -95,7 +95,7 @@ function TicketCard({ ticket }) {
   const [expanded, setExpanded] = useState(true);
 
   return (
-    <div className="bg-white border border-gray-200 rounded-xl px-5 py-4 shadow-sm">
+    <div className="bg-white border border-gray-200 rounded-xl px-3 md:px-5 py-3 md:py-4 shadow-sm">
       {/* Header row */}
       <div className="flex items-start justify-between gap-3 flex-wrap">
         <div className="flex-1 min-w-0">
@@ -162,7 +162,7 @@ export default function SupportView() {
     <div className="flex flex-col flex-1 overflow-hidden bg-gray-50">
 
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200 flex-shrink-0 flex-wrap gap-2">
+      <div className="flex items-center justify-between px-3 md:px-6 py-3 md:py-4 bg-white border-b border-gray-200 flex-shrink-0 flex-wrap gap-2">
         <div className="flex items-center gap-2">
           <span className="text-xl">🎫</span>
           <h2 className="text-base font-bold text-gray-900">Support</h2>
@@ -187,7 +187,7 @@ export default function SupportView() {
       </div>
 
       {/* Tickets List */}
-      <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
+      <div className="flex-1 overflow-y-auto px-3 md:px-6 py-4 space-y-3 md:space-y-4">
         {supportTickets.map((ticket) => (
           <TicketCard key={ticket.id} ticket={ticket} />
         ))}
