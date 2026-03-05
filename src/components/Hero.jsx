@@ -42,7 +42,10 @@ const Hero = () => {
           >
             <FaUser /> Join as Freelancer <FiArrowRight />
           </button>
-          <button className="flex items-center gap-2.5 px-6 py-4 rounded-[14px] bg-white border border-gray-300 text-gray-900 text-lg font-semibold hover:bg-[#9bb9ff70] hover:text-[#234898] transition-all cursor-pointer">
+          <button
+            onClick={() => navigate("/hire-talent")}
+            className="flex items-center gap-2.5 px-6 py-4 rounded-[14px] bg-white border border-gray-300 text-gray-900 text-lg font-semibold hover:bg-[#9bb9ff70] hover:text-[#234898] transition-all cursor-pointer"
+          >
             <HiOutlineOfficeBuilding /> Hire Talent
           </button>
           <button

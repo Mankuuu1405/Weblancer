@@ -62,7 +62,7 @@ export default function PublicProfile({ onBack }) {
             </svg>
             Back
           </button>
-          <button className="text-sm text-gray-700 border border-gray-300 rounded-lg px-3 py-2 hover:bg-gray-50 transition">Demo</button>
+          
         </div>
       </header>
 

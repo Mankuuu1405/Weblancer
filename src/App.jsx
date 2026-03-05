@@ -16,6 +16,10 @@ import LandingPage from "./Freelancer/LandingPage";
 import OnboardingFlow from "./Freelancer/onboarding/OnboardingFlow";
 import PublicProfile from "./Freelancer/Public Profile/PublicProfile";
 import Dashboard from "./Freelancer/Dashboard";
+// hire-talent
+import HireTalentLanding from "./hire-talent/LandingPage";
+import HireTalentDashboard from "./hire-talent/HireTalentDashboard";
+import HireTalentOnboarding from "./hire-talent/onboarding/OnboardingFlow";
 
 function Home() {
   const navigate = useNavigate();
@@ -77,6 +81,11 @@ export default function App() {
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/profile/:id" element={<Profile />} />
         <Route path="/dashboard" element={<Dashboard />} />
+
+        <Route path="/hire-talent" element={<HireTalentLanding />} />
+        <Route path="/hire-talent/dashboard" element={<HireTalentDashboard />} />
+<Route path="/hire-talent/onboarding" element={<HireTalentOnboarding />} />
+        
       </Routes>
     </BrowserRouter>
   );

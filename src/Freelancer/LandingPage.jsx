@@ -24,10 +24,6 @@ const LandingPage = ({ onJoinClick }) => {
             >
               Join as Freelancer
             </button>
-
-            <button className="px-5 py-2 border rounded-lg hover:bg-gray-100">
-              Demo
-            </button>
           </div>
         </div>
       </header>
