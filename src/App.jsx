@@ -4,7 +4,7 @@ import Hero from "./components/Hero";
 
 // Admin
 import AdminPanel from "./AdminPanel/AdminPanel";
-import "./AdminPanel/AdminPanel.css";
+
 
 // Agency
 import RegisterAgency from "./RegisterAgency/RegisterAgency";
