@@ -7,6 +7,7 @@ import "./AdminPanel/AdminPanel";
 import AgencyProfile from "./RegisterAgency/AgencyProfile"
 import AgencyDashboard from "./RegisterAgency/AgencyDashboard"
 import TeamOnboarding from "./Team/TeamOnboarding";
+import WeblanceAuth from './components/WeblanceAuth'
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
             </div>
           }
         />
+        <Route path="/login"            element={<WeblanceAuth />} />
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/register-agency" element={<RegisterAgency />} />
         <Route path="/agency/:id" element={<AgencyProfile />} />

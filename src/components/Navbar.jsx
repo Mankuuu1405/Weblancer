@@ -1,31 +1,151 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { FiArrowUpRight, FiMenu, FiX } from "react-icons/fi";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
-    <nav className="w-full bg-[rgb(255,251,248)] border-b border-gray-300">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+        * { font-family: 'Poppins', sans-serif; }
 
-        {/* Logo */}
-        <div className="text-2xl font-bold tracking-wide">
-          <span className="text-[#1960d2]">Arc</span>
-          <span className="text-[#4a3b87]">Lancer</span>
+        .nav-link-tw {
+          position: relative;
+          background: none;
+          border: none;
+          cursor: pointer;
+          font-family: 'Poppins', sans-serif;
+          font-size: 14px;
+          font-weight: 500;
+          color: #1C1C1C;
+          padding: 6px 2px;
+          transition: color 0.2s;
+        }
+        .nav-link-tw::after {
+          content: '';
+          position: absolute;
+          bottom: 0; left: 0;
+          width: 0%;
+          height: 2px;
+          background: #6FDA44;
+          border-radius: 2px;
+          transition: width 0.22s ease;
+        }
+        .nav-link-tw:hover { color: #1A3D1F; }
+        .nav-link-tw:hover::after { width: 100%; }
+
+        @keyframes fadeDown {
+          from { opacity:0; transform:translateY(-14px); }
+          to   { opacity:1; transform:translateY(0); }
+        }
+        .a-nav { animation: fadeDown .5s ease both; }
+
+        /* Green scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #6FDA44; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb:hover { background: #1A3D1F; }
+        * { scrollbar-width: thin; scrollbar-color: #6FDA44 #f1f1f1; }
+      `}</style>
+
+      {/* Fixed Navbar Wrapper */}
+      <div
+        className="a-nav fixed top-4 left-0 right-0 z-50 flex justify-center px-6"
+        style={{ pointerEvents: "none" }}
+      >
+        <div className="w-full max-w-[860px]" style={{ pointerEvents: "auto" }}>
+
+          {/* Nav Bar */}
+          <nav
+            className="flex items-center justify-between bg-white rounded-full pl-5 pr-2.5 py-2 border border-[#E4F0DC]"
+            style={{ boxShadow: "0 4px 24px rgba(111,218,68,0.10), 0 1px 4px rgba(0,0,0,0.05)" }}
+          >
+            {/* Logo */}
+            <div className="flex-shrink-0 cursor-pointer" onClick={() => navigate("/")}>
+              <img
+                src="/image-removebg-preview.png"
+                alt="Weblance"
+                className="h-10 w-auto block"
+              />
+            </div>
+
+            {/* Center Links */}
+            <div className="hidden sm:flex items-center gap-7 flex-1 justify-center">
+              {[
+                { label: "Features",     path: "/features"     },
+                { label: "How It Works", path: "/how-it-works" },
+                { label: "Hire Talent",  path: "/hire"         },
+              ].map(({ label, path }) => (
+                <button key={label} className="nav-link-tw" onClick={() => navigate(path)}>
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {/* Right */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <button
+                onClick={() => navigate("/register")}
+                className="hidden sm:inline-flex items-center gap-2 bg-[#1A3D1F] text-white text-[13px] font-semibold rounded-full border-none cursor-pointer transition-all duration-200 hover:bg-[#2A5C30] hover:-translate-y-px"
+                style={{
+                  padding: "10px 20px",
+                  boxShadow: "0 3px 16px rgba(26,61,31,0.28)",
+                  whiteSpace: "nowrap",
+                  fontFamily: "'Poppins', sans-serif",
+                }}
+              >
+                Join as Freelancer <FiArrowUpRight size={13} />
+              </button>
+
+              {/* Hamburger */}
+              <button
+                className="sm:hidden flex items-center justify-center w-10 h-10 rounded-full border border-[#E8F5E1] bg-transparent text-[#1C1C1C] cursor-pointer"
+                onClick={() => setMenuOpen(!menuOpen)}
+              >
+                {menuOpen ? <FiX size={18} /> : <FiMenu size={18} />}
+              </button>
+            </div>
+          </nav>
+
+          {/* Mobile Drawer */}
+          {menuOpen && (
+            <div
+              className="sm:hidden mt-2 bg-white rounded-[20px] border border-[#E8F5E1] px-5 pt-2 pb-4"
+              style={{ boxShadow: "0 8px 32px rgba(111,218,68,0.12)" }}
+            >
+              {[
+                { label: "Features",     path: "/features"     },
+                { label: "How It Works", path: "/how-it-works" },
+                { label: "Hire Talent",  path: "/hire"         },
+              ].map(({ label, path }) => (
+                <button
+                  key={label}
+                  onClick={() => { navigate(path); setMenuOpen(false); }}
+                  className="block w-full text-left bg-transparent border-0 border-b border-[#E8F5E1] py-3 text-[15px] font-medium text-[#1C1C1C] cursor-pointer"
+                  style={{ fontFamily: "'Poppins', sans-serif" }}
+                >
+                  {label}
+                </button>
+              ))}
+              <button
+                className="mt-3 w-full flex items-center justify-center gap-2 bg-[#1A3D1F] text-white font-semibold rounded-full py-3 border-none cursor-pointer"
+                style={{ fontFamily: "'Poppins', sans-serif", boxShadow: "0 3px 16px rgba(26,61,31,0.28)" }}
+                onClick={() => { navigate("/register"); setMenuOpen(false); }}
+              >
+                Join as Freelancer <FiArrowUpRight size={13} />
+              </button>
+            </div>
+          )}
+
         </div>
-
-        {/* Right Side */}
-        <div className="flex items-center gap-3 sm:gap-5">
-          <button className="hidden sm:block bg-transparent border-none text-sm font-medium text-gray-700 hover:text-black transition-colors cursor-pointer">
-            Team Member
-          </button>
-          <button className="px-4 sm:px-5 py-2 rounded-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer">
-            Hire Talent
-          </button>
-          <button className="px-4 sm:px-5 py-2 rounded-lg bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium shadow-[0_2px_6px_rgba(59,130,246,0.2)] transition-all cursor-pointer border-none">
-            Join as Freelancer
-          </button>
-        </div>
-
       </div>
-    </nav>
+
+      {/* Spacer */}
+      <div className="h-24" />
+    </>
   );
 };
 
