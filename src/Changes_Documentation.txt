@@ -1,0 +1,3 @@
+1. Replace the "Hire Talent" and "Join as Freelancer" buttons in the navbar with a "Sign In" link to the login page.
+2. Replace all "Go to Dashboard" buttons and other buttons too with a single "Sign In" link that navigates to the login page.
+3. Create a Landing page for "Register Agency" by taking inspiration from similar existing pages.
