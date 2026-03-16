@@ -1,8 +1,7 @@
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-// root 
-import Signin from './components/Signin';
+
 // Admin - Layout
 import AdminLayout from "./AdminPanel/AdminLayout";
 
@@ -83,12 +82,14 @@ import HireTalentOnboarding from "./hire-talent/onboarding/OnboardingFlow";
 import ProjectList from "./hire-talent/ProjectList";
 import PostNewProject from "./hire-talent/PostNewProject";
 import ClientProjectDetail from "./hire-talent/ClientProjectDetail";
-// import ClientContracts from "./hire-talent/ClientContracts";
 import ClientDisputes from "./hire-talent/ClientDisputes";
 import ClientNotifications from "./hire-talent/ClientNotifications";
 import ClientPayments from "./hire-talent/ClientPayments";
 import ClientTransactionDetail from "./hire-talent/ClientTransactionDetail";
 import ClientReviews from "./hire-talent/ClientReviews";
+
+// Auth
+import WeblanceAuth from "./components/WeblanceAuth";
 
 // Project Demo
 import ProjectStreamDemo from "./projectdemo/projectstreamDemo";
@@ -148,8 +149,10 @@ export default function App() {
 
         {/* Home */}
         <Route path="/" element={<Home />} />
-         {/* Signin */}
-         <Route path="/signin" element={<Signin/>}/>
+
+        {/* Auth */}
+        <Route path="/login"  element={<WeblanceAuth />} />
+
         {/* Admin — Dashboard */}
         <Route path="/admin"                          element={<AdminLayout><AdminDashboard /></AdminLayout>} />
 
@@ -216,7 +219,7 @@ export default function App() {
 
         {/* Agency */}
         <Route path="/register-agency"                element={<AgencyLandingPage />} />
-        <Route path="/agency/onboarding"  element={<RegisterAgency/>}/>
+        <Route path="/agency/onboarding"              element={<RegisterAgency />} />
         <Route path="/agency/dashboard"               element={<AgencyDashboard />} />
         <Route path="/agency/proposals"               element={<AgencyProposals />} />
         <Route path="/agency/contracts"               element={<AgencyContracts />} />
@@ -258,7 +261,6 @@ export default function App() {
         <Route path="/hire-talent/projects"           element={<ProjectList />} />
         <Route path="/hire-talent/post-project"       element={<PostNewProject />} />
         <Route path="/hire-talent/projects/:id"       element={<ClientProjectDetail />} />
-        {/* <Route path="/client/contracts" element={<ClientContracts />} /> */}
         <Route path="/hire-talent/disputes"           element={<ClientDisputes />} />
         <Route path="/hire-talent/notifications"      element={<ClientNotifications />} />
         <Route path="/hire-talent/payments"           element={<ClientPayments />} />
