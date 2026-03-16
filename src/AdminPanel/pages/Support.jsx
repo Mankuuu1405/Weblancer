@@ -4,6 +4,16 @@ import { BiMessageSquareDetail } from "react-icons/bi";
 import { MdOutlineEmergency } from "react-icons/md";
 import { BsCircleFill } from "react-icons/bs";
 
+const WBL_CSS = `
+  .wbl-btn { background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%); color: #fff !important; border: none; cursor: pointer; }
+  .wbl-btn:hover { opacity: 0.88; }
+  .wbl-active { background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%) !important; color: #fff !important; border-color: transparent !important; }
+  .wbl-badge { background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%); }
+  .wbl-unread { border-left-color: #1B72C0 !important; }
+  .wbl-tab { border-bottom-color: #1B72C0 !important; color: #0D2855 !important; font-weight: 700 !important; }
+`;
+
+
 const ticketsData = [
   { id: "0891", title: "Payment Issue",    unread: true,  from: "John D. (Client)",       project: "Food Delivery App",       priority: "HIGH",      time: "2h ago",   status: "Open",        assigned: null,         actions: ["assign", "viewproject", "openticket"] },
   { id: "0890", title: "Scope dispute",    unread: false, from: "Sara M. (Freelancer)",   project: "Brand Identity Package",  priority: "NORMAL",    time: "5h ago",   status: "In Progress", assigned: "Admin Sarah", actions: ["viewproject", "openticket"]           },
@@ -27,6 +37,7 @@ const Support = () => {
 
   return (
     <div className="flex flex-col gap-6">
+      <style>{WBL_CSS}</style>
 
       {/* Stat Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -51,7 +62,7 @@ const Support = () => {
             onClick={() => setFilter(f)}
             className={`inline-flex items-center gap-1.5 px-4 py-2 rounded-full border text-sm font-medium transition-all cursor-pointer
               ${filter === f
-                ? "bg-blue-500 text-white border-blue-500"
+                ? "wbl-active"
                 : "bg-white text-gray-700 border-gray-200 hover:border-blue-400 hover:text-blue-500"
               }`}
           >
@@ -72,7 +83,7 @@ const Support = () => {
           <div
             key={t.id}
             className={`bg-white border border-gray-200 rounded-xl px-5 sm:px-6 py-5 shadow-sm hover:shadow-md transition-shadow
-              ${t.unread ? "border-l-4 border-l-blue-500" : "border-l-4 border-l-transparent"}`}
+              ${t.unread ? "border-l-4 border-l-blue-500 wbl-unread" : "border-l-4 border-l-transparent"}`}
           >
             {/* Top */}
             <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
@@ -81,7 +92,8 @@ const Support = () => {
                   <span className="text-sm font-bold text-gray-900">#{t.id}</span>
                   <span className="text-sm font-semibold text-gray-900">{t.title}</span>
                   {t.unread && (
-                    <span className="text-xs font-bold bg-blue-500 text-white px-2.5 py-0.5 rounded-full">Unread</span>
+                    // <span className="text-xs font-bold wbl-badge text-white px-2.5 py-0.5 rounded-full">Unread</span>
+                    <span className="text-xs font-bold bg-green-500 text-white px-2.5 py-0.5 rounded-full">Unread</span>
                   )}
                 </div>
                 <div className="text-xs text-gray-500">{t.from} · Project: {t.project}</div>
@@ -99,7 +111,7 @@ const Support = () => {
             {/* Actions */}
             <div className="flex gap-2 flex-wrap">
               {t.actions.includes("assign") && (
-                <button className="inline-flex items-center gap-1.5 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer border-none">
+                <button className="inline-flex items-center gap-1.5 px-4 py-2 wbl-btn text-xs font-semibold rounded-lg cursor-pointer border-none">
                   <BiMessageSquareDetail /> Assign to me
                 </button>
               )}
