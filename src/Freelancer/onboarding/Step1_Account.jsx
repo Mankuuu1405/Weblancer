@@ -31,7 +31,10 @@ export default function Step1_Account({ onNext, onBack, currentStep = 1, totalSt
   const [errors, setErrors]                   = useState({});
 
   const notAsked = ["Skills", "Portfolio", "Payment details", "Profile bio"];
+
+  // ── Fixed: both variables defined ──
   const percentComplete = Math.round(((currentStep - 1) / totalSteps) * 100);
+  const progressWidth   = `${((currentStep - 1) / (totalSteps - 1)) * 100}%`;
 
   /* ── Password Strength ── */
   const getPasswordStrength = (pass) => {
@@ -56,7 +59,7 @@ export default function Step1_Account({ onNext, onBack, currentStep = 1, totalSt
     const insights = [];
 
     if (fullName.trim().length === 0) {
-      // silent — don't nag before they start
+      // silent
     } else if (fullName.trim().split(" ").filter(Boolean).length < 2) {
       insights.push({ status: "warn", msg: "Please enter both first and last name." });
     } else {
@@ -94,8 +97,8 @@ export default function Step1_Account({ onNext, onBack, currentStep = 1, totalSt
     return insights;
   };
 
-  const insights   = getInsights();
-  const goodCount  = insights.filter(i => i.status === "good").length;
+  const insights    = getInsights();
+  const goodCount   = insights.filter(i => i.status === "good").length;
   const totalChecks = 6;
   const fillPercent = Math.round((goodCount / totalChecks) * 100);
 
@@ -149,7 +152,6 @@ export default function Step1_Account({ onNext, onBack, currentStep = 1, totalSt
             </svg>
             <span className="hidden sm:inline">Save &amp; Exit</span>
           </button>
-          
         </div>
       </header>
 
@@ -159,8 +161,17 @@ export default function Step1_Account({ onNext, onBack, currentStep = 1, totalSt
           <span className="font-medium text-gray-700">Step {currentStep} of {totalSteps}</span>
           <span className="text-blue-600 font-semibold">{percentComplete}% Complete</span>
         </div>
+
+        {/* ── Fixed progress bar with both lines ── */}
         <div className="relative flex items-start justify-between">
-          <div className="absolute top-3.5 sm:top-4 left-0 w-full h-0.5 bg-gray-200 z-0"></div>
+          {/* Gray base line */}
+          <div className="absolute top-3.5 sm:top-4 left-0 w-full h-1 bg-gray-200 z-0 rounded-full"></div>
+          {/* Blue filled line */}
+          <div
+            className="absolute top-3.5 sm:top-4 left-0 h-1 bg-blue-500 z-0 rounded-full transition-all duration-500"
+            style={{ width: progressWidth }}
+          ></div>
+
           {stepLabels.map((label, index) => {
             const isActive = index + 1 === currentStep;
             const isDone   = index + 1 < currentStep;
@@ -321,7 +332,7 @@ export default function Step1_Account({ onNext, onBack, currentStep = 1, totalSt
                     {passwordsBad && (
                       <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
                         <svg className="w-3 h-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"/>
+                          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd"/>
                         </svg>
                         Passwords do not match
                       </p>
@@ -442,3 +453,4 @@ export default function Step1_Account({ onNext, onBack, currentStep = 1, totalSt
     </div>
   );
 }
+

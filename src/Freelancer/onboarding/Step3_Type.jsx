@@ -312,3 +312,5 @@ export default function Step3_Type({ onNext, onBack, currentStep = 3, totalSteps
     </div>
   );
 }
+
+
