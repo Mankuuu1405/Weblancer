@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SCORE_BREAKDOWN = [
   { label: "Account Verification", score: 20, max: 20 },
@@ -86,12 +87,15 @@ function TrustGauge({ score = 75 }) {
   );
 }
 
-export default function Step11_Trust({ formData, updateData, next, prev }) {
+export default function Step11_Trust({ updateData, next, prev }) {
+  const [canContinue] = useState(true);
 
-  const handleFinish = () => {
-    updateData({ trustComplete: true });
-    next();
-  };
+  const navigate = useNavigate();
+
+   const handleRole = (role)=>{
+    localStorage.setItem("role",role);
+    navigate('/signin');
+  }
 
   return (
     <div className="flex gap-6 items-start">
@@ -241,7 +245,7 @@ export default function Step11_Trust({ formData, updateData, next, prev }) {
         </div>
 
         {/* Nav buttons */}
-        <div className="flex items-center justify-between mt-6 pb-10">
+       <div className="flex items-center justify-between mt-6 pb-10">
           <button onClick={prev}
                   className="flex items-center gap-2 text-sm font-semibold"
                   style={{ color: "#374151" }}>
@@ -252,14 +256,15 @@ export default function Step11_Trust({ formData, updateData, next, prev }) {
           </button>
 
           <button
-            onClick={handleFinish}
-            className="flex items-center gap-2 font-bold px-7 py-3.5 rounded-xl text-white text-sm"
-            style={{ backgroundColor: "#3b5bdb" }}
+            onClick={()=>handleRole("Hire_talent")}
+            disabled={!canContinue}
+            className="flex items-center gap-2 font-bold px-7 py-3.5 rounded-xl text-white text-sm transition-all"
+            style={{
+              backgroundColor: canContinue ? "#3b5bdb" : "#93c5fd",
+              cursor: canContinue ? "pointer" : "not-allowed",
+            }}
           >
-            Continue to Dashboard
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path d="M5 12h14M12 5l7 7-7 7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+           Sign in →
           </button>
         </div>
       </div>

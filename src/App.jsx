@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-
+// root 
+import Signin from './components/Signin';
 // Admin - Layout
 import AdminLayout from "./AdminPanel/AdminLayout";
 
@@ -146,7 +147,8 @@ export default function App() {
 
         {/* Home */}
         <Route path="/" element={<Home />} />
-
+         {/* Signin */}
+         <Route path="/signin" element={<Signin/>}/>
         {/* Admin — Dashboard */}
         <Route path="/admin"                          element={<AdminLayout><AdminDashboard /></AdminLayout>} />
 

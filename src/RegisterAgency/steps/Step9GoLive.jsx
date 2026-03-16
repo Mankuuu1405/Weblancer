@@ -16,11 +16,16 @@ const GROWTH_STAGES = [
 ];
 
 const Step9GoLive = ({ formData = {}, prev = () => {} }) => {
-  const navigate   = useNavigate();
+  const navigate = useNavigate();
+  
   const agencyName = formData.agencyName || "TechVision Digital Agency";
   const firstName  = formData.firstName  || "John";
   const lastName   = formData.lastName   || "Doe";
   const trustScore = 65;
+    const handleRole = (role)=>{
+    localStorage.setItem("role",role);
+    navigate('/signin');
+  }
 
   return (
     <div className="flex flex-col lg:flex-row gap-5 items-start w-full">
@@ -133,19 +138,16 @@ const Step9GoLive = ({ formData = {}, prev = () => {} }) => {
           </div>
         </div>
 
-        {/* Bottom buttons */}
-        <div className="flex flex-col sm:flex-row gap-3 pt-5">
-          <button
-            onClick={() => navigate("/agency/dashboard")}
-            className="flex-1 bg-[#4f7cff] hover:bg-[#3b6bef] text-white border-none rounded-xl px-6 py-4 text-sm font-bold cursor-pointer shadow-[0_4px_14px_rgba(79,124,255,0.3)] flex items-center justify-center gap-2 transition-all"
-          >
-            Go to Dashboard →
+         {/* Bottom Bar */}
+        <div className="flex justify-between items-center pt-5">
+          <button onClick={prev} className="bg-transparent border-none text-sm font-semibold text-gray-500 hover:text-gray-800 cursor-pointer transition-colors">
+            ← Back
           </button>
           <button
-            onClick={() => navigate("/invite-team")}
-            className="flex-1 bg-white text-gray-700 border-[1.5px] border-gray-200 hover:bg-gray-50 rounded-xl px-6 py-4 text-sm font-semibold cursor-pointer flex items-center justify-center gap-2 transition-all"
+            onClick={()=> handleRole("agency")}
+            className="bg-[#4f7cff] hover:bg-[#3b6bef] hover:-translate-y-px text-white border-none rounded-xl px-8 py-3.5 text-sm font-bold cursor-pointer shadow-[0_4px_14px_rgba(79,124,255,0.3)] transition-all"
           >
-            👥 Invite Team Members
+           Sign in →
           </button>
         </div>
       </div>
