@@ -82,7 +82,7 @@ const AgencyLandingPage = () => {
   const navigate = useNavigate();
 
   const onJoinClick = () => {
-    navigate('/register-agency');
+    navigate('/agency/onboarding');
   };
 
   return (

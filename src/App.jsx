@@ -54,6 +54,7 @@ import AgencyKYC          from "./RegisterAgency/AgencyKYC";
 import AgencyReviews      from "./RegisterAgency/AgencyReviews";
 import AgencyNotifications from "./RegisterAgency/AgencyNotifications";
 import AgencySettings     from "./RegisterAgency/AgencySettings";
+import AgencyLandingPage from "./RegisterAgency/AgencyLandingPage";
 
 // Team Member pages
 import TeamProfile        from "./Team/TeamProfile";
@@ -214,7 +215,8 @@ export default function App() {
         <Route path="/admin/announcements"            element={<AdminLayout><AdminAnnouncements /></AdminLayout>} />
 
         {/* Agency */}
-        <Route path="/register-agency"                element={<RegisterAgency />} />
+        <Route path="/register-agency"                element={<AgencyLandingPage />} />
+        <Route path="/agency/onboarding"  element={<RegisterAgency/>}/>
         <Route path="/agency/dashboard"               element={<AgencyDashboard />} />
         <Route path="/agency/proposals"               element={<AgencyProposals />} />
         <Route path="/agency/contracts"               element={<AgencyContracts />} />
