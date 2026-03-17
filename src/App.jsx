@@ -1,8 +1,10 @@
 import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-// root 
+
+// root
 import Signin from './components/Signin';
+
 // Admin - Layout
 import AdminLayout from "./AdminPanel/AdminLayout";
 
@@ -63,7 +65,10 @@ import TeamNotifications  from "./Team/TeamNotifications";
 import TeamMemberDashboard from "./Team/TeamMemberDashboard";
 import InviteAccept from "./Team/InviteAccept";
 
-// Freelancer
+// Freelancer — Layout wrapper
+import FreelancerLayout from "./Freelancer/FreelancerLayout";
+
+// Freelancer — Pages
 import LandingPage from "./Freelancer/LandingPage";
 import OnboardingFlow from "./Freelancer/onboarding/OnboardingFlow";
 import PublicProfile from "./Freelancer/Public Profile/PublicProfile";
@@ -83,7 +88,6 @@ import HireTalentOnboarding from "./hire-talent/onboarding/OnboardingFlow";
 import ProjectList from "./hire-talent/ProjectList";
 import PostNewProject from "./hire-talent/PostNewProject";
 import ClientProjectDetail from "./hire-talent/ClientProjectDetail";
-// import ClientContracts from "./hire-talent/ClientContracts";
 import ClientDisputes from "./hire-talent/ClientDisputes";
 import ClientNotifications from "./hire-talent/ClientNotifications";
 import ClientPayments from "./hire-talent/ClientPayments";
@@ -135,10 +139,10 @@ function Home() {
     </div>
   );
 }
-function Freelancer()        { const n = useNavigate(); return <LandingPage    onJoinClick={() => n("/onboarding")} />; }
-function Onboarding()        { const n = useNavigate(); return <OnboardingFlow  onExit={() => n("/freelancer")} />; }
-function Profile()           { const n = useNavigate(); return <PublicProfile   onBack={() => n(-1)} />; }
-function TeamOnboardingPage(){ const n = useNavigate(); return <TeamOnboarding  onGoToDashboard={() => n("/agency/dashboard")} />; }
+function Freelancer()        { const n = useNavigate(); return <LandingPage   onJoinClick={() => n("/onboarding")} />; }
+function Onboarding()        { const n = useNavigate(); return <OnboardingFlow onExit={() => n("/freelancer")} />; }
+function Profile()           { const n = useNavigate(); return <PublicProfile  onBack={() => n(-1)} />; }
+function TeamOnboardingPage(){ const n = useNavigate(); return <TeamOnboarding onGoToDashboard={() => n("/agency/dashboard")} />; }
 
 // ─── App ──────────────────────────────────────────────────────────────────────
 export default function App() {
@@ -148,8 +152,10 @@ export default function App() {
 
         {/* Home */}
         <Route path="/" element={<Home />} />
-         {/* Signin */}
-         <Route path="/signin" element={<Signin/>}/>
+
+        {/* Signin */}
+        <Route path="/signin" element={<Signin />} />
+
         {/* Admin — Dashboard */}
         <Route path="/admin"                          element={<AdminLayout><AdminDashboard /></AdminLayout>} />
 
@@ -163,18 +169,18 @@ export default function App() {
         <Route path="/admin/clients"                  element={<AdminLayout><AdminClients /></AdminLayout>} />
         <Route path="/admin/clients/:id"              element={<AdminLayout><AdminClientDetail /></AdminLayout>} />
 
-        {/* Admin — KYC (specific before :id) */}
+        {/* Admin — KYC */}
         <Route path="/admin/kyc/agencies"             element={<AdminLayout><AdminKYCAgencies /></AdminLayout>} />
         <Route path="/admin/kyc/freelancers"          element={<AdminLayout><AdminKYCFreelancers /></AdminLayout>} />
         <Route path="/admin/kyc/:id"                  element={<AdminLayout><AdminKYCDetail /></AdminLayout>} />
         <Route path="/admin/kyc"                      element={<AdminLayout><AdminKYC /></AdminLayout>} />
 
-        {/* Admin — Projects (specific before :id) */}
+        {/* Admin — Projects */}
         <Route path="/admin/projects/at-risk"         element={<AdminLayout><AdminAtRiskProjects /></AdminLayout>} />
         <Route path="/admin/projects/:id"             element={<AdminLayout><AdminProjectDetail /></AdminLayout>} />
         <Route path="/admin/projects"                 element={<AdminLayout><AdminProjects /></AdminLayout>} />
 
-        {/* Admin — ProjectStream (specific before :id) */}
+        {/* Admin — ProjectStream */}
         <Route path="/admin/projectstream/freeze"     element={<AdminLayout><AdminFrozenChats /></AdminLayout>} />
         <Route path="/admin/projectstream/:id"        element={<AdminLayout><AdminProjectStreamMonitor /></AdminLayout>} />
 
@@ -216,7 +222,7 @@ export default function App() {
 
         {/* Agency */}
         <Route path="/register-agency"                element={<AgencyLandingPage />} />
-        <Route path="/agency/onboarding"  element={<RegisterAgency/>}/>
+        <Route path="/agency/onboarding"              element={<RegisterAgency />} />
         <Route path="/agency/dashboard"               element={<AgencyDashboard />} />
         <Route path="/agency/proposals"               element={<AgencyProposals />} />
         <Route path="/agency/contracts"               element={<AgencyContracts />} />
@@ -238,18 +244,22 @@ export default function App() {
         <Route path="/team/dashboard"                 element={<TeamMemberDashboard />} />
         <Route path="/accept-invite"                  element={<InviteAccept />} />
 
-        {/* Freelancer */}
+        {/* Freelancer — Landing & Onboarding (NO layout) */}
         <Route path="/freelancer"                     element={<Freelancer />} />
         <Route path="/onboarding"                     element={<Onboarding />} />
         <Route path="/profile/:id"                    element={<Profile />} />
-        <Route path="/dashboard"                      element={<Dashboard />} />
-        <Route path="/freelancer/proposals"           element={<FreelancerProposals />} />
-        <Route path="/freelancer/contracts"           element={<FreelancerContracts />} />
-        <Route path="/freelancer/reviews"             element={<FreelancerReviews />} />
-        <Route path="/freelancer/notifications"       element={<FreelancerNotifications />} />
-        <Route path="/freelancer/kyc"                 element={<FreelancerKYC />} />
-        <Route path="/freelancer/earnings"            element={<FreelancerEarnings />} />
-        <Route path="/freelancer/withdrawals"         element={<FreelancerWithdrawals />} />
+
+        {/* Freelancer — Dashboard & all pages (WITH shared sidebar+topbar) */}
+        <Route element={<FreelancerLayout />}>
+          <Route path="/dashboard"                    element={<Dashboard />} />
+          <Route path="/freelancer/proposals"         element={<FreelancerProposals />} />
+          <Route path="/freelancer/contracts"         element={<FreelancerContracts />} />
+          <Route path="/freelancer/reviews"           element={<FreelancerReviews />} />
+          <Route path="/freelancer/notifications"     element={<FreelancerNotifications />} />
+          <Route path="/freelancer/kyc"               element={<FreelancerKYC />} />
+          <Route path="/freelancer/earnings"          element={<FreelancerEarnings />} />
+          <Route path="/freelancer/withdrawals"       element={<FreelancerWithdrawals />} />
+        </Route>
 
         {/* Hire Talent */}
         <Route path="/hire-talent"                    element={<HireTalentLanding />} />
@@ -258,7 +268,6 @@ export default function App() {
         <Route path="/hire-talent/projects"           element={<ProjectList />} />
         <Route path="/hire-talent/post-project"       element={<PostNewProject />} />
         <Route path="/hire-talent/projects/:id"       element={<ClientProjectDetail />} />
-        {/* <Route path="/client/contracts" element={<ClientContracts />} /> */}
         <Route path="/hire-talent/disputes"           element={<ClientDisputes />} />
         <Route path="/hire-talent/notifications"      element={<ClientNotifications />} />
         <Route path="/hire-talent/payments"           element={<ClientPayments />} />
