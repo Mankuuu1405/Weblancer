@@ -1,6 +1,84 @@
 import { useState } from "react";
 import { PageHeader, SectionCard, ActionBtn } from "./AdminComponents";
 
+
+/* ── Freelancer Contracts theme tokens ───────────────────────
+   GREEN:  #A8E063 (light) → #6EC030 (mid) → #2E7D1F (deep)
+   NAVY:   #4A6FA5 (light) → #1A2B5E (mid) → #0F1A3B (deep)
+   ──────────────────────────────────────────────────────────── */
+const G = {
+  greenLight:  "#A8E063",
+  green:       "#6EC030",
+  greenDeep:   "#2E7D1F",
+  greenBg:     "#f1fce8",
+  greenBorder: "#d4edbb",
+
+  navyLight:   "#4A6FA5",
+  navy:        "#1A2B5E",
+  navyDeep:    "#0F1A3B",
+  navyBg:      "#e8edf7",
+  navyBorder:  "#b8c6e0",
+
+  gradGreen: "linear-gradient(135deg, #A8E063 0%, #2E7D1F 100%)",
+  gradNavy:  "linear-gradient(135deg, #4A6FA5 0%, #0F1A3B 100%)",
+
+  text:        "#1C1C1C",
+  sub:         "#4b5563",
+  muted:       "#9ca3af",
+  border:      "#e5e7eb",
+  bg:          "#f9fafb",
+  white:       "#ffffff",
+
+  amber:       "#f59e0b",
+  amberBg:     "#fffbeb",
+  amberBorder: "#fde68a",
+  amberText:   "#92400e",
+  red:         "#ef4444",
+  redBg:       "#fef2f2",
+  redBorder:   "#fecaca",
+  redText:     "#dc2626",
+  blue:        "#3b82f6",
+  blueBg:      "#eff6ff",
+  blueBorder:  "#bfdbfe",
+  blueText:    "#1d4ed8",
+};
+const FONT = "'Poppins', sans-serif";
+
+const btnNavy = {
+  display: "inline-flex", alignItems: "center", gap: 6,
+  fontSize: 12, fontWeight: 700, fontFamily: FONT,
+  background: G.gradNavy, color: G.white,
+  border: "none", borderRadius: 100,
+  padding: "8px 18px", cursor: "pointer",
+  boxShadow: "0 3px 12px rgba(15,26,59,0.25)",
+  whiteSpace: "nowrap",
+};
+const btnGreen = {
+  display: "inline-flex", alignItems: "center", gap: 6,
+  fontSize: 12, fontWeight: 700, fontFamily: FONT,
+  background: G.gradGreen, color: G.white,
+  border: "none", borderRadius: 100,
+  padding: "8px 18px", cursor: "pointer",
+  boxShadow: "0 2px 10px rgba(46,125,31,0.22)",
+  whiteSpace: "nowrap",
+};
+const btnOutline = {
+  display: "inline-flex", alignItems: "center", gap: 6,
+  fontSize: 12, fontWeight: 700, fontFamily: FONT,
+  background: G.greenBg, color: G.greenDeep,
+  border: `1px solid ${G.greenBorder}`,
+  borderRadius: 100, padding: "8px 18px", cursor: "pointer",
+  whiteSpace: "nowrap",
+};
+const btnWarning = {
+  ...btnOutline,
+  background: G.amberBg, color: G.amberText, border: `1px solid ${G.amberBorder}`,
+};
+const btnDanger = {
+  ...btnOutline,
+  background: G.redBg, color: G.redText, border: `1px solid ${G.redBorder}`,
+};
+
 function SettingRow({ label, desc, children }) {
   return (
     <div className="flex items-center justify-between py-3.5 border-b border-gray-50 last:border-0">
@@ -16,8 +94,8 @@ function SettingRow({ label, desc, children }) {
 function Toggle({ value, onChange }) {
   return (
     <button onClick={() => onChange(!value)}
-      className={`relative w-10 h-5 rounded-full transition-colors ${value ? "bg-green-500" : "bg-gray-200"}`}>
-      <span className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${value ? "translate-x-5" : "translate-x-0.5"}`} />
+      className={`relative w-10 h-5 rounded-full transition-colors ${value ? "bg-green-400" : "bg-gray-200"}`}>
+      <span className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${value ? "translate-x-0.5" : "-translate-x-[18px]"}`} />
     </button>
   );
 }
@@ -79,7 +157,7 @@ export default function AdminSettings() {
         title="Settings"
         subtitle="Platform configuration, admin roles & system preferences"
         actions={
-          <ActionBtn label={saved ? "✓ Saved" : "Save Changes"} variant="primary" size="md" onClick={handleSave} />
+          <ActionBtn label={saved ? "✓ Saved" : "Save Changes"} variant="primary" size="md" style={btnNavy} onClick={handleSave} />
         }
       />
 
@@ -160,12 +238,12 @@ export default function AdminSettings() {
                     <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${admin.active ? "bg-green-50 text-green-600 border border-green-200" : "bg-gray-100 text-gray-500 border border-gray-200"}`}>
                       {admin.active ? "Active" : "Inactive"}
                     </span>
-                    <ActionBtn label="Edit" />
+                    <ActionBtn label="Edit" style={btnGreen} />
                   </div>
                 </div>
               ))}
             </div>
-            <ActionBtn label="+ Invite Admin" variant="primary" size="md" />
+            <ActionBtn label="+ Invite Admin" variant="primary" size="md" style={btnNavy} />
           </SectionCard>
 
           <SectionCard title="Permission Matrix">
@@ -292,8 +370,8 @@ export default function AdminSettings() {
                   </span>
                 </div>
                 <div className="flex gap-2">
-                  <ActionBtn label="Edit" />
-                  <ActionBtn label="Preview" />
+                  <ActionBtn label="Edit" style={btnOutline}/>
+                  <ActionBtn label="Preview" style={btnNavy} />
                 </div>
               </div>
               <div className="h-16 bg-gray-50 rounded-lg border border-gray-100 flex items-center justify-center">
@@ -305,8 +383,8 @@ export default function AdminSettings() {
       )}
 
       <div className="mt-6 flex justify-end gap-3">
-        <ActionBtn label="Discard Changes" />
-        <ActionBtn label={saved ? "✓ Saved!" : "Save All Changes"} variant="primary" size="md" onClick={handleSave} />
+        <ActionBtn label="Discard Changes" style={btnOutline}/>
+        <ActionBtn label={saved ? "✓ Saved!" : "Save All Changes"} variant="primary" size="md" style={btnNavy} onClick={handleSave} />
       </div>
     </div>
   );

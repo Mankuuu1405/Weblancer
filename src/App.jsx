@@ -95,32 +95,115 @@ import ProjectStreamDemo from "./projectdemo/projectstreamDemo";
 import AgencyChannelADemo from "./projectdemo/AgencyChannelA/AgencyChannelADemo";
 import Channel2Page from "./projectdemo/agency/channel2/index";
 
-// ─── Admin Dashboard ──────────────────────────────────────────────────────────
+/* ── Theme tokens (mirrors AdminUsers) ───────────────────── */
+const G = {
+  greenLight:  "#A8E063",
+  green:       "#6EC030",
+  greenDeep:   "#2E7D1F",
+  greenBg:     "#f1fce8",
+  greenBorder: "#d4edbb",
+
+  navyLight:   "#4A6FA5",
+  navy:        "#1A2B5E",
+  navyDeep:    "#0F1A3B",
+
+  gradNavy:  "linear-gradient(135deg, #4A6FA5 0%, #0F1A3B 100%)",
+
+  text:   "#1C1C1C",
+  muted:  "#9ca3af",
+  border: "#e5e7eb",
+  bg:     "#f9fafb",
+  white:  "#ffffff",
+
+  amber:       "#f59e0b",
+  amberBg:     "#fffbeb",
+  amberBorder: "#fde68a",
+  red:         "#ef4444",
+  redBg:       "#fef2f2",
+  redBorder:   "#fecaca",
+};
+
+const FONT = "'Poppins', sans-serif";
+
+const STAT_COLOR = {
+  gray:   { bg: G.bg,       border: G.border,       val: G.text,      label: G.muted   },
+  green:  { bg: G.greenBg,  border: G.greenBorder,  val: G.greenDeep, label: G.greenDeep },
+  orange: { bg: G.amberBg,  border: G.amberBorder,  val: "#b45309",   label: "#b45309" },
+  red:    { bg: G.redBg,    border: G.redBorder,     val: "#dc2626",   label: "#dc2626" },
+};
+
 function AdminDashboard() {
+  const stats = [
+    { label: "Total Users",     value: "10",    color: "gray"   },
+    { label: "Active Projects", value: "24",    color: "green"  },
+    { label: "Escrow Locked",   value: "₹8.4L", color: "orange" },
+    { label: "AI Flags Today",  value: "3",     color: "red"    },
+  ];
+
   return (
-    <div className="p-6">
-      <div className="mb-6">
-        <h1 className="text-xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-sm text-gray-500 mt-0.5">Platform overview & governance</p>
-      </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        {[
-          { label: "Total Users",     value: "10",    color: "text-gray-800"   },
-          { label: "Active Projects", value: "24",    color: "text-green-600"  },
-          { label: "Escrow Locked",   value: "₹8.4L", color: "text-orange-500" },
-          { label: "AI Flags Today",  value: "3",     color: "text-red-500"    },
-        ].map((s) => (
-          <div key={s.label} className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
-            <p className="text-xs text-gray-400 mb-1 font-medium uppercase tracking-wide">{s.label}</p>
-            <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
-          </div>
-        ))}
-      </div>
-      <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
-        <p className="text-sm text-gray-500 text-center">
-          Navigate using the <span className="text-green-600 font-semibold">sidebar</span> to manage the platform.
+    <div style={{ padding: "28px 28px 64px", fontFamily: FONT, background: G.bg, minHeight: "100%" }}>
+
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+        * { font-family: 'Poppins', sans-serif; }
+      `}</style>
+
+      {/* ── Page header ── */}
+      <div style={{ marginBottom: 24 }}>
+        <h1 style={{ fontSize: 22, fontWeight: 800, color: G.text, margin: 0, letterSpacing: "-0.4px" }}>
+          Dashboard
+        </h1>
+        <p style={{ fontSize: 13, color: G.muted, marginTop: 3 }}>
+          Platform overview & governance
         </p>
       </div>
+
+      {/* ── Stats strip ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 14, marginBottom: 24 }}>
+        {stats.map((s) => {
+          const c = STAT_COLOR[s.color];
+          return (
+            <div key={s.label} style={{
+              background: c.bg,
+              border: `1px solid ${c.border}`,
+              borderRadius: 14,
+              padding: "16px 20px",
+              boxShadow: "0 2px 8px rgba(110,192,48,0.05)",
+            }}>
+              <p style={{
+                fontSize: 10, fontWeight: 700, color: c.label,
+                textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6,
+              }}>{s.label}</p>
+              <p style={{ fontSize: 26, fontWeight: 800, color: c.val, margin: 0, lineHeight: 1 }}>
+                {s.value}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* ── Info card ── */}
+      <div style={{
+        background: G.white,
+        border: `1px solid ${G.greenBorder}`,
+        borderRadius: 16,
+        padding: "28px 24px",
+        boxShadow: "0 2px 12px rgba(110,192,48,0.06)",
+        textAlign: "center",
+      }}>
+        <div style={{
+          width: 48, height: 48, borderRadius: "50%",
+          background: G.greenBg, border: `1px solid ${G.greenBorder}`,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 20, margin: "0 auto 12px",
+        }}>◎</div>
+        <p style={{ fontSize: 13, color: G.muted, margin: 0 }}>
+          Navigate using the{" "}
+          <span style={{ color: G.greenDeep, fontWeight: 700 }}>sidebar</span>
+          {" "}to manage the platform.
+        </p>
+      </div>
+
     </div>
   );
 }

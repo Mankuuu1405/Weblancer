@@ -55,7 +55,7 @@ export function RiskFlag({ level }) {
 }
 
 // Stat Card
-export function StatCard({ label, value, sub, color = "green" }) {
+export function StatCard({ label, value, sub, color = "green",bg = "white",border="white"}) {
   const colorMap = {
     green: "text-green-600",
     blue: "text-blue-600",
@@ -63,8 +63,27 @@ export function StatCard({ label, value, sub, color = "green" }) {
     red: "text-red-500",
     gray: "text-gray-600",
   };
+
+  const BgcolorMap = {
+    green: "bg-green-100",
+    blue: "bg-blue-100",
+    orange: "bg-orange-100",
+    red: "bg-red-100",
+    gray: "bg-gray-100",
+    yellow:"bg-yellow-100"
+  };
+
+    const BordercolorMap = {
+    green: "border-green-400",
+    blue: "border-blue-400",
+    orange: "border-orange-400",
+    red: "border-red-400",
+    gray: "border-gray-400",
+  };
+  
+  
   return (
-    <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm">
+    <div className={`rounded-xl border border-wgray-100 p-4 shado-sm ${BgcolorMap[bg]} ${BordercolorMap[border]}`}>
       <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-1">{label}</p>
       <p className={`text-2xl font-bold ${colorMap[color]}`}>{value}</p>
       {sub && <p className="text-xs text-gray-400 mt-0.5">{sub}</p>}
@@ -115,7 +134,7 @@ export function SearchBar({ value, onChange, placeholder = "Search...", children
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
-          className="w-full pl-9 pr-3 py-2 text-sm bg-white border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent placeholder-gray-400"
+          className="w-full pl-9 pr-3 py-2 text-sm bg-white border border-gray-400 rounded-2xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent placeholder-gray-400 text-[10px]"
         />
       </div>
       {children}
@@ -129,7 +148,7 @@ export function FilterSelect({ value, onChange, options, label }) {
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="text-sm bg-white border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-600"
+      className=" bg-white border border-gray-400 rounded-2xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-gray-600 text-[12px]"
     >
       <option value="">{label}</option>
       {options.map((o) => (
@@ -140,18 +159,20 @@ export function FilterSelect({ value, onChange, options, label }) {
 }
 
 // Action Button
-export function ActionBtn({ label, onClick, variant = "default", size = "sm" }) {
+export function ActionBtn({ label, onClick, variant = "default", size = "sm" ,style}) {
   const variants = {
     default: "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50",
     primary: "bg-green-500 text-white hover:bg-green-600 border border-green-500",
     danger: "bg-red-50 border border-red-200 text-red-600 hover:bg-red-100",
     warning: "bg-yellow-50 border border-yellow-200 text-yellow-700 hover:bg-yellow-100",
+    custom:"bg-[#1A2B5E]",
   };
   const sizes = { sm: "px-3 py-1.5 text-xs", md: "px-4 py-2 text-sm" };
   return (
     <button
       onClick={onClick}
       className={`rounded-lg font-medium transition-colors ${variants[variant]} ${sizes[size]}`}
+      style={style}
     >
       {label}
     </button>

@@ -4,55 +4,58 @@ import { useState, useMemo } from "react";
   if (document.getElementById("wl-fr-fonts")) return;
   const l = document.createElement("link");
   l.id = "wl-fr-fonts"; l.rel = "stylesheet";
-  l.href = "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap";
+  l.href = "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap";
   document.head.appendChild(l);
 })();
 
 const G = {
-  green:       "#22c55e",
-  greenDark:   "#16a34a",
+  green:       "#6FDA44",
+  greenDark:   "#1A3D1F",
   greenBg:     "#f0fdf4",
-  greenBorder: "#bbf7d0",
-  text:        "#111827",
-  sub:         "#6b7280",
+  greenBorder: "#E4F0DC",
+  greenBorder2:"#E8F5E1",
+  navyFrom:    "#0D2855",
+  navyTo:      "#1B72C0",
+  text:        "#1C1C1C",
+  sub:         "#4b5563",
   muted:       "#9ca3af",
   border:      "#e5e7eb",
   bg:          "#f9fafb",
   white:       "#ffffff",
 };
-const FONT = "'Plus Jakarta Sans', sans-serif";
+const FONT = "'Poppins', sans-serif";
 
 const RECEIVED = [
   { id:"RR-001", client:"Vikram Singh",  company:"ShopEasy Retail", avatar:"VS", avatarColor:"#3b82f6",
-    project:"E-Commerce Platform Revamp",      contractId:"CON-2026-001", rating:5, date:"Mar 22, 2026",
+    project:"E-Commerce Platform Revamp",           contractId:"CON-2026-001", rating:5, date:"Mar 22, 2026",
     text:"Absolutely outstanding work. Delivered a pixel-perfect, performant React frontend ahead of schedule. The code quality and documentation were exceptional. Will definitely hire again for Phase 2.",
     tags:["Delivered early","Expert React skills","Clean code","Great communication"],
     categories:{ communication:5, quality:5, expertise:5, professionalism:5 },
     reply:"Thank you Vikram! It was a pleasure working on the ShopEasy platform. Looking forward to Phase 2!", replyDate:"Mar 23, 2026", helpful:14 },
 
   { id:"RR-002", client:"Aditya Bose",   company:"TravelNest",       avatar:"AB", avatarColor:"#f59e0b",
-    project:"Travel Booking Platform — Frontend", contractId:"CON-2026-003", rating:5, date:"Mar 15, 2026",
+    project:"Travel Booking Platform — Frontend",   contractId:"CON-2026-003", rating:5, date:"Mar 15, 2026",
     text:"One of the best freelancers I've worked with. Deep understanding of React architecture, proactive communication, and always suggests improvements. The hotel search UI was beyond what we expected.",
     tags:["Proactive communication","Above expectations","Architecture expertise"],
     categories:{ communication:5, quality:5, expertise:5, professionalism:4 },
     reply:null, helpful:9 },
 
   { id:"RR-003", client:"Neha Gupta",    company:"Zestify Foods",    avatar:"NG", avatarColor:"#8b5cf6",
-    project:"Food Delivery App — React Native",   contractId:"CON-2025-018", rating:4, date:"Jan 12, 2026",
+    project:"Food Delivery App — React Native",     contractId:"CON-2025-018", rating:4, date:"Jan 12, 2026",
     text:"Very skilled developer. The app UI is clean and fast. Had a few revision rounds on the cart flow but all resolved quickly. Communication was great throughout.",
     tags:["Clean UI","Responsive","Good communication"],
     categories:{ communication:4, quality:5, expertise:5, professionalism:4 },
     reply:"Thanks Neha! The cart flow revisions helped us nail the UX. Glad you're happy with the final result!", replyDate:"Jan 13, 2026", helpful:6 },
 
   { id:"RR-004", client:"Rohit Nair",    company:"UrbanRide",        avatar:"RN", avatarColor:"#06b6d4",
-    project:"Driver Dashboard UI",                contractId:"CON-2025-014", rating:3, date:"Nov 5, 2025",
+    project:"Driver Dashboard UI",                  contractId:"CON-2025-014", rating:3, date:"Nov 5, 2025",
     text:"Decent work overall. The UI was good but there were some delays and the mobile responsiveness needed extra revisions. Communication improved towards the end.",
     tags:["Responsive issues","Communication improved","Decent quality"],
     categories:{ communication:3, quality:3, expertise:4, professionalism:3 },
     reply:null, helpful:2 },
 
   { id:"RR-005", client:"Priya Sharma",  company:"MediCare Plus",    avatar:"PS", avatarColor:"#ef4444",
-    project:"Patient Portal Frontend",            contractId:"CON-2025-011", rating:5, date:"Sep 18, 2025",
+    project:"Patient Portal Frontend",              contractId:"CON-2025-011", rating:5, date:"Sep 18, 2025",
     text:"Exceptional freelancer. Arjun built our patient portal with strict HIPAA UI requirements perfectly. He asked all the right questions upfront and delivered flawlessly. Highly recommended.",
     tags:["Domain expertise","Delivered on time","HIPAA compliant UI","Highly professional"],
     categories:{ communication:5, quality:5, expertise:5, professionalism:5 },
@@ -61,9 +64,9 @@ const RECEIVED = [
 
 const GIVEN = [
   { id:"RG-001", client:"Vikram Singh", company:"ShopEasy Retail", avatar:"VS", avatarColor:"#3b82f6",
-    project:"E-Commerce Platform Revamp", contractId:"CON-2026-001", rating:5, date:"Mar 22, 2026",
+    project:"E-Commerce Platform Revamp",       contractId:"CON-2026-001", rating:5, date:"Mar 22, 2026",
     text:"Excellent client. Clear requirements, prompt feedback, and always responsive. Paid on time and appreciated good work. Would love to work with ShopEasy again.", canEdit:false },
-  { id:"RG-002", client:"Neha Gupta", company:"Zestify Foods",    avatar:"NG", avatarColor:"#8b5cf6",
+  { id:"RG-002", client:"Neha Gupta",   company:"Zestify Foods",  avatar:"NG", avatarColor:"#8b5cf6",
     project:"Food Delivery App — React Native", contractId:"CON-2025-018", rating:4, date:"Jan 13, 2026",
     text:"Good client overall. Requirements changed slightly mid-project but Neha was understanding and communicated well. Would work together again.", canEdit:false },
 ];
@@ -88,14 +91,38 @@ const Stars = ({ rating, size=14, color="#f59e0b", interactive=false, onRate }) 
   </span>
 );
 
+const btnPrimary = {
+  display:"inline-flex", alignItems:"center", gap:8,
+  fontSize:13, fontWeight:700, fontFamily:FONT,
+  background:`linear-gradient(135deg, #0D2855 0%, #1B72C0 100%)`,
+  color:"#ffffff", border:"none", borderRadius:100,
+  padding:"10px 20px", cursor:"pointer",
+  boxShadow:"0 3px 16px rgba(13,40,85,0.28)",
+  transition:"all 0.2s", whiteSpace:"nowrap",
+};
+
+const btnGreen = {
+  fontSize:12, fontWeight:700, padding:"7px 14px",
+  borderRadius:100, cursor:"pointer", fontFamily:FONT,
+  background:G.green, color:G.white, border:"none",
+  boxShadow:"0 2px 8px rgba(111,218,68,0.22)",
+};
+
+const btnOutline = {
+  fontSize:12, fontWeight:700, padding:"7px 14px",
+  borderRadius:100, cursor:"pointer", fontFamily:FONT,
+  background:G.greenBg, color:G.greenDark,
+  border:`1px solid ${G.greenBorder}`,
+};
+
 export default function FreelancerReviews() {
-  const [tab,             setTab]             = useState("received");
-  const [filter,          setFilter]          = useState("all");
-  const [sort,            setSort]            = useState("newest");
-  const [replyOpen,       setReplyOpen]       = useState(null);
-  const [replyText,       setReplyText]       = useState("");
-  const [reviews,         setReviews]         = useState(RECEIVED);
-  const [showWriteModal,  setShowWriteModal]  = useState(null);
+  const [tab,            setTab]            = useState("received");
+  const [filter,         setFilter]         = useState("all");
+  const [sort,           setSort]           = useState("newest");
+  const [replyOpen,      setReplyOpen]      = useState(null);
+  const [replyText,      setReplyText]      = useState("");
+  const [reviews,        setReviews]        = useState(RECEIVED);
+  const [showWriteModal, setShowWriteModal] = useState(null);
 
   const stats = useMemo(() => {
     const avg  = reviews.reduce((s, r) => s + r.rating, 0) / reviews.length;
@@ -104,7 +131,7 @@ export default function FreelancerReviews() {
       name: c.charAt(0).toUpperCase() + c.slice(1),
       avg:  reviews.reduce((s, r) => s + (r.categories[c] || 0), 0) / reviews.length,
     }));
-    const replied  = reviews.filter(r => r.reply).length;
+    const replied = reviews.filter(r => r.reply).length;
     return { avg, dist, cats, replied, total:reviews.length, jss:96, repeated:2 };
   }, [reviews]);
 
@@ -127,9 +154,19 @@ export default function FreelancerReviews() {
 
   return (
     <div style={{ minHeight:"100vh", background:G.bg, fontFamily:FONT }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+        * { font-family: 'Poppins', sans-serif; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #6FDA44; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb:hover { background: #1A3D1F; }
+        * { scrollbar-width: thin; scrollbar-color: #6FDA44 #f1f1f1; }
+      `}</style>
+
       <Navbar />
 
-      <header style={{ background:G.white, borderBottom:`1px solid ${G.border}` }}>
+      <header style={{ background:G.white, borderBottom:`1px solid ${G.greenBorder}`, boxShadow:"0 2px 12px rgba(111,218,68,0.06)" }}>
         <div style={{ maxWidth:1160, margin:"0 auto", padding:"0 28px" }}>
           <div style={{ padding:"20px 0 0" }}>
             <div style={{ display:"flex", alignItems:"center", gap:12 }}>
@@ -146,17 +183,17 @@ export default function FreelancerReviews() {
           </div>
 
           {/* Stats strip */}
-          <div style={{ display:"flex", gap:0, marginTop:18, paddingTop:18, borderTop:"1px solid #f3f4f6" }}>
+          <div style={{ display:"flex", gap:0, marginTop:18, paddingTop:18, borderTop:`1px solid ${G.greenBorder}` }}>
             {[
-              { label:"Overall Rating", val:stats.avg.toFixed(1)+"★",                                      accent:"#f59e0b", big:true },
-              { label:"Total Reviews",  val:stats.total,                                                    accent:G.greenDark        },
-              { label:"5★ Reviews",     val:stats.dist[0].count,                                           accent:G.green            },
-              { label:"JSS Score",      val:stats.jss+"%",                                                  accent:"#2563eb"          },
-              { label:"Response Rate",  val:Math.round((stats.replied / stats.total) * 100)+"%",            accent:G.greenDark        },
-              { label:"Repeat Clients", val:stats.repeated,                                                 accent:"#7c3aed"          },
+              { label:"Overall Rating", val:stats.avg.toFixed(1)+"★",                                   accent:"#f59e0b", big:true },
+              { label:"Total Reviews",  val:stats.total,                                                 accent:G.greenDark        },
+              { label:"5★ Reviews",     val:stats.dist[0].count,                                        accent:G.green            },
+              { label:"JSS Score",      val:stats.jss+"%",                                               accent:G.navyTo           },
+              { label:"Response Rate",  val:Math.round((stats.replied / stats.total) * 100)+"%",         accent:G.greenDark        },
+              { label:"Repeat Clients", val:stats.repeated,                                              accent:"#7c3aed"          },
             ].map((s, i, arr) => (
               <div key={i} style={{ flex:s.big ? 1.3 : 1, paddingBottom:16,
-                borderRight:i < arr.length - 1 ? "1px solid #f3f4f6" : "none",
+                borderRight:i < arr.length - 1 ? `1px solid ${G.greenBorder}` : "none",
                 paddingLeft:i === 0 ? 0 : 20 }}>
                 <p style={{ fontSize:10, color:G.muted, fontWeight:700, marginBottom:4, textTransform:"uppercase", letterSpacing:"0.07em" }}>{s.label}</p>
                 <p style={{ fontSize:s.big ? 26 : 20, fontWeight:800, color:s.accent, margin:0, letterSpacing:"-0.4px" }}>{s.val}</p>
@@ -165,14 +202,14 @@ export default function FreelancerReviews() {
           </div>
 
           {/* Tabs + filters */}
-          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginTop:4, borderTop:"1px solid #f3f4f6" }}>
+          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginTop:4, borderTop:`1px solid ${G.greenBorder}` }}>
             <div style={{ display:"flex" }}>
               {[["received","Reviews I Received",reviews.length],["given","Reviews I Gave",GIVEN.length]].map(([id, label, cnt]) => {
                 const active = tab === id;
                 return (
                   <button key={id} onClick={() => { setTab(id); setFilter("all"); }}
                     style={{ display:"flex", alignItems:"center", gap:6, padding:"10px 14px",
-                      fontSize:13, fontWeight:active ? 700 : 400,
+                      fontSize:13, fontWeight:active ? 700 : 500,
                       color:active ? G.greenDark : G.sub, background:"none", border:"none",
                       borderBottom:active ? `2px solid ${G.green}` : "2px solid transparent",
                       cursor:"pointer", marginBottom:-1, transition:"all 0.12s", fontFamily:FONT }}>
@@ -192,8 +229,8 @@ export default function FreelancerReviews() {
                         style={{ padding:"5px 10px", fontSize:12, fontWeight:active ? 700 : 400,
                           color:active ? G.greenDark : G.sub,
                           background:active ? G.greenBg : G.white,
-                          border:`1px solid ${active ? G.greenBorder : G.border}`,
-                          borderRadius:id === "all" ? "7px 0 0 7px" : id === "1" ? "0 7px 7px 0" : "0",
+                          border:`1px solid ${active ? G.green : G.greenBorder}`,
+                          borderRadius:id === "all" ? "100px 0 0 100px" : id === "1" ? "0 100px 100px 0" : "0",
                           cursor:"pointer", fontFamily:FONT }}>
                         {label}
                       </button>
@@ -201,7 +238,7 @@ export default function FreelancerReviews() {
                   })}
                 </div>
                 <select value={sort} onChange={e => setSort(e.target.value)}
-                  style={{ fontSize:12, fontWeight:600, border:`1px solid ${G.border}`, borderRadius:7, padding:"5px 10px", outline:"none", color:G.text, background:G.white, cursor:"pointer", fontFamily:FONT }}>
+                  style={{ fontSize:12, fontWeight:600, border:`1.5px solid ${G.greenBorder}`, borderRadius:100, padding:"5px 12px", outline:"none", color:G.text, background:G.white, cursor:"pointer", fontFamily:FONT }}>
                   <option value="newest">Newest</option>
                   <option value="oldest">Oldest</option>
                   <option value="highest">Highest</option>
@@ -221,8 +258,8 @@ export default function FreelancerReviews() {
 
             {/* RECEIVED */}
             {tab === "received" && rows.map(rev => (
-              <div key={rev.id} style={{ background:G.white, border:`1px solid ${G.border}`, borderRadius:14, overflow:"hidden", transition:"box-shadow 0.15s" }}
-                onMouseEnter={e => e.currentTarget.style.boxShadow = "0 4px 20px rgba(34,197,94,0.08)"}
+              <div key={rev.id} style={{ background:G.white, border:`1px solid ${G.greenBorder}`, borderRadius:16, overflow:"hidden", transition:"box-shadow 0.15s" }}
+                onMouseEnter={e => e.currentTarget.style.boxShadow = "0 4px 20px rgba(111,218,68,0.10)"}
                 onMouseLeave={e => e.currentTarget.style.boxShadow = "none"}>
                 <div style={{ padding:"18px 20px" }}>
                   <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:12 }}>
@@ -251,12 +288,12 @@ export default function FreelancerReviews() {
 
                   <div style={{ display:"flex", flexWrap:"wrap", gap:6, marginBottom:14 }}>
                     {rev.tags.map(t => (
-                      <span key={t} style={{ fontSize:11, fontWeight:500, background:"#f3f4f6", color:G.sub, padding:"3px 10px", borderRadius:99 }}>{t}</span>
+                      <span key={t} style={{ fontSize:11, fontWeight:500, background:G.greenBg, color:G.greenDark, border:`1px solid ${G.greenBorder}`, padding:"3px 10px", borderRadius:99 }}>{t}</span>
                     ))}
                   </div>
 
                   {/* Category ratings */}
-                  <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:10, marginBottom:14, padding:"12px 14px", background:G.bg, borderRadius:10 }}>
+                  <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:10, marginBottom:14, padding:"12px 14px", background:G.greenBg, borderRadius:12, border:`1px solid ${G.greenBorder}` }}>
                     {Object.entries(rev.categories).map(([k, v]) => (
                       <div key={k} style={{ textAlign:"center" }}>
                         <p style={{ fontSize:10, color:G.muted, fontWeight:600, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:4 }}>{k}</p>
@@ -269,7 +306,7 @@ export default function FreelancerReviews() {
                     <span style={{ fontSize:12, color:G.muted }}>👍 {rev.helpful} helpful</span>
                     {!rev.reply && (
                       <button onClick={() => setReplyOpen(replyOpen === rev.id ? null : rev.id)}
-                        style={{ fontSize:12, fontWeight:700, color:G.greenDark, background:G.greenBg, border:`1px solid ${G.greenBorder}`, borderRadius:8, padding:"6px 14px", cursor:"pointer", fontFamily:FONT }}>
+                        style={{ ...btnOutline, fontSize:12 }}>
                         {replyOpen === rev.id ? "Cancel" : "Reply"}
                       </button>
                     )}
@@ -277,27 +314,30 @@ export default function FreelancerReviews() {
                 </div>
 
                 {replyOpen === rev.id && !rev.reply && (
-                  <div style={{ padding:"0 20px 18px", borderTop:"1px solid #f3f4f6", paddingTop:16 }}>
+                  <div style={{ padding:"0 20px 18px", borderTop:`1px solid ${G.greenBorder}`, paddingTop:16 }}>
                     <textarea value={replyText} onChange={e => setReplyText(e.target.value)}
                       placeholder="Write a professional reply…" rows={3}
-                      style={{ width:"100%", fontSize:13, border:`1.5px solid ${G.greenBorder}`, borderRadius:9, padding:"10px 12px", outline:"none", resize:"none", color:G.text, fontFamily:FONT, boxSizing:"border-box", background:G.greenBg }} />
+                      style={{ width:"100%", fontSize:13, border:`1.5px solid ${G.greenBorder}`, borderRadius:10, padding:"10px 12px", outline:"none", resize:"none", color:G.text, fontFamily:FONT, boxSizing:"border-box", background:G.greenBg }} />
                     <div style={{ display:"flex", gap:8, marginTop:8 }}>
                       <button onClick={() => { setReplyOpen(null); setReplyText(""); }}
-                        style={{ padding:"7px 14px", fontSize:12, fontWeight:600, border:`1px solid ${G.border}`, background:G.white, color:G.sub, borderRadius:8, cursor:"pointer", fontFamily:FONT }}>Cancel</button>
-                      <button onClick={() => submitReply(rev.id)}
-                        style={{ padding:"7px 14px", fontSize:12, fontWeight:700, border:"none", background:G.green, color:G.white, borderRadius:8, cursor:"pointer", fontFamily:FONT }}>Post Reply</button>
+                        style={{ padding:"7px 16px", fontSize:12, fontWeight:600, border:`1px solid ${G.greenBorder}`, background:G.white, color:G.sub, borderRadius:100, cursor:"pointer", fontFamily:FONT }}>Cancel</button>
+                      <button onClick={() => submitReply(rev.id)} style={{ ...btnGreen }}>Post Reply</button>
                     </div>
                   </div>
                 )}
 
                 {rev.reply && (
-                  <div style={{ padding:"14px 20px", borderTop:"1px solid #f3f4f6", background:G.greenBg }}>
+                  <div style={{ padding:"14px 20px", borderTop:`1px solid ${G.greenBorder}`, background:G.greenBg }}>
                     <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
-                      <div style={{ width:24, height:24, borderRadius:8, background:G.green, display:"flex", alignItems:"center", justifyContent:"center", fontSize:10, fontWeight:700, color:G.white }}>AJ</div>
+                      <div style={{ width:24, height:24, borderRadius:"50%",
+                        background:`linear-gradient(135deg, ${G.navyFrom} 0%, ${G.navyTo} 100%)`,
+                        display:"flex", alignItems:"center", justifyContent:"center",
+                        fontSize:10, fontWeight:700, color:G.white,
+                        boxShadow:"0 1px 6px rgba(13,40,85,0.22)" }}>AJ</div>
                       <p style={{ fontSize:12, fontWeight:700, color:G.greenDark }}>Arjun Joshi (You)</p>
                       <p style={{ fontSize:11, color:G.muted }}>· {rev.replyDate}</p>
                     </div>
-                    <p style={{ fontSize:13, color:G.greenDeep || "#14532d", lineHeight:1.7 }}>{rev.reply}</p>
+                    <p style={{ fontSize:13, color:G.greenDark, lineHeight:1.7 }}>{rev.reply}</p>
                   </div>
                 )}
               </div>
@@ -307,8 +347,8 @@ export default function FreelancerReviews() {
             {tab === "given" && (
               <>
                 {rows.map(rev => (
-                  <div key={rev.id} style={{ background:G.white, border:`1px solid ${G.border}`, borderRadius:14, padding:"18px 20px", transition:"box-shadow 0.15s" }}
-                    onMouseEnter={e => e.currentTarget.style.boxShadow = "0 4px 20px rgba(34,197,94,0.08)"}
+                  <div key={rev.id} style={{ background:G.white, border:`1px solid ${G.greenBorder}`, borderRadius:16, padding:"18px 20px", transition:"box-shadow 0.15s" }}
+                    onMouseEnter={e => e.currentTarget.style.boxShadow = "0 4px 20px rgba(111,218,68,0.10)"}
                     onMouseLeave={e => e.currentTarget.style.boxShadow = "none"}>
                     <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:12 }}>
                       <div style={{ display:"flex", alignItems:"center", gap:12 }}>
@@ -331,17 +371,16 @@ export default function FreelancerReviews() {
                 ))}
 
                 {PENDING_GIVEN.length > 0 && (
-                  <div style={{ background:G.white, border:`1px solid ${G.border}`, borderRadius:14, padding:"18px 20px" }}>
+                  <div style={{ background:G.white, border:`1px solid ${G.greenBorder}`, borderRadius:16, padding:"18px 20px", boxShadow:"0 2px 10px rgba(111,218,68,0.06)" }}>
                     <p style={{ fontSize:13, fontWeight:700, color:G.text, marginBottom:4 }}>Pending Reviews to Give</p>
                     <p style={{ fontSize:12, color:G.muted, marginBottom:14 }}>You haven't reviewed these clients yet</p>
                     {PENDING_GIVEN.map((r, i) => (
-                      <div key={i} style={{ border:`1px solid ${G.border}`, borderRadius:10, padding:"12px 14px", marginBottom:10, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+                      <div key={i} style={{ border:`1px solid ${G.greenBorder}`, borderRadius:12, padding:"12px 14px", marginBottom:10, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
                         <div>
                           <p style={{ fontSize:13, fontWeight:600, color:G.text }}>{r.client} · {r.project}</p>
                           <p style={{ fontSize:11, color:G.muted, marginTop:2 }}>Completed {r.completed}</p>
                         </div>
-                        <button onClick={() => setShowWriteModal(r)}
-                          style={{ fontSize:12, fontWeight:700, background:G.green, color:G.white, border:"none", borderRadius:8, padding:"7px 14px", cursor:"pointer", fontFamily:FONT }}>
+                        <button onClick={() => setShowWriteModal(r)} style={{ ...btnPrimary, fontSize:12, padding:"7px 16px" }}>
                           ✍️ Write Review
                         </button>
                       </div>
@@ -356,7 +395,7 @@ export default function FreelancerReviews() {
           <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
 
             {/* Rating breakdown */}
-            <div style={{ background:G.white, border:`1px solid ${G.border}`, borderRadius:14, padding:"18px 20px" }}>
+            <div style={{ background:G.white, border:`1px solid ${G.greenBorder}`, borderRadius:16, padding:"18px 20px", boxShadow:"0 2px 10px rgba(111,218,68,0.06)" }}>
               <p style={{ fontSize:13, fontWeight:700, color:G.text, marginBottom:16 }}>Rating Breakdown</p>
               {stats.dist.map(d => (
                 <div key={d.star} style={{ display:"flex", alignItems:"center", gap:10, marginBottom:8 }}>
@@ -371,7 +410,7 @@ export default function FreelancerReviews() {
                   <span style={{ fontSize:12, color:G.muted, width:14, textAlign:"right" }}>{d.count}</span>
                 </div>
               ))}
-              <div style={{ borderTop:"1px solid #f3f4f6", marginTop:14, paddingTop:14 }}>
+              <div style={{ borderTop:`1px solid ${G.greenBorder}`, marginTop:14, paddingTop:14 }}>
                 <p style={{ fontSize:11, fontWeight:700, color:G.muted, textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:10 }}>By Category</p>
                 {stats.cats.map(c => (
                   <div key={c.name} style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:8 }}>
@@ -385,28 +424,33 @@ export default function FreelancerReviews() {
               </div>
             </div>
 
-            {/* JSS card — dark green gradient */}
-            <div style={{ background:"linear-gradient(135deg,#14532d,#166534)", borderRadius:14, padding:"18px 20px", position:"relative", overflow:"hidden" }}>
-              <div style={{ position:"absolute", top:-30, right:-30, width:100, height:100, borderRadius:"50%", background:"rgba(34,197,94,0.08)", pointerEvents:"none" }} />
+            {/* JSS card — navy gradient */}
+            <div style={{
+              background:`linear-gradient(135deg, ${G.navyFrom} 0%, ${G.navyTo} 100%)`,
+              borderRadius:16, padding:"18px 20px", position:"relative", overflow:"hidden",
+              boxShadow:"0 4px 20px rgba(13,40,85,0.25)",
+            }}>
+              <div style={{ position:"absolute", top:-30, right:-30, width:100, height:100, borderRadius:"50%", background:"rgba(111,218,68,0.10)", pointerEvents:"none" }} />
+              <div style={{ position:"absolute", bottom:-20, left:-20, width:70, height:70, borderRadius:"50%", background:"rgba(111,218,68,0.06)", pointerEvents:"none" }} />
               <p style={{ fontSize:11, color:"rgba(255,255,255,0.4)", fontWeight:700, textTransform:"uppercase", letterSpacing:"0.08em", marginBottom:8 }}>Job Success Score</p>
-              <p style={{ fontSize:36, fontWeight:800, color:"#86efac", marginBottom:4, fontFamily:FONT }}>{stats.jss}%</p>
-              <div style={{ background:"rgba(255,255,255,0.1)", borderRadius:99, height:6, overflow:"hidden", marginBottom:10 }}>
-                <div style={{ width:`${stats.jss}%`, height:"100%", background:`linear-gradient(90deg,${G.green},#86efac)`, borderRadius:99 }} />
+              <p style={{ fontSize:36, fontWeight:800, color:G.green, marginBottom:4, fontFamily:FONT }}>{stats.jss}%</p>
+              <div style={{ background:"rgba(255,255,255,0.12)", borderRadius:99, height:6, overflow:"hidden", marginBottom:10 }}>
+                <div style={{ width:`${stats.jss}%`, height:"100%", background:`linear-gradient(90deg, ${G.green}, #a3e07a)`, borderRadius:99 }} />
               </div>
               <p style={{ fontSize:11, color:"rgba(255,255,255,0.4)", lineHeight:1.6 }}>Based on completed contracts, on-time delivery, client satisfaction and repeat business.</p>
             </div>
 
             {/* Awaiting reviews */}
             {PENDING_RECEIVED.length > 0 && (
-              <div style={{ background:G.white, border:`1px solid ${G.border}`, borderRadius:14, padding:"18px 20px" }}>
+              <div style={{ background:G.white, border:`1px solid ${G.greenBorder}`, borderRadius:16, padding:"18px 20px", boxShadow:"0 2px 10px rgba(111,218,68,0.06)" }}>
                 <p style={{ fontSize:13, fontWeight:700, color:G.text, marginBottom:4 }}>Awaiting Reviews</p>
                 <p style={{ fontSize:12, color:G.muted, marginBottom:14 }}>Clients who haven't reviewed yet</p>
                 {PENDING_RECEIVED.map((r, i) => (
-                  <div key={i} style={{ border:`1px solid ${G.border}`, borderRadius:10, padding:"12px 14px", marginBottom:10 }}>
+                  <div key={i} style={{ border:`1px solid ${G.greenBorder}`, borderRadius:12, padding:"12px 14px", marginBottom:10 }}>
                     <p style={{ fontSize:13, fontWeight:600, color:G.text, marginBottom:2 }}>{r.client}</p>
                     <p style={{ fontSize:11, color:G.muted, marginBottom:2 }}>{r.project}</p>
                     <p style={{ fontSize:11, color:G.muted, marginBottom:10 }}>Last reminder: {r.lastReminder} ({r.daysAgo}d ago)</p>
-                    <button style={{ width:"100%", padding:"7px", fontSize:12, fontWeight:700, background:G.greenBg, color:G.greenDark, border:`1px solid ${G.greenBorder}`, borderRadius:8, cursor:"pointer", fontFamily:FONT }}>
+                    <button style={{ ...btnOutline, width:"100%", justifyContent:"center", fontSize:12, padding:"8px" }}>
                       📤 Send Reminder
                     </button>
                   </div>
@@ -434,16 +478,16 @@ function WriteReviewModal({ client, onClose }) {
 
   return (
     <div onClick={onClose} style={{ position:"fixed", inset:0, zIndex:50, display:"flex", alignItems:"center", justifyContent:"center", background:"rgba(17,24,39,0.45)", backdropFilter:"blur(4px)", padding:20 }}>
-      <div onClick={e => e.stopPropagation()} style={{ width:"100%", maxWidth:520, background:G.white, borderRadius:18, overflow:"hidden", boxShadow:"0 32px 80px rgba(0,0,0,0.18)" }}>
+      <div onClick={e => e.stopPropagation()} style={{ width:"100%", maxWidth:520, background:G.white, borderRadius:20, overflow:"hidden", boxShadow:"0 32px 80px rgba(13,40,85,0.22)" }}>
 
-        {/* Dark green gradient header */}
-        <div style={{ background:"linear-gradient(135deg,#14532d,#166534)", padding:"18px 22px" }}>
+        {/* Navy gradient header */}
+        <div style={{ background:`linear-gradient(135deg, ${G.navyFrom} 0%, ${G.navyTo} 100%)`, padding:"18px 22px" }}>
           <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
             <div>
               <p style={{ fontSize:17, fontWeight:800, color:G.white, margin:0, fontFamily:FONT }}>Review {client.client}</p>
               <p style={{ fontSize:12, color:"rgba(255,255,255,0.4)", marginTop:3 }}>{client.project}</p>
             </div>
-            <button onClick={onClose} style={{ width:28, height:28, borderRadius:7, border:"1px solid rgba(255,255,255,0.15)", background:"rgba(255,255,255,0.08)", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", color:"rgba(255,255,255,0.6)" }}>
+            <button onClick={onClose} style={{ width:28, height:28, borderRadius:8, border:"1px solid rgba(255,255,255,0.15)", background:"rgba(255,255,255,0.08)", display:"flex", alignItems:"center", justifyContent:"center", cursor:"pointer", color:"rgba(255,255,255,0.6)" }}>
               <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
           </div>
@@ -466,7 +510,7 @@ function WriteReviewModal({ client, onClose }) {
             <p style={{ fontSize:12, fontWeight:700, color:G.sub, marginBottom:6, textTransform:"uppercase", letterSpacing:"0.06em" }}>Your Review *</p>
             <textarea value={text} onChange={e => setText(e.target.value)}
               placeholder="Share your experience working with this client…" rows={4}
-              style={{ width:"100%", fontSize:13, border:`1.5px solid ${G.border}`, borderRadius:9, padding:"10px 12px", outline:"none", resize:"none", color:G.text, fontFamily:FONT, boxSizing:"border-box" }} />
+              style={{ width:"100%", fontSize:13, border:`1.5px solid ${G.greenBorder}`, borderRadius:10, padding:"10px 12px", outline:"none", resize:"none", color:G.text, fontFamily:FONT, boxSizing:"border-box" }} />
           </div>
           <div>
             <p style={{ fontSize:12, fontWeight:700, color:G.sub, marginBottom:8, textTransform:"uppercase", letterSpacing:"0.06em" }}>Tags (optional)</p>
@@ -475,8 +519,8 @@ function WriteReviewModal({ client, onClose }) {
                 const sel = selTags.includes(t);
                 return (
                   <button key={t} onClick={() => setSelTags(sel ? selTags.filter(x => x !== t) : [...selTags, t])}
-                    style={{ fontSize:11, fontWeight:600, padding:"4px 11px", borderRadius:99,
-                      border:`1.5px solid ${sel ? G.green : G.border}`,
+                    style={{ fontSize:11, fontWeight:600, padding:"4px 12px", borderRadius:99,
+                      border:`1.5px solid ${sel ? G.green : G.greenBorder}`,
                       background:sel ? G.greenBg : G.white,
                       color:sel ? G.greenDark : G.sub,
                       cursor:"pointer", fontFamily:FONT }}>
@@ -487,11 +531,14 @@ function WriteReviewModal({ client, onClose }) {
             </div>
           </div>
           <div style={{ display:"flex", gap:8, paddingTop:4 }}>
-            <button onClick={onClose} style={{ flex:1, padding:"10px", fontSize:13, fontWeight:600, border:`1px solid ${G.border}`, background:G.white, color:G.sub, borderRadius:9, cursor:"pointer", fontFamily:FONT }}>Cancel</button>
+            <button onClick={onClose} style={{ flex:1, padding:"10px", fontSize:13, fontWeight:600, border:`1px solid ${G.greenBorder}`, background:G.white, color:G.sub, borderRadius:100, cursor:"pointer", fontFamily:FONT }}>Cancel</button>
             <button disabled={!ok}
               style={{ flex:1, padding:"10px", fontSize:13, fontWeight:700, border:"none",
-                background:ok ? G.green : "#e5e7eb", color:ok ? G.white : G.muted,
-                borderRadius:9, cursor:ok ? "pointer" : "not-allowed", fontFamily:FONT }}>
+                background:ok ? `linear-gradient(135deg, ${G.navyFrom} 0%, ${G.navyTo} 100%)` : "#e5e7eb",
+                color:ok ? G.white : G.muted,
+                borderRadius:100, cursor:ok ? "pointer" : "not-allowed", fontFamily:FONT,
+                boxShadow:ok ? "0 3px 16px rgba(13,40,85,0.28)" : "none",
+              }}>
               Submit Review
             </button>
           </div>
@@ -503,13 +550,27 @@ function WriteReviewModal({ client, onClose }) {
 
 function Navbar() {
   return (
-    <nav style={{ height:52, background:G.white, borderBottom:`1px solid ${G.border}`, display:"flex", alignItems:"center", padding:"0 28px", gap:12, position:"sticky", top:0, zIndex:40 }}>
-      <span style={{ fontWeight:800, fontSize:18, color:G.text, letterSpacing:"-0.5px", fontFamily:FONT }}>
-        <span style={{ color:G.green }}>web</span>lance
+    <nav style={{
+      height:56, background:G.white,
+      borderBottom:`1px solid ${G.greenBorder}`,
+      boxShadow:"0 2px 12px rgba(111,218,68,0.08)",
+      display:"flex", alignItems:"center",
+      padding:"0 28px", gap:12,
+      position:"sticky", top:0, zIndex:40,
+      overflow:"hidden"
+    }}>
+      <span style={{ fontWeight:800, fontSize:20, letterSpacing:"-0.5px", fontFamily:FONT }}>
+          <div className="flex-shrink-0 cursor-pointer" onClick={() => navigate("/")}>
+              <img
+                src="/weblance.jpeg"
+                alt="Weblance"
+                style={{ height: 62, width: 130, display: "block" }}
+              />
+            </div>
       </span>
-      <div style={{ width:1, height:20, background:G.border }} />
+      <div style={{ width:1, height:20, background:G.greenBorder }} />
       <span style={{ fontSize:12, color:G.muted, fontWeight:500 }}>Freelancer</span>
-      <span style={{ fontSize:12, color:G.border }}>/</span>
+      <span style={{ fontSize:12, color:G.greenBorder }}>/</span>
       <span style={{ fontSize:12, color:G.text, fontWeight:600 }}>Reviews</span>
       <div style={{ display:"flex", alignItems:"center", gap:5, background:G.greenBg, border:`1px solid ${G.greenBorder}`, borderRadius:99, padding:"3px 10px", marginLeft:4 }}>
         <span style={{ fontSize:10 }}>💼</span>
@@ -520,7 +581,14 @@ function Navbar() {
         <span style={{ fontSize:18 }}>🔔</span>
         <div style={{ position:"absolute", top:-1, right:-1, width:8, height:8, borderRadius:"50%", background:"#ef4444", border:`1.5px solid ${G.white}` }} />
       </div>
-      <div style={{ width:32, height:32, borderRadius:"50%", background:G.greenBg, border:`1.5px solid ${G.greenBorder}`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:700, color:G.greenDark, marginLeft:8, fontFamily:FONT }}>AJ</div>
+      <div style={{
+        width:34, height:34, borderRadius:"50%",
+        background:`linear-gradient(135deg, ${G.navyFrom} 0%, ${G.navyTo} 100%)`,
+        display:"flex", alignItems:"center", justifyContent:"center",
+        fontSize:12, fontWeight:700, color:G.white,
+        marginLeft:8, fontFamily:FONT,
+        boxShadow:"0 2px 8px rgba(13,40,85,0.28)",
+      }}>AJ</div>
     </nav>
   );
 }

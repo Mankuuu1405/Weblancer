@@ -5,6 +5,76 @@ import {
   ActionBtn, PageHeader, Table, SectionCard, InfoRow
 } from "./AdminComponents";
 
+  /* ── Freelancer Contracts theme tokens ───────────────────────
+   GREEN:  #A8E063 (light) → #6EC030 (mid) → #2E7D1F (deep)
+   NAVY:   #4A6FA5 (light) → #1A2B5E (mid) → #0F1A3B (deep)
+   ──────────────────────────────────────────────────────────── */
+const G = {
+  greenLight:  "#A8E063",
+  green:       "#6EC030",
+  greenDeep:   "#2E7D1F",
+  greenBg:     "#f1fce8",
+  greenBorder: "#d4edbb",
+
+  navyLight:   "#4A6FA5",
+  navy:        "#1A2B5E",
+  navyDeep:    "#0F1A3B",
+  navyBg:      "#e8edf7",
+  navyBorder:  "#b8c6e0",
+
+  gradGreen: "linear-gradient(135deg, #A8E063 0%, #2E7D1F 100%)",
+  gradNavy:  "linear-gradient(135deg, #4A6FA5 0%, #0F1A3B 100%)",
+
+  text:        "#1C1C1C",
+  sub:         "#4b5563",
+  muted:       "#9ca3af",
+  border:      "#e5e7eb",
+  bg:          "#f9fafb",
+  white:       "#ffffff",
+
+  amber:       "#f59e0b",
+  amberBg:     "#fffbeb",
+  amberBorder: "#fde68a",
+  amberText:   "#92400e",
+  red:         "#ef4444",
+  redBg:       "#fef2f2",
+  redBorder:   "#fecaca",
+  redText:     "#dc2626",
+  blue:        "#3b82f6",
+  blueBg:      "#eff6ff",
+  blueBorder:  "#bfdbfe",
+  blueText:    "#1d4ed8",
+  purple:      "#8b5cf6",
+  purpleBg:    "#f5f3ff",
+  purpleBorder:"#ddd6fe",
+  purpleText:  "#6d28d9",
+};
+const FONT = "'Poppins', sans-serif";
+
+  const btnNavy = {
+  display: "inline-flex", alignItems: "center", gap: 6,
+  fontSize: 12, fontWeight: 700, fontFamily: FONT,
+  background: G.gradNavy, color: G.white,
+  border: "none", borderRadius: 100,
+  padding: "8px 18px", cursor: "pointer",
+  boxShadow: "0 3px 12px rgba(15,26,59,0.25)",
+  whiteSpace: "nowrap",
+};
+
+const btnOutline = {
+  display: "inline-flex", alignItems: "center", gap: 6,
+  fontSize: 12, fontWeight: 700, fontFamily: FONT,
+  background: G.greenBg, color: G.greenDeep,
+  border: `1px solid ${G.greenBorder}`,
+  borderRadius: 100, padding: "8px 18px", cursor: "pointer",
+  whiteSpace: "nowrap",
+};
+
+const btnDanger = {
+  ...btnOutline,
+  background: G.redBg, color: G.redText, border: `1px solid ${G.redBorder}`,
+};
+
 // ─── MOCK DATA ────────────────────────────────────────────────────────────────
 const mockEscrow = [
   { id:"ESC-001", project:"Food Delivery App",         projectId:"PRJ-001", client:"ByteEats Co.",     talent:"TechNova Solutions", talentType:"Agency",     status:"Active",   totalAmount:480000, locked:240000, released:120000, remaining:120000, milestones:4, completedMilestones:2, deadline:"Jun 1, 2026",  riskLevel:"Low",    disputed:false },
@@ -98,19 +168,21 @@ export function AdminEscrow() {
   const totalReleased = mockEscrow.reduce((s, e) => s + e.released, 0);
   const frozen        = mockEscrow.filter(e => e.status === "Frozen");
 
+
+
   return (
     <div className="p-6">
       <PageHeader
         title="Escrow Status"
         subtitle="Full visibility into every locked, released & frozen escrow"
-        actions={<ActionBtn label="⬇ Export" />}
+        actions={<ActionBtn label="⬇ Export" style={btnNavy}/>}
       />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <StatCard label="Total Locked"    value={`₹${(totalLocked/100000).toFixed(1)}L`}   sub="Currently held"       color="orange" />
-        <StatCard label="Total Released"  value={`₹${(totalReleased/100000).toFixed(1)}L`} sub="Paid to talents"      color="green"  />
-        <StatCard label="Frozen"          value={frozen.length}                              sub="Disputed projects"    color="red"    />
-        <StatCard label="Active Escrows"  value={mockEscrow.filter(e=>e.status==="Active").length} color="blue" />
+        <StatCard label="Total Locked"    value={`₹${(totalLocked/100000).toFixed(1)}L`}   sub="Currently held " border="orange"       color="orange" bg="orange"/>
+        <StatCard label="Total Released"  value={`₹${(totalReleased/100000).toFixed(1)}L`} sub="Paid to talents"      color="green" border="green" bg="green" />
+        <StatCard label="Frozen"          value={frozen.length}                              sub="Disputed projects"    color="red" border="red" bg="red"  />
+        <StatCard label="Active Escrows"  value={mockEscrow.filter(e=>e.status==="Active").length} color="blue" border="blue" bg="blue"/>
       </div>
 
       {/* Frozen alert */}
@@ -174,8 +246,8 @@ export function AdminEscrow() {
               <td className="py-3 pr-4 text-xs text-gray-500 whitespace-nowrap">{e.deadline}</td>
               <td className="py-3">
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-1.5">
-                  {e.status === "Frozen" && <ActionBtn label="Unfreeze" variant="warning" onClick={e2=>{e2.stopPropagation();}} />}
-                  {e.status === "Active" && <ActionBtn label="Release" variant="primary" onClick={e2=>{e2.stopPropagation();}} />}
+                  {e.status === "Frozen" && <ActionBtn label="Unfreeze" variant="warning" style={btnOutline} onClick={e2=>{e2.stopPropagation();}} />}
+                  {e.status === "Active" && <ActionBtn label="Release" variant="primary" style={btnNavy} onClick={e2=>{e2.stopPropagation();}} />}
                 </div>
               </td>
             </tr>
@@ -228,10 +300,10 @@ export function AdminEscrow() {
               </SectionCard>
               <SectionCard title="Admin Actions">
                 <div className="space-y-2">
-                  {selected.status === "Frozen" && <ActionBtn label="Unfreeze Escrow" variant="warning" size="md" />}
-                  {selected.status === "Active" && <ActionBtn label="Force Release Next Milestone" variant="primary" size="md" />}
-                  {selected.status !== "Completed" && <ActionBtn label="Freeze Escrow" variant="danger" size="md" />}
-                  <ActionBtn label="View Project" size="md" onClick={() => navigate(`/admin/projects/${selected.projectId}`)} />
+                  {selected.status === "Frozen" && <ActionBtn label="Unfreeze Escrow" variant="warning" size="md" style={btnDanger}/>}
+                  {selected.status === "Active" && <ActionBtn label="Force Release Next Milestone" variant="primary" size="md" style={btnNavy} />}
+                  {selected.status !== "Completed" && <ActionBtn label="Freeze Escrow" variant="danger" size="md" style={btnDanger} />}
+                  <ActionBtn label="View Project" size="md" style={btnOutline} onClick={() => navigate(`/admin/projects/${selected.projectId}`)} />
                 </div>
               </SectionCard>
             </div>
@@ -267,6 +339,7 @@ export function AdminPayouts() {
 
   const pendingAmount = mockPayouts.filter(p => p.status === "Pending" || p.status === "Processing").reduce((s, p) => s + p.amount, 0);
 
+
   return (
     <div className="p-6">
       <PageHeader
@@ -274,17 +347,17 @@ export function AdminPayouts() {
         subtitle="Manage withdrawal requests from freelancers & agencies"
         actions={
           <div className="flex gap-2">
-            <ActionBtn label="⬇ Export" />
-            <ActionBtn label="Approve All Pending" variant="primary" size="md" />
+            <ActionBtn label="⬇ Export" style={btnNavy} />
+            <ActionBtn label="Approve All Pending" variant="primary" size="md" style={btnOutline} />
           </div>
         }
       />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <StatCard label="Pending / Processing" value={mockPayouts.filter(p=>p.status==="Pending"||p.status==="Processing").length} sub={`₹${(pendingAmount/1000).toFixed(0)}k total`} color="orange" />
-        <StatCard label="On Hold"    value={mockPayouts.filter(p=>p.status==="On Hold").length}   sub="Tax / KYC issue" color="yellow" />
-        <StatCard label="Completed"  value={mockPayouts.filter(p=>p.status==="Completed").length} color="green"  />
-        <StatCard label="Flagged"    value={mockPayouts.filter(p=>p.flagged).length}               sub="Needs review"   color="red"    />
+        <StatCard label="Pending / Processing" value={mockPayouts.filter(p=>p.status==="Pending"||p.status==="Processing").length} sub={`₹${(pendingAmount/1000).toFixed(0)}k total`} color="orange" bg="orange" border="orange" />
+        <StatCard label="On Hold"    value={mockPayouts.filter(p=>p.status==="On Hold").length}   sub="Tax / KYC issue" color="yellow"  />
+        <StatCard label="Completed"  value={mockPayouts.filter(p=>p.status==="Completed").length} color="green" border="green" bg="green" />
+        <StatCard label="Flagged"    value={mockPayouts.filter(p=>p.flagged).length}               sub="Needs review"   color="red" border="red" bg="red"    />
       </div>
 
       <div className="flex gap-1 border-b border-gray-100 mb-4">
@@ -340,8 +413,8 @@ export function AdminPayouts() {
               <td className="py-3 pr-4 text-xs text-gray-500 whitespace-nowrap">{p.requestedDate}</td>
               <td className="py-3">
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-1.5">
-                  {(p.status==="Pending"||p.status==="Processing") && <ActionBtn label="Approve" variant="primary" onClick={e=>{e.stopPropagation();}} />}
-                  <ActionBtn label="View" onClick={e=>{e.stopPropagation();navigate(`/admin/payouts/${p.id}`);}} />
+                  {(p.status==="Pending"||p.status==="Processing") && <ActionBtn label="Approve" variant="primary" style={btnNavy} onClick={e=>{e.stopPropagation();}} />}
+                  <ActionBtn label="View" style={btnOutline} onClick={e=>{e.stopPropagation();navigate(`/admin/payouts/${p.id}`);}} />
                 </div>
               </td>
             </tr>
@@ -499,14 +572,14 @@ export function AdminRefunds() {
       <PageHeader
         title="Refund Requests"
         subtitle="Review & process client refund requests"
-        actions={<ActionBtn label="⬇ Export" />}
+        actions={<ActionBtn label="⬇ Export" style={btnNavy} />}
       />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <StatCard label="Total Requests" value={mockRefunds.length}                                              color="gray"   />
-        <StatCard label="Pending"        value={mockRefunds.filter(r=>r.status==="Pending"||r.status==="Under Review").length} sub={`₹${(mockRefunds.filter(r=>r.status==="Pending"||r.status==="Under Review").reduce((s,r)=>s+r.amount,0)/1000).toFixed(0)}k at stake`} color="orange" />
-        <StatCard label="Approved"       value={mockRefunds.filter(r=>r.status==="Approved").length}             color="green"  />
-        <StatCard label="Rejected"       value={mockRefunds.filter(r=>r.status==="Rejected").length}             color="red"    />
+        <StatCard label="Total Requests" value={mockRefunds.length}                                              color="gray"  border="gray" bg="gray" />
+        <StatCard label="Pending"        value={mockRefunds.filter(r=>r.status==="Pending"||r.status==="Under Review").length} sub={`₹${(mockRefunds.filter(r=>r.status==="Pending"||r.status==="Under Review").reduce((s,r)=>s+r.amount,0)/1000).toFixed(0)}k at stake`} color="orange" bg="orange" border="orange" />
+        <StatCard label="Approved"       value={mockRefunds.filter(r=>r.status==="Approved").length}             color="green" border="green" bg="green"  />
+        <StatCard label="Rejected"       value={mockRefunds.filter(r=>r.status==="Rejected").length}             color="red" border="red" bg="red"   />
       </div>
 
       <div className="flex gap-5">
@@ -552,7 +625,7 @@ export function AdminRefunds() {
                   <td className="py-3 pr-4 text-xs text-gray-500 whitespace-nowrap">{r.requestedDate}</td>
                   <td className="py-3">
                     <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                      <ActionBtn label="Review" variant="primary" onClick={e=>{e.stopPropagation();setSelected(r);}} />
+                      <ActionBtn label="Review" variant="primary" style={btnNavy} onClick={e=>{e.stopPropagation();setSelected(r);}} />
                     </div>
                   </td>
                 </tr>
@@ -632,18 +705,18 @@ export function AdminCommission() {
         subtitle="Weblance earnings — 6% commission on all completed transactions"
         actions={
           <div className="flex gap-2">
-            <ActionBtn label="⬇ Export Report" />
-            <ActionBtn label="Commission Rules →" variant="primary" size="md" />
+            <ActionBtn label="⬇ Export Report" style={btnNavy} />
+            <ActionBtn label="Commission Rules →" variant="primary" size="md" style={btnOutline} />
           </div>
         }
       />
 
       {/* Top Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <StatCard label="Lifetime Earnings"  value={`₹${(mockCommission.totalLifetime/1000).toFixed(0)}k`} color="green"  />
-        <StatCard label="This Month"         value={`₹${(mockCommission.thisMonth/1000).toFixed(1)}k`}     sub="Mar 2026"  color="green"  />
-        <StatCard label="Last Month"         value={`₹${(mockCommission.lastMonth/1000).toFixed(0)}k`}     sub="Feb 2026"  color="blue"   />
-        <StatCard label="Commission Rate"    value={`${mockCommission.rate}%`}                              sub="Fixed rate" color="gray"  />
+        <StatCard label="Lifetime Earnings"  value={`₹${(mockCommission.totalLifetime/1000).toFixed(0)}k`} color="green" border="green" bg="green"  />
+        <StatCard label="This Month"         value={`₹${(mockCommission.thisMonth/1000).toFixed(1)}k`}     sub="Mar 2026"  color="green" border="green" bg="green" />
+        <StatCard label="Last Month"         value={`₹${(mockCommission.lastMonth/1000).toFixed(0)}k`}     sub="Feb 2026"  color="blue" border="blue" bg="blue"   />
+        <StatCard label="Commission Rate"    value={`${mockCommission.rate}%`}                              sub="Fixed rate" color="gray" border="gray" bg="gray" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">

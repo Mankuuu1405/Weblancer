@@ -33,6 +33,27 @@ function getStrength(pwd) {
   return map[score] || { label: "", bars: 0, clr: "#e2e8f0" };
 }
 
+/* ─── Username validation helper ────────────────────────── */
+function checkUsername(username, fullName) {
+  const normalizedUsername = username.trim().toLowerCase();
+  const normalizedFullName = fullName.trim().toLowerCase();
+
+  if (!normalizedUsername) return "";
+
+  if (normalizedUsername === normalizedFullName)
+    return "Username cannot be your full name.";
+
+  const nameParts = normalizedFullName.split(/\s+/).filter(Boolean);
+  const containsNamePart = nameParts.some(
+    part => part.length > 2 && normalizedUsername.includes(part)
+  );
+
+  if (containsNamePart)
+    return "Username should not contain your first or last name.";
+
+  return "";
+}
+
 const inputStyle = {
   border: "1px solid #e2e8f0",
   backgroundColor: "white",
@@ -43,35 +64,52 @@ const inputStyle = {
    AccountStep
    ═══════════════════════════════════════════════════════════ */
 export default function AccountStep({ formData, updateData, next }) {
-  const [showPwd, setShowPwd] = useState(false);
-  const [agreed, setAgreed]   = useState(false);
-  const [local, setLocal]     = useState({
+  const [showPwd, setShowPwd]         = useState(false);
+  const [agreed, setAgreed]           = useState(false);
+  const [usernameMsg, setUsernameMsg] = useState("");
+  const [local, setLocal]             = useState({
     fullName:        formData?.fullName        || "",
     email:           formData?.email           || "",
     country:         formData?.country         || "",
+    username:        formData?.username        || "",
     password:        formData?.password        || "",
     confirmPassword: formData?.confirmPassword || "",
   });
 
+  /* ── Setters ── */
   const set = (field) => (e) =>
     setLocal((f) => ({ ...f, [field]: e.target.value }));
 
+  const handleUsernameChange = (e) => {
+    const val = e.target.value;
+    setLocal(f => ({ ...f, username: val }));
+    setUsernameMsg(checkUsername(val, local.fullName));
+  };
+
+  const handleFullNameChange = (e) => {
+    const val = e.target.value;
+    setLocal(f => ({ ...f, fullName: val }));
+    // Re-run username check when full name changes too
+    if (local.username) setUsernameMsg(checkUsername(local.username, val));
+  };
+
   /* ── Derived state ── */
-  const strength     = useMemo(() => getStrength(local.password), [local.password]);
-  const nameValid    = local.fullName.trim().length >= 2;
-  const emailValid   = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(local.email);
-  const pwdMatch     = local.password && local.confirmPassword && local.password === local.confirmPassword;
-  const pwdMismatch  = local.confirmPassword && local.password !== local.confirmPassword;
+  const strength    = useMemo(() => getStrength(local.password), [local.password]);
+  const nameValid   = local.fullName.trim().length >= 2;
+  const emailValid  = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(local.email);
+  const pwdMatch    = local.password && local.confirmPassword && local.password === local.confirmPassword;
+  const pwdMismatch = local.confirmPassword && local.password !== local.confirmPassword;
 
   const canSubmit =
-    nameValid && emailValid && local.country &&
-    local.password.length >= 8 && pwdMatch && agreed;
+    nameValid && emailValid && local.country && local.username.trim() &&
+    !usernameMsg && local.password.length >= 8 && pwdMatch && agreed;
 
   /* ── AI Insights items ── */
   const insights = [
     nameValid  && { text: "Name looks good." },
     emailValid && { text: "Email format valid." },
     local.country && { text: `Country set: ${local.country}` },
+    local.username && !usernameMsg && { text: "Username looks good." },
     strength.label === "Strong" && { text: "Password is strong." },
     pwdMatch   && { text: "Passwords match ✓" },
   ].filter(Boolean);
@@ -153,12 +191,38 @@ export default function AccountStep({ formData, updateData, next }) {
                 type="text"
                 placeholder="John Smith"
                 value={local.fullName}
-                onChange={set("fullName")}
+                onChange={handleFullNameChange}
                 className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all"
                 style={inputStyle}
                 onFocus={e => e.target.style.borderColor = "#3b5bdb"}
                 onBlur={e  => e.target.style.borderColor = "#e2e8f0"}
               />
+            </Field>
+
+            {/* Username */}
+            <Field label="Username *">
+              <input
+                type="text"
+                placeholder="@John12"
+                value={local.username}
+                onChange={handleUsernameChange}
+                className="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all"
+                style={{
+                  ...inputStyle,
+                  borderColor: usernameMsg ? "#ef4444" : "#e2e8f0",
+                  backgroundColor: usernameMsg ? "#fef2f2" : "white",
+                }}
+                onFocus={e => e.target.style.borderColor = usernameMsg ? "#ef4444" : "#3b5bdb"}
+                onBlur={e  => e.target.style.borderColor = usernameMsg ? "#ef4444" : "#e2e8f0"}
+              />
+              {usernameMsg && (
+                <span className="flex items-center gap-1.5 text-xs font-semibold mt-1" style={{ color: "#ef4444" }}>
+                  <svg className="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"/>
+                  </svg>
+                  {usernameMsg}
+                </span>
+              )}
             </Field>
 
             {/* Email */}
@@ -276,7 +340,6 @@ export default function AccountStep({ formData, updateData, next }) {
                   onFocus={e => e.target.style.borderColor = "#3b5bdb"}
                   onBlur={e  => e.target.style.borderColor = pwdMismatch ? "#ef4444" : pwdMatch ? "#22c55e" : "#e2e8f0"}
                 />
-                {/* Match / mismatch hint */}
                 {local.confirmPassword && (
                   <span
                     className="text-xs font-semibold mt-1"

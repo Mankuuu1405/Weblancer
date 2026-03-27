@@ -29,10 +29,11 @@ export default function Step1_Account({ onNext, onBack, currentStep = 1, totalSt
   const [agree, setAgree]                     = useState(false);
   const [showPassword, setShowPassword]       = useState(false);
   const [errors, setErrors]                   = useState({});
+  const [username, setUsername]               = useState("");
+  const [message, setMessage]                 = useState("");
 
   const notAsked = ["Skills", "Portfolio", "Payment details", "Profile bio"];
 
-  // ── Fixed: both variables defined ──
   const percentComplete = Math.round(((currentStep - 1) / totalSteps) * 100);
   const progressWidth   = `${((currentStep - 1) / (totalSteps - 1)) * 100}%`;
 
@@ -102,6 +103,35 @@ export default function Step1_Account({ onNext, onBack, currentStep = 1, totalSt
   const totalChecks = 6;
   const fillPercent = Math.round((goodCount / totalChecks) * 100);
 
+  /* ── Username Validation ── */
+  const checkUsername = (currentUsername, currentFullName) => {
+    const normalizedUsername = currentUsername.trim().toLowerCase();
+    const normalizedFullName = currentFullName.trim().toLowerCase();
+
+    // Don't show any error if username is empty
+    if (!normalizedUsername) {
+      setMessage("");
+      return;
+    }
+
+    if (normalizedUsername === normalizedFullName) {
+      setMessage("Username cannot be your full name.");
+      return;
+    }
+
+    const nameParts = normalizedFullName.split(/\s+/).filter(Boolean);
+    const containsNamePart = nameParts.some(
+      part => part.length > 2 && normalizedUsername.includes(part)
+    );
+
+    if (containsNamePart) {
+      setMessage("Username should not contain your first or last name.");
+      return;
+    }
+
+    setMessage("");
+  };
+
   /* ── Validation ── */
   const validate = () => {
     const e = {};
@@ -109,6 +139,7 @@ export default function Step1_Account({ onNext, onBack, currentStep = 1, totalSt
     if (!email.trim())                                     e.email           = "Email is required";
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))  e.email           = "Enter a valid email address";
     if (!country)                                          e.country         = "Please select your country";
+    if (!username)                                         e.username        = "Please create your username";
     if (!password)                                         e.password        = "Password is required";
     else if (password.length < 8)                          e.password        = "Password must be at least 8 characters";
     if (!confirmPassword)                                  e.confirmPassword = "Please confirm your password";
@@ -119,7 +150,12 @@ export default function Step1_Account({ onNext, onBack, currentStep = 1, totalSt
   };
 
   const clearError   = (field) => setErrors(prev => ({ ...prev, [field]: "" }));
-  const handleSubmit = (e) => { e.preventDefault(); if (validate()) onNext(); };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Block submit if real-time message is still showing
+    if (message) return;
+    if (validate()) onNext();
+  };
 
   /* ── Helpers ── */
   const inputClass = (field) =>
@@ -137,6 +173,18 @@ export default function Step1_Account({ onNext, onBack, currentStep = 1, totalSt
         {errors[field]}
       </p>
     ) : null;
+
+  const ErrorMessage = ({ message }) => {
+    if (!message) return null;
+    return (
+      <p className="text-red-500 text-xs mt-1 flex items-center gap-1">
+        <svg className="w-3 h-3 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+          <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"/>
+        </svg>
+        {message}
+      </p>
+    );
+  };
 
   /* ════════════════════════════════════════ */
   return (
@@ -162,11 +210,8 @@ export default function Step1_Account({ onNext, onBack, currentStep = 1, totalSt
           <span className="text-blue-600 font-semibold">{percentComplete}% Complete</span>
         </div>
 
-        {/* ── Fixed progress bar with both lines ── */}
         <div className="relative flex items-start justify-between">
-          {/* Gray base line */}
           <div className="absolute top-3.5 sm:top-4 left-0 w-full h-1 bg-gray-200 z-0 rounded-full"></div>
-          {/* Blue filled line */}
           <div
             className="absolute top-3.5 sm:top-4 left-0 h-1 bg-blue-500 z-0 rounded-full transition-all duration-500"
             style={{ width: progressWidth }}
@@ -254,9 +299,33 @@ export default function Step1_Account({ onNext, onBack, currentStep = 1, totalSt
                 <div>
                   <label className="block text-sm font-semibold mb-1.5">Full Name <span className="text-red-500">*</span></label>
                   <input type="text" value={fullName} placeholder="Jane Smith"
-                    onChange={(e) => { setFullName(e.target.value); clearError("fullName"); }}
+                    onChange={(e) => {
+                      setFullName(e.target.value);
+                      clearError("fullName");
+                      // Re-run username check live when full name changes too
+                      checkUsername(username, e.target.value);
+                    }}
                     className={inputClass("fullName")} />
                   <ErrorMsg field="fullName" />
+                </div>
+
+                {/* Username */}
+                <div>
+                  <label className="block text-sm font-semibold mb-1.5">Username <span className="text-red-500">*</span></label>
+                  <input type="text" value={username} placeholder="@Jane12"
+                    onChange={(e) => {
+                      setUsername(e.target.value);
+                      clearError("username");
+                      // Run validation in real-time on every keystroke
+                      checkUsername(e.target.value, fullName);
+                    }}
+                    className={`w-full p-3 border rounded-xl text-sm outline-none transition focus:ring-2 focus:ring-blue-100
+                      ${errors.username || message
+                        ? "border-red-400 bg-red-50 focus:border-red-400"
+                        : "border-gray-200 bg-gray-50 focus:border-blue-400"}`}
+                  />
+                  <ErrorMsg field="username" />
+                  <ErrorMessage message={message} />
                 </div>
 
                 {/* Email */}
@@ -453,4 +522,3 @@ export default function Step1_Account({ onNext, onBack, currentStep = 1, totalSt
     </div>
   );
 }
-

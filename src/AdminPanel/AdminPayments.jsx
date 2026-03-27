@@ -4,6 +4,47 @@ import {
   ActionBtn, PageHeader, Table, SectionCard
 } from "./AdminComponents";
 
+/* ── Freelancer Contracts theme tokens ───────────────────────
+   GREEN:  #A8E063 (light) → #6EC030 (mid) → #2E7D1F (deep)
+   NAVY:   #4A6FA5 (light) → #1A2B5E (mid) → #0F1A3B (deep)
+   ──────────────────────────────────────────────────────────── */
+const G = {
+  greenLight:  "#A8E063",
+  green:       "#6EC030",
+  greenDeep:   "#2E7D1F",
+  greenBg:     "#f1fce8",
+  greenBorder: "#d4edbb",
+
+  navyLight:   "#4A6FA5",
+  navy:        "#1A2B5E",
+  navyDeep:    "#0F1A3B",
+  navyBg:      "#e8edf7",
+  navyBorder:  "#b8c6e0",
+
+  gradGreen: "linear-gradient(135deg, #A8E063 0%, #2E7D1F 100%)",
+  gradNavy:  "linear-gradient(135deg, #4A6FA5 0%, #0F1A3B 100%)",
+
+  text:        "#1C1C1C",
+  sub:         "#4b5563",
+  muted:       "#9ca3af",
+  border:      "#e5e7eb",
+  bg:          "#f9fafb",
+  white:       "#ffffff",
+
+  amber:       "#f59e0b",
+  amberBg:     "#fffbeb",
+  amberBorder: "#fde68a",
+  amberText:   "#92400e",
+  red:         "#ef4444",
+  redBg:       "#fef2f2",
+  redBorder:   "#fecaca",
+  redText:     "#dc2626",
+  blue:        "#3b82f6",
+  blueBg:      "#eff6ff",
+  blueBorder:  "#bfdbfe",
+  blueText:    "#1d4ed8",
+};
+const FONT = "'Poppins', sans-serif";
 const mockPayments = [
   { id: "PAY-001", type: "Escrow Deposit", project: "Food Delivery App", from: "ByteEats Co.", to: "Escrow", amount: 240000, status: "Completed", method: "UPI", date: "Jan 10, 2026", commission: 0, flagged: false },
   { id: "PAY-002", type: "Milestone Release", project: "Food Delivery App", from: "Escrow", to: "TechNova Solutions", amount: 120000, status: "Completed", method: "Bank Transfer", date: "Feb 15, 2026", commission: 7200, flagged: false },
@@ -51,20 +92,43 @@ export default function AdminPayments() {
   const totalPending = mockPayments.filter(p => p.status === "Pending" || p.status === "Processing").reduce((s, p) => s + p.amount, 0);
   const totalFrozen = mockPayments.filter(p => p.status === "Frozen").reduce((s, p) => s + p.amount, 0);
 
+   const btnNavy = {
+  display: "inline-flex", alignItems: "center", gap: 6,
+  fontSize: 12, fontWeight: 700, fontFamily: FONT,
+  background: G.gradNavy, color: G.white,
+  border: "none", borderRadius: 100,
+  padding: "8px 18px", cursor: "pointer",
+  boxShadow: "0 3px 12px rgba(15,26,59,0.25)",
+  whiteSpace: "nowrap",
+};
+
+const btnOutline = {
+  display: "inline-flex", alignItems: "center", gap: 6,
+  fontSize: 12, fontWeight: 700, fontFamily: FONT,
+  background: G.greenBg, color: G.greenDeep,
+  border: `1px solid ${G.greenBorder}`,
+  borderRadius: 100, padding: "8px 18px", cursor: "pointer",
+  whiteSpace: "nowrap",
+};
+
+const btnWarning = {
+  ...btnOutline,
+  background: G.amberBg, color: G.amberText, border: `1px solid ${G.amberBorder}`,
+};
   return (
     <div className="p-6">
       <PageHeader
         title="Payments"
         subtitle="Full escrow ledger — every rupee tracked, every move logged"
-        actions={<ActionBtn label="⬇ Export Ledger" />}
+        actions={<ActionBtn label="⬇ Export Ledger" style={btnNavy}/>}
       />
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <StatCard label="Total Escrow Active" value={`₹${(totalEscrow / 100000).toFixed(1)}L`} color="blue" />
-        <StatCard label="Platform Commission" value={`₹${(totalCommission / 1000).toFixed(0)}k`} sub="All time" color="green" />
-        <StatCard label="Pending / Processing" value={`₹${(totalPending / 1000).toFixed(0)}k`} color="orange" />
-        <StatCard label="Frozen (Disputed)" value={`₹${(totalFrozen / 1000).toFixed(0)}k`} color="red" />
+        <StatCard label="Total Escrow Active" value={`₹${(totalEscrow / 100000).toFixed(1)}L`} color="blue" bg="blue" border="blue"/>
+        <StatCard label="Platform Commission" value={`₹${(totalCommission / 1000).toFixed(0)}k`} sub="All time" color="green " bg="green" border="green" />
+        <StatCard label="Pending / Processing" value={`₹${(totalPending / 1000).toFixed(0)}k`} color="orange" border="orange" bg="orange"/>
+        <StatCard label="Frozen (Disputed)" value={`₹${(totalFrozen / 1000).toFixed(0)}k`} color="red" border="red" bg="red" />
       </div>
 
       {/* Tabs */}
@@ -82,8 +146,8 @@ export default function AdminPayments() {
         ))}
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-gray-50 flex flex-wrap gap-3 items-center justify-between">
+      <div className="bg-white rounded-xl border border-gray-100 shadow-lg overflow-hidden p-3">
+        <div className="p-4 border-b border-gray-50 flex flex-wrap gap-3 items-center justify-between rounded-2xl">
           <SearchBar value={search} onChange={setSearch} placeholder="Search ID, project, name...">
             <FilterSelect value={typeFilter} onChange={setTypeFilter} label="All Types"
               options={[
@@ -134,8 +198,8 @@ export default function AdminPayments() {
               <td className="py-3 pr-4 text-xs text-gray-500 whitespace-nowrap">{p.date}</td>
               <td className="py-3">
                 <div className="opacity-0 group-hover:opacity-100 transition-opacity flex gap-1.5">
-                  {p.status === "Frozen" && <ActionBtn label="Unfreeze" variant="warning" />}
-                  {p.status === "Pending" && <ActionBtn label="Force Release" variant="primary" />}
+                  {p.status === "Frozen" && <ActionBtn label="Unfreeze" variant="warning" style={btnOutline}/>}
+                  {p.status === "Pending" && <ActionBtn label="Force Release" variant="primary" style={btnWarning}/>}
                   <ActionBtn label="⋯" />
                 </div>
               </td>

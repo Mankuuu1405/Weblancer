@@ -2,235 +2,304 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ActionBtn, PageHeader, StatCard } from "./AdminComponents";
 
+const G = {
+  greenLight:  "#A8E063",
+  green:       "#6EC030",
+  greenDeep:   "#2E7D1F",
+  greenBg:     "#f1fce8",
+  greenBorder: "#d4edbb",
+
+  navyLight:   "#4A6FA5",
+  navy:        "#1A2B5E",
+  navyDeep:    "#0F1A3B",
+  navyBg:      "#e8edf7",
+  navyBorder:  "#b8c6e0",
+
+  gradGreen: "linear-gradient(135deg, #A8E063 0%, #2E7D1F 100%)",
+  gradNavy:  "linear-gradient(135deg, #4A6FA5 0%, #0F1A3B 100%)",
+
+  text:        "#1C1C1C",
+  sub:         "#4b5563",
+  muted:       "#9ca3af",
+  border:      "#e5e7eb",
+  bg:          "#f9fafb",
+  white:       "#ffffff",
+
+  amber:       "#f59e0b",
+  amberBg:     "#fffbeb",
+  amberBorder: "#fde68a",
+  amberText:   "#92400e",
+  red:         "#ef4444",
+  redBg:       "#fef2f2",
+  redBorder:   "#fecaca",
+  redText:     "#dc2626",
+  blue:        "#3b82f6",
+  blueBg:      "#eff6ff",
+  blueBorder:  "#bfdbfe",
+  blueText:    "#1d4ed8",
+};
+const FONT = "'Poppins', sans-serif";
+
+const btnNavy = {
+  display: "inline-flex", alignItems: "center", gap: 6,
+  fontSize: 12, fontWeight: 700, fontFamily: FONT,
+  background: G.gradNavy, color: G.white,
+  border: "none", borderRadius: 100,
+  padding: "8px 18px", cursor: "pointer",
+  boxShadow: "0 3px 12px rgba(15,26,59,0.25)",
+  whiteSpace: "nowrap",
+};
+const btnGreen = {
+  display: "inline-flex", alignItems: "center", gap: 6,
+  fontSize: 12, fontWeight: 700, fontFamily: FONT,
+  background: G.gradGreen, color: G.white,
+  border: "none", borderRadius: 100,
+  padding: "8px 18px", cursor: "pointer",
+  boxShadow: "0 2px 10px rgba(46,125,31,0.22)",
+  whiteSpace: "nowrap",
+};
+const btnOutline = {
+  display: "inline-flex", alignItems: "center", gap: 6,
+  fontSize: 12, fontWeight: 700, fontFamily: FONT,
+  background: G.greenBg, color: G.greenDeep,
+  border: `1px solid ${G.greenBorder}`,
+  borderRadius: 100, padding: "8px 18px", cursor: "pointer",
+  whiteSpace: "nowrap",
+};
+const btnWarning = {
+  ...btnOutline,
+  background: G.amberBg, color: G.amberText, border: `1px solid ${G.amberBorder}`,
+};
+const btnDanger = {
+  ...btnOutline,
+  background: G.redBg, color: G.redText, border: `1px solid ${G.redBorder}`,
+};
+
+
 const mockNotifications = [
-  // Disputes
-  { id: "N-001", category: "Dispute", priority: "High", title: "New dispute raised — Mobile Banking App", desc: "Vikram Singh raised DSP-002 against TechNova Solutions. Amount: ₹1,40,000. AI confidence: 84%.", time: "2m ago", read: false, actionRoute: "/admin/disputes/DSP-002", actionLabel: "Review Dispute" },
-  { id: "N-002", category: "Dispute", priority: "High", title: "Dispute pending decision for 3 days", desc: "DSP-001 (E-Commerce Revamp) has been open for 3 days without admin decision. AI verdict ready.", time: "1h ago", read: false, actionRoute: "/admin/disputes/DSP-001", actionLabel: "Decide Now" },
-
-  // Payments
-  { id: "N-003", category: "Payment", priority: "High", title: "Escrow frozen — dispute detected", desc: "PAY-007 (₹1,40,000) frozen automatically due to DSP-002. Admin review required.", time: "3h ago", read: false, actionRoute: "/admin/payments", actionLabel: "View Payment" },
-  { id: "N-004", category: "Payment", priority: "Medium", title: "Payout request — Arjun Dev", desc: "Withdrawal of ₹85,000 requested. KYC verified. Awaiting approval.", time: "5h ago", read: false, actionRoute: "/admin/payouts", actionLabel: "Approve Payout" },
-  { id: "N-005", category: "Payment", priority: "Low", title: "Commission collected — ₹39,000", desc: "Platform commission auto-collected from HR Automation Dashboard (BuildRight Agency).", time: "1d ago", read: true, actionRoute: "/admin/commission", actionLabel: "View Commission" },
-
-  // AI Flags
-  { id: "N-006", category: "AI Flag", priority: "High", title: "AI flagged suspicious account — FakeUser999", desc: "Duplicate signup pattern detected. Risk score: 10/100. Recommended action: Permanent ban.", time: "30m ago", read: false, actionRoute: "/admin/users/USR-010", actionLabel: "Review Account" },
-  { id: "N-007", category: "AI Flag", priority: "Medium", title: "Agency overload detected — TechNova Solutions", desc: "AI detected team capacity at 95%. 4 active projects vs 6 limit. Risk of delivery failure.", time: "4h ago", read: false, actionRoute: "/admin/agencies/AG-001", actionLabel: "View Agency" },
-  { id: "N-008", category: "AI Flag", priority: "Medium", title: "High dispute rate — Priya Menon", desc: "Freelancer dispute rate crossed 30% threshold. AI auto-reduced visibility. Review suggested.", time: "6h ago", read: true, actionRoute: "/admin/freelancers/FL-004", actionLabel: "View Freelancer" },
-
-  // KYC
-  { id: "N-009", category: "KYC", priority: "Medium", title: "New KYC submission — PixelCraft Studio", desc: "Agency submitted business documents for verification. Waiting 2 days for review.", time: "2d ago", read: false, actionRoute: "/admin/kyc", actionLabel: "Review KYC" },
-  { id: "N-010", category: "KYC", priority: "Low", title: "KYC re-upload requested — Meera Joshi", desc: "Client submitted updated identity documents after initial rejection.", time: "3d ago", read: true, actionRoute: "/admin/kyc", actionLabel: "Review KYC" },
-
-  // Projects
-  { id: "N-011", category: "Project", priority: "High", title: "Project at risk — E-Commerce Revamp", desc: "PRJ-003 health dropped to Delayed. Deadline Mar 25. Client unresponsive for 5 days.", time: "8h ago", read: false, actionRoute: "/admin/projects/PRJ-003", actionLabel: "View Project" },
-  { id: "N-012", category: "Project", priority: "Low", title: "Project completed — HR Automation Dashboard", desc: "PRJ-004 marked complete. All milestones done. Client satisfaction: 4.8/5.", time: "2d ago", read: true, actionRoute: "/admin/projects/PRJ-004", actionLabel: "View Project" },
-
-  // System
-  { id: "N-013", category: "System", priority: "Low", title: "Daily platform summary ready", desc: "24h summary: 2 new signups, 1 new dispute, ₹2.3L in transactions, 0 system errors.", time: "9h ago", read: true, actionRoute: "/admin/reports/revenue", actionLabel: "View Report" },
-  { id: "N-014", category: "System", priority: "Medium", title: "AI settings updated", desc: "autoActionConfidence threshold changed from 85% to 90% by Super Admin.", time: "4d ago", read: true, actionRoute: "/admin/ai/settings", actionLabel: "View Settings" },
+  { id:"N-001", category:"Dispute", priority:"High", title:"New dispute raised — Mobile Banking App", desc:"Vikram Singh raised DSP-002 against TechNova Solutions. Amount: ₹1,40,000. AI confidence: 84%.", time:"2m ago", read:false, actionRoute:"/admin/disputes/DSP-002", actionLabel:"Review Dispute" },
+  { id:"N-002", category:"Dispute", priority:"High", title:"Dispute pending decision for 3 days", desc:"DSP-001 (E-Commerce Revamp) has been open for 3 days without admin decision. AI verdict ready.", time:"1h ago", read:false, actionRoute:"/admin/disputes/DSP-001", actionLabel:"Decide Now" },
+  { id:"N-003", category:"Payment", priority:"High", title:"Escrow frozen — dispute detected", desc:"PAY-007 (₹1,40,000) frozen automatically due to DSP-002. Admin review required.", time:"3h ago", read:false, actionRoute:"/admin/payments", actionLabel:"View Payment" },
+  { id:"N-004", category:"Payment", priority:"Medium", title:"Payout request — Arjun Dev", desc:"Withdrawal of ₹85,000 requested. KYC verified. Awaiting approval.", time:"5h ago", read:false, actionRoute:"/admin/payouts", actionLabel:"Approve Payout" },
+  { id:"N-005", category:"Payment", priority:"Low", title:"Commission collected — ₹39,000", desc:"Platform commission auto-collected from HR Automation Dashboard (BuildRight Agency).", time:"1d ago", read:true, actionRoute:"/admin/commission", actionLabel:"View Commission" },
+  { id:"N-006", category:"AI Flag", priority:"High", title:"AI flagged suspicious account — FakeUser999", desc:"Duplicate signup pattern detected. Risk score: 10/100. Recommended action: Permanent ban.", time:"30m ago", read:false, actionRoute:"/admin/users/USR-010", actionLabel:"Review Account" },
+  { id:"N-007", category:"AI Flag", priority:"Medium", title:"Agency overload detected — TechNova Solutions", desc:"AI detected team capacity at 95%. 4 active projects vs 6 limit. Risk of delivery failure.", time:"4h ago", read:false, actionRoute:"/admin/agencies/AG-001", actionLabel:"View Agency" },
+  { id:"N-008", category:"AI Flag", priority:"Medium", title:"High dispute rate — Priya Menon", desc:"Freelancer dispute rate crossed 30% threshold. AI auto-reduced visibility. Review suggested.", time:"6h ago", read:true, actionRoute:"/admin/freelancers/FL-004", actionLabel:"View Freelancer" },
+  { id:"N-009", category:"KYC", priority:"Medium", title:"New KYC submission — PixelCraft Studio", desc:"Agency submitted business documents for verification. Waiting 2 days for review.", time:"2d ago", read:false, actionRoute:"/admin/kyc", actionLabel:"Review KYC" },
+  { id:"N-010", category:"KYC", priority:"Low", title:"KYC re-upload requested — Meera Joshi", desc:"Client submitted updated identity documents after initial rejection.", time:"3d ago", read:true, actionRoute:"/admin/kyc", actionLabel:"Review KYC" },
+  { id:"N-011", category:"Project", priority:"High", title:"Project at risk — E-Commerce Revamp", desc:"PRJ-003 health dropped to Delayed. Deadline Mar 25. Client unresponsive for 5 days.", time:"8h ago", read:false, actionRoute:"/admin/projects/PRJ-003", actionLabel:"View Project" },
+  { id:"N-012", category:"Project", priority:"Low", title:"Project completed — HR Automation Dashboard", desc:"PRJ-004 marked complete. All milestones done. Client satisfaction: 4.8/5.", time:"2d ago", read:true, actionRoute:"/admin/projects/PRJ-004", actionLabel:"View Project" },
+  { id:"N-013", category:"System", priority:"Low", title:"Daily platform summary ready", desc:"24h summary: 2 new signups, 1 new dispute, ₹2.3L in transactions, 0 system errors.", time:"9h ago", read:true, actionRoute:"/admin/reports/revenue", actionLabel:"View Report" },
+  { id:"N-014", category:"System", priority:"Medium", title:"AI settings updated", desc:"autoActionConfidence threshold changed from 85% to 90% by Super Admin.", time:"4d ago", read:true, actionRoute:"/admin/ai/settings", actionLabel:"View Settings" },
 ];
 
-const categoryConfig = {
-  "Dispute":  { icon: "⚑", bg: "bg-red-100",    text: "text-red-600",    badge: "bg-red-50 text-red-600 border border-red-200"    },
-  "Payment":  { icon: "⊕", bg: "bg-blue-100",   text: "text-blue-600",   badge: "bg-blue-50 text-blue-700 border border-blue-200"  },
-  "AI Flag":  { icon: "◎", bg: "bg-orange-100", text: "text-orange-600", badge: "bg-orange-50 text-orange-700 border border-orange-200" },
-  "KYC":      { icon: "◉", bg: "bg-purple-100", text: "text-purple-600", badge: "bg-purple-50 text-purple-700 border border-purple-200" },
-  "Project":  { icon: "⊟", bg: "bg-yellow-100", text: "text-yellow-700", badge: "bg-yellow-50 text-yellow-700 border border-yellow-200" },
-  "System":   { icon: "⊙", bg: "bg-gray-100",   text: "text-gray-500",   badge: "bg-gray-50 text-gray-500 border border-gray-200"   },
+const CATEGORY_CFG = {
+  "Dispute": { icon:"⚑", iconBg: G.redBg,    iconColor:"#dc2626", chipBg: G.redBg,    chipBorder: G.redBorder,    chipText:"#dc2626"   },
+  "Payment": { icon:"⊕", iconBg: G.blueBg,   iconColor: G.blue,   chipBg: G.blueBg,   chipBorder: G.blueBorder,   chipText: G.blue     },
+  "AI Flag": { icon:"◎", iconBg: G.amberBg,  iconColor:"#b45309", chipBg: G.amberBg,  chipBorder: G.amberBorder,  chipText:"#b45309"   },
+  "KYC":     { icon:"◉", iconBg: G.purpleBg, iconColor: G.purple, chipBg: G.purpleBg, chipBorder: G.purpleBorder, chipText: G.purple   },
+  "Project": { icon:"⊟", iconBg: G.amberBg,  iconColor:"#92400e", chipBg: G.amberBg,  chipBorder: G.amberBorder,  chipText:"#92400e"   },
+  "System":  { icon:"⊙", iconBg: G.bg,       iconColor: G.muted,  chipBg: G.bg,       chipBorder: G.border,       chipText: G.muted    },
 };
 
-const priorityDot = {
-  High:   "bg-red-500",
-  Medium: "bg-yellow-400",
-  Low:    "bg-gray-300",
-};
+const PRIORITY_DOT = { High: G.red, Medium: G.amber, Low: G.border };
 
-export default function AdminNotifications() {
+export function AdminNotifications() {
   const navigate = useNavigate();
   const [notifications, setNotifications] = useState(mockNotifications);
   const [activeCategory, setActiveCategory] = useState("All");
   const [activePriority, setActivePriority] = useState("All");
-  const [activeRead, setActiveRead] = useState("All");
+  const [activeRead,     setActiveRead]     = useState("All");
 
-  const categories = ["All", "Dispute", "Payment", "AI Flag", "KYC", "Project", "System"];
-  const unread = notifications.filter((n) => !n.read).length;
+  const categories = ["All","Dispute","Payment","AI Flag","KYC","Project","System"];
+  const unread = notifications.filter(n => !n.read).length;
 
-  const filtered = notifications.filter((n) => {
-    const matchCat = activeCategory === "All" || n.category === activeCategory;
-    const matchPri = activePriority === "All" || n.priority === activePriority;
+  const filtered = notifications.filter(n => {
+    const matchCat  = activeCategory === "All" || n.category === activeCategory;
+    const matchPri  = activePriority === "All" || n.priority === activePriority;
     const matchRead = activeRead === "All" || (activeRead === "Unread" ? !n.read : n.read);
     return matchCat && matchPri && matchRead;
   });
 
-  const markRead = (id) => setNotifications((prev) => prev.map((n) => n.id === id ? { ...n, read: true } : n));
-  const markAllRead = () => setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-  const dismiss = (id) => setNotifications((prev) => prev.filter((n) => n.id !== id));
-  const dismissAll = () => setNotifications((prev) => prev.filter((n) => !n.read));
+  const markRead   = (id) => setNotifications(p => p.map(n => n.id === id ? { ...n, read:true } : n));
+  const markAllRead= ()   => setNotifications(p => p.map(n => ({ ...n, read:true })));
+  const dismiss    = (id) => setNotifications(p => p.filter(n => n.id !== id));
+  const dismissAll = ()   => setNotifications(p => p.filter(n => !n.read));
 
-  const countByCategory = (cat) => notifications.filter((n) => !n.read && (cat === "All" ? true : n.category === cat)).length;
+  const countByCategory = (cat) => notifications.filter(n => !n.read && (cat === "All" || n.category === cat)).length;
+
+  const sideNavBtn = (active) => ({
+    width: "100%", display: "flex", alignItems: "center", gap: 10,
+    padding: "8px 12px", borderRadius: 8, marginBottom: 2,
+    background: active ? G.greenBg : "none", border: "none",
+    color: active ? G.greenDeep : G.sub,
+    fontWeight: active ? 700 : 500, fontSize: 13, fontFamily: FONT,
+    cursor: "pointer", textAlign: "left", transition: "background 0.1s",
+  });
 
   return (
-    <div className="p-6">
-      <PageHeader
-        title="Notifications"
-        subtitle="All system alerts, AI flags & action items for admin"
-        actions={
-          <div className="flex items-center gap-2">
-            {unread > 0 && (
-              <ActionBtn label={`Mark all read (${unread})`} onClick={markAllRead} />
-            )}
-            <ActionBtn label="Clear read" onClick={dismissAll} />
-          </div>
-        }
-      />
+    <div style={{ padding: "28px 28px 64px", fontFamily: FONT, background: G.bg, minHeight: "100%" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+        * { font-family: 'Poppins', sans-serif; }
+      `}</style>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <StatCard label="Total" value={notifications.length} color="gray" />
-        <StatCard label="Unread" value={unread} sub="Needs attention" color="red" />
-        <StatCard label="High Priority" value={notifications.filter(n => n.priority === "High" && !n.read).length} color="orange" />
-        <StatCard label="AI Flags" value={notifications.filter(n => n.category === "AI Flag" && !n.read).length} color="blue" />
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 24 }}>
+        <div>
+          <h1 style={{ fontSize: 22, fontWeight: 800, color: G.text, margin: 0, letterSpacing: "-0.4px" }}>Notifications</h1>
+          <p style={{ fontSize: 13, color: G.muted, marginTop: 3 }}>All system alerts, AI flags & action items for admin</p>
+        </div>
+        <div style={{ display: "flex", gap: 8 }}>
+          {unread > 0 && (
+            <button onClick={markAllRead} style={{
+              fontSize: 12, fontWeight: 700, fontFamily: FONT,
+              background: G.greenBg, color: G.greenDeep,
+              border: `1px solid ${G.greenBorder}`, borderRadius: 100,
+              padding: "8px 16px", cursor: "pointer",
+            }}>Mark all read ({unread})</button>
+          )}
+          <button onClick={dismissAll} style={{
+            fontSize: 12, fontWeight: 700, fontFamily: FONT,
+            background: G.bg, color: G.sub,
+            border: `1px solid ${G.border}`, borderRadius: 100,
+            padding: "8px 16px", cursor: "pointer",
+          }}>Clear read</button>
+        </div>
       </div>
 
-      <div className="flex gap-5">
-        {/* Left — Category Filter */}
-        <div className="w-48 shrink-0">
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-            <div className="px-4 py-3 border-b border-gray-100">
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Categories</p>
+      {/* Stats */}
+      <div style={{ display: "flex", gap: 14, marginBottom: 24 }}>
+        <StatCard label="Total"         value={notifications.length}                                              color="gray"   />
+        <StatCard label="Unread"        value={unread}                          sub="Needs attention"             color="red"    />
+        <StatCard label="High Priority" value={notifications.filter(n=>n.priority==="High"&&!n.read).length}     color="orange" />
+        <StatCard label="AI Flags"      value={notifications.filter(n=>n.category==="AI Flag"&&!n.read).length}  color="blue"   />
+      </div>
+
+      <div style={{ display: "flex", gap: 20 }}>
+
+        {/* ── Sidebar ── */}
+        <div style={{ width: 200, flexShrink: 0 }}>
+          <div style={{
+            background: G.white, border: `1px solid ${G.greenBorder}`,
+            borderRadius: 16, overflow: "hidden",
+            boxShadow: "0 2px 12px rgba(110,192,48,0.06)",
+          }}>
+            {/* Categories */}
+            <div style={{ padding: "12px 16px", borderBottom: `1px solid ${G.greenBorder}`, background: G.greenBg }}>
+              <p style={{ fontSize: 10, fontWeight: 800, color: G.greenDeep, margin: 0, textTransform: "uppercase", letterSpacing: "0.07em" }}>Categories</p>
             </div>
-            <div className="p-2">
-              {categories.map((cat) => {
-                const cfg = categoryConfig[cat];
+            <div style={{ padding: 8 }}>
+              {categories.map(cat => {
+                const cfg = CATEGORY_CFG[cat];
                 const count = countByCategory(cat);
                 return (
-                  <button
-                    key={cat}
-                    onClick={() => setActiveCategory(cat)}
-                    className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors mb-0.5 ${
-                      activeCategory === cat ? "bg-green-50 text-green-700 font-semibold" : "text-gray-600 hover:bg-gray-50"
-                    }`}
-                  >
-                    {cfg ? (
-                      <span className={`w-6 h-6 rounded-md flex items-center justify-center text-xs shrink-0 ${cfg.bg} ${cfg.text}`}>
-                        {cfg.icon}
-                      </span>
-                    ) : (
-                      <span className="w-6 h-6 rounded-md bg-gray-100 flex items-center justify-center text-xs text-gray-500 shrink-0">◈</span>
-                    )}
-                    <span className="flex-1 text-left">{cat}</span>
+                  <button key={cat} onClick={() => setActiveCategory(cat)} style={sideNavBtn(activeCategory === cat)}>
+                    {cfg
+                      ? <span style={{ width: 24, height: 24, borderRadius: 6, background: cfg.iconBg, color: cfg.iconColor, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, flexShrink: 0 }}>{cfg.icon}</span>
+                      : <span style={{ width: 24, height: 24, borderRadius: 6, background: G.bg, color: G.muted, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, flexShrink: 0 }}>◈</span>
+                    }
+                    <span style={{ flex: 1 }}>{cat}</span>
                     {count > 0 && (
-                      <span className="text-[10px] font-bold bg-red-500 text-white px-1.5 py-0.5 rounded-full">
-                        {count}
-                      </span>
+                      <span style={{ fontSize: 10, fontWeight: 800, background: G.red, color: G.white, padding: "1px 6px", borderRadius: 99 }}>{count}</span>
                     )}
                   </button>
                 );
               })}
             </div>
 
-            {/* Priority Filter */}
-            <div className="px-4 py-3 border-t border-gray-100">
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Priority</p>
-              <div className="flex flex-col gap-1">
-                {["All", "High", "Medium", "Low"].map((p) => (
-                  <button key={p} onClick={() => setActivePriority(p)}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                      activePriority === p ? "bg-green-50 text-green-700 font-semibold" : "text-gray-600 hover:bg-gray-50"
-                    }`}>
-                    {p !== "All" && <span className={`w-2 h-2 rounded-full shrink-0 ${priorityDot[p]}`} />}
-                    {p}
-                  </button>
-                ))}
-              </div>
+            {/* Priority filter */}
+            <div style={{ padding: "12px 16px", borderTop: `1px solid ${G.greenBorder}` }}>
+              <p style={{ fontSize: 10, fontWeight: 800, color: G.greenDeep, margin: "0 0 8px", textTransform: "uppercase", letterSpacing: "0.07em" }}>Priority</p>
+              {["All","High","Medium","Low"].map(p => (
+                <button key={p} onClick={() => setActivePriority(p)} style={sideNavBtn(activePriority === p)}>
+                  {p !== "All" && <span style={{ width: 7, height: 7, borderRadius: "50%", background: PRIORITY_DOT[p], flexShrink: 0 }} />}
+                  {p}
+                </button>
+              ))}
             </div>
 
-            {/* Read Filter */}
-            <div className="px-4 py-3 border-t border-gray-100">
-              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Status</p>
-              <div className="flex flex-col gap-1">
-                {["All", "Unread", "Read"].map((r) => (
-                  <button key={r} onClick={() => setActiveRead(r)}
-                    className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors ${
-                      activeRead === r ? "bg-green-50 text-green-700 font-semibold" : "text-gray-600 hover:bg-gray-50"
-                    }`}>
-                    {r === "Unread" && <span className="w-2 h-2 rounded-full bg-green-500 shrink-0" />}
-                    {r === "Read" && <span className="w-2 h-2 rounded-full bg-gray-300 shrink-0" />}
-                    {r}
-                  </button>
-                ))}
-              </div>
+            {/* Read filter */}
+            <div style={{ padding: "12px 16px", borderTop: `1px solid ${G.greenBorder}` }}>
+              <p style={{ fontSize: 10, fontWeight: 800, color: G.greenDeep, margin: "0 0 8px", textTransform: "uppercase", letterSpacing: "0.07em" }}>Status</p>
+              {["All","Unread","Read"].map(r => (
+                <button key={r} onClick={() => setActiveRead(r)} style={sideNavBtn(activeRead === r)}>
+                  {r === "Unread" && <span style={{ width: 7, height: 7, borderRadius: "50%", background: G.green, flexShrink: 0 }} />}
+                  {r === "Read"   && <span style={{ width: 7, height: 7, borderRadius: "50%", background: G.border, flexShrink: 0 }} />}
+                  {r}
+                </button>
+              ))}
             </div>
           </div>
         </div>
 
-        {/* Right — Notification Feed */}
-        <div className="flex-1 min-w-0">
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-            <div className="px-5 py-3 border-b border-gray-100 flex items-center justify-between">
-              <p className="text-sm font-semibold text-gray-700">
+        {/* ── Feed ── */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{
+            background: G.white, border: `1px solid ${G.greenBorder}`,
+            borderRadius: 16, overflow: "hidden",
+            boxShadow: "0 2px 12px rgba(110,192,48,0.06)",
+          }}>
+            {/* Feed header */}
+            <div style={{
+              padding: "12px 20px", borderBottom: `1px solid ${G.greenBorder}`, background: G.greenBg,
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+            }}>
+              <p style={{ fontSize: 13, fontWeight: 700, color: G.text, margin: 0 }}>
                 {filtered.length} notification{filtered.length !== 1 ? "s" : ""}
-                {activeCategory !== "All" && <span className="text-gray-400 font-normal"> in {activeCategory}</span>}
+                {activeCategory !== "All" && <span style={{ color: G.muted, fontWeight: 400 }}> in {activeCategory}</span>}
               </p>
-              <span className="text-xs text-gray-400">Sorted by latest</span>
+              <span style={{ fontSize: 11, color: G.muted }}>Sorted by latest</span>
             </div>
 
             {filtered.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-20">
-                <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-3">
-                  <span className="text-gray-400 text-xl">🔔</span>
-                </div>
-                <p className="text-gray-500 text-sm">No notifications here</p>
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "56px 20px", textAlign: "center" }}>
+                <div style={{ width: 48, height: 48, borderRadius: "50%", background: G.greenBg, border: `1px solid ${G.greenBorder}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, marginBottom: 12 }}>🔔</div>
+                <p style={{ fontSize: 14, fontWeight: 700, color: G.text }}>No notifications here</p>
               </div>
             ) : (
-              <div className="divide-y divide-gray-50">
-                {filtered.map((n) => {
-                  const cfg = categoryConfig[n.category] || categoryConfig["System"];
+              <div>
+                {filtered.map((n, idx) => {
+                  const cfg = CATEGORY_CFG[n.category] || CATEGORY_CFG["System"];
                   return (
-                    <div
-                      key={n.id}
-                      className={`flex items-start gap-4 px-5 py-4 transition-colors hover:bg-gray-50/50 ${!n.read ? "bg-green-50/30" : ""}`}
-                    >
+                    <div key={n.id} style={{
+                      display: "flex", alignItems: "flex-start", gap: 14,
+                      padding: "16px 20px",
+                      background: !n.read ? G.greenBg + "88" : G.white,
+                      borderBottom: idx < filtered.length - 1 ? `1px solid ${G.border}` : "none",
+                      transition: "background 0.1s",
+                    }}>
                       {/* Unread dot */}
-                      <div className="mt-1.5 shrink-0">
-                        <div className={`w-2 h-2 rounded-full ${!n.read ? "bg-green-500" : "bg-transparent"}`} />
+                      <div style={{ marginTop: 6, flexShrink: 0 }}>
+                        <div style={{ width: 7, height: 7, borderRadius: "50%", background: !n.read ? G.green : "transparent" }} />
                       </div>
-
-                      {/* Icon */}
-                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${cfg.bg}`}>
-                        <span className={`text-sm ${cfg.text}`}>{cfg.icon}</span>
+                      {/* Category icon */}
+                      <div style={{ width: 36, height: 36, borderRadius: 10, background: cfg.iconBg, color: cfg.iconColor, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, flexShrink: 0 }}>
+                        {cfg.icon}
                       </div>
-
                       {/* Content */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                          <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${cfg.badge}`}>
-                            {n.category}
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap", marginBottom: 4 }}>
+                          <span style={{ fontSize: 10, fontWeight: 700, background: cfg.chipBg, color: cfg.chipText, border: `1px solid ${cfg.chipBorder}`, padding: "2px 8px", borderRadius: 99 }}>{n.category}</span>
+                          <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 10, fontWeight: 600, color: G.muted }}>
+                            <span style={{ width: 6, height: 6, borderRadius: "50%", background: PRIORITY_DOT[n.priority] }} />
+                            {n.priority}
                           </span>
-                          <span className={`flex items-center gap-1 text-[10px] font-semibold`}>
-                            <span className={`w-1.5 h-1.5 rounded-full ${priorityDot[n.priority]}`} />
-                            <span className="text-gray-500">{n.priority}</span>
-                          </span>
-                          {!n.read && (
-                            <span className="text-[10px] font-bold text-green-600">NEW</span>
-                          )}
+                          {!n.read && <span style={{ fontSize: 10, fontWeight: 800, color: G.greenDeep }}>NEW</span>}
                         </div>
-                        <p className="text-sm font-semibold text-gray-800 leading-snug">{n.title}</p>
-                        <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">{n.desc}</p>
-                        <div className="flex items-center gap-3 mt-2">
-                          <span className="text-[10px] text-gray-400">{n.time}</span>
-                          <button
-                            onClick={() => { markRead(n.id); navigate(n.actionRoute); }}
-                            className="text-xs font-semibold text-green-600 hover:text-green-700 transition-colors"
-                          >
+                        <p style={{ fontSize: 13, fontWeight: 700, color: G.text, margin: "0 0 3px", lineHeight: 1.4 }}>{n.title}</p>
+                        <p style={{ fontSize: 12, color: G.muted, margin: "0 0 8px", lineHeight: 1.6 }}>{n.desc}</p>
+                        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+                          <span style={{ fontSize: 11, color: G.muted }}>{n.time}</span>
+                          <button onClick={() => { markRead(n.id); navigate(n.actionRoute); }} style={{ fontSize: 12, fontWeight: 700, color: G.greenDeep, background: "none", border: "none", cursor: "pointer", fontFamily: FONT, padding: 0 }}>
                             {n.actionLabel} →
                           </button>
                           {!n.read && (
-                            <button onClick={() => markRead(n.id)} className="text-xs text-gray-400 hover:text-gray-600">
+                            <button onClick={() => markRead(n.id)} style={{ fontSize: 12, color: G.muted, background: "none", border: "none", cursor: "pointer", fontFamily: FONT, padding: 0 }}>
                               Mark read
                             </button>
                           )}
-                          <button onClick={() => dismiss(n.id)} className="text-xs text-gray-300 hover:text-red-400 transition-colors ml-auto">
+                          <button onClick={() => dismiss(n.id)} style={{ fontSize: 12, color: G.border, background: "none", border: "none", cursor: "pointer", fontFamily: FONT, padding: 0, marginLeft: "auto" }}>
                             Dismiss
                           </button>
                         </div>
@@ -246,3 +315,5 @@ export default function AdminNotifications() {
     </div>
   );
 }
+
+export default AdminNotifications;

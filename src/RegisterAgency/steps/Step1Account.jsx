@@ -23,9 +23,31 @@ function isFree(email) {
   return d && FREE_DOMAINS.includes(d.toLowerCase());
 }
 
-const inputBase = "w-full px-4 py-3.5 rounded-xl text-sm text-gray-700 outline-none transition-all";
+/* ── Username validation ── */
+function checkUsername(username, agencyName) {
+  const normalizedUsername  = username.trim().toLowerCase();
+  const normalizedAgencyName = agencyName.trim().toLowerCase();
+
+  if (!normalizedUsername) return "";
+
+  if (normalizedUsername === normalizedAgencyName)
+    return "Username cannot be the same as your agency name.";
+
+  const nameParts = normalizedAgencyName.split(/\s+/).filter(Boolean);
+  const containsPart = nameParts.some(
+    part => part.length > 2 && normalizedUsername.includes(part)
+  );
+
+  if (containsPart)
+    return "Username should not contain your agency name.";
+
+  return "";
+}
+
+const inputBase   = "w-full px-4 py-3.5 rounded-xl text-sm text-gray-700 outline-none transition-all";
 const inputActive = "border-[1.5px] border-blue-400 bg-blue-50 shadow-[0_0_0_3px_rgba(79,124,255,0.1)]";
-const inputIdle = "border border-gray-200 bg-white";
+const inputIdle   = "border border-gray-200 bg-white";
+const inputError  = "border-[1.5px] border-red-400 bg-red-50 shadow-[0_0_0_3px_rgba(239,68,68,0.1)]";
 
 const InsightCard = ({ type, children }) => {
   const styles = {
@@ -47,6 +69,8 @@ const Step1Account = ({ formData = {}, updateData = () => {}, next = () => {} })
   const [country,    setCountry]    = useState(formData.country    || "");
   const [password,   setPassword]   = useState(formData.password   || "");
   const [confirm,    setConfirm]    = useState(formData.confirmPassword || "");
+  const [username,   setUsername]   = useState(formData.username   || "");
+  const [usernameMsg, setUsernameMsg] = useState("");
 
   const strength       = getStrength(password);
   const passwordsMatch = password && confirm && password === confirm;
@@ -55,9 +79,26 @@ const Step1Account = ({ formData = {}, updateData = () => {}, next = () => {} })
   const bizEmail       = email.includes("@") && !isFree(email) && email.split("@")[1]?.includes(".");
   const nameGood       = agencyName.trim().length >= 5;
   const bars           = [1,2,3,4].map(i => password && i <= strength.score ? strength.color : "#e5e7eb");
-  const hasInsights    = freeEmail || nameGood || bizEmail || tooShort;
+  const hasInsights    = freeEmail || nameGood || bizEmail || tooShort || (username && !usernameMsg);
 
-  const handleNext = () => { updateData({ agencyName, email, country, password, confirmPassword: confirm }); next(); };
+  /* ── Handlers ── */
+  const handleUsernameChange = (e) => {
+    const val = e.target.value;
+    setUsername(val);
+    setUsernameMsg(checkUsername(val, agencyName));
+  };
+
+  const handleAgencyNameChange = (e) => {
+    const val = e.target.value;
+    setAgencyName(val);
+    // Re-run check when agency name changes too
+    if (username) setUsernameMsg(checkUsername(username, val));
+  };
+
+  const handleNext = () => {
+    updateData({ agencyName, email, country, password, confirmPassword: confirm, username });
+    next();
+  };
 
   return (
     <div className="flex flex-col lg:flex-row gap-5 items-start w-full">
@@ -81,7 +122,7 @@ const Step1Account = ({ formData = {}, updateData = () => {}, next = () => {} })
           <div className="mb-5">
             <label className="block text-sm font-semibold text-gray-900 mb-2">Agency Name (Display Name) *</label>
             <input type="text" placeholder="e.g., TechVision Digital Agency" value={agencyName} maxLength={50}
-              onChange={e => setAgencyName(e.target.value)}
+              onChange={handleAgencyNameChange}
               className={`${inputBase} ${agencyName ? inputActive : inputIdle}`} />
             <div className="text-xs text-gray-400 mt-1">{agencyName.length}/50 characters</div>
           </div>
@@ -115,6 +156,24 @@ const Step1Account = ({ formData = {}, updateData = () => {}, next = () => {} })
               </select>
               <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-[11px]">▼</div>
             </div>
+          </div>
+
+          {/* Username */}
+          <div className="mb-5">
+            <label className="block text-sm font-semibold text-gray-900 mb-2">Username *</label>
+            <input
+              type="text"
+              placeholder="e.g. @digital12"
+              value={username}
+              maxLength={30}
+              onChange={handleUsernameChange}
+              className={`${inputBase} ${usernameMsg ? inputError : username ? inputActive : inputIdle}`}
+            />
+            {usernameMsg && (
+              <div className="flex items-center gap-1 text-xs text-red-600 font-semibold mt-1">
+                <MdOutlineWarningAmber size={13} /> {usernameMsg}
+              </div>
+            )}
           </div>
 
           {/* Password Row */}
@@ -163,10 +222,12 @@ const Step1Account = ({ formData = {}, updateData = () => {}, next = () => {} })
           </div>
           <div className="flex flex-col gap-2.5">
             {freeEmail && <InsightCard type="warn"><MdOutlineWarningAmber className="shrink-0 mt-0.5 text-sm" />Business email preferred. Free email providers may reduce trust.</InsightCard>}
-            {nameGood && <InsightCard type="success"><MdCheckCircleOutline className="shrink-0 text-sm" />Agency name looks good.</InsightCard>}
+            {nameGood  && <InsightCard type="success"><MdCheckCircleOutline className="shrink-0 text-sm" />Agency name looks good.</InsightCard>}
             {bizEmail && !freeEmail && <InsightCard type="success"><MdCheckCircleOutline className="shrink-0 text-sm" />Business email detected. Great for client trust!</InsightCard>}
-            {tooShort && <InsightCard type="error"><MdOutlineWarningAmber className="shrink-0 mt-0.5 text-sm" />Password must be at least 8 characters long.</InsightCard>}
-            {!hasInsights && <p className="text-xs text-gray-400 text-center py-2">Start filling the form to see AI suggestions...</p>}
+            {tooShort  && <InsightCard type="error"><MdOutlineWarningAmber className="shrink-0 mt-0.5 text-sm" />Password must be at least 8 characters long.</InsightCard>}
+            {username && !usernameMsg && <InsightCard type="success"><MdCheckCircleOutline className="shrink-0 text-sm" />Username looks good.</InsightCard>}
+            {usernameMsg && <InsightCard type="error"><MdOutlineWarningAmber className="shrink-0 mt-0.5 text-sm" />{usernameMsg}</InsightCard>}
+            {!hasInsights && !usernameMsg && <p className="text-xs text-gray-400 text-center py-2">Start filling the form to see AI suggestions...</p>}
           </div>
         </div>
       </div>

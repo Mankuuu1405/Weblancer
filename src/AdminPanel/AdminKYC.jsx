@@ -1,11 +1,38 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import {
-  StatCard, Avatar, SearchBar, FilterSelect,
-  ActionBtn, PageHeader, Table, SectionCard, InfoRow
-} from "./AdminComponents";
 
-// ─── MOCK DATA ────────────────────────────────────────────────────────────────
+/* ── Theme tokens ── */
+const G = {
+  green:       "#6EC030",
+  greenDeep:   "#2E7D1F",
+  greenBg:     "#f1fce8",
+  greenBorder: "#d4edbb",
+
+  navy:        "#1A2B5E",
+  navyDeep:    "#0F1A3B",
+  gradNavy:    "linear-gradient(135deg, #4A6FA5 0%, #0F1A3B 100%)",
+
+  text:        "#1C1C1C",
+  sub:         "#4b5563",
+  muted:       "#9ca3af",
+  border:      "#e5e7eb",
+  bg:          "#f9fafb",
+  white:       "#ffffff",
+
+  amber:       "#f59e0b",
+  amberBg:     "#fffbeb",
+  amberBorder: "#fde68a",
+  red:         "#ef4444",
+  redBg:       "#fef2f2",
+  redBorder:   "#fecaca",
+  blue:        "#2563eb",
+  blueBg:      "#eff6ff",
+  blueBorder:  "#bfdbfe",
+};
+
+const FONT = "'Poppins', sans-serif";
+
+/* ══════════════════ MOCK DATA ══════════════════ */
 const mockKYC = [
   {
     id: "KYC-001", userId: "FL-001", name: "Rahul Sharma", email: "rahul@gmail.com",
@@ -13,9 +40,9 @@ const mockKYC = [
     status: "Pending", priority: "Normal",
     submittedDate: "Mar 12, 2026", waitDays: 2,
     documents: [
-      { name: "Aadhaar Card",   docType: "Government ID",    status: "Submitted", aiCheck: "Pass",   aiScore: 94, note: "" },
-      { name: "PAN Card",       docType: "Tax ID",           status: "Submitted", aiCheck: "Pass",   aiScore: 91, note: "" },
-      { name: "Bank Statement", docType: "Financial Proof",  status: "Submitted", aiCheck: "Review", aiScore: 72, note: "Low resolution — may need re-upload" },
+      { name: "Aadhaar Card",   docType: "Government ID",   status: "Submitted", aiCheck: "Pass",   aiScore: 94, note: "" },
+      { name: "PAN Card",       docType: "Tax ID",          status: "Submitted", aiCheck: "Pass",   aiScore: 91, note: "" },
+      { name: "Bank Statement", docType: "Financial Proof", status: "Submitted", aiCheck: "Review", aiScore: 72, note: "Low resolution — may need re-upload" },
     ],
     aiOverallScore: 86, aiRecommendation: "Approve",
     previousAttempts: 0, country: "India", payoutBlocked: false,
@@ -97,217 +124,420 @@ const mockKYC = [
   },
 ];
 
-// ─── STYLE MAPS ───────────────────────────────────────────────────────────────
-const statusStyle = {
-  "Pending":            "bg-yellow-50 text-yellow-700 border border-yellow-200",
-  "Approved":           "bg-green-50 text-green-700 border border-green-200",
-  "Rejected":           "bg-red-50 text-red-700 border border-red-200",
-  "Re-upload Required": "bg-orange-50 text-orange-700 border border-orange-200",
-  "Under Review":       "bg-blue-50 text-blue-700 border border-blue-200",
-};
+/* ══════════════════ SHARED SUB-COMPONENTS ══════════════════ */
 
-const aiCheckStyle = {
-  Pass:   "bg-green-50 text-green-700 border border-green-200",
-  Review: "bg-yellow-50 text-yellow-700 border border-yellow-200",
-  Fail:   "bg-red-50 text-red-700 border border-red-200",
-};
-
-const priorityDot = { High: "bg-red-500", Normal: "bg-gray-300", Low: "bg-gray-200" };
-
-// ─── SHARED TABLE ─────────────────────────────────────────────────────────────
-function KYCTable({ data, onSelect }) {
+function Avatar({ name }) {
+  const colors = ["#3b82f6","#8b5cf6","#f59e0b","#ef4444","#6EC030","#1A2B5E"];
+  const idx = name.charCodeAt(0) % colors.length;
+  const initials = name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase();
   return (
-    <Table headers={["Applicant", "Type", "Status", "AI Score", "AI Rec.", "Docs", "Wait", "Attempts", "Priority", "Actions"]}>
-      {data.map((k) => (
-        <tr key={k.id}
-          className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors cursor-pointer group"
-          onClick={() => onSelect(k)}>
-          <td className="py-3 pr-4">
-            <div className="flex items-center gap-2.5">
-              <Avatar name={k.name} size="sm" />
-              <div>
-                <p className="text-sm font-semibold text-gray-800">{k.name}</p>
-                <p className="text-xs text-gray-400">{k.email}</p>
-                <p className="text-[10px] text-gray-300">{k.id}</p>
-              </div>
-            </div>
-          </td>
-          <td className="py-3 pr-4">
-            <p className="text-xs font-semibold text-gray-700">{k.type}</p>
-            <p className="text-[10px] text-gray-400">{k.subType}</p>
-          </td>
-          <td className="py-3 pr-4">
-            <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${statusStyle[k.status]}`}>
-              {k.status}
-            </span>
-          </td>
-          <td className="py-3 pr-4">
-            <div className="flex items-center gap-2">
-              <div className="w-12 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                <div
-                  className={`h-full rounded-full ${k.aiOverallScore >= 80 ? "bg-green-500" : k.aiOverallScore >= 60 ? "bg-yellow-400" : "bg-red-400"}`}
-                  style={{ width: `${k.aiOverallScore}%` }}
-                />
-              </div>
-              <span className={`text-xs font-bold ${k.aiOverallScore >= 80 ? "text-green-600" : k.aiOverallScore >= 60 ? "text-yellow-600" : "text-red-500"}`}>
-                {k.aiOverallScore}
-              </span>
-            </div>
-          </td>
-          <td className="py-3 pr-4">
-            <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${
-              k.aiRecommendation === "Approve" ? "bg-green-50 text-green-700 border border-green-200"
-              : k.aiRecommendation.includes("Reject") ? "bg-red-50 text-red-700 border border-red-200"
-              : "bg-yellow-50 text-yellow-700 border border-yellow-200"
-            }`}>
-              {k.aiRecommendation}
-            </span>
-          </td>
-          <td className="py-3 pr-4 text-center text-sm font-semibold text-gray-700">{k.documents.length}</td>
-          <td className="py-3 pr-4">
-            <span className={`text-xs font-semibold ${k.waitDays > 3 ? "text-red-500" : k.waitDays > 1 ? "text-yellow-600" : "text-gray-500"}`}>
-              {k.waitDays === 0 ? "—" : `${k.waitDays}d`}
-            </span>
-          </td>
-          <td className="py-3 pr-4 text-center">
-            <span className={`text-xs font-semibold ${k.previousAttempts > 1 ? "text-red-500" : "text-gray-600"}`}>
-              {k.previousAttempts}
-            </span>
-          </td>
-          <td className="py-3 pr-4">
-            <div className="flex items-center gap-1.5">
-              <span className={`w-2 h-2 rounded-full ${priorityDot[k.priority]}`} />
-              <span className="text-xs text-gray-500">{k.priority}</span>
-            </div>
-          </td>
-          <td className="py-3">
-            <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-              <ActionBtn label="Review" variant="primary" onClick={(e) => { e.stopPropagation(); onSelect(k); }} />
-            </div>
-          </td>
-        </tr>
-      ))}
-    </Table>
+    <div style={{
+      width: 32, height: 32, borderRadius: "50%",
+      background: colors[idx] + "22", border: `1.5px solid ${colors[idx]}44`,
+      display: "flex", alignItems: "center", justifyContent: "center",
+      fontSize: 11, fontWeight: 700, color: colors[idx], flexShrink: 0,
+    }}>{initials}</div>
   );
 }
 
-// ─── DETAIL DRAWER ────────────────────────────────────────────────────────────
+const STAT_COLOR = {
+  gray:   { bg: G.bg,       border: G.border,       val: G.text,      label: G.muted    },
+  green:  { bg: G.greenBg,  border: G.greenBorder,  val: G.greenDeep, label: G.greenDeep },
+  orange: { bg: G.amberBg,  border: G.amberBorder,  val: "#b45309",   label: "#b45309"  },
+  red:    { bg: G.redBg,    border: G.redBorder,     val: "#dc2626",   label: "#dc2626"  },
+};
+
+function StatCard({ label, value, sub, color = "gray" }) {
+  const c = STAT_COLOR[color];
+  return (
+    <div style={{
+      background: c.bg, border: `1px solid ${c.border}`,
+      borderRadius: 14, padding: "16px 20px", flex: 1,
+      boxShadow: "0 2px 8px rgba(110,192,48,0.05)",
+    }}>
+      <p style={{ fontSize: 10, fontWeight: 700, color: c.label, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>{label}</p>
+      <p style={{ fontSize: 26, fontWeight: 800, color: c.val, margin: 0, lineHeight: 1 }}>{value}</p>
+      {sub && <p style={{ fontSize: 11, color: G.muted, marginTop: 5 }}>{sub}</p>}
+    </div>
+  );
+}
+
+function SectionCard({ title, children }) {
+  return (
+    <div style={{
+      background: G.white, border: `1px solid ${G.greenBorder}`,
+      borderRadius: 16, overflow: "hidden",
+      boxShadow: "0 2px 12px rgba(110,192,48,0.06)",
+    }}>
+      <div style={{ padding: "12px 20px", borderBottom: `1px solid ${G.greenBorder}`, background: G.greenBg }}>
+        <p style={{ fontSize: 12, fontWeight: 800, color: G.greenDeep, margin: 0, textTransform: "uppercase", letterSpacing: "0.06em" }}>{title}</p>
+      </div>
+      <div style={{ padding: "20px" }}>{children}</div>
+    </div>
+  );
+}
+
+function InfoRow({ label, value }) {
+  return (
+    <div style={{
+      display: "flex", justifyContent: "space-between", alignItems: "center",
+      padding: "9px 0", borderBottom: `1px solid ${G.border}`,
+    }}>
+      <span style={{ fontSize: 12, color: G.muted, fontWeight: 600 }}>{label}</span>
+      <span style={{ fontSize: 12, color: G.text, fontWeight: 700 }}>{value}</span>
+    </div>
+  );
+}
+
+/* ── Status badge ── */
+const STATUS_MAP = {
+  "Pending":            { bg: G.amberBg,  border: G.amberBorder, text: "#92400e",   dot: G.amber    },
+  "Approved":           { bg: G.greenBg,  border: G.greenBorder, text: G.greenDeep, dot: G.green    },
+  "Rejected":           { bg: G.redBg,    border: G.redBorder,   text: "#dc2626",   dot: G.red      },
+  "Re-upload Required": { bg: G.amberBg,  border: G.amberBorder, text: "#92400e",   dot: G.amber    },
+  "Under Review":       { bg: G.blueBg,   border: G.blueBorder,  text: G.blue,      dot: G.blue     },
+};
+
+function StatusBadge({ status }) {
+  const s = STATUS_MAP[status] || { bg: G.bg, border: G.border, text: G.muted, dot: G.muted };
+  return (
+    <span style={{
+      display: "inline-flex", alignItems: "center", gap: 5,
+      fontSize: 11, fontWeight: 700,
+      background: s.bg, color: s.text,
+      border: `1px solid ${s.border}`,
+      padding: "3px 10px", borderRadius: 99,
+    }}>
+      <span style={{ width: 5, height: 5, borderRadius: "50%", background: s.dot }} />
+      {status}
+    </span>
+  );
+}
+
+/* ── AI check badge ── */
+const AI_CHECK_MAP = {
+  Pass:   { bg: G.greenBg,  border: G.greenBorder, text: G.greenDeep },
+  Review: { bg: G.amberBg,  border: G.amberBorder, text: "#92400e"   },
+  Fail:   { bg: G.redBg,    border: G.redBorder,   text: "#dc2626"   },
+};
+
+function AICheckBadge({ check }) {
+  const s = AI_CHECK_MAP[check] || AI_CHECK_MAP.Review;
+  return (
+    <span style={{
+      fontSize: 10, fontWeight: 700,
+      background: s.bg, color: s.text,
+      border: `1px solid ${s.border}`,
+      padding: "2px 8px", borderRadius: 99,
+    }}>{check}</span>
+  );
+}
+
+/* ── AI recommendation badge ── */
+function AIRecBadge({ rec }) {
+  const isApprove = rec === "Approve";
+  const isReject  = rec.includes("Reject");
+  const s = isApprove
+    ? { bg: G.greenBg,  border: G.greenBorder, text: G.greenDeep }
+    : isReject
+    ? { bg: G.redBg,    border: G.redBorder,   text: "#dc2626"   }
+    : { bg: G.amberBg,  border: G.amberBorder, text: "#92400e"   };
+  return (
+    <span style={{
+      fontSize: 10, fontWeight: 700,
+      background: s.bg, color: s.text,
+      border: `1px solid ${s.border}`,
+      padding: "2px 8px", borderRadius: 99,
+    }}>{rec}</span>
+  );
+}
+
+/* ── AI score bar ── */
+function AIScoreBar({ score }) {
+  const color = score >= 80 ? G.greenDeep : score >= 60 ? "#b45309" : "#dc2626";
+  const barColor = score >= 80 ? G.green   : score >= 60 ? G.amber  : G.red;
+  const bg    = score >= 80 ? G.greenBg   : score >= 60 ? G.amberBg  : G.redBg;
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+      <div style={{ width: 44, height: 5, background: G.border, borderRadius: 99, overflow: "hidden" }}>
+        <div style={{ width: `${score}%`, height: "100%", background: barColor, borderRadius: 99 }} />
+      </div>
+      <span style={{ fontSize: 11, fontWeight: 700, color, background: bg, padding: "2px 7px", borderRadius: 99 }}>{score}</span>
+    </div>
+  );
+}
+
+/* ── Priority dot ── */
+const PRIORITY_DOT = {
+  High:   G.red,
+  Normal: G.muted,
+  Low:    G.border,
+};
+
+function PriorityIndicator({ priority }) {
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+      <span style={{ width: 7, height: 7, borderRadius: "50%", background: PRIORITY_DOT[priority] || G.muted, flexShrink: 0 }} />
+      <span style={{ fontSize: 12, color: G.sub }}>{priority}</span>
+    </div>
+  );
+}
+
+/* ── Wait days ── */
+function WaitDays({ days }) {
+  if (days === 0) return <span style={{ fontSize: 12, color: G.border }}>—</span>;
+  const color = days > 3 ? "#dc2626" : days > 1 ? "#b45309" : G.muted;
+  return <span style={{ fontSize: 12, fontWeight: 700, color }}>{days}d</span>;
+}
+
+const btnNavy = {
+  display: "inline-flex", alignItems: "center", gap: 6,
+  fontSize: 12, fontWeight: 700, fontFamily: FONT,
+  background: G.gradNavy, color: G.white,
+  border: "none", borderRadius: 100, padding: "8px 16px",
+  cursor: "pointer", boxShadow: "0 3px 12px rgba(15,26,59,0.25)",
+  whiteSpace: "nowrap",
+};
+const btnOutline = {
+  ...btnNavy,
+  background: G.greenBg, color: G.greenDeep,
+  border: `1px solid ${G.greenBorder}`,
+  boxShadow: "none",
+};
+
+const HEADERS = ["Applicant","Type","Status","AI Score","AI Rec.","Docs","Wait","Attempts","Priority","Actions"];
+
+/* ══════════════════ KYC TABLE ══════════════════ */
+function KYCTable({ data, onSelect, hovRow, setHovRow }) {
+  return (
+    <div style={{ overflowX: "auto" }}>
+      <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 1000 }}>
+        <thead>
+          <tr style={{ background: G.bg, borderBottom: `1px solid ${G.greenBorder}` }}>
+            {HEADERS.map(h => (
+              <th key={h} style={{
+                padding: "10px 14px", fontSize: 10, fontWeight: 700,
+                color: G.muted, textTransform: "uppercase",
+                letterSpacing: "0.07em", textAlign: "left", whiteSpace: "nowrap",
+              }}>{h}</th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {data.map(k => (
+            <tr
+              key={k.id}
+              style={{
+                borderBottom: `1px solid ${G.border}`,
+                background: hovRow === k.id ? G.greenBg : G.white,
+                cursor: "pointer", transition: "background 0.1s",
+              }}
+              onMouseEnter={() => setHovRow(k.id)}
+              onMouseLeave={() => setHovRow(null)}
+              onClick={() => onSelect(k)}
+            >
+              {/* Applicant */}
+              <td style={{ padding: "12px 14px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <Avatar name={k.name} />
+                  <div>
+                    <p style={{ fontSize: 13, fontWeight: 700, color: G.text, margin: 0 }}>{k.name}</p>
+                    <p style={{ fontSize: 11, color: G.muted, margin: 0 }}>{k.email}</p>
+                    <p style={{ fontSize: 10, color: G.border, margin: 0 }}>{k.id}</p>
+                  </div>
+                </div>
+              </td>
+              <td style={{ padding: "12px 14px" }}>
+                <p style={{ fontSize: 12, fontWeight: 700, color: G.text, margin: 0 }}>{k.type}</p>
+                <p style={{ fontSize: 10, color: G.muted, margin: 0 }}>{k.subType}</p>
+              </td>
+              <td style={{ padding: "12px 14px" }}><StatusBadge status={k.status} /></td>
+              <td style={{ padding: "12px 14px" }}><AIScoreBar score={k.aiOverallScore} /></td>
+              <td style={{ padding: "12px 14px" }}><AIRecBadge rec={k.aiRecommendation} /></td>
+              <td style={{ padding: "12px 14px", textAlign: "center", fontSize: 13, fontWeight: 700, color: G.text }}>{k.documents.length}</td>
+              <td style={{ padding: "12px 14px" }}><WaitDays days={k.waitDays} /></td>
+              <td style={{ padding: "12px 14px", textAlign: "center" }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: k.previousAttempts > 1 ? "#dc2626" : G.sub }}>
+                  {k.previousAttempts}
+                </span>
+              </td>
+              <td style={{ padding: "12px 14px" }}><PriorityIndicator priority={k.priority} /></td>
+              <td style={{ padding: "12px 14px" }} onClick={e => e.stopPropagation()}>
+                <div style={{ opacity: hovRow === k.id ? 1 : 0, transition: "opacity 0.15s" }}>
+                  <button
+                    onClick={e => { e.stopPropagation(); onSelect(k); }}
+                    style={{
+                      fontSize: 11, fontWeight: 700, fontFamily: FONT,
+                      background: G.gradNavy, color: G.white,
+                      border: "none", borderRadius: 100, padding: "6px 12px",
+                      cursor: "pointer", boxShadow: "0 2px 8px rgba(15,26,59,0.22)",
+                    }}>Review</button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+/* ══════════════════ KYC DRAWER ══════════════════ */
 function KYCDrawer({ kyc, onClose, onAction }) {
-  const [decision, setDecision] = useState("");
+  const [decision,     setDecision]     = useState("");
   const [rejectReason, setRejectReason] = useState("");
   const [reuploadNote, setReuploadNote] = useState("");
 
   if (!kyc) return null;
 
   const isPending = kyc.status === "Pending" || kyc.status === "Under Review";
+  const scoreColor  = kyc.aiOverallScore >= 80 ? G.greenDeep : kyc.aiOverallScore >= 60 ? "#b45309" : "#dc2626";
+  const scoreBg     = kyc.aiOverallScore >= 80 ? G.greenBg   : kyc.aiOverallScore >= 60 ? G.amberBg  : G.redBg;
+  const scoreBorder = kyc.aiOverallScore >= 80 ? G.greenBorder : kyc.aiOverallScore >= 60 ? G.amberBorder : G.redBorder;
+  const scoreBar    = kyc.aiOverallScore >= 80 ? G.green       : kyc.aiOverallScore >= 60 ? G.amber       : G.red;
+
+  const DECISIONS = [
+    { key: "approve",  label: "✓ Approve KYC",        desc: "All docs verified — account fully unlocked",    activeBg: G.greenBg,  activeBorder: G.green,      activeText: G.greenDeep },
+    { key: "reject",   label: "✕ Reject KYC",          desc: "Documents invalid or fraudulent",               activeBg: G.redBg,    activeBorder: G.red,        activeText: "#dc2626"   },
+    { key: "reupload", label: "↩ Request Re-upload",   desc: "Some documents need to be resubmitted",         activeBg: G.amberBg,  activeBorder: G.amber,      activeText: "#92400e"   },
+    { key: "review",   label: "⏳ Mark Under Review",  desc: "Flag for deeper manual review",                  activeBg: G.blueBg,   activeBorder: G.blue,       activeText: G.blue      },
+  ];
+
+  const REJECT_REASONS = [
+    "Document appears tampered or forged",
+    "Name mismatch with account",
+    "Expired document submitted",
+    "Poor image quality — unreadable",
+    "Wrong document type",
+    "Other",
+  ];
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/20" />
-      <div className="relative w-full max-w-xl bg-white h-full overflow-y-auto shadow-2xl" onClick={(e) => e.stopPropagation()}>
-
-        {/* Sticky Header */}
-        <div className="px-5 py-4 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white z-10">
+    <div style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", justifyContent: "flex-end" }} onClick={onClose}>
+      <div style={{ position: "absolute", inset: 0, background: "rgba(15,26,59,0.18)" }} />
+      <div
+        style={{
+          position: "relative", width: "100%", maxWidth: 520,
+          background: G.white, height: "100%", overflowY: "auto",
+          boxShadow: "-8px 0 40px rgba(15,26,59,0.15)",
+        }}
+        onClick={e => e.stopPropagation()}
+      >
+        {/* Sticky header */}
+        <div style={{
+          padding: "16px 20px",
+          borderBottom: `1px solid ${G.greenBorder}`,
+          display: "flex", alignItems: "center", justifyContent: "space-between",
+          position: "sticky", top: 0, background: G.white, zIndex: 10,
+          boxShadow: "0 2px 8px rgba(110,192,48,0.07)",
+        }}>
           <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <h2 className="text-base font-bold text-gray-900">{kyc.name}</h2>
-              <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${statusStyle[kyc.status]}`}>{kyc.status}</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 4 }}>
+              <span style={{ fontSize: 15, fontWeight: 800, color: G.text }}>{kyc.name}</span>
+              <StatusBadge status={kyc.status} />
             </div>
-            <p className="text-xs text-gray-400 mt-0.5">{kyc.id} · {kyc.type} · {kyc.email}</p>
+            <p style={{ fontSize: 11, color: G.muted, margin: 0 }}>{kyc.id} · {kyc.type} · {kyc.email}</p>
           </div>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 text-lg leading-none">✕</button>
+          <button onClick={onClose} style={{
+            background: G.bg, border: `1px solid ${G.border}`,
+            borderRadius: "50%", width: 30, height: 30,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: 14, color: G.muted, cursor: "pointer", fontFamily: FONT,
+            flexShrink: 0,
+          }}>✕</button>
         </div>
 
-        <div className="p-5 space-y-5">
+        <div style={{ padding: 20, display: "flex", flexDirection: "column", gap: 20 }}>
 
           {/* AI Score Banner */}
-          <div className={`p-4 rounded-xl border ${
-            kyc.aiOverallScore >= 80 ? "bg-green-50 border-green-100"
-            : kyc.aiOverallScore >= 60 ? "bg-yellow-50 border-yellow-100"
-            : "bg-red-50 border-red-100"
-          }`}>
-            <div className="flex items-center justify-between mb-2">
-              <span className={`text-sm font-bold ${kyc.aiOverallScore >= 80 ? "text-green-800" : kyc.aiOverallScore >= 60 ? "text-yellow-800" : "text-red-800"}`}>
-                ◎ AI Pre-Check Result
-              </span>
-              <span className={`text-2xl font-black ${kyc.aiOverallScore >= 80 ? "text-green-600" : kyc.aiOverallScore >= 60 ? "text-yellow-600" : "text-red-500"}`}>
-                {kyc.aiOverallScore}
-                <span className="text-sm font-normal">/100</span>
+          <div style={{
+            padding: 16, borderRadius: 14,
+            background: scoreBg, border: `1px solid ${scoreBorder}`,
+          }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+              <span style={{ fontSize: 13, fontWeight: 700, color: scoreColor }}>◎ AI Pre-Check Result</span>
+              <span style={{ fontSize: 24, fontWeight: 900, color: scoreColor, lineHeight: 1 }}>
+                {kyc.aiOverallScore}<span style={{ fontSize: 13, fontWeight: 400 }}>/100</span>
               </span>
             </div>
-            <div className="h-2 bg-white/70 rounded-full overflow-hidden mb-2">
-              <div className={`h-full rounded-full transition-all ${kyc.aiOverallScore >= 80 ? "bg-green-500" : kyc.aiOverallScore >= 60 ? "bg-yellow-400" : "bg-red-400"}`}
-                style={{ width: `${kyc.aiOverallScore}%` }} />
+            <div style={{ height: 8, background: "rgba(255,255,255,0.6)", borderRadius: 99, overflow: "hidden", marginBottom: 10 }}>
+              <div style={{ width: `${kyc.aiOverallScore}%`, height: "100%", background: scoreBar, borderRadius: 99 }} />
             </div>
-            <div className="flex justify-between text-xs">
-              <span className={kyc.aiOverallScore >= 80 ? "text-green-600" : kyc.aiOverallScore >= 60 ? "text-yellow-600" : "text-red-600"}>
-                AI Recommendation
-              </span>
-              <span className={`font-bold ${kyc.aiOverallScore >= 80 ? "text-green-700" : kyc.aiOverallScore >= 60 ? "text-yellow-700" : "text-red-600"}`}>
-                {kyc.aiRecommendation}
-              </span>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12 }}>
+              <span style={{ color: scoreColor, fontWeight: 600 }}>AI Recommendation</span>
+              <span style={{ fontWeight: 800, color: scoreColor }}>{kyc.aiRecommendation}</span>
             </div>
           </div>
 
           {/* Applicant Info */}
           <SectionCard title="Applicant Information">
-            <InfoRow label="Full Name"    value={kyc.name} />
-            <InfoRow label="Email"        value={kyc.email} />
-            <InfoRow label="Type"         value={`${kyc.type} — ${kyc.subType}`} />
-            <InfoRow label="Country"      value={kyc.country} />
-            <InfoRow label="Submitted"    value={kyc.submittedDate} />
+            <InfoRow label="Full Name"     value={kyc.name} />
+            <InfoRow label="Email"         value={kyc.email} />
+            <InfoRow label="Type"          value={`${kyc.type} — ${kyc.subType}`} />
+            <InfoRow label="Country"       value={kyc.country} />
+            <InfoRow label="Submitted"     value={kyc.submittedDate} />
             <InfoRow label="Past Attempts" value={
               kyc.previousAttempts > 0
-                ? <span className="text-red-500 font-bold">{kyc.previousAttempts} failed</span>
+                ? <span style={{ color: "#dc2626", fontWeight: 700 }}>{kyc.previousAttempts} failed</span>
                 : "First submission"
             } />
             <InfoRow label="Payout Status" value={
               kyc.payoutBlocked
-                ? <span className="text-red-500 font-semibold">Blocked — pending KYC</span>
-                : <span className="text-green-600 font-semibold">Unlocked</span>
+                ? <span style={{ color: "#dc2626", fontWeight: 700 }}>Blocked — pending KYC</span>
+                : <span style={{ color: G.greenDeep, fontWeight: 700 }}>Unlocked</span>
             } />
           </SectionCard>
 
           {/* Documents */}
           <SectionCard title={`Documents — ${kyc.documents.length} submitted`}>
-            <div className="space-y-3">
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               {kyc.documents.map((doc, i) => (
-                <div key={i} className="p-3 bg-gray-50 rounded-xl border border-gray-100">
-                  <div className="flex items-start justify-between mb-2">
+                <div key={i} style={{
+                  padding: 14, background: G.bg,
+                  borderRadius: 12, border: `1px solid ${G.border}`,
+                }}>
+                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 10 }}>
                     <div>
-                      <p className="text-sm font-semibold text-gray-800">{doc.name}</p>
-                      <p className="text-xs text-gray-400">{doc.docType}</p>
+                      <p style={{ fontSize: 13, fontWeight: 700, color: G.text, margin: 0 }}>{doc.name}</p>
+                      <p style={{ fontSize: 11, color: G.muted, margin: "3px 0 0" }}>{doc.docType}</p>
                     </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded-full ${aiCheckStyle[doc.aiCheck]}`}>
-                        {doc.aiCheck}
-                      </span>
-                      <span className={`text-xs font-bold ${doc.aiScore >= 80 ? "text-green-600" : doc.aiScore >= 60 ? "text-yellow-600" : "text-red-500"}`}>
-                        {doc.aiScore}%
-                      </span>
+                    <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
+                      <AICheckBadge check={doc.aiCheck} />
+                      <span style={{
+                        fontSize: 11, fontWeight: 700,
+                        color: doc.aiScore >= 80 ? G.greenDeep : doc.aiScore >= 60 ? "#b45309" : "#dc2626",
+                      }}>{doc.aiScore}%</span>
                     </div>
                   </div>
 
                   {/* Doc preview placeholder */}
-                  <div className="h-16 bg-white rounded-lg border border-gray-200 border-dashed flex items-center justify-center mb-2">
-                    <div className="text-center">
-                      <span className="text-xl">📄</span>
-                      <p className="text-[10px] text-gray-400 mt-0.5">{doc.name}</p>
-                    </div>
+                  <div style={{
+                    height: 60, background: G.white,
+                    borderRadius: 10, border: `1.5px dashed ${G.greenBorder}`,
+                    display: "flex", flexDirection: "column",
+                    alignItems: "center", justifyContent: "center", marginBottom: 10,
+                  }}>
+                    <span style={{ fontSize: 20 }}>📄</span>
+                    <p style={{ fontSize: 10, color: G.muted, margin: "2px 0 0" }}>{doc.name}</p>
                   </div>
 
                   {doc.note && (
-                    <div className="flex items-start gap-1.5 p-2 bg-yellow-50 rounded-lg border border-yellow-100 mb-2">
-                      <span className="text-yellow-500 text-xs mt-0.5 shrink-0">⚠</span>
-                      <p className="text-xs text-yellow-700">{doc.note}</p>
+                    <div style={{
+                      display: "flex", alignItems: "flex-start", gap: 8,
+                      padding: "8px 12px",
+                      background: G.amberBg, border: `1px solid ${G.amberBorder}`,
+                      borderRadius: 8, marginBottom: 10,
+                    }}>
+                      <span style={{ color: G.amber, fontSize: 12, marginTop: 1, flexShrink: 0 }}>⚠</span>
+                      <p style={{ fontSize: 12, color: "#92400e", margin: 0 }}>{doc.note}</p>
                     </div>
                   )}
 
-                  <div className="flex items-center gap-3">
-                    <button className="text-xs text-blue-600 hover:underline font-medium">View Full</button>
-                    <button className="text-xs text-blue-600 hover:underline font-medium">Download</button>
+                  <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+                    <button style={{ fontSize: 12, color: G.blue, background: "none", border: "none", cursor: "pointer", fontFamily: FONT, fontWeight: 600, padding: 0 }}>View Full</button>
+                    <button style={{ fontSize: 12, color: G.blue, background: "none", border: "none", cursor: "pointer", fontFamily: FONT, fontWeight: 600, padding: 0 }}>Download</button>
                     {doc.status !== "Approved" && (
-                      <button className="text-xs text-red-400 hover:underline font-medium ml-auto">Flag</button>
+                      <button style={{ fontSize: 12, color: G.red, background: "none", border: "none", cursor: "pointer", fontFamily: FONT, fontWeight: 600, padding: 0, marginLeft: "auto" }}>Flag</button>
                     )}
                   </div>
                 </div>
@@ -318,49 +548,42 @@ function KYCDrawer({ kyc, onClose, onAction }) {
           {/* Decision Panel */}
           {isPending ? (
             <SectionCard title="Admin Decision">
-              <div className="space-y-2 mb-4">
-                {[
-                  { key: "approve",  label: "✓ Approve KYC",          desc: "All docs verified — account fully unlocked",         color: "green"  },
-                  { key: "reject",   label: "✕ Reject KYC",           desc: "Documents invalid or fraudulent",                    color: "red"    },
-                  { key: "reupload", label: "↩ Request Re-upload",    desc: "Some documents need to be resubmitted",              color: "orange" },
-                  { key: "review",   label: "⏳ Mark Under Review",   desc: "Flag for deeper manual review",                      color: "blue"   },
-                ].map((d) => (
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16 }}>
+                {DECISIONS.map(d => (
                   <button key={d.key} onClick={() => setDecision(decision === d.key ? "" : d.key)}
-                    className={`w-full text-left px-3 py-2.5 rounded-lg border transition-colors ${
-                      decision === d.key
-                        ? d.color === "green"  ? "border-green-400 bg-green-50"
-                        : d.color === "red"    ? "border-red-400 bg-red-50"
-                        : d.color === "orange" ? "border-orange-400 bg-orange-50"
-                        : "border-blue-400 bg-blue-50"
-                        : "border-gray-200 hover:bg-gray-50"
-                    }`}>
-                    <p className={`text-sm font-semibold ${
-                      decision === d.key
-                        ? d.color === "green"  ? "text-green-700"
-                        : d.color === "red"    ? "text-red-700"
-                        : d.color === "orange" ? "text-orange-700"
-                        : "text-blue-700"
-                        : "text-gray-700"
-                    }`}>{d.label}</p>
-                    <p className="text-xs text-gray-400 mt-0.5">{d.desc}</p>
+                    style={{
+                      width: "100%", textAlign: "left",
+                      padding: "10px 14px", borderRadius: 10,
+                      border: `1.5px solid ${decision === d.key ? d.activeBorder : G.border}`,
+                      background: decision === d.key ? d.activeBg : G.white,
+                      cursor: "pointer", transition: "all 0.12s", fontFamily: FONT,
+                    }}>
+                    <p style={{ fontSize: 13, fontWeight: 700, margin: 0, color: decision === d.key ? d.activeText : G.text }}>{d.label}</p>
+                    <p style={{ fontSize: 11, color: G.muted, margin: "3px 0 0" }}>{d.desc}</p>
                   </button>
                 ))}
               </div>
 
               {decision === "reject" && (
-                <div className="mb-4">
-                  <p className="text-xs font-semibold text-gray-500 mb-2">Select rejection reason *</p>
-                  <div className="space-y-1.5">
-                    {[
-                      "Document appears tampered or forged",
-                      "Name mismatch with account",
-                      "Expired document submitted",
-                      "Poor image quality — unreadable",
-                      "Wrong document type",
-                      "Other",
-                    ].map((r) => (
-                      <label key={r} className={`flex items-center gap-2 px-3 py-2 rounded-lg border cursor-pointer text-sm transition-colors ${rejectReason === r ? "border-red-300 bg-red-50 text-red-700" : "border-gray-200 text-gray-600 hover:bg-gray-50"}`}>
-                        <input type="radio" name="rejectReason" value={r} checked={rejectReason === r} onChange={() => setRejectReason(r)} className="accent-red-500" />
+                <div style={{ marginBottom: 16 }}>
+                  <p style={{ fontSize: 11, fontWeight: 700, color: G.muted, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>Select rejection reason *</p>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    {REJECT_REASONS.map(r => (
+                      <label key={r} style={{
+                        display: "flex", alignItems: "center", gap: 10,
+                        padding: "8px 12px", borderRadius: 8, cursor: "pointer",
+                        border: `1.5px solid ${rejectReason === r ? G.red : G.border}`,
+                        background: rejectReason === r ? G.redBg : G.white,
+                        fontSize: 13, color: rejectReason === r ? "#dc2626" : G.sub,
+                        fontWeight: rejectReason === r ? 700 : 500,
+                        transition: "all 0.1s",
+                      }}>
+                        <input
+                          type="radio" name="rejectReason" value={r}
+                          checked={rejectReason === r}
+                          onChange={() => setRejectReason(r)}
+                          style={{ accentColor: G.red }}
+                        />
                         {r}
                       </label>
                     ))}
@@ -369,39 +592,59 @@ function KYCDrawer({ kyc, onClose, onAction }) {
               )}
 
               {decision === "reupload" && (
-                <div className="mb-4">
-                  <p className="text-xs font-semibold text-gray-500 mb-1.5">Re-upload instructions for user *</p>
-                  <textarea value={reuploadNote} onChange={(e) => setReuploadNote(e.target.value)}
+                <div style={{ marginBottom: 16 }}>
+                  <p style={{ fontSize: 11, fontWeight: 700, color: G.muted, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>Re-upload instructions *</p>
+                  <textarea
+                    value={reuploadNote}
+                    onChange={e => setReuploadNote(e.target.value)}
                     placeholder="Explain what needs to be re-uploaded and why..."
-                    className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none placeholder-gray-400"
-                    rows={3} />
+                    rows={3}
+                    style={{
+                      width: "100%", fontSize: 13, fontFamily: FONT,
+                      border: `1.5px solid ${G.greenBorder}`, borderRadius: 10,
+                      padding: "10px 14px", background: G.white, color: G.text,
+                      resize: "none", outline: "none", boxSizing: "border-box",
+                    }}
+                  />
                 </div>
               )}
 
               {decision && (
                 <button
                   onClick={() => { onAction(kyc.id, decision, rejectReason || reuploadNote); onClose(); }}
-                  className={`w-full py-2.5 text-sm font-bold rounded-lg transition-colors ${
-                    decision === "approve" ? "bg-green-500 text-white hover:bg-green-600"
-                    : decision === "reject" ? "bg-red-500 text-white hover:bg-red-600"
-                    : "bg-blue-500 text-white hover:bg-blue-600"
-                  }`}
+                  style={{
+                    width: "100%", padding: "12px 0",
+                    fontSize: 13, fontWeight: 800, fontFamily: FONT,
+                    borderRadius: 10, border: "none", cursor: "pointer",
+                    background: decision === "approve" ? G.gradNavy
+                      : decision === "reject"   ? G.red
+                      : decision === "reupload" ? G.amber
+                      : G.blue,
+                    color: G.white,
+                    boxShadow: "0 3px 12px rgba(15,26,59,0.2)",
+                  }}
                 >
-                  Confirm — {
-                    decision === "approve"  ? "Approve KYC" :
-                    decision === "reject"   ? "Reject KYC" :
-                    decision === "reupload" ? "Send Re-upload Request" :
-                    "Mark Under Review"
-                  }
+                  Confirm —{" "}
+                  {decision === "approve"  ? "Approve KYC"
+                  : decision === "reject"   ? "Reject KYC"
+                  : decision === "reupload" ? "Send Re-upload Request"
+                  : "Mark Under Review"}
                 </button>
               )}
             </SectionCard>
           ) : (
-            <div className={`p-4 rounded-xl border ${kyc.status === "Approved" ? "bg-green-50 border-green-200" : kyc.status === "Rejected" ? "bg-red-50 border-red-200" : "bg-orange-50 border-orange-200"}`}>
-              <p className={`text-sm font-bold ${kyc.status === "Approved" ? "text-green-700" : kyc.status === "Rejected" ? "text-red-700" : "text-orange-700"}`}>
+            <div style={{
+              padding: 16, borderRadius: 14,
+              background: kyc.status === "Approved" ? G.greenBg : kyc.status === "Rejected" ? G.redBg : G.amberBg,
+              border: `1px solid ${kyc.status === "Approved" ? G.greenBorder : kyc.status === "Rejected" ? G.redBorder : G.amberBorder}`,
+            }}>
+              <p style={{
+                fontSize: 14, fontWeight: 800, margin: "0 0 4px",
+                color: kyc.status === "Approved" ? G.greenDeep : kyc.status === "Rejected" ? "#dc2626" : "#92400e",
+              }}>
                 {kyc.status === "Approved" ? "✓ KYC Approved" : kyc.status === "Rejected" ? "✕ KYC Rejected" : "↩ Re-upload Requested"}
               </p>
-              <p className="text-xs text-gray-500 mt-1">This KYC has already been processed.</p>
+              <p style={{ fontSize: 12, color: G.muted, margin: 0 }}>This KYC has already been processed.</p>
             </div>
           )}
         </div>
@@ -410,20 +653,21 @@ function KYCDrawer({ kyc, onClose, onAction }) {
   );
 }
 
-// ─── SHARED LIST PAGE COMPONENT ───────────────────────────────────────────────
+/* ══════════════════ SHARED LIST PAGE ══════════════════ */
 function KYCListPage({ filterType }) {
   const navigate = useNavigate();
-  const [kycData, setKycData]       = useState(mockKYC);
-  const [search, setSearch]         = useState("");
-  const [statusFilter, setStatus]   = useState("");
-  const [selected, setSelected]     = useState(null);
+  const [kycData,      setKycData]      = useState(mockKYC);
+  const [search,       setSearch]       = useState("");
+  const [statusFilter, setStatus]       = useState("");
+  const [selected,     setSelected]     = useState(null);
+  const [hovRow,       setHovRow]       = useState(null);
 
-  const isAll      = !filterType;
-  const isAgency   = filterType === "Agency";
+  const isAll    = !filterType;
+  const isAgency = filterType === "Agency";
 
   const base = isAll ? kycData : kycData.filter(k => k.type === filterType);
 
-  const filtered = base.filter((k) => {
+  const filtered = base.filter(k => {
     const q = search.toLowerCase();
     return (
       (k.name.toLowerCase().includes(q) || k.email.toLowerCase().includes(q) || k.id.toLowerCase().includes(q)) &&
@@ -437,44 +681,74 @@ function KYCListPage({ filterType }) {
     setSelected(prev => prev ? { ...prev, status: map[decision] } : null);
   };
 
-  const pending     = base.filter(k => k.status === "Pending").length;
-  const approved    = base.filter(k => k.status === "Approved").length;
-  const rejected    = base.filter(k => k.status === "Rejected" || k.status === "Re-upload Required").length;
-  const highPri     = base.filter(k => k.priority === "High" && k.status === "Pending").length;
+  const pending  = base.filter(k => k.status === "Pending").length;
+  const approved = base.filter(k => k.status === "Approved").length;
+  const rejected = base.filter(k => k.status === "Rejected" || k.status === "Re-upload Required").length;
+  const highPri  = base.filter(k => k.priority === "High" && k.status === "Pending").length;
+
+  const selectStyle = (active) => ({
+    fontSize: 12, fontWeight: 600, fontFamily: FONT,
+    border: `1.5px solid ${active ? G.green : G.greenBorder}`,
+    borderRadius: 100, padding: "8px 14px",
+    background: active ? G.greenBg : G.white,
+    color: active ? G.greenDeep : G.sub,
+    cursor: "pointer", outline: "none",
+  });
+
+  const TAB_ROUTES = [
+    { label: "All KYC",     path: "/admin/kyc",              active: isAll             },
+    { label: "Freelancers", path: "/admin/kyc/freelancers",  active: !isAll && !isAgency },
+    { label: "Agencies",    path: "/admin/kyc/agencies",     active: isAgency          },
+  ];
 
   return (
-    <div className="p-6">
-      <PageHeader
-        title={isAll ? "KYC & Verification" : isAgency ? "Agency KYC" : "Freelancer KYC"}
-        subtitle={
-          isAll    ? "Review identity & business documents before unlocking accounts" :
-          isAgency ? "Business document verification for agencies & companies" :
-                     "Identity verification for individual freelancers"
-        }
-        actions={
-          <div className="flex gap-2">
-            {!isAll && <ActionBtn label="← All KYC" onClick={() => navigate("/admin/kyc")} />}
-            {isAll && <ActionBtn label="Freelancer KYC" onClick={() => navigate("/admin/kyc/freelancers")} />}
-            {isAll && <ActionBtn label="Agency KYC"     onClick={() => navigate("/admin/kyc/agencies")} />}
-            {isAgency   && <ActionBtn label="Freelancer KYC →" onClick={() => navigate("/admin/kyc/freelancers")} />}
-            {!isAgency && filterType && <ActionBtn label="Agency KYC →" onClick={() => navigate("/admin/kyc/agencies")} />}
-          </div>
-        }
-      />
+    <div style={{ padding: "28px 28px 64px", fontFamily: FONT, background: G.bg, minHeight: "100%" }}>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-5">
-        <StatCard label="Pending Review"    value={pending}  sub="Awaiting decision"  color="orange" />
-        <StatCard label="High Priority"     value={highPri}  sub="Waiting > 3 days"   color="red"    />
-        <StatCard label="Approved"          value={approved}                           color="green"  />
-        <StatCard label="Rejected / Issues" value={rejected}                           color="gray"   />
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+        * { font-family: 'Poppins', sans-serif; }
+        input, select, textarea { outline: none; font-family: 'Poppins', sans-serif; }
+      `}</style>
+
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 24 }}>
+        <div>
+          <h1 style={{ fontSize: 22, fontWeight: 800, color: G.text, margin: 0, letterSpacing: "-0.4px" }}>
+            {isAll ? "KYC & Verification" : isAgency ? "Agency KYC" : "Freelancer KYC"}
+          </h1>
+          <p style={{ fontSize: 13, color: G.muted, marginTop: 3 }}>
+            {isAll    ? "Review identity & business documents before unlocking accounts"
+            : isAgency ? "Business document verification for agencies & companies"
+            :            "Identity verification for individual freelancers"}
+          </p>
+        </div>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+          {!isAll      && <button style={btnOutline} onClick={() => navigate("/admin/kyc")}>← All KYC</button>}
+          {isAll       && <button style={btnOutline} onClick={() => navigate("/admin/kyc/freelancers")}>Freelancer KYC</button>}
+          {isAll       && <button style={btnNavy}    onClick={() => navigate("/admin/kyc/agencies")}>Agency KYC</button>}
+          {isAgency    && <button style={btnNavy}    onClick={() => navigate("/admin/kyc/freelancers")}>Freelancer KYC →</button>}
+          {!isAgency && filterType && <button style={btnNavy} onClick={() => navigate("/admin/kyc/agencies")}>Agency KYC →</button>}
+        </div>
       </div>
 
-      {/* Agency-specific info */}
+      {/* Stats */}
+      <div style={{ display: "flex", gap: 14, marginBottom: 24 }}>
+        <StatCard label="Pending Review"    value={pending}  sub="Awaiting decision" color="orange" />
+        <StatCard label="High Priority"     value={highPri}  sub="Waiting > 3 days"  color="red"    />
+        <StatCard label="Approved"          value={approved}                          color="green"  />
+        <StatCard label="Rejected / Issues" value={rejected}                          color="gray"   />
+      </div>
+
+      {/* Agency info banner */}
       {isAgency && (
-        <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 mb-5 flex items-start gap-2.5">
-          <span className="text-blue-500 text-sm mt-0.5 shrink-0">ℹ</span>
-          <p className="text-xs text-blue-700 leading-relaxed">
+        <div style={{
+          display: "flex", alignItems: "flex-start", gap: 10,
+          padding: "12px 16px", marginBottom: 20,
+          background: G.blueBg, border: `1px solid ${G.blueBorder}`,
+          borderRadius: 12,
+        }}>
+          <span style={{ color: G.blue, fontSize: 14, marginTop: 1, flexShrink: 0 }}>ℹ</span>
+          <p style={{ fontSize: 12, color: G.blue, margin: 0, lineHeight: 1.6 }}>
             Agency KYC requires: Business Registration Certificate, GST/VAT, Authorized Person ID, and Address Proof.
             All documents must match the legal entity name.
           </p>
@@ -482,48 +756,82 @@ function KYCListPage({ filterType }) {
       )}
 
       {/* Tab nav */}
-      <div className="flex gap-2 mb-5 flex-wrap">
-        {[
-          { label: "All KYC",      path: "/admin/kyc",             active: isAll      },
-          { label: "Freelancers",  path: "/admin/kyc/freelancers", active: !isAll && !isAgency },
-          { label: "Agencies",     path: "/admin/kyc/agencies",    active: isAgency   },
-        ].map((tab) => (
-          <button key={tab.label} onClick={() => navigate(tab.path)}
-            className={`px-4 py-2 text-sm font-medium rounded-lg border transition-colors ${tab.active ? "bg-green-500 text-white border-green-500" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"}`}>
-            {tab.label}
-          </button>
+      <div style={{ display: "flex", gap: 6, marginBottom: 20, flexWrap: "wrap" }}>
+        {TAB_ROUTES.map(tab => (
+          <button key={tab.label} onClick={() => navigate(tab.path)} style={{
+            fontSize: 12, fontWeight: 700, fontFamily: FONT,
+            padding: "8px 18px", borderRadius: 100, cursor: "pointer",
+            border: `1.5px solid ${tab.active ? G.green : G.greenBorder}`,
+            background: tab.active ? G.gradNavy : G.white,
+            color: tab.active ? G.white : G.greenDeep,
+            transition: "all 0.12s",
+          }}>{tab.label}</button>
         ))}
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-gray-50 flex flex-wrap gap-3 items-center justify-between">
-          <SearchBar value={search} onChange={setSearch} placeholder="Search name, email, KYC ID...">
+      {/* Table card */}
+      <div style={{
+        background: G.white, border: `1px solid ${G.greenBorder}`,
+        borderRadius: 16, overflow: "hidden",
+        boxShadow: "0 2px 12px rgba(110,192,48,0.06)",
+      }}>
+        {/* Filter bar */}
+        <div style={{
+          padding: "14px 20px", borderBottom: `1px solid ${G.greenBorder}`,
+          display: "flex", flexWrap: "wrap", gap: 10,
+          alignItems: "center", justifyContent: "space-between",
+          background: G.greenBg,
+        }}>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center", flex: 1 }}>
+            <div style={{ position: "relative", flex: "1 1 200px", maxWidth: 280 }}>
+              <span style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)", fontSize: 13, color: G.muted }}>🔍</span>
+              <input
+                value={search} onChange={e => setSearch(e.target.value)}
+                placeholder="Search name, email, KYC ID…"
+                style={{
+                  width: "100%", fontSize: 12, fontWeight: 500,
+                  border: `1.5px solid ${G.greenBorder}`, borderRadius: 100,
+                  padding: "8px 12px 8px 32px", background: G.white,
+                  color: G.text, boxSizing: "border-box",
+                }}
+              />
+            </div>
             {isAll && (
-              <FilterSelect value={""} onChange={() => {}} label="All Types"
-                options={[{ value: "Freelancer", label: "Freelancer" }, { value: "Agency", label: "Agency" }]} />
+              <select style={selectStyle(false)} defaultValue="">
+                <option value="">All Types</option>
+                <option value="Freelancer">Freelancer</option>
+                <option value="Agency">Agency</option>
+              </select>
             )}
-            <FilterSelect value={statusFilter} onChange={setStatus} label="All Status"
-              options={[
-                { value: "Pending",            label: "Pending"            },
-                { value: "Under Review",       label: "Under Review"       },
-                { value: "Approved",           label: "Approved"           },
-                { value: "Rejected",           label: "Rejected"           },
-                { value: "Re-upload Required", label: "Re-upload Required" },
-              ]} />
-          </SearchBar>
-          <span className="text-xs text-gray-400">{filtered.length} results</span>
+            <select value={statusFilter} onChange={e => setStatus(e.target.value)} style={selectStyle(!!statusFilter)}>
+              <option value="">All Status</option>
+              {["Pending","Under Review","Approved","Rejected","Re-upload Required"].map(o => (
+                <option key={o} value={o}>{o}</option>
+              ))}
+            </select>
+          </div>
+          <span style={{ fontSize: 11, color: G.muted, fontWeight: 600 }}>{filtered.length} results</span>
         </div>
 
-        <KYCTable data={filtered} onSelect={setSelected} />
+        <KYCTable data={filtered} onSelect={setSelected} hovRow={hovRow} setHovRow={setHovRow} />
 
         {filtered.length === 0 && (
-          <div className="py-16 text-center">
-            <p className="text-gray-400 text-sm">No KYC records match your filters</p>
+          <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "56px 20px", textAlign: "center" }}>
+            <div style={{
+              width: 52, height: 52, borderRadius: "50%",
+              background: G.greenBg, border: `1px solid ${G.greenBorder}`,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 22, marginBottom: 12,
+            }}>◎</div>
+            <p style={{ fontSize: 14, fontWeight: 700, color: G.text }}>No KYC records match your filters</p>
+            <p style={{ fontSize: 12, color: G.muted, marginTop: 4 }}>Try adjusting the search or filter criteria</p>
           </div>
         )}
-        <div className="px-4 py-3 border-t border-gray-100">
-          <span className="text-xs text-gray-400">Showing {filtered.length} of {base.length} submissions</span>
+
+        <div style={{ padding: "12px 20px", borderTop: `1px solid ${G.greenBorder}`, background: G.greenBg }}>
+          <span style={{ fontSize: 11, color: G.muted, fontWeight: 600 }}>
+            Showing {filtered.length} of {base.length} submissions
+          </span>
         </div>
       </div>
 
@@ -532,54 +840,38 @@ function KYCListPage({ filterType }) {
   );
 }
 
-// ─── PAGE: /admin/kyc ─────────────────────────────────────────────────────────
-export function AdminKYC() {
-  return <KYCListPage filterType={null} />;
-}
+/* ══════════════════ PAGE EXPORTS ══════════════════ */
+export function AdminKYC()           { return <KYCListPage filterType={null} />; }
+export function AdminKYCAgencies()   { return <KYCListPage filterType="Agency" />; }
+export function AdminKYCFreelancers(){ return <KYCListPage filterType="Freelancer" />; }
 
-// ─── PAGE: /admin/kyc/:id ─────────────────────────────────────────────────────
 export function AdminKYCDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [kycData, setKycData] = useState(mockKYC);
-
-  const kyc = kycData.find(k => k.id === id);
 
   const handleAction = (kycId, decision) => {
     const map = { approve: "Approved", reject: "Rejected", reupload: "Re-upload Required", review: "Under Review" };
     setKycData(prev => prev.map(k => k.id === kycId ? { ...k, status: map[decision] } : k));
   };
 
+  const kyc = kycData.find(k => k.id === id);
+
   if (!kyc) return (
-    <div className="p-6 text-center py-24 space-y-3">
-      <p className="text-gray-400">KYC record not found</p>
-      <ActionBtn label="← Back to KYC" onClick={() => navigate("/admin/kyc")} size="md" />
+    <div style={{ padding: 48, textAlign: "center", fontFamily: FONT }}>
+      <p style={{ color: G.muted, marginBottom: 16 }}>KYC record not found</p>
+      <button style={btnNavy} onClick={() => navigate("/admin/kyc")}>← Back to KYC</button>
     </div>
   );
 
   return (
-    <div className="p-6">
-      <button onClick={() => navigate("/admin/kyc")} className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 mb-5">
-        ← All KYC
-      </button>
-      {/* Render as full-page by opening drawer immediately */}
-      <div className="relative">
-        <KYCDrawer
-          kyc={kycData.find(k => k.id === id)}
-          onClose={() => navigate("/admin/kyc")}
-          onAction={handleAction}
-        />
-      </div>
+    <div style={{ padding: "28px 28px 64px", fontFamily: FONT, background: G.bg, minHeight: "100%" }}>
+      <button onClick={() => navigate("/admin/kyc")} style={{
+        background: "none", border: "none", cursor: "pointer",
+        fontSize: 13, color: G.muted, fontWeight: 600, fontFamily: FONT,
+        display: "flex", alignItems: "center", gap: 6, marginBottom: 20, padding: 0,
+      }}>← All KYC</button>
+      <KYCDrawer kyc={kyc} onClose={() => navigate("/admin/kyc")} onAction={handleAction} />
     </div>
   );
-}
-
-// ─── PAGE: /admin/kyc/agencies ────────────────────────────────────────────────
-export function AdminKYCAgencies() {
-  return <KYCListPage filterType="Agency" />;
-}
-
-// ─── PAGE: /admin/kyc/freelancers ─────────────────────────────────────────────
-export function AdminKYCFreelancers() {
-  return <KYCListPage filterType="Freelancer" />;
 }

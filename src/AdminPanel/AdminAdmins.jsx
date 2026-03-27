@@ -5,6 +5,84 @@ import {
   SectionCard, InfoRow, SearchBar, FilterSelect
 } from "./AdminComponents";
 
+/* ── Freelancer Contracts theme tokens ───────────────────────
+   GREEN:  #A8E063 (light) → #6EC030 (mid) → #2E7D1F (deep)
+   NAVY:   #4A6FA5 (light) → #1A2B5E (mid) → #0F1A3B (deep)
+   ──────────────────────────────────────────────────────────── */
+const G = {
+  greenLight:  "#A8E063",
+  green:       "#6EC030",
+  greenDeep:   "#2E7D1F",
+  greenBg:     "#f1fce8",
+  greenBorder: "#d4edbb",
+
+  navyLight:   "#4A6FA5",
+  navy:        "#1A2B5E",
+  navyDeep:    "#0F1A3B",
+  navyBg:      "#e8edf7",
+  navyBorder:  "#b8c6e0",
+
+  gradGreen: "linear-gradient(135deg, #A8E063 0%, #2E7D1F 100%)",
+  gradNavy:  "linear-gradient(135deg, #4A6FA5 0%, #0F1A3B 100%)",
+
+  text:        "#1C1C1C",
+  sub:         "#4b5563",
+  muted:       "#9ca3af",
+  border:      "#e5e7eb",
+  bg:          "#f9fafb",
+  white:       "#ffffff",
+
+  amber:       "#f59e0b",
+  amberBg:     "#fffbeb",
+  amberBorder: "#fde68a",
+  amberText:   "#92400e",
+  red:         "#ef4444",
+  redBg:       "#fef2f2",
+  redBorder:   "#fecaca",
+  redText:     "#dc2626",
+  blue:        "#3b82f6",
+  blueBg:      "#eff6ff",
+  blueBorder:  "#bfdbfe",
+  blueText:    "#1d4ed8",
+};
+const FONT = "'Poppins', sans-serif";
+
+const btnNavy = {
+  display: "inline-flex", alignItems: "center", gap: 6,
+  fontSize: 12, fontWeight: 700, fontFamily: FONT,
+  background: G.gradNavy, color: G.white,
+  border: "none", borderRadius: 100,
+  padding: "8px 18px", cursor: "pointer",
+  boxShadow: "0 3px 12px rgba(15,26,59,0.25)",
+  whiteSpace: "nowrap",
+};
+const btnGreen = {
+  display: "inline-flex", alignItems: "center", gap: 6,
+  fontSize: 12, fontWeight: 700, fontFamily: FONT,
+  background: G.gradGreen, color: G.white,
+  border: "none", borderRadius: 100,
+  padding: "8px 18px", cursor: "pointer",
+  boxShadow: "0 2px 10px rgba(46,125,31,0.22)",
+  whiteSpace: "nowrap",
+};
+const btnOutline = {
+  display: "inline-flex", alignItems: "center", gap: 6,
+  fontSize: 12, fontWeight: 700, fontFamily: FONT,
+  background: G.greenBg, color: G.greenDeep,
+  border: `1px solid ${G.greenBorder}`,
+  borderRadius: 100, padding: "8px 18px", cursor: "pointer",
+  whiteSpace: "nowrap",
+};
+const btnWarning = {
+  ...btnOutline,
+  background: G.amberBg, color: G.amberText, border: `1px solid ${G.amberBorder}`,
+};
+const btnDanger = {
+  ...btnOutline,
+  background: G.redBg, color: G.redText, border: `1px solid ${G.redBorder}`,
+};
+
+
 // ─── MOCK DATA ────────────────────────────────────────────────────────────────
 const mockAdmins = [
   {
@@ -92,16 +170,16 @@ const mockRoles = [
     desc: "Full platform access — all features, all data, all controls",
     admins: 1,
     permissions: {
-      "User Management":    { view: true,  edit: true,  delete: true  },
-      "KYC Verification":   { view: true,  edit: true,  delete: true  },
-      "Projects":           { view: true,  edit: true,  delete: true  },
-      "Disputes":           { view: true,  edit: true,  delete: true  },
-      "Payments & Escrow":  { view: true,  edit: true,  delete: true  },
-      "AI Settings":        { view: true,  edit: true,  delete: true  },
-      "Audit Logs":         { view: true,  edit: false, delete: false },
-      "Admin Management":   { view: true,  edit: true,  delete: true  },
-      "Announcements":      { view: true,  edit: true,  delete: true  },
-      "Platform Settings":  { view: true,  edit: true,  delete: true  },
+      "User Management": { view: true, edit: true, delete: true },
+      "KYC Verification": { view: true, edit: true, delete: true },
+      "Projects": { view: true, edit: true, delete: true },
+      "Disputes": { view: true, edit: true, delete: true },
+      "Payments & Escrow": { view: true, edit: true, delete: true },
+      "AI Settings": { view: true, edit: true, delete: true },
+      "Audit Logs": { view: true, edit: false, delete: false },
+      "Admin Management": { view: true, edit: true, delete: true },
+      "Announcements": { view: true, edit: true, delete: true },
+      "Platform Settings": { view: true, edit: true, delete: true },
     },
   },
   {
@@ -111,16 +189,16 @@ const mockRoles = [
     desc: "Manages users, projects, disputes & KYC — no financial controls",
     admins: 1,
     permissions: {
-      "User Management":    { view: true,  edit: true,  delete: false },
-      "KYC Verification":   { view: true,  edit: true,  delete: false },
-      "Projects":           { view: true,  edit: true,  delete: false },
-      "Disputes":           { view: true,  edit: true,  delete: false },
-      "Payments & Escrow":  { view: true,  edit: false, delete: false },
-      "AI Settings":        { view: false, edit: false, delete: false },
-      "Audit Logs":         { view: true,  edit: false, delete: false },
-      "Admin Management":   { view: false, edit: false, delete: false },
-      "Announcements":      { view: true,  edit: true,  delete: false },
-      "Platform Settings":  { view: true,  edit: false, delete: false },
+      "User Management": { view: true, edit: true, delete: false },
+      "KYC Verification": { view: true, edit: true, delete: false },
+      "Projects": { view: true, edit: true, delete: false },
+      "Disputes": { view: true, edit: true, delete: false },
+      "Payments & Escrow": { view: true, edit: false, delete: false },
+      "AI Settings": { view: false, edit: false, delete: false },
+      "Audit Logs": { view: true, edit: false, delete: false },
+      "Admin Management": { view: false, edit: false, delete: false },
+      "Announcements": { view: true, edit: true, delete: false },
+      "Platform Settings": { view: true, edit: false, delete: false },
     },
   },
   {
@@ -130,16 +208,16 @@ const mockRoles = [
     desc: "Controls all financial operations — escrow, payouts, commission",
     admins: 1,
     permissions: {
-      "User Management":    { view: true,  edit: false, delete: false },
-      "KYC Verification":   { view: true,  edit: true,  delete: false },
-      "Projects":           { view: true,  edit: false, delete: false },
-      "Disputes":           { view: true,  edit: false, delete: false },
-      "Payments & Escrow":  { view: true,  edit: true,  delete: false },
-      "AI Settings":        { view: false, edit: false, delete: false },
-      "Audit Logs":         { view: true,  edit: false, delete: false },
-      "Admin Management":   { view: false, edit: false, delete: false },
-      "Announcements":      { view: false, edit: false, delete: false },
-      "Platform Settings":  { view: false, edit: false, delete: false },
+      "User Management": { view: true, edit: false, delete: false },
+      "KYC Verification": { view: true, edit: true, delete: false },
+      "Projects": { view: true, edit: false, delete: false },
+      "Disputes": { view: true, edit: false, delete: false },
+      "Payments & Escrow": { view: true, edit: true, delete: false },
+      "AI Settings": { view: false, edit: false, delete: false },
+      "Audit Logs": { view: true, edit: false, delete: false },
+      "Admin Management": { view: false, edit: false, delete: false },
+      "Announcements": { view: false, edit: false, delete: false },
+      "Platform Settings": { view: false, edit: false, delete: false },
     },
   },
   {
@@ -149,16 +227,16 @@ const mockRoles = [
     desc: "Read-only access to users, disputes & KYC for support purposes",
     admins: 1,
     permissions: {
-      "User Management":    { view: true,  edit: false, delete: false },
-      "KYC Verification":   { view: true,  edit: false, delete: false },
-      "Projects":           { view: true,  edit: false, delete: false },
-      "Disputes":           { view: true,  edit: false, delete: false },
-      "Payments & Escrow":  { view: false, edit: false, delete: false },
-      "AI Settings":        { view: false, edit: false, delete: false },
-      "Audit Logs":         { view: true,  edit: false, delete: false },
-      "Admin Management":   { view: false, edit: false, delete: false },
-      "Announcements":      { view: false, edit: false, delete: false },
-      "Platform Settings":  { view: false, edit: false, delete: false },
+      "User Management": { view: true, edit: false, delete: false },
+      "KYC Verification": { view: true, edit: false, delete: false },
+      "Projects": { view: true, edit: false, delete: false },
+      "Disputes": { view: true, edit: false, delete: false },
+      "Payments & Escrow": { view: false, edit: false, delete: false },
+      "AI Settings": { view: false, edit: false, delete: false },
+      "Audit Logs": { view: true, edit: false, delete: false },
+      "Admin Management": { view: false, edit: false, delete: false },
+      "Announcements": { view: false, edit: false, delete: false },
+      "Platform Settings": { view: false, edit: false, delete: false },
     },
   },
   {
@@ -168,42 +246,42 @@ const mockRoles = [
     desc: "Manages AI thresholds, reviews AI decisions & overrides",
     admins: 1,
     permissions: {
-      "User Management":    { view: true,  edit: false, delete: false },
-      "KYC Verification":   { view: false, edit: false, delete: false },
-      "Projects":           { view: true,  edit: false, delete: false },
-      "Disputes":           { view: true,  edit: false, delete: false },
-      "Payments & Escrow":  { view: false, edit: false, delete: false },
-      "AI Settings":        { view: true,  edit: true,  delete: false },
-      "Audit Logs":         { view: true,  edit: false, delete: false },
-      "Admin Management":   { view: false, edit: false, delete: false },
-      "Announcements":      { view: false, edit: false, delete: false },
-      "Platform Settings":  { view: false, edit: false, delete: false },
+      "User Management": { view: true, edit: false, delete: false },
+      "KYC Verification": { view: false, edit: false, delete: false },
+      "Projects": { view: true, edit: false, delete: false },
+      "Disputes": { view: true, edit: false, delete: false },
+      "Payments & Escrow": { view: false, edit: false, delete: false },
+      "AI Settings": { view: true, edit: true, delete: false },
+      "Audit Logs": { view: true, edit: false, delete: false },
+      "Admin Management": { view: false, edit: false, delete: false },
+      "Announcements": { view: false, edit: false, delete: false },
+      "Platform Settings": { view: false, edit: false, delete: false },
     },
   },
 ];
 
 const mockAuditLogs = [
-  { id:"LOG-001", actor:"Super Admin",    actorType:"Admin", action:"Suspended account",            target:"Priya Menon (FL-004)",                    category:"User",    severity:"High",   timestamp:"Mar 14, 2026 · 11:42 AM", ip:"192.168.1.1", reason:"High dispute rate + repeated delivery failure" },
-  { id:"LOG-002", actor:"AI System",      actorType:"AI",    action:"Auto-flagged account",          target:"FakeUser999 (CL-005)",                    category:"User",    severity:"High",   timestamp:"Mar 14, 2026 · 09:15 AM", ip:"system",      reason:"Suspicious signup pattern detected" },
-  { id:"LOG-003", actor:"Finance Admin",  actorType:"Admin", action:"Frozen escrow payment",         target:"PAY-007 — Vikram Singh",                  category:"Payment", severity:"High",   timestamp:"Mar 13, 2026 · 03:22 PM", ip:"192.168.1.4", reason:"Dispute DSP-002 raised — payment frozen" },
-  { id:"LOG-004", actor:"AI System",      actorType:"AI",    action:"Auto-reduced visibility",       target:"Priya Menon (FL-004)",                    category:"User",    severity:"Medium", timestamp:"Mar 12, 2026 · 07:00 AM", ip:"system",      reason:"Dispute rate crossed 30% threshold" },
-  { id:"LOG-005", actor:"Platform Admin", actorType:"Admin", action:"Warning message sent",          target:"Vikram Singh (CL-002)",                   category:"User",    severity:"Medium", timestamp:"Feb 14, 2026 · 02:10 PM", ip:"192.168.1.2", reason:"Off-platform contact attempt detected" },
-  { id:"LOG-006", actor:"AI System",      actorType:"AI",    action:"Auto-approved milestone",       target:"PRJ-004 — Milestone 5",                   category:"Project", severity:"Low",    timestamp:"Feb 28, 2026 · 08:00 AM", ip:"system",      reason:"Client silent for 7 days — auto-approval triggered" },
-  { id:"LOG-007", actor:"Finance Admin",  actorType:"Admin", action:"Milestone released",            target:"PAY-002 — TechNova Solutions",             category:"Payment", severity:"Low",    timestamp:"Feb 15, 2026 · 04:45 PM", ip:"192.168.1.4", reason:"Milestone 1 approved by client" },
-  { id:"LOG-008", actor:"Super Admin",    actorType:"Admin", action:"AI confidence threshold updated",target:"AI Settings — confidence: 85% → 90%",     category:"AI",      severity:"Medium", timestamp:"Feb 10, 2026 · 11:00 AM", ip:"192.168.1.1", reason:"Increased to reduce false positives" },
-  { id:"LOG-009", actor:"AI System",      actorType:"AI",    action:"Dispute pre-analysis completed",target:"DSP-001 — E-Commerce Revamp",              category:"Dispute", severity:"Medium", timestamp:"Mar 10, 2026 · 05:30 PM", ip:"system",      reason:"AI verdict: Partial fault — Freelancer (71%)" },
-  { id:"LOG-010", actor:"Support Admin",  actorType:"Admin", action:"KYC manually verified",         target:"BuildRight Agency (AG-002)",               category:"User",    severity:"Low",    timestamp:"Jul 14, 2024 · 10:00 AM", ip:"192.168.1.3", reason:"Documents reviewed and approved" },
-  { id:"LOG-011", actor:"Super Admin",    actorType:"Admin", action:"New admin invited",             target:"Ananya Mishra — AI Ops Admin",             category:"Admin",   severity:"Medium", timestamp:"Nov 5, 2025 · 09:00 AM",  ip:"192.168.1.1", reason:"New AI operations role created" },
-  { id:"LOG-012", actor:"Platform Admin", actorType:"Admin", action:"Project frozen",               target:"PRJ-006 — Mobile Banking App",              category:"Project", severity:"High",   timestamp:"Mar 8, 2026 · 06:00 PM",  ip:"192.168.1.2", reason:"Active dispute — chat frozen pending resolution" },
-  { id:"LOG-013", actor:"Super Admin",    actorType:"Admin", action:"Commission rate confirmed",     target:"Platform Settings — Rate: 6%",             category:"Admin",   severity:"Low",    timestamp:"Jan 1, 2026 · 12:00 PM",  ip:"192.168.1.1", reason:"Annual rate review — no change" },
-  { id:"LOG-014", actor:"AI System",      actorType:"AI",    action:"Agency overload detected",      target:"TechNova Solutions (AG-001)",              category:"User",    severity:"Medium", timestamp:"Mar 7, 2026 · 07:00 AM",  ip:"system",      reason:"Team capacity at 95% — project limit warning" },
-  { id:"LOG-015", actor:"Finance Admin",  actorType:"Admin", action:"Payout approved",              target:"Arjun Dev (FL-002) — ₹85,000",             category:"Payment", severity:"Low",    timestamp:"Mar 13, 2026 · 10:00 AM", ip:"192.168.1.4", reason:"KYC verified — standard withdrawal approved" },
+  { id: "LOG-001", actor: "Super Admin", actorType: "Admin", action: "Suspended account", target: "Priya Menon (FL-004)", category: "User", severity: "High", timestamp: "Mar 14, 2026 · 11:42 AM", ip: "192.168.1.1", reason: "High dispute rate + repeated delivery failure" },
+  { id: "LOG-002", actor: "AI System", actorType: "AI", action: "Auto-flagged account", target: "FakeUser999 (CL-005)", category: "User", severity: "High", timestamp: "Mar 14, 2026 · 09:15 AM", ip: "system", reason: "Suspicious signup pattern detected" },
+  { id: "LOG-003", actor: "Finance Admin", actorType: "Admin", action: "Frozen escrow payment", target: "PAY-007 — Vikram Singh", category: "Payment", severity: "High", timestamp: "Mar 13, 2026 · 03:22 PM", ip: "192.168.1.4", reason: "Dispute DSP-002 raised — payment frozen" },
+  { id: "LOG-004", actor: "AI System", actorType: "AI", action: "Auto-reduced visibility", target: "Priya Menon (FL-004)", category: "User", severity: "Medium", timestamp: "Mar 12, 2026 · 07:00 AM", ip: "system", reason: "Dispute rate crossed 30% threshold" },
+  { id: "LOG-005", actor: "Platform Admin", actorType: "Admin", action: "Warning message sent", target: "Vikram Singh (CL-002)", category: "User", severity: "Medium", timestamp: "Feb 14, 2026 · 02:10 PM", ip: "192.168.1.2", reason: "Off-platform contact attempt detected" },
+  { id: "LOG-006", actor: "AI System", actorType: "AI", action: "Auto-approved milestone", target: "PRJ-004 — Milestone 5", category: "Project", severity: "Low", timestamp: "Feb 28, 2026 · 08:00 AM", ip: "system", reason: "Client silent for 7 days — auto-approval triggered" },
+  { id: "LOG-007", actor: "Finance Admin", actorType: "Admin", action: "Milestone released", target: "PAY-002 — TechNova Solutions", category: "Payment", severity: "Low", timestamp: "Feb 15, 2026 · 04:45 PM", ip: "192.168.1.4", reason: "Milestone 1 approved by client" },
+  { id: "LOG-008", actor: "Super Admin", actorType: "Admin", action: "AI confidence threshold updated", target: "AI Settings — confidence: 85% → 90%", category: "AI", severity: "Medium", timestamp: "Feb 10, 2026 · 11:00 AM", ip: "192.168.1.1", reason: "Increased to reduce false positives" },
+  { id: "LOG-009", actor: "AI System", actorType: "AI", action: "Dispute pre-analysis completed", target: "DSP-001 — E-Commerce Revamp", category: "Dispute", severity: "Medium", timestamp: "Mar 10, 2026 · 05:30 PM", ip: "system", reason: "AI verdict: Partial fault — Freelancer (71%)" },
+  { id: "LOG-010", actor: "Support Admin", actorType: "Admin", action: "KYC manually verified", target: "BuildRight Agency (AG-002)", category: "User", severity: "Low", timestamp: "Jul 14, 2024 · 10:00 AM", ip: "192.168.1.3", reason: "Documents reviewed and approved" },
+  { id: "LOG-011", actor: "Super Admin", actorType: "Admin", action: "New admin invited", target: "Ananya Mishra — AI Ops Admin", category: "Admin", severity: "Medium", timestamp: "Nov 5, 2025 · 09:00 AM", ip: "192.168.1.1", reason: "New AI operations role created" },
+  { id: "LOG-012", actor: "Platform Admin", actorType: "Admin", action: "Project frozen", target: "PRJ-006 — Mobile Banking App", category: "Project", severity: "High", timestamp: "Mar 8, 2026 · 06:00 PM", ip: "192.168.1.2", reason: "Active dispute — chat frozen pending resolution" },
+  { id: "LOG-013", actor: "Super Admin", actorType: "Admin", action: "Commission rate confirmed", target: "Platform Settings — Rate: 6%", category: "Admin", severity: "Low", timestamp: "Jan 1, 2026 · 12:00 PM", ip: "192.168.1.1", reason: "Annual rate review — no change" },
+  { id: "LOG-014", actor: "AI System", actorType: "AI", action: "Agency overload detected", target: "TechNova Solutions (AG-001)", category: "User", severity: "Medium", timestamp: "Mar 7, 2026 · 07:00 AM", ip: "system", reason: "Team capacity at 95% — project limit warning" },
+  { id: "LOG-015", actor: "Finance Admin", actorType: "Admin", action: "Payout approved", target: "Arjun Dev (FL-002) — ₹85,000", category: "Payment", severity: "Low", timestamp: "Mar 13, 2026 · 10:00 AM", ip: "192.168.1.4", reason: "KYC verified — standard withdrawal approved" },
 ];
 
 const severityStyle = {
-  High:   "bg-red-50 text-red-600 border border-red-200",
+  High: "bg-red-50 text-red-600 border border-red-200",
   Medium: "bg-yellow-50 text-yellow-700 border border-yellow-200",
-  Low:    "bg-gray-50 text-gray-500 border border-gray-200",
+  Low: "bg-gray-50 text-gray-500 border border-gray-200",
 };
 
 const categoryIcon = {
@@ -218,19 +296,19 @@ const categoryIconBg = {
 };
 
 const roleColor = {
-  "Super Admin":    "bg-red-500",
+  "Super Admin": "bg-red-500",
   "Platform Admin": "bg-green-500",
-  "Finance Admin":  "bg-blue-500",
-  "Support Admin":  "bg-yellow-500",
-  "AI Ops Admin":   "bg-purple-500",
+  "Finance Admin": "bg-blue-500",
+  "Support Admin": "bg-yellow-500",
+  "AI Ops Admin": "bg-purple-500",
 };
 
 const roleBadgeStyle = {
-  "Super Admin":    "bg-red-50 text-red-700 border border-red-200",
+  "Super Admin": "bg-red-50 text-red-700 border border-red-200",
   "Platform Admin": "bg-green-50 text-green-700 border border-green-200",
-  "Finance Admin":  "bg-blue-50 text-blue-700 border border-blue-200",
-  "Support Admin":  "bg-yellow-50 text-yellow-700 border border-yellow-200",
-  "AI Ops Admin":   "bg-purple-50 text-purple-700 border border-purple-200",
+  "Finance Admin": "bg-blue-50 text-blue-700 border border-blue-200",
+  "Support Admin": "bg-yellow-50 text-yellow-700 border border-yellow-200",
+  "AI Ops Admin": "bg-purple-50 text-purple-700 border border-purple-200",
 };
 
 // ─── PAGE 1: /admin/admins — ADMIN ACCOUNTS LIST ─────────────────────────────
@@ -279,18 +357,18 @@ export function AdminAdmins() {
         subtitle="Manage all admin users, their roles & access levels"
         actions={
           <div className="flex gap-2">
-            <ActionBtn label="Role Management →" onClick={() => navigate("/admin/admins/roles")} />
-            <ActionBtn label="+ Invite Admin" variant="primary" size="md" onClick={() => setShowInvite(true)} />
+            <ActionBtn label="Role Management →" onClick={() => navigate("/admin/admins/roles")} style={btnNavy} />
+            <ActionBtn label="+ Invite Admin" variant="primary" size="md" onClick={() => setShowInvite(true)} style={btnOutline}/>
           </div>
         }
       />
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <StatCard label="Total Admins"  value={admins.length}                                           color="gray"   />
-        <StatCard label="Active"        value={admins.filter(a => a.status === "Active").length}         color="green"  />
-        <StatCard label="2FA Enabled"   value={admins.filter(a => a.twoFA).length}                      sub={`${admins.filter(a => !a.twoFA).length} without 2FA`} color="blue" />
-        <StatCard label="Actions Today" value={admins.reduce((s, a) => s + a.actionsToday, 0)}           color="orange" />
+        <StatCard label="Total Admins" value={admins.length} color="gray"  border="gray" bg="gray"/>
+        <StatCard label="Active" value={admins.filter(a => a.status === "Active").length} color="green" border="green" bg="green"/>
+        <StatCard label="2FA Enabled" value={admins.filter(a => a.twoFA).length} sub={`${admins.filter(a => !a.twoFA).length} without 2FA`} color="blue" border="blue" bg="blue"/>
+        <StatCard label="Actions Today" value={admins.reduce((s, a) => s + a.actionsToday, 0)} color="orange" border="orange" bg="orange" />
       </div>
 
       <div className="flex gap-5">
@@ -416,14 +494,14 @@ export function AdminAdmins() {
                 </div>
 
                 <SectionCard title="Account Info">
-                  <InfoRow label="Admin ID"    value={selected.id} />
-                  <InfoRow label="Joined"      value={selected.joinedDate} />
-                  <InfoRow label="Status"      value={<span className={`text-xs font-semibold ${selected.status === "Active" ? "text-green-600" : "text-gray-500"}`}>{selected.status}</span>} />
-                  <InfoRow label="2FA"         value={selected.twoFA ? <span className="text-green-600 font-semibold text-xs">Enabled ✓</span> : <span className="text-red-500 font-semibold text-xs">Disabled ⚠</span>} />
-                  <InfoRow label="Last Login"  value={selected.lastLogin} />
-                  <InfoRow label="Login IP"    value={selected.lastLoginIp} />
-                  <InfoRow label="Today"       value={`${selected.actionsToday} actions`} />
-                  <InfoRow label="Total"       value={`${selected.totalActions} actions`} />
+                  <InfoRow label="Admin ID" value={selected.id} />
+                  <InfoRow label="Joined" value={selected.joinedDate} />
+                  <InfoRow label="Status" value={<span className={`text-xs font-semibold ${selected.status === "Active" ? "text-green-600" : "text-gray-500"}`}>{selected.status}</span>} />
+                  <InfoRow label="2FA" value={selected.twoFA ? <span className="text-green-600 font-semibold text-xs">Enabled ✓</span> : <span className="text-red-500 font-semibold text-xs">Disabled ⚠</span>} />
+                  <InfoRow label="Last Login" value={selected.lastLogin} />
+                  <InfoRow label="Login IP" value={selected.lastLoginIp} />
+                  <InfoRow label="Today" value={`${selected.actionsToday} actions`} />
+                  <InfoRow label="Total" value={`${selected.totalActions} actions`} />
                 </SectionCard>
 
                 <div>
@@ -437,10 +515,10 @@ export function AdminAdmins() {
 
                 <div className="space-y-2 pt-2">
                   {[
-                    { label: "Change Role",         variant: "default" },
-                    { label: "Force 2FA Reset",     variant: "default" },
-                    { label: "Force Logout",        variant: "warning" },
-                    { label: "Deactivate Account",  variant: "danger"  },
+                    { label: "Change Role", variant: "default" },
+                    { label: "Force 2FA Reset", variant: "default" },
+                    { label: "Force Logout", variant: "warning" },
+                    { label: "Deactivate Account", variant: "danger" },
                   ].map(a => (
                     <button key={a.label} className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium border transition-colors ${a.variant === "danger" ? "border-red-200 text-red-600 bg-red-50 hover:bg-red-100" : a.variant === "warning" ? "border-yellow-200 text-yellow-700 bg-yellow-50 hover:bg-yellow-100" : "border-gray-200 text-gray-700 hover:bg-gray-50"}`}>
                       {a.label}
@@ -455,7 +533,7 @@ export function AdminAdmins() {
                 <span className="text-gray-400">👤</span>
               </div>
               <p className="text-sm text-gray-500 mb-3">Select an admin to view details</p>
-              <ActionBtn label="+ Invite Admin" variant="primary" onClick={() => setShowInvite(true)} />
+              <ActionBtn label="+ Invite Admin" variant="primary" style={btnNavy} onClick={() => setShowInvite(true)} />
             </div>
           )}
         </div>
@@ -493,8 +571,8 @@ export function AdminRoles() {
         subtitle="Define and manage permission levels for each admin role"
         actions={
           <div className="flex gap-2">
-            <ActionBtn label="← Admin Accounts" onClick={() => navigate("/admin/admins")} />
-            <ActionBtn label="+ Create Role" variant="primary" size="md" />
+            <ActionBtn label="← Admin Accounts" style={btnNavy} onClick={() => navigate("/admin/admins")} />
+            <ActionBtn label="+ Create Role" variant="primary" size="md" style={btnOutline} />
           </div>
         }
       />
@@ -539,11 +617,11 @@ export function AdminRoles() {
               <div className="flex gap-2">
                 {editMode ? (
                   <>
-                    <ActionBtn label="Cancel" onClick={() => { setEditMode(false); setPermissions(selectedRole.permissions); }} />
-                    <ActionBtn label="Save Changes" variant="primary" onClick={() => setEditMode(false)} />
+                    <ActionBtn label="Cancel" style={btnOutline} onClick={() => { setEditMode(false); setPermissions(selectedRole.permissions); }} />
+                    <ActionBtn label="Save Changes" variant="primary" style={btnNavy} onClick={() => setEditMode(false)} />
                   </>
                 ) : (
-                  <ActionBtn label="Edit Permissions" variant="primary" onClick={() => setEditMode(true)} />
+                  <ActionBtn label="Edit Permissions" variant="primary" style={btnNavy} onClick={() => setEditMode(true)} />
                 )}
               </div>
             </div>
@@ -656,9 +734,10 @@ export function AdminAuditLogsPage() {
       (l.action.toLowerCase().includes(q) || l.target.toLowerCase().includes(q) || l.actor.toLowerCase().includes(q) || l.id.toLowerCase().includes(q)) &&
       (!categoryFilter || l.category === categoryFilter) &&
       (!severityFilter || l.severity === severityFilter) &&
-      (!actorFilter    || l.actorType === actorFilter)
+      (!actorFilter || l.actorType === actorFilter)
     );
   });
+
 
   return (
     <div className="p-6">
@@ -667,19 +746,19 @@ export function AdminAuditLogsPage() {
         subtitle="Immutable record of every action — human or AI — on the platform"
         actions={
           <div className="flex gap-2">
-            <ActionBtn label="⬇ Export Logs" />
-            <ActionBtn label="📋 Compliance Report" variant="primary" size="md" />
+            <ActionBtn label="⬇ Export Logs" style={btnNavy} />
+            <ActionBtn label="📋 Compliance Report" variant="primary" size="md" style={btnOutline}/>
           </div>
         }
       />
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-        <StatCard label="Total Logs"     value={mockAuditLogs.length}                                         color="gray"   />
-        <StatCard label="Admin Actions"  value={mockAuditLogs.filter(l => l.actorType === "Admin").length}    color="green"  />
-        <StatCard label="AI Actions"     value={mockAuditLogs.filter(l => l.actorType === "AI").length}       color="blue"   />
-        <StatCard label="High Severity"  value={mockAuditLogs.filter(l => l.severity === "High").length}      color="red"    />
-        <StatCard label="Today"          value={mockAuditLogs.filter(l => l.timestamp.includes("Mar 14")).length} color="orange" />
+        <StatCard label="Total Logs" value={mockAuditLogs.length} color="gray" />
+        <StatCard label="Admin Actions" value={mockAuditLogs.filter(l => l.actorType === "Admin").length} color="green" border="green" bg="green" />
+        <StatCard label="AI Actions" value={mockAuditLogs.filter(l => l.actorType === "AI").length} color="blue" border="blue" bg="blue"/>
+        <StatCard label="High Severity" value={mockAuditLogs.filter(l => l.severity === "High").length} color="red" border="red" bg="red" />
+        <StatCard label="Today" value={mockAuditLogs.filter(l => l.timestamp.includes("Mar 14")).length} color="orange" border="orange" bg="orange" />
       </div>
 
       {/* Immutability Banner */}
@@ -695,11 +774,11 @@ export function AdminAuditLogsPage() {
         <div className="p-4 border-b border-gray-50 flex flex-wrap gap-3 items-center justify-between">
           <SearchBar value={search} onChange={setSearch} placeholder="Search action, target, actor, ID...">
             <FilterSelect value={categoryFilter} onChange={setCategory} label="All Categories"
-              options={["User","Payment","Project","Dispute","AI","Admin"].map(v => ({ value: v, label: v }))} />
+              options={["User", "Payment", "Project", "Dispute", "AI", "Admin"].map(v => ({ value: v, label: v }))} />
             <FilterSelect value={severityFilter} onChange={setSeverity} label="All Severity"
-              options={[{ value:"High",label:"High"},{value:"Medium",label:"Medium"},{value:"Low",label:"Low"}]} />
+              options={[{ value: "High", label: "High" }, { value: "Medium", label: "Medium" }, { value: "Low", label: "Low" }]} />
             <FilterSelect value={actorFilter} onChange={setActor} label="All Actors"
-              options={[{ value:"Admin",label:"Admin"},{value:"AI",label:"AI System"}]} />
+              options={[{ value: "Admin", label: "Admin" }, { value: "AI", label: "AI System" }]} />
           </SearchBar>
           <span className="text-xs text-gray-400">{filtered.length} of {mockAuditLogs.length} logs</span>
         </div>
@@ -749,14 +828,14 @@ export function AdminAuditLogsPage() {
                   <div className="bg-gray-50 rounded-xl border border-gray-100 p-4">
                     <div className="grid grid-cols-2 gap-x-8 gap-y-2">
                       {[
-                        { label: "Log ID",     value: log.id        },
-                        { label: "Actor",      value: `${log.actor} (${log.actorType})` },
-                        { label: "Action",     value: log.action    },
-                        { label: "Target",     value: log.target    },
-                        { label: "Category",   value: log.category  },
-                        { label: "Severity",   value: log.severity  },
-                        { label: "IP Address", value: log.ip        },
-                        { label: "Timestamp",  value: log.timestamp },
+                        { label: "Log ID", value: log.id },
+                        { label: "Actor", value: `${log.actor} (${log.actorType})` },
+                        { label: "Action", value: log.action },
+                        { label: "Target", value: log.target },
+                        { label: "Category", value: log.category },
+                        { label: "Severity", value: log.severity },
+                        { label: "IP Address", value: log.ip },
+                        { label: "Timestamp", value: log.timestamp },
                       ].map(item => (
                         <div key={item.label} className="flex items-start gap-2">
                           <span className="text-[10px] text-gray-400 font-semibold uppercase tracking-wide w-20 shrink-0 pt-0.5">{item.label}</span>
@@ -784,8 +863,8 @@ export function AdminAuditLogsPage() {
         <div className="px-4 py-3 border-t border-gray-100 flex items-center justify-between">
           <span className="text-xs text-gray-400">Showing {filtered.length} of {mockAuditLogs.length} entries</span>
           <div className="flex items-center gap-1">
-            <button className="px-3 py-1.5 text-xs rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50">← Prev</button>
-            <button className="px-3 py-1.5 text-xs rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50">Next →</button>
+            <button className="px-3 py-1.5 text-xs rounded-2xl border border-gray-500 text-gray-600 hover:bg-gray-50" >← Prev</button>
+            <button className="px-3 py-1.5 text-xs rounded-2xl border border-gray-500 text-gray-600 hover:bg-gray-50">Next →</button>
           </div>
         </div>
       </div>
