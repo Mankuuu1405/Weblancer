@@ -1,3 +1,11 @@
+
+
+
+
+
+
+
+
 import { useState } from "react";
 
 const stepLabels = [
@@ -23,7 +31,7 @@ const paymentMethods = [
     detail: "Instant – 1 day • 2.5% fee",
     recommended: false,
     icon: (
-      <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+      <svg className="w-6 h-6 wbl-text-blue" fill="currentColor" viewBox="0 0 24 24">
         <path d="M7.076 21.337H2.47a.641.641 0 01-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 00-.607-.541c-.013.076-.026.175-.041.254-.93 4.778-4.005 7.201-9.138 7.201h-2.19a.563.563 0 00-.556.479l-1.187 7.527h-.506l-.24 1.516a.56.56 0 00.554.647h3.882c.46 0 .85-.334.922-.788.06-.26.76-4.852.816-5.09a.932.932 0 01.923-.788h.58c3.76 0 6.705-1.528 7.565-5.946.36-1.847.174-3.388-.777-4.471z"/>
       </svg>
     )
@@ -93,8 +101,8 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
   };
 
   const inputCls = (f) =>
-    `w-full border rounded-xl px-3 py-2.5 text-sm outline-none transition focus:ring-2 focus:ring-blue-100
-    ${bankErrors[f] ? "border-red-400 bg-red-50" : "border-gray-200 bg-gray-50 focus:border-blue-400"}`;
+    `w-full border rounded-xl px-3 py-2.5 text-sm outline-none transition focus:ring-2 focus:ring-green-100
+    ${bankErrors[f] ? "border-red-400 bg-red-50" : "border-gray-200 bg-gray-50 focus:border-green-400"}`;
 
   const Err = ({ f }) => bankErrors[f]
     ? <p className="text-red-500 text-xs mt-1">{bankErrors[f]}</p> : null;
@@ -117,11 +125,33 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
   const insights = getInsights();
 
   return (
-    <div className="min-h-screen bg-blue-50 text-gray-900 pb-20">
+    <>
+      <style>{`
+        /* ── Weblance Theme ── */
+        .wbl-bg, .wbl-btn-inline {
+          background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%) !important;
+        }
+        .wbl-btn-primary {
+          display:inline-flex; align-items:center; justify-content:center; gap:8px;
+          background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%) !important;
+          color:#fff !important; border:none; cursor:pointer;
+          font-weight:600; border-radius:12px; padding:12px 32px; font-size:15px;
+          box-shadow:0 3px 18px rgba(13,40,85,0.28); transition:all .2s;
+        }
+        .wbl-btn-primary:hover { opacity:0.9; transform:translateY(-1px); }
+        .wbl-progress-bar { background:linear-gradient(90deg,#6FDA44,#1B72C0) !important; }
+        .wbl-step-active { border-color:#1B72C0 !important; color:#1B72C0 !important; }
+        .wbl-step-done { background:linear-gradient(135deg,#6FDA44,#1B72C0) !important; border-color:transparent !important; }
+        .wbl-text-active, .wbl-text-blue { color:#1B72C0 !important; }
+        /* ───────────────────── */
+
+        
+`}</style>
+    <div className="min-h-screen text-gray-900 pb-20" style={{ background:"#F6FEF0" }}>
 
       {/* ── Navbar ── */}
       <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-3 flex items-center justify-between">
-        <span className="text-blue-600 font-bold text-lg sm:text-xl tracking-tight">ArcLancer</span>
+        <img src="/weblance.jpeg" alt="Weblance" style={{ height: 44, width: "auto" }} />
         <div className="flex items-center gap-2 sm:gap-3">
           <button type="button" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-600 border border-gray-300 rounded-lg px-2 sm:px-4 py-2 hover:bg-gray-50 transition">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -137,11 +167,11 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
       <div className="max-w-6xl mx-auto mt-6 sm:mt-8 px-4 sm:px-6 mb-6 sm:mb-8">
         <div className="flex justify-between text-xs sm:text-sm mb-3">
           <span className="font-medium text-gray-700">Step {currentStep} of {totalSteps}</span>
-          <span className="text-blue-600 font-semibold">{percentComplete}% Complete</span>
+          <span className="wbl-text-blue font-semibold">{percentComplete}% Complete</span>
         </div>
         <div className="relative flex items-start justify-between">
           <div className="absolute top-3.5 sm:top-4 left-0 w-full h-1 bg-gray-200 z-0 rounded-full"></div>
-          <div className="absolute top-3.5 sm:top-4 left-0 h-1 bg-blue-500 z-0 rounded-full transition-all duration-500"
+          <div className="absolute top-3.5 sm:top-4 left-0 h-1 wbl-bg z-0 rounded-full transition-all duration-500"
             style={{ width: progressWidth }}></div>
           {stepLabels.map((label, index) => {
             const isActive = index + 1 === currentStep;
@@ -149,8 +179,8 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
             return (
               <div key={index} className="flex flex-col items-center z-10 relative">
                 <div className={`w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center border-2 text-xs font-bold transition-all
-                  ${isActive ? "bg-white border-blue-500 text-blue-600 shadow-md"
-                    : isDone  ? "bg-blue-500 border-blue-500 text-white"
+                  ${isActive ? "bg-white wbl-step-active shadow-md"
+                    : isDone  ? "wbl-bg border-green-400 text-white"
                     :           "bg-white border-gray-300 text-gray-400"}`}>
                   {isDone
                     ? <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -159,7 +189,7 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
                     : <span className="text-[10px] sm:text-xs">{index + 1}</span>}
                 </div>
                 <span className={`text-[9px] sm:text-xs mt-1 font-medium hidden sm:block
-                  ${isActive ? "text-blue-600" : "text-gray-400"}`}>
+                  ${isActive ? "wbl-text-active" : "text-gray-400"}`}>
                   {label}
                 </span>
               </div>
@@ -204,7 +234,7 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
                       className={`relative text-left p-4 rounded-xl border-2 transition-all hover:shadow-sm
                         ${isSelected
                           ? "border-green-400 bg-green-50"
-                          : "border-gray-200 bg-white hover:border-blue-300 hover:bg-blue-50"}`}
+                          : "border-gray-200 bg-white hover:border-blue-300 hover:bg-green-50"}`}
                     >
                       <div className="flex items-center gap-3 mb-1.5">
                         {method.icon}
@@ -260,7 +290,7 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
 
                     {/* Security note */}
                     <div className="flex items-center gap-2.5 bg-blue-50 border border-blue-100 rounded-xl px-3.5 py-2.5">
-                      <svg className="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4 wbl-text-blue flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                       </svg>
                       <p className="text-xs text-blue-700 font-medium">
@@ -309,7 +339,7 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
                         <div className="relative">
                           <select value={bankForm.accountType}
                             onChange={e => setBank("accountType", e.target.value)}
-                            className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 outline-none appearance-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition">
+                            className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 outline-none appearance-none focus:border-green-400 focus:ring-2 focus:ring-green-100 transition">
                             <option>Checking</option>
                             <option>Savings</option>
                             <option>Business</option>
@@ -343,14 +373,14 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
                         <input type="text" value={bankForm.swift}
                           onChange={e => setBank("swift", e.target.value.toUpperCase())}
                           placeholder="e.g. CHASUS33"
-                          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition"/>
+                          className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 outline-none focus:border-green-400 focus:ring-2 focus:ring-green-100 transition"/>
                       </div>
                       <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-1.5">Currency</label>
                         <div className="relative">
                           <select value={bankForm.currency}
                             onChange={e => setBank("currency", e.target.value)}
-                            className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 outline-none appearance-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition">
+                            className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm bg-gray-50 outline-none appearance-none focus:border-green-400 focus:ring-2 focus:ring-green-100 transition">
                             {["USD", "EUR", "GBP", "INR", "CAD", "AUD", "SGD"].map(c => <option key={c}>{c}</option>)}
                           </select>
                           <svg className="absolute right-3 top-3.5 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -389,7 +419,7 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
                         </svg>
                         <span className="text-sm font-semibold text-green-800 flex-1">Bank account saved securely ✓</span>
                         <button onClick={() => setBankSaved(false)}
-                          className="text-xs text-blue-500 hover:underline font-medium">Edit</button>
+                          className="text-xs wbl-text-blue hover:underline font-medium">Edit</button>
                       </div>
                     )}
                   </div>
@@ -402,7 +432,7 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
 
                 <div className="mb-6">
                   <label className="block text-sm font-semibold text-gray-700 mb-3">
-                    Minimum Payout: <span className="text-blue-600">${minPayout}</span>
+                    Minimum Payout: <span className="wbl-text-active">${minPayout}</span>
                   </label>
                   <input
                     type="range" min={25} max={500} step={25} value={minPayout}
@@ -422,7 +452,7 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
                   <label className="block text-sm font-semibold text-gray-700 mb-2">Payout Frequency</label>
                   <div className="relative">
                     <select value={frequency} onChange={e => setFrequency(e.target.value)}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm bg-gray-50 outline-none appearance-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition">
+                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm bg-gray-50 outline-none appearance-none focus:border-green-400 focus:ring-2 focus:ring-green-100 transition">
                       {frequencyOptions.map(f => <option key={f}>{f}</option>)}
                     </select>
                     <svg className="absolute right-4 top-3.5 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -440,7 +470,7 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
                 ← Back
               </button>
               <button onClick={onNext}
-                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 sm:px-8 py-3 rounded-xl flex items-center gap-2 transition shadow-sm">
+                className="wbl-btn-inline text-white font-semibold px-6 sm:px-8 py-3 rounded-xl flex items-center gap-2 transition shadow-sm">
                 Continue to Trust Level
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6"/>
@@ -501,5 +531,6 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
         </div>
       </div>
     </div>
+    </>
   );
 }

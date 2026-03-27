@@ -1,3 +1,6 @@
+
+
+
 import { useEffect, useState } from "react";
 
 const stepLabels = [
@@ -121,11 +124,21 @@ export default function Step11_Trust({ onNext, onBack, currentStep = 11, totalSt
   ];
 
   return (
-    <div className="min-h-screen bg-blue-50 text-gray-900 pb-20">
+    <>
+      <style>{`
+        .wbl-bg, .wbl-btn-inline { background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%) !important; }
+        .wbl-btn-primary { display:inline-flex; align-items:center; justify-content:center; gap:8px; background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%) !important; color:#fff !important; border:none; cursor:pointer; font-weight:600; border-radius:12px; padding:12px 32px; font-size:15px; box-shadow:0 3px 18px rgba(13,40,85,0.28); transition:all .2s; }
+        .wbl-btn-primary:hover { opacity:0.9; transform:translateY(-1px); }
+        .wbl-progress-bar { background:linear-gradient(90deg,#6FDA44,#1B72C0) !important; }
+        .wbl-step-active { border-color:#1B72C0 !important; color:#1B72C0 !important; }
+        .wbl-step-done { background:linear-gradient(135deg,#6FDA44,#1B72C0) !important; border-color:transparent !important; }
+        .wbl-text-active, .wbl-text-blue { color:#1B72C0 !important; }
+      `}</style>
+    <div className="min-h-screen text-gray-900 pb-20" style={{ background:"#F6FEF0" }}>
 
       {/* ── Navbar ── */}
       <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-3 flex items-center justify-between">
-        <span className="text-blue-600 font-bold text-lg sm:text-xl tracking-tight">ArcLancer</span>
+        <img src="/weblance.jpeg" alt="Weblance" style={{ height: 44, width: "auto" }} />
         <div className="flex items-center gap-2 sm:gap-3">
           <button type="button" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-600 border border-gray-300 rounded-lg px-2 sm:px-4 py-2 hover:bg-gray-50 transition">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -141,11 +154,11 @@ export default function Step11_Trust({ onNext, onBack, currentStep = 11, totalSt
       <div className="max-w-6xl mx-auto mt-6 sm:mt-8 px-4 sm:px-6 mb-6 sm:mb-8">
         <div className="flex justify-between text-xs sm:text-sm mb-3">
           <span className="font-medium text-gray-700">Step {currentStep} of {totalSteps}</span>
-          <span className="text-blue-600 font-semibold">{percentComplete}% Complete</span>
+          <span className="wbl-text-blue font-semibold">{percentComplete}% Complete</span>
         </div>
         <div className="relative flex items-start justify-between">
           <div className="absolute top-3.5 sm:top-4 left-0 w-full h-1 bg-gray-200 z-0 rounded-full"/>
-          <div className="absolute top-3.5 sm:top-4 left-0 h-1 bg-blue-500 z-0 rounded-full transition-all duration-500"
+          <div className="absolute top-3.5 sm:top-4 left-0 h-1 wbl-bg z-0 rounded-full transition-all duration-500"
             style={{ width: progressWidth }}/>
           {stepLabels.map((label, index) => {
             const isActive = index + 1 === currentStep;
@@ -153,8 +166,8 @@ export default function Step11_Trust({ onNext, onBack, currentStep = 11, totalSt
             return (
               <div key={index} className="flex flex-col items-center z-10 relative">
                 <div className={`w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center border-2 text-xs font-bold transition-all
-                  ${isActive ? "bg-white border-blue-500 text-blue-600 shadow-md"
-                    : isDone  ? "bg-blue-500 border-blue-500 text-white"
+                  ${isActive ? "bg-white wbl-step-active shadow-md"
+                    : isDone  ? "wbl-bg border-green-400 text-white"
                     :           "bg-white border-gray-300 text-gray-400"}`}>
                   {isDone
                     ? <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -163,7 +176,7 @@ export default function Step11_Trust({ onNext, onBack, currentStep = 11, totalSt
                     : <span className="text-[10px] sm:text-xs">{index + 1}</span>}
                 </div>
                 <span className={`text-[9px] sm:text-xs mt-1 font-medium hidden sm:block
-                  ${isActive ? "text-blue-600" : "text-gray-400"}`}>
+                  ${isActive ? "wbl-text-active" : "text-gray-400"}`}>
                   {label}
                 </span>
               </div>
@@ -320,7 +333,7 @@ export default function Step11_Trust({ onNext, onBack, currentStep = 11, totalSt
                 ← Back
               </button>
               <button onClick={onNext}
-                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 sm:px-8 py-3 rounded-xl flex items-center gap-2 transition shadow-sm">
+                className="wbl-btn-inline text-white font-semibold px-6 sm:px-8 py-3 rounded-xl flex items-center gap-2 transition shadow-sm">
                 Continue to Activation
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6"/>
@@ -390,5 +403,6 @@ export default function Step11_Trust({ onNext, onBack, currentStep = 11, totalSt
         </div>
       </div>
     </div>
+    </>
   );
 }

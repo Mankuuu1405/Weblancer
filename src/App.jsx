@@ -2,9 +2,6 @@ import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 
-// root
-import Signin from './components/Signin';
-
 // Admin - Layout
 import AdminLayout from "./AdminPanel/AdminLayout";
 
@@ -71,10 +68,7 @@ import TeamNotifications  from "./Team/TeamNotifications";
 import TeamMemberDashboard from "./Team/TeamMemberDashboard";
 import InviteAccept       from "./Team/InviteAccept";
 
-// Freelancer — Layout wrapper
-import FreelancerLayout from "./Freelancer/FreelancerLayout";
-
-// Freelancer — Pages
+// Freelancer
 import LandingPage from "./Freelancer/LandingPage";
 import OnboardingFlow from "./Freelancer/onboarding/OnboardingFlow";
 import PublicProfile from "./Freelancer/Public Profile/PublicProfile";
@@ -99,6 +93,9 @@ import ClientNotifications from "./hire-talent/ClientNotifications";
 import ClientPayments from "./hire-talent/ClientPayments";
 import ClientTransactionDetail from "./hire-talent/ClientTransactionDetail";
 import ClientReviews from "./hire-talent/ClientReviews";
+
+// Auth
+import WeblanceAuth from "./components/WeblanceAuth";
 
 // Project Demo
 import ProjectStreamDemo from "./projectdemo/projectstreamDemo";
@@ -145,10 +142,10 @@ function Home() {
     </div>
   );
 }
-function Freelancer()        { const n = useNavigate(); return <LandingPage   onJoinClick={() => n("/onboarding")} />; }
-function Onboarding()        { const n = useNavigate(); return <OnboardingFlow onExit={() => n("/freelancer")} />; }
-function Profile()           { const n = useNavigate(); return <PublicProfile  onBack={() => n(-1)} />; }
-function TeamOnboardingPage(){ const n = useNavigate(); return <TeamOnboarding onGoToDashboard={() => n("/agency/dashboard")} />; }
+function Freelancer()        { const n = useNavigate(); return <LandingPage    onJoinClick={() => n("/onboarding")} />; }
+function Onboarding()        { const n = useNavigate(); return <OnboardingFlow  onExit={() => n("/freelancer")} />; }
+function Profile()           { const n = useNavigate(); return <PublicProfile   onBack={() => n(-1)} />; }
+function TeamOnboardingPage(){ const n = useNavigate(); return <TeamOnboarding  onGoToDashboard={() => n("/agency/dashboard")} />; }
 
 // ─── App ──────────────────────────────────────────────────────────────────────
 export default function App() {
@@ -160,7 +157,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
 
         {/* Auth */}
-        <Route path="/signin" element={<Signin />} />
+        <Route path="/login"  element={<WeblanceAuth />} />
 
         {/* ── Admin ── */}
         <Route path="/admin"                           element={<AdminLayout><AdminDashboard /></AdminLayout>} />
