@@ -1,8 +1,48 @@
-// src/Team/TeamMemberDashboard.jsx
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
+(() => {
+  if (document.getElementById("wl-team-dash-fonts")) return;
+  const l = document.createElement("link");
+  l.id = "wl-team-dash-fonts"; l.rel = "stylesheet";
+  l.href = "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap";
+  document.head.appendChild(l);
+})();
 
-/* ── DATA ── */
+const G = {
+  green:       "#22c55e",
+  greenDark:   "#16a34a",
+  greenBg:     "#f0fdf4",
+  greenBorder: "#bbf7d0",
+  text:        "#111827",
+  sub:         "#6b7280",
+  muted:       "#9ca3af",
+  border:      "#e5e7eb",
+  bg:          "#f9fafb",
+  white:       "#ffffff",
+  red:         "#ef4444",
+  yellow:      "#f59e0b",
+  yellowBg:    "#fffbeb",
+  blue:        "#3b82f6",
+  blueBg:      "#eff6ff",
+  purple:      "#8b5cf6",
+  purpleBg:    "#f5f3ff",
+};
+const FONT = "'Plus Jakarta Sans', sans-serif";
+
+// ── Data ──
+const STATS = [
+  { icon: "✅", label: "Tasks Done",       value: "2/5",  sub: "3 pending today",    color: G.green,      bg: G.greenBg  },
+  { icon: "🗂️", label: "Active Projects",  value: "2",    sub: "2 on track",          color: G.blue,       bg: G.blueBg   },
+  { icon: "⏱️", label: "Hours This Week",  value: "28h",  sub: "40h total capacity",  color: G.yellow,     bg: G.yellowBg },
+  { icon: "⭐", label: "Perf. Score",      value: "4.9",  sub: "Rated by agency PM",  color: G.purple,     bg: G.purpleBg },
+];
+
+const PROJECTS = [
+  { id: 1, name: "Food Delivery App",   client: "ByteEats Co.", budget: "$42K", progress: 65, role: "Backend Dev",  status: "ON TRACK", riskColor: "#f59e0b", riskBg: "#fffbeb", riskBorder: "#fde68a", channel: "/agency/channel2/1" },
+  { id: 2, name: "E-commerce Platform", client: "GlobalShop",   budget: "$28K", progress: 30, role: "Full Stack",   status: "ON TRACK", riskColor: G.greenDark, riskBg: G.greenBg, riskBorder: G.greenBorder, channel: "/agency/channel2/1" },
+];
+
 const TASKS = [
   { id: 1, text: "Implement checkout API integration", priority: "high", done: false, due: "Today"    },
   { id: 2, text: "Fix cart UI bug on mobile",          priority: "high", done: false, due: "Today"    },
@@ -11,25 +51,29 @@ const TASKS = [
   { id: 5, text: "Update README for payment service",  priority: "low",  done: true,  due: "Done"     },
 ];
 
-const PROJECTS = [
-  { name: "Food Delivery App",   client: "ByteEats Co.", budget: "$42K", progress: 65, role: "Backend Dev", status: "ON TRACK", riskColor: "bg-yellow-50 border-yellow-300 text-yellow-700" },
-  { name: "E-commerce Platform", client: "GlobalShop",   budget: "$28K", progress: 30, role: "Full Stack",  status: "ON TRACK", riskColor: "bg-green-50 border-green-300 text-green-700"   },
-];
-
 const TEAM = [
-  { name: "Raj Kumar", role: "ADMIN",     roleColor: "bg-red-100 text-red-500",       initial: "R", bg: "bg-red-100"    },
-  { name: "Sara M.",   role: "DEVELOPER", roleColor: "bg-blue-100 text-blue-600",     initial: "S", bg: "bg-blue-100"   },
-  { name: "Dev Mike",  role: "DEVELOPER", roleColor: "bg-blue-100 text-blue-600",     initial: "D", bg: "bg-blue-100",  me: true },
-  { name: "Priya S.",  role: "DESIGNER",  roleColor: "bg-purple-100 text-purple-600", initial: "P", bg: "bg-purple-100" },
-  { name: "James L.",  role: "DEVOPS",    roleColor: "bg-gray-100 text-gray-600",     initial: "J", bg: "bg-gray-100"   },
+  { name: "Raj Kumar", role: "ADMIN",     initial: "R", bg: "#fee2e2", color: "#dc2626", status: "available"  },
+  { name: "Sara M.",   role: "DEVELOPER", initial: "S", bg: G.blueBg,  color: G.blue,    status: "available",  me: true },
+  { name: "Dev Mike",  role: "DEVELOPER", initial: "D", bg: G.blueBg,  color: G.blue,    status: "on_project" },
+  { name: "Priya S.",  role: "DESIGNER",  initial: "P", bg: G.purpleBg,color: G.purple,  status: "available"  },
+  { name: "James L.",  role: "DEVOPS",    initial: "J", bg: "#f3f4f6", color: "#374151", status: "on_project" },
 ];
 
 const ACTIVITIES = [
-  { text: "You uploaded deliverable: checkout-api-v2.zip", time: "2 hours ago", dot: "bg-green-500"  },
-  { text: "PM assigned you: Fix cart UI bug",              time: "4 hours ago", dot: "bg-blue-400"   },
-  { text: "Sara M. commented on your PR #47",              time: "Yesterday",   dot: "bg-yellow-400" },
-  { text: "Milestone approved: Authentication Module",     time: "2 days ago",  dot: "bg-green-400"  },
-  { text: "You joined Food Delivery App project",          time: "1 week ago",  dot: "bg-gray-300"   },
+  { text: "You uploaded deliverable: checkout-api-v2.zip", time: "2 hrs ago",  dot: G.green   },
+  { text: "PM assigned you: Fix cart UI bug",              time: "4 hrs ago",  dot: G.blue    },
+  { text: "Raj Kumar commented on your PR #47",            time: "Yesterday",  dot: G.yellow  },
+  { text: "Milestone approved: Authentication Module",     time: "2 days ago", dot: G.green   },
+  { text: "You joined Food Delivery App project",          time: "1 week ago", dot: G.muted   },
+];
+
+const PERMISSIONS = [
+  { label: "Chat with Client",   allowed: true  },
+  { label: "Upload Files",       allowed: true  },
+  { label: "View Tasks",         allowed: true  },
+  { label: "Approve Milestones", allowed: false },
+  { label: "View Finance",       allowed: false },
+  { label: "Change Scope",       allowed: false },
 ];
 
 const SKILLS = [
@@ -39,473 +83,249 @@ const SKILLS = [
   { label: "Docker",     pct: 60 },
 ];
 
-const PERMISSIONS = [
-  { label: "Chat with Client",   allowed: true  },
-  { label: "Upload Files",       allowed: true  },
-  { label: "Approve Milestones", allowed: false },
-  { label: "View Finance",       allowed: false },
-  { label: "View Tasks",         allowed: true  },
-  { label: "Change Scope",       allowed: false },
-];
-
-const TABS = ["Overview", "Tasks", "Projects", "Messages", "Time Logs"];
-
-const STATS = [
-  { icon: "📋", value: "2/5",  label: "Tasks Done",      bg: "bg-green-50",  iconColor: "text-green-500"  },
-  { icon: "🗂️", value: "2",    label: "Active Projects", bg: "bg-blue-50",   iconColor: "text-blue-500"   },
-  { icon: "⏱️", value: "28h",  label: "Hours This Week", bg: "bg-yellow-50", iconColor: "text-yellow-500" },
-  { icon: "⭐", value: "4.9",  label: "Perf. Score",     bg: "bg-purple-50", iconColor: "text-purple-500" },
-];
-
-/* ── MAIN COMPONENT ── */
 export default function TeamMemberDashboard() {
-  const [activeTab,     setActiveTab]     = useState("Overview");
-  const [taskList,      setTaskList]      = useState(TASKS);
-  const [mobileTabOpen, setMobileTabOpen] = useState(false);
-
-  const toggleTask = (id) =>
-    setTaskList((p) => p.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
-
-  const pending = taskList.filter((t) => !t.done).length;
+  const navigate  = useNavigate();
+  const [taskList, setTaskList] = useState(TASKS);
+  const pending = taskList.filter(t => !t.done).length;
+  const toggleTask = (id) => setTaskList(p => p.map(t => t.id === id ? { ...t, done: !t.done } : t));
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans">
+    <div style={{ padding: "20px 24px 40px", fontFamily: FONT, background: G.bg, minHeight: "100%" }}>
 
-      {/* ── NAVBAR — identical structure to AgencyDashboard ── */}
-      <header className="bg-white border-b border-gray-200 px-4 sm:px-8 py-4 flex items-center justify-between" style={{ minHeight: 72 }}>
-        <img src="/weblance-logo.png.jpeg" alt="WebLance" style={{ height: 64, width: "auto", objectFit: "contain" }} />
-        <div className="flex items-center gap-2 sm:gap-4">
-          <span className="hidden sm:inline border border-gray-300 text-gray-600 text-xs font-semibold px-3 py-1 rounded-full">
-            MEMBER
-          </span>
-          <span className="hidden sm:flex items-center gap-1 text-sm text-gray-600 cursor-pointer hover:text-blue-500">
-            👤 Public Profile
-          </span>
-          <div style={{ position: "relative" }}>
-            <div className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-base cursor-pointer">
-              🔔
+      {/* Welcome */}
+      <div style={{ marginBottom: 20 }}>
+        <p style={{ fontSize: 20, fontWeight: 800, color: G.text, margin: 0, letterSpacing: "-0.3px" }}>
+          Welcome back, Sara Mehta 👋
+        </p>
+        <p style={{ fontSize: 12, color: G.muted, margin: "3px 0 0" }}>Here's your member overview for today</p>
+      </div>
+
+      {/* ── STAT CARDS ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 14, marginBottom: 20 }}>
+        {STATS.map((s, i) => (
+          <div key={i} style={{ background: G.white, border: `1px solid ${G.border}`, borderRadius: 14, padding: "16px 18px", display: "flex", alignItems: "center", gap: 14, boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+            <div style={{ width: 44, height: 44, borderRadius: 12, background: s.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 }}>{s.icon}</div>
+            <div>
+              <p style={{ fontSize: 20, fontWeight: 800, color: s.color, margin: 0, letterSpacing: "-0.4px" }}>{s.value}</p>
+              <p style={{ fontSize: 11, fontWeight: 600, color: G.text, margin: "2px 0 1px" }}>{s.label}</p>
+              <p style={{ fontSize: 10, color: G.muted, margin: 0 }}>{s.sub}</p>
             </div>
-            <span className="absolute top-0 right-0 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white" style={{ top: 2, right: 2 }} />
           </div>
-          <div
-            className="w-8 h-8 rounded-full text-white flex items-center justify-center font-bold text-sm"
-            style={{ background: "#3db54a" }}
-          >
-            D
+        ))}
+      </div>
+
+      {/* ── ROW 1: Projects + Tasks ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
+
+        {/* Active Projects */}
+        <div style={{ background: G.white, border: `1px solid ${G.border}`, borderRadius: 14, overflow: "hidden" }}>
+          <div style={{ padding: "14px 18px 12px", borderBottom: `1px solid #f3f4f6`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div>
+              <p style={{ fontSize: 14, fontWeight: 700, color: G.text, margin: 0 }}>Active Projects</p>
+              <p style={{ fontSize: 11, color: G.muted, margin: "2px 0 0" }}>Assigned to you by agency</p>
+            </div>
+            <button onClick={() => navigate("/team/projects")}
+              style={{ fontSize: 11, fontWeight: 700, color: G.greenDark, background: G.greenBg, border: `1px solid ${G.greenBorder}`, borderRadius: 7, padding: "4px 10px", cursor: "pointer", fontFamily: FONT }}>
+              View All
+            </button>
           </div>
-        </div>
-      </header>
 
-      {/* ── MAIN CONTENT — max-w-6xl like AgencyDashboard ── */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-8 py-6 sm:py-8">
-
-        {/* Welcome */}
-        <div className="mb-5 sm:mb-6">
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Welcome back, Dev Mike</h1>
-          <p className="text-gray-500 text-sm mt-1">Here's your member overview</p>
-        </div>
-
-        {/* ── STATS — same grid as AgencyDashboard ── */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4 mb-5 sm:mb-6">
-          {STATS.map((s, i) => (
-            <div key={i} className="bg-white rounded-xl border border-gray-100 p-4 sm:p-5 flex items-center gap-3 sm:gap-4 shadow-sm">
-              <div className={`w-9 h-9 sm:w-11 sm:h-11 rounded-lg ${s.bg} flex items-center justify-center text-base sm:text-lg`}>
-                <span className={s.iconColor}>{s.icon}</span>
+          {PROJECTS.map((p, i) => (
+            <div key={p.id} onClick={() => navigate("/team/projects")}
+              style={{ padding: "14px 18px", borderBottom: i < PROJECTS.length - 1 ? `1px solid #f9fafb` : "none", cursor: "pointer", transition: "background 0.12s" }}
+              onMouseEnter={e => e.currentTarget.style.background = G.bg}
+              onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 8 }}>
+                <div>
+                  <p style={{ fontSize: 13, fontWeight: 700, color: G.text, margin: 0 }}>{p.name}</p>
+                  <p style={{ fontSize: 11, color: G.muted, margin: "2px 0 0" }}>
+                    {p.client} · <span style={{ color: G.blue, fontWeight: 600 }}>{p.role}</span>
+                  </p>
+                </div>
+                <span style={{ fontSize: 10, fontWeight: 700, background: p.riskBg, color: p.riskColor, border: `1px solid ${p.riskBorder}`, padding: "2px 8px", borderRadius: 99, flexShrink: 0 }}>
+                  {p.status}
+                </span>
               </div>
-              <div>
-                <div className="text-xl sm:text-2xl font-bold text-gray-900">{s.value}</div>
-                <div className="text-xs text-gray-500 leading-tight">{s.label}</div>
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 5 }}>
+                <div style={{ flex: 1, background: "#f3f4f6", borderRadius: 99, height: 5, overflow: "hidden" }}>
+                  <div style={{ width: `${p.progress}%`, height: "100%", background: `linear-gradient(90deg,${G.green},#2563eb)`, borderRadius: 99 }} />
+                </div>
+                <span style={{ fontSize: 11, fontWeight: 700, color: G.text, flexShrink: 0 }}>{p.progress}%</span>
               </div>
+              <button onClick={e => { e.stopPropagation(); navigate(p.channel); }}
+                style={{ fontSize: 10, fontWeight: 700, color: G.greenDark, background: G.greenBg, border: `1px solid ${G.greenBorder}`, borderRadius: 6, padding: "3px 9px", cursor: "pointer", fontFamily: FONT }}>
+                💬 Open Channel 2
+              </button>
             </div>
           ))}
         </div>
 
-        {/* ── TAB PANEL — same white card as AgencyDashboard ── */}
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm mb-6">
-
-          {/* Mobile tab dropdown */}
-          <div className="sm:hidden px-4 py-3 border-b border-gray-100 relative">
-            <button
-              onClick={() => setMobileTabOpen(!mobileTabOpen)}
-              className="w-full flex items-center justify-between border border-gray-200 rounded-lg px-4 py-2.5 text-sm font-semibold text-gray-800 bg-white"
-            >
-              {activeTab}
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 5l5 5 5-5" stroke="#6b7280" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-            </button>
-            {mobileTabOpen && (
-              <div className="absolute left-4 right-4 mt-1 bg-white border border-gray-200 rounded-xl shadow-lg z-30 py-1">
-                {TABS.map(tab => (
-                  <button
-                    key={tab}
-                    onClick={() => { setActiveTab(tab); setMobileTabOpen(false); }}
-                    className={`w-full text-left px-4 py-3 text-sm transition-colors ${activeTab === tab ? "bg-blue-50 text-blue-600 font-semibold" : "text-gray-700 hover:bg-gray-50"}`}
-                  >
-                    {tab}{tab === "Messages" && <span className="ml-1 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5">3</span>}
-                  </button>
-                ))}
-              </div>
-            )}
+        {/* My Tasks */}
+        <div style={{ background: G.white, border: `1px solid ${G.border}`, borderRadius: 14, overflow: "hidden" }}>
+          <div style={{ padding: "14px 18px 12px", borderBottom: `1px solid #f3f4f6`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <p style={{ fontSize: 14, fontWeight: 700, color: G.text, margin: 0 }}>My Tasks</p>
+            <span style={{ fontSize: 11, fontWeight: 700, background: G.blueBg, color: G.blue, border: `1px solid #bfdbfe`, padding: "3px 10px", borderRadius: 99 }}>
+              {pending} pending
+            </span>
           </div>
+          {taskList.map((task, i) => (
+            <div key={task.id} onClick={() => toggleTask(task.id)}
+              style={{ display: "flex", alignItems: "center", gap: 10, padding: "11px 18px", borderBottom: i < taskList.length - 1 ? `1px solid #f9fafb` : "none", cursor: "pointer", transition: "background 0.1s" }}
+              onMouseEnter={e => e.currentTarget.style.background = G.bg}
+              onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+              {/* Checkbox */}
+              <div style={{ width: 18, height: 18, borderRadius: 5, border: `2px solid ${task.done ? G.green : G.greenBorder}`, background: task.done ? G.green : G.white, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "all 0.15s" }}>
+                {task.done && <svg width="10" height="10" fill="none" viewBox="0 0 10 10"><path d="M2 5l2.5 2.5 3.5-3.5" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+              </div>
+              {/* Priority dot */}
+              <span style={{ width: 7, height: 7, borderRadius: "50%", flexShrink: 0, background: task.priority === "high" ? G.red : task.priority === "med" ? G.yellow : G.green }} />
+              {/* Text */}
+              <span style={{ flex: 1, fontSize: 12, color: task.done ? G.muted : G.text, textDecoration: task.done ? "line-through" : "none", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                {task.text}
+              </span>
+              {/* Due */}
+              <span style={{ fontSize: 10, fontWeight: 700, flexShrink: 0, color: task.due === "Today" ? G.red : G.muted }}>
+                {task.due}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
 
-          {/* Desktop tabs — identical style to AgencyDashboard */}
-          <div className="hidden sm:flex gap-0 border-b border-gray-100 px-4 overflow-x-auto">
-            {TABS.map(tab => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`px-4 py-3 text-sm font-medium relative flex items-center gap-1.5 transition-colors whitespace-nowrap ${activeTab === tab ? "text-gray-900 border-b-2 border-gray-900" : "text-gray-500 hover:text-gray-700"}`}
-              >
-                {tab}
-                {tab === "Messages" && (
-                  <span className="bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center leading-none">3</span>
-                )}
-              </button>
+      {/* ── ROW 2: Activity + Skills + Team ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 16, marginBottom: 16 }}>
+
+        {/* Recent Activity */}
+        <div style={{ background: G.white, border: `1px solid ${G.border}`, borderRadius: 14, overflow: "hidden" }}>
+          <div style={{ padding: "14px 18px 12px", borderBottom: `1px solid #f3f4f6` }}>
+            <p style={{ fontSize: 14, fontWeight: 700, color: G.text, margin: 0 }}>Recent Activity</p>
+          </div>
+          <div style={{ padding: "6px 0" }}>
+            {ACTIVITIES.map((a, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "9px 18px", borderBottom: i < ACTIVITIES.length - 1 ? `1px solid #f9fafb` : "none" }}>
+                <span style={{ width: 7, height: 7, borderRadius: "50%", background: a.dot, flexShrink: 0, marginTop: 5 }} />
+                <div>
+                  <p style={{ fontSize: 12, color: G.text, margin: 0, lineHeight: 1.4 }}>{a.text}</p>
+                  <p style={{ fontSize: 10, color: G.muted, margin: "2px 0 0" }}>{a.time}</p>
+                </div>
+              </div>
             ))}
           </div>
-
-          {/* ── OVERVIEW TAB ── */}
-          {activeTab === "Overview" && (
-            <div className="p-4 sm:p-6">
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                {/* Left col (2/3) */}
-                <div className="lg:col-span-2 flex flex-col gap-6">
-
-                
-                  <div>
-                    <h2 className="font-semibold text-gray-900 mb-4">Active Projects</h2>
-                    <div className="flex flex-col gap-3">
-                      {PROJECTS.map((p, i) => (
-                        <div key={i} className="border border-gray-200 rounded-lg px-4 py-4 hover:border-green-300 hover:shadow-sm transition-all cursor-pointer group">
-                          <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
-                            <div>
-                              <div className="font-semibold text-gray-900 text-sm group-hover:text-green-700 transition-colors">{p.name}</div>
-                              <div className="text-xs text-gray-400 mt-0.5">{p.client} · {p.budget} · <span className="text-blue-500">{p.role}</span></div>
-                            </div>
-                            <div className="flex items-center gap-3">
-                              <span className="text-sm text-gray-600 font-medium">{p.progress}%</span>
-                              <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${p.riskColor}`}>{p.status}</span>
-                            </div>
-                          </div>
-                          <div className="w-full bg-gray-100 rounded-full h-1.5">
-                            <div className="h-1.5 rounded-full" style={{ width: `${p.progress}%`, background: "linear-gradient(90deg,#3db54a,#2563eb)" }} />
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* My Tasks */}
-                  <div>
-                    <div className="flex items-center justify-between mb-4">
-                      <h2 className="font-semibold text-gray-900">My Tasks</h2>
-                      <span className="bg-blue-50 border border-blue-200 text-blue-600 text-xs font-semibold px-2.5 py-1 rounded-full">{pending} pending</span>
-                    </div>
-                    <div className="border border-gray-200 rounded-xl overflow-hidden">
-                      {taskList.map((task, i) => (
-                        <div
-                          key={task.id}
-                          onClick={() => toggleTask(task.id)}
-                          className={`flex items-center gap-3 px-4 py-3 cursor-pointer hover:bg-gray-50 transition-colors ${i < taskList.length - 1 ? "border-b border-gray-100" : ""}`}
-                        >
-                          {/* Checkbox */}
-                          <div className={`w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 border transition-colors ${task.done ? "bg-green-500 border-green-500" : "border-gray-300"}`}>
-                            {task.done && (
-                              <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 5.5l2.5 2.5 4.5-4.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
-                            )}
-                          </div>
-                          {/* Priority dot */}
-                          <span className={`w-2 h-2 rounded-full flex-shrink-0 ${task.priority === "high" ? "bg-red-400" : task.priority === "med" ? "bg-yellow-400" : "bg-green-400"}`} />
-                          {/* Text */}
-                          <span className={`flex-1 text-sm min-w-0 truncate ${task.done ? "line-through text-gray-400" : "text-gray-700"}`}>
-                            {task.text}
-                          </span>
-                          {/* Due */}
-                          <span className={`text-xs font-semibold whitespace-nowrap ${task.due === "Today" ? "text-red-500" : "text-gray-400"}`}>
-                            {task.due}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                </div>
-
-                {/* Right col (1/3) — same style as agency "Team" + "Growth" panels */}
-                <div className="flex flex-col gap-5">
-
-                  {/* Team */}
-                  <div className="border border-gray-100 rounded-xl p-5 bg-gray-50">
-                    <h2 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                      <span className="text-gray-500">👥</span> Team
-                    </h2>
-                    <div className="flex flex-col gap-3">
-                      {TEAM.map((m, i) => (
-                        <div key={i} className="flex items-center justify-between">
-                          <div className="flex items-center gap-2.5">
-                            <div className={`w-7 h-7 rounded-full ${m.bg} flex items-center justify-center text-xs font-bold text-gray-600 relative`}>
-                              {m.initial}
-                              {m.me && <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white" />}
-                            </div>
-                            <span className={`text-sm ${m.me ? "font-semibold text-gray-900" : "text-gray-800"}`}>
-                              {m.name}{m.me && <span className="text-xs text-gray-400 font-normal ml-1">(you)</span>}
-                            </span>
-                          </div>
-                          <span className={`text-xs font-semibold px-2 py-0.5 rounded ${m.roleColor}`}>{m.role}</span>
-                        </div>
-                      ))}
-                    </div>
-                    <button className="mt-4 text-sm text-gray-500 hover:text-gray-700 w-full text-center">
-                      Manage Team →
-                    </button>
-                  </div>
-
-                  {/* My Permissions */}
-                  <div className="border border-gray-100 rounded-xl p-5 bg-gray-50">
-                    <h2 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                      <span>🔒</span> My Permissions
-                    </h2>
-                    <div className="grid grid-cols-2 gap-2">
-                      {PERMISSIONS.map((p, i) => (
-                        <div key={i} className={`flex items-center gap-1.5 text-xs font-medium px-2.5 py-2 rounded-lg border ${p.allowed ? "bg-green-50 border-green-200 text-green-700" : "bg-red-50 border-red-200 text-red-600"}`}>
-                          <span>{p.allowed ? "✅" : "🚫"}</span>
-                          <span className="truncate">{p.label}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Growth */}
-                  <div className="border border-gray-100 rounded-xl p-5 bg-gray-50">
-                    <h2 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                      <span className="text-green-500">📈</span> Growth
-                    </h2>
-                    <div className="flex flex-col gap-2.5">
-                      {[
-                        { label: "Agency",        value: "TechVision Digital" },
-                        { label: "My Role",        value: "Developer"          },
-                        { label: "Joined",         value: "3 months ago"       },
-                        { label: "Projects Done",  value: "4"                  },
-                        { label: "Rating",         value: "⭐ 4.9 (12)"       },
-                      ].map((row, i) => (
-                        <div key={i} className="flex justify-between items-center">
-                          <span className="text-sm text-gray-400">{row.label}</span>
-                          <span className="text-sm text-gray-800 font-medium">{row.value}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-
-              {/* Bottom row — Recent Activity + Skills */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 mt-6">
-
-                {/* Recent Activity */}
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <h2 className="font-semibold text-gray-900">Recent Activity</h2>
-                    <span className="text-sm text-blue-500 cursor-pointer hover:text-blue-600 font-medium">View all</span>
-                  </div>
-                  <div className="border border-gray-200 rounded-xl overflow-hidden">
-                    {ACTIVITIES.map((a, i) => (
-                      <div key={i} className={`flex items-start gap-3 px-4 py-3 ${i < ACTIVITIES.length - 1 ? "border-b border-gray-100" : ""}`}>
-                        <span className={`w-2.5 h-2.5 rounded-full mt-1 flex-shrink-0 ${a.dot}`} />
-                        <div>
-                          <div className="text-sm text-gray-700 leading-snug">{a.text}</div>
-                          <div className="text-xs text-gray-400 mt-0.5">{a.time}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                {/* My Skills */}
-                <div>
-                  <h2 className="font-semibold text-gray-900 mb-3">My Skills</h2>
-                  <div className="border border-gray-200 rounded-xl p-5">
-                    {SKILLS.map((s, i) => (
-                      <div key={i} className={`${i < SKILLS.length - 1 ? "mb-4" : ""}`}>
-                        <div className="flex items-center justify-between mb-1.5">
-                          <span className="text-sm text-gray-700">{s.label}</span>
-                          <span className="text-sm font-bold text-gray-900">{s.pct}%</span>
-                        </div>
-                        <div className="w-full bg-gray-100 rounded-full h-1.5">
-                          <div className="h-1.5 rounded-full" style={{ width: `${s.pct}%`, background: "linear-gradient(90deg,#3db54a,#2563eb)" }} />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          )}
-
-          {/* ── TASKS TAB ── */}
-          {activeTab === "Tasks" && (
-            <div className="p-4 sm:p-6">
-              <div className="flex items-center justify-between mb-5">
-                <div>
-                  <h2 className="font-bold text-gray-900 text-base">My Tasks</h2>
-                  <p className="text-xs text-gray-400 mt-0.5">{taskList.filter(t => !t.done).length} pending · {taskList.filter(t => t.done).length} completed</p>
-                </div>
-                <span className="bg-blue-50 border border-blue-200 text-blue-600 text-xs font-semibold px-3 py-1 rounded-full">{taskList.filter(t => !t.done).length} pending</span>
-              </div>
-              {/* Priority legend */}
-              <div className="flex items-center gap-4 mb-4 text-xs text-gray-400">
-                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-red-400 inline-block" /> High</span>
-                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-yellow-400 inline-block" /> Medium</span>
-                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-green-400 inline-block" /> Low</span>
-              </div>
-              <div className="border border-gray-200 rounded-xl overflow-hidden">
-                {taskList.map((task, i) => (
-                  <div key={task.id} onClick={() => toggleTask(task.id)}
-                    className={`flex items-center gap-3 px-4 py-3.5 cursor-pointer hover:bg-gray-50 transition-colors ${i < taskList.length - 1 ? "border-b border-gray-100" : ""}`}>
-                    <div className={`w-5 h-5 rounded-md flex items-center justify-center flex-shrink-0 border transition-colors ${task.done ? "bg-green-500 border-green-500" : "border-gray-300"}`}>
-                      {task.done && <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M2 5.5l2.5 2.5 4.5-4.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
-                    </div>
-                    <span className={`w-2 h-2 rounded-full flex-shrink-0 ${task.priority === "high" ? "bg-red-400" : task.priority === "med" ? "bg-yellow-400" : "bg-green-400"}`} />
-                    <span className={`flex-1 text-sm ${task.done ? "line-through text-gray-400" : "text-gray-700"}`}>{task.text}</span>
-                    <span className={`text-xs font-semibold whitespace-nowrap px-2.5 py-1 rounded-full ${task.due === "Today" ? "bg-red-50 text-red-500 border border-red-200" : task.due === "Tomorrow" ? "bg-yellow-50 text-yellow-600 border border-yellow-200" : "bg-gray-100 text-gray-400 border border-gray-200"}`}>
-                      {task.due}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* ── PROJECTS TAB ── */}
-          {activeTab === "Projects" && (
-            <div className="p-4 sm:p-6">
-              <div className="flex items-center justify-between mb-5">
-                <div>
-                  <h2 className="font-bold text-gray-900 text-base">My Projects</h2>
-                  <p className="text-xs text-gray-400 mt-0.5">Projects you're assigned to</p>
-                </div>
-                <span className="text-xs bg-green-50 border border-green-200 text-green-600 font-semibold px-2.5 py-1 rounded-full">2 Active</span>
-              </div>
-              <div className="flex flex-col gap-4">
-                {PROJECTS.map((p, i) => (
-                  <div key={i} className="border border-gray-200 rounded-xl overflow-hidden hover:border-green-300 hover:shadow-sm transition-all cursor-pointer group">
-                    <div className="p-5">
-                      <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
-                        <div>
-                          <h3 className="text-base font-bold text-gray-900 group-hover:text-green-700 transition-colors">{p.name}</h3>
-                          <div className="text-sm text-gray-500 mt-0.5">Client: {p.client}</div>
-                        </div>
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="flex items-center gap-1.5 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">
-                            <span className="w-1.5 h-1.5 rounded-full bg-white inline-block" />ACTIVE
-                          </span>
-                          <span className={`text-xs font-semibold px-3 py-1 rounded-full border ${p.riskColor}`}>{p.status}</span>
-                        </div>
-                      </div>
-                      <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-3">
-                        <span>Budget: {p.budget}</span>
-                        <span>{p.progress}% complete</span>
-                        <span className="text-blue-500 font-medium">My Role: {p.role}</span>
-                      </div>
-                      <div className="w-full bg-gray-100 rounded-full h-1.5">
-                        <div className="h-1.5 rounded-full" style={{ width: `${p.progress}%`, background: "linear-gradient(90deg,#3db54a,#2563eb)" }} />
-                      </div>
-                    </div>
-                    <div className="border-t border-gray-100 px-5 py-3 flex flex-wrap gap-2 bg-gray-50">
-                      <button onClick={e => e.stopPropagation()} className="border border-gray-200 bg-white text-gray-700 text-xs px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors">Open ProjectStream</button>
-                      <button onClick={e => e.stopPropagation()} className="border border-gray-200 bg-white text-gray-700 text-xs px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors">Upload Deliverable</button>
-                      <button onClick={e => e.stopPropagation()} className="border border-gray-200 bg-white text-gray-700 text-xs px-3 py-1.5 rounded-lg hover:bg-gray-100 transition-colors">Message Client</button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* ── MESSAGES TAB ── */}
-          {activeTab === "Messages" && (
-            <div className="p-4 sm:p-6">
-              <div className="flex items-center justify-between mb-5">
-                <div>
-                  <h2 className="font-bold text-gray-900 text-base">Messages</h2>
-                  <p className="text-xs text-gray-400 mt-0.5">3 unread messages</p>
-                </div>
-              </div>
-              <div className="border border-gray-200 rounded-xl overflow-hidden">
-                {[
-                  { from: "Raj Kumar (Admin)", msg: "Hey Mike, can you check the checkout API?", time: "10 min ago",   unread: true,  initial: "R", bg: "bg-red-100"    },
-                  { from: "Sara M.",           msg: "PR #47 looks good, just one comment left", time: "1 hour ago",   unread: true,  initial: "S", bg: "bg-blue-100"   },
-                  { from: "Priya S.",          msg: "Can you review the new UI mockups?",       time: "3 hours ago",  unread: true,  initial: "P", bg: "bg-purple-100" },
-                  { from: "ByteEats Co.",      msg: "When will milestone 2 be ready?",          time: "Yesterday",    unread: false, initial: "B", bg: "bg-green-100"  },
-                  { from: "GlobalShop",        msg: "Thanks for the update on the platform",    time: "2 days ago",   unread: false, initial: "G", bg: "bg-yellow-100" },
-                ].map((m, i, arr) => (
-                  <div key={i} className={`flex items-center gap-3 px-4 py-4 cursor-pointer hover:bg-gray-50 transition-colors ${i < arr.length - 1 ? "border-b border-gray-100" : ""} ${m.unread ? "bg-blue-50/40" : ""}`}>
-                    <div className={`w-9 h-9 rounded-full ${m.bg} flex items-center justify-center text-sm font-bold text-gray-600 flex-shrink-0`}>{m.initial}</div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className={`text-sm ${m.unread ? "font-bold text-gray-900" : "font-medium text-gray-700"}`}>{m.from}</span>
-                        <span className="text-xs text-gray-400 whitespace-nowrap">{m.time}</span>
-                      </div>
-                      <div className={`text-sm truncate mt-0.5 ${m.unread ? "text-gray-700" : "text-gray-400"}`}>{m.msg}</div>
-                    </div>
-                    {m.unread && <span className="w-2.5 h-2.5 rounded-full bg-blue-500 flex-shrink-0" />}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* ── TIME LOGS TAB ── */}
-          {activeTab === "Time Logs" && (
-            <div className="p-4 sm:p-6">
-              <div className="flex items-center justify-between mb-5">
-                <div>
-                  <h2 className="font-bold text-gray-900 text-base">Time Logs</h2>
-                  <p className="text-xs text-gray-400 mt-0.5">This week's activity</p>
-                </div>
-                <span className="bg-yellow-50 border border-yellow-200 text-yellow-700 text-xs font-semibold px-3 py-1 rounded-full">28h this week</span>
-              </div>
-              {/* Summary cards */}
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-5">
-                {[
-                  { label: "Today",      val: "6h 30m", color: "text-green-600"  },
-                  { label: "This Week",  val: "28h",    color: "text-blue-600"   },
-                  { label: "This Month", val: "96h",    color: "text-purple-600" },
-                ].map((s, i) => (
-                  <div key={i} className="border border-gray-200 rounded-xl p-4 bg-white text-center">
-                    <div className={`text-xl font-bold ${s.color}`}>{s.val}</div>
-                    <div className="text-xs text-gray-400 mt-1">{s.label}</div>
-                  </div>
-                ))}
-              </div>
-              {/* Log entries */}
-              <div className="border border-gray-200 rounded-xl overflow-hidden">
-                <div className="px-4 py-3 bg-gray-50 border-b border-gray-100 grid grid-cols-4 text-xs font-semibold text-gray-400 uppercase tracking-wide">
-                  <span>Date</span><span>Project</span><span>Task</span><span className="text-right">Hours</span>
-                </div>
-                {[
-                  { date: "Today",      project: "Food Delivery App",   task: "Checkout API",    hours: "3h 30m" },
-                  { date: "Today",      project: "Food Delivery App",   task: "Cart Bug Fix",    hours: "3h 00m" },
-                  { date: "Yesterday",  project: "E-commerce Platform", task: "DB Schema",       hours: "4h 00m" },
-                  { date: "Yesterday",  project: "Food Delivery App",   task: "Auth Module",     hours: "4h 00m" },
-                  { date: "Mon",        project: "E-commerce Platform", task: "API Integration", hours: "6h 00m" },
-                  { date: "Mon",        project: "Food Delivery App",   task: "Code Review",     hours: "2h 00m" },
-                  { date: "Sun",        project: "Food Delivery App",   task: "Unit Tests",      hours: "5h 30m" },
-                ].map((log, i, arr) => (
-                  <div key={i} className={`grid grid-cols-4 items-center px-4 py-3 text-sm ${i < arr.length - 1 ? "border-b border-gray-100" : ""} hover:bg-gray-50 transition-colors`}>
-                    <span className="text-gray-400 text-xs">{log.date}</span>
-                    <span className="text-gray-700 font-medium truncate pr-2">{log.project}</span>
-                    <span className="text-gray-500 truncate pr-2">{log.task}</span>
-                    <span className="text-right font-bold text-gray-900">{log.hours}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
         </div>
-      </main>
+
+        {/* My Skills */}
+        <div style={{ background: G.white, border: `1px solid ${G.border}`, borderRadius: 14, overflow: "hidden" }}>
+          <div style={{ padding: "14px 18px 12px", borderBottom: `1px solid #f3f4f6`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <p style={{ fontSize: 14, fontWeight: 700, color: G.text, margin: 0 }}>My Skills</p>
+            <button onClick={() => navigate("/team/profile")}
+              style={{ fontSize: 11, fontWeight: 700, color: G.greenDark, background: G.greenBg, border: `1px solid ${G.greenBorder}`, borderRadius: 7, padding: "4px 10px", cursor: "pointer", fontFamily: FONT }}>
+              Edit
+            </button>
+          </div>
+          <div style={{ padding: "14px 18px" }}>
+            {SKILLS.map((s, i) => (
+              <div key={i} style={{ marginBottom: i < SKILLS.length - 1 ? 14 : 0 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
+                  <span style={{ fontSize: 12, color: G.text, fontWeight: 500 }}>{s.label}</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: G.greenDark }}>{s.pct}%</span>
+                </div>
+                <div style={{ background: "#f3f4f6", borderRadius: 99, height: 5, overflow: "hidden" }}>
+                  <div style={{ width: `${s.pct}%`, height: "100%", background: `linear-gradient(90deg,${G.green},#86efac)`, borderRadius: 99 }} />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Team */}
+        <div style={{ background: G.white, border: `1px solid ${G.border}`, borderRadius: 14, overflow: "hidden" }}>
+          <div style={{ padding: "14px 18px 12px", borderBottom: `1px solid #f3f4f6` }}>
+            <p style={{ fontSize: 14, fontWeight: 700, color: G.text, margin: 0 }}>My Team</p>
+            <p style={{ fontSize: 11, color: G.muted, margin: "2px 0 0" }}>TechVision Solutions</p>
+          </div>
+          <div style={{ padding: "6px 0" }}>
+            {TEAM.map((m, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 18px", borderBottom: i < TEAM.length - 1 ? `1px solid #f9fafb` : "none" }}
+                onMouseEnter={e => e.currentTarget.style.background = G.bg}
+                onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                <div style={{ position: "relative", flexShrink: 0 }}>
+                  <div style={{ width: 28, height: 28, borderRadius: "50%", background: m.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: m.color }}>
+                    {m.initial}
+                  </div>
+                  {m.me && (
+                    <span style={{ position: "absolute", bottom: -1, right: -1, width: 9, height: 9, borderRadius: "50%", background: G.green, border: `2px solid ${G.white}` }} />
+                  )}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <p style={{ fontSize: 12, fontWeight: m.me ? 700 : 600, color: G.text, margin: 0 }}>
+                    {m.name}{m.me && <span style={{ fontSize: 10, color: G.muted, fontWeight: 400, marginLeft: 5 }}>(you)</span>}
+                  </p>
+                  <p style={{ fontSize: 10, color: G.muted, margin: 0 }}>{m.role}</p>
+                </div>
+                <span style={{ width: 7, height: 7, borderRadius: "50%", background: m.status === "available" ? G.green : G.blue, flexShrink: 0 }} />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ── ROW 3: Permissions + Quick Links ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+
+        {/* My Permissions */}
+        <div style={{ background: G.white, border: `1px solid ${G.border}`, borderRadius: 14, overflow: "hidden" }}>
+          <div style={{ padding: "14px 18px 12px", borderBottom: `1px solid #f3f4f6` }}>
+            <p style={{ fontSize: 14, fontWeight: 700, color: G.text, margin: 0 }}>My Permissions</p>
+            <p style={{ fontSize: 11, color: G.muted, margin: "2px 0 0" }}>Set by agency admin</p>
+          </div>
+          <div style={{ padding: "14px 18px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              {PERMISSIONS.map((p, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: 7, padding: "7px 10px", borderRadius: 8, background: p.allowed ? G.greenBg : G.redBg, border: `1px solid ${p.allowed ? G.greenBorder : "#fecaca"}` }}>
+                  <span style={{ fontSize: 12 }}>{p.allowed ? "✅" : "🚫"}</span>
+                  <span style={{ fontSize: 11, fontWeight: 600, color: p.allowed ? G.greenDark : "#dc2626" }}>{p.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Quick Links + Growth */}
+        <div style={{ background: G.white, border: `1px solid ${G.border}`, borderRadius: 14, overflow: "hidden" }}>
+          <div style={{ padding: "14px 18px 12px", borderBottom: `1px solid #f3f4f6` }}>
+            <p style={{ fontSize: 14, fontWeight: 700, color: G.text, margin: 0 }}>My Profile</p>
+          </div>
+          <div style={{ padding: "14px 18px" }}>
+            {/* Stats */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 14 }}>
+              {[
+                { label: "Projects Done",  value: "4",         color: G.blue      },
+                { label: "Rating",         value: "⭐ 4.9",    color: G.yellow    },
+                { label: "Joined",         value: "3 mo ago",  color: G.muted     },
+                { label: "Tasks Done",     value: "47",        color: G.greenDark },
+              ].map((s, i) => (
+                <div key={i} style={{ background: G.bg, borderRadius: 9, padding: "9px 11px" }}>
+                  <p style={{ fontSize: 14, fontWeight: 800, color: s.color, margin: 0 }}>{s.value}</p>
+                  <p style={{ fontSize: 10, color: G.muted, margin: "2px 0 0" }}>{s.label}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Quick action buttons */}
+            <div style={{ display: "flex", gap: 8 }}>
+              <button onClick={() => navigate("/team/profile")}
+                style={{ flex: 1, fontSize: 11, fontWeight: 700, color: G.greenDark, background: G.greenBg, border: `1px solid ${G.greenBorder}`, borderRadius: 8, padding: "8px", cursor: "pointer", fontFamily: FONT }}>
+                👤 Edit Profile
+              </button>
+              <button onClick={() => navigate("/team/notifications")}
+                style={{ flex: 1, fontSize: 11, fontWeight: 700, color: G.blue, background: G.blueBg, border: `1px solid #bfdbfe`, borderRadius: 8, padding: "8px", cursor: "pointer", fontFamily: FONT }}>
+                🔔 Notifications
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 }

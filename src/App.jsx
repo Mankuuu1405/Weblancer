@@ -42,11 +42,13 @@ import { AdminRevenueReport, AdminUsersReport, AdminProjectsReport, AdminDispute
 import AdminNotifications from "./AdminPanel/AdminNotifications";
 import AdminAnnouncements from "./AdminPanel/AdminAnnouncements";
 
-// Agency
+// Agency — Layout
+import AgencyLayout from "./RegisterAgency/AgencyLayout";
+
+// Agency — Pages
 import RegisterAgency from "./RegisterAgency/RegisterAgency";
 import AgencyProfile from "./RegisterAgency/AgencyProfile";
 import AgencyDashboard from "./RegisterAgency/AgencyDashboard";
-import TeamOnboarding from "./Team/TeamOnboarding";
 import ProjectDetailPage from "./RegisterAgency/ProjectDetailPage";
 import AgencyProposals from "./RegisterAgency/AgencyProposals";
 import AgencyContracts    from "./RegisterAgency/AgencyContracts";
@@ -58,12 +60,16 @@ import AgencyNotifications from "./RegisterAgency/AgencyNotifications";
 import AgencySettings     from "./RegisterAgency/AgencySettings";
 import AgencyLandingPage from "./RegisterAgency/AgencyLandingPage";
 
-// Team Member pages
+// Team — Layout
+import TeamLayout from "./Team/TeamLayout";
+
+// Team — Pages
+import TeamOnboarding     from "./Team/TeamOnboarding";
 import TeamProfile        from "./Team/TeamProfile";
 import TeamProjects       from "./Team/TeamProjects";
 import TeamNotifications  from "./Team/TeamNotifications";
 import TeamMemberDashboard from "./Team/TeamMemberDashboard";
-import InviteAccept from "./Team/InviteAccept";
+import InviteAccept       from "./Team/InviteAccept";
 
 // Freelancer — Layout wrapper
 import FreelancerLayout from "./Freelancer/FreelancerLayout";
@@ -153,130 +159,121 @@ export default function App() {
         {/* Home */}
         <Route path="/" element={<Home />} />
 
-        {/* Signin */}
+        {/* Auth */}
         <Route path="/signin" element={<Signin />} />
 
-        {/* Admin — Dashboard */}
-        <Route path="/admin"                          element={<AdminLayout><AdminDashboard /></AdminLayout>} />
+        {/* ── Admin ── */}
+        <Route path="/admin"                           element={<AdminLayout><AdminDashboard /></AdminLayout>} />
+        <Route path="/admin/users"                     element={<AdminLayout><AdminUsers /></AdminLayout>} />
+        <Route path="/admin/users/:id"                 element={<AdminLayout><AdminUserDetail /></AdminLayout>} />
+        <Route path="/admin/freelancers"               element={<AdminLayout><AdminFreelancers /></AdminLayout>} />
+        <Route path="/admin/freelancers/:id"           element={<AdminLayout><AdminFreelancerDetail /></AdminLayout>} />
+        <Route path="/admin/agencies"                  element={<AdminLayout><AdminAgencies /></AdminLayout>} />
+        <Route path="/admin/agencies/:id"              element={<AdminLayout><AdminAgencyDetail /></AdminLayout>} />
+        <Route path="/admin/clients"                   element={<AdminLayout><AdminClients /></AdminLayout>} />
+        <Route path="/admin/clients/:id"               element={<AdminLayout><AdminClientDetail /></AdminLayout>} />
+        <Route path="/admin/kyc/agencies"              element={<AdminLayout><AdminKYCAgencies /></AdminLayout>} />
+        <Route path="/admin/kyc/freelancers"           element={<AdminLayout><AdminKYCFreelancers /></AdminLayout>} />
+        <Route path="/admin/kyc/:id"                   element={<AdminLayout><AdminKYCDetail /></AdminLayout>} />
+        <Route path="/admin/kyc"                       element={<AdminLayout><AdminKYC /></AdminLayout>} />
+        <Route path="/admin/projects/at-risk"          element={<AdminLayout><AdminAtRiskProjects /></AdminLayout>} />
+        <Route path="/admin/projects/:id"              element={<AdminLayout><AdminProjectDetail /></AdminLayout>} />
+        <Route path="/admin/projects"                  element={<AdminLayout><AdminProjects /></AdminLayout>} />
+        <Route path="/admin/projectstream/freeze"      element={<AdminLayout><AdminFrozenChats /></AdminLayout>} />
+        <Route path="/admin/projectstream/:id"         element={<AdminLayout><AdminProjectStreamMonitor /></AdminLayout>} />
+        <Route path="/admin/disputes/pending"          element={<AdminLayout><AdminDisputesPending /></AdminLayout>} />
+        <Route path="/admin/disputes/:id"              element={<AdminLayout><AdminDisputeDetail /></AdminLayout>} />
+        <Route path="/admin/disputes"                  element={<AdminLayout><AdminDisputes /></AdminLayout>} />
+        <Route path="/admin/payments"                  element={<AdminLayout><AdminPayments /></AdminLayout>} />
+        <Route path="/admin/escrow"                    element={<AdminLayout><AdminEscrow /></AdminLayout>} />
+        <Route path="/admin/payouts/:id"               element={<AdminLayout><AdminPayoutDetail /></AdminLayout>} />
+        <Route path="/admin/payouts"                   element={<AdminLayout><AdminPayouts /></AdminLayout>} />
+        <Route path="/admin/refunds"                   element={<AdminLayout><AdminRefunds /></AdminLayout>} />
+        <Route path="/admin/commission"                element={<AdminLayout><AdminCommission /></AdminLayout>} />
+        <Route path="/admin/ai-settings"               element={<AdminLayout><AdminAISettings /></AdminLayout>} />
+        <Route path="/admin/ai-logs"                   element={<AdminLayout><AdminAILogs /></AdminLayout>} />
+        <Route path="/admin/ai-overrides"              element={<AdminLayout><AdminAIOverrides /></AdminLayout>} />
+        <Route path="/admin/audit"                     element={<AdminLayout><AdminAuditLogs /></AdminLayout>} />
+        <Route path="/admin/audit-logs"                element={<AdminLayout><AdminAuditLogsPage /></AdminLayout>} />
+        <Route path="/admin/admins/roles"              element={<AdminLayout><AdminRoles /></AdminLayout>} />
+        <Route path="/admin/admins"                    element={<AdminLayout><AdminAdmins /></AdminLayout>} />
+        <Route path="/admin/settings"                  element={<AdminLayout><AdminSettings /></AdminLayout>} />
+        <Route path="/admin/settings/general"          element={<AdminLayout><AdminSettingsGeneral /></AdminLayout>} />
+        <Route path="/admin/settings/commission"       element={<AdminLayout><AdminSettingsCommission /></AdminLayout>} />
+        <Route path="/admin/settings/policies"         element={<AdminLayout><AdminSettingsPolicies /></AdminLayout>} />
+        <Route path="/admin/settings/email"            element={<AdminLayout><AdminSettingsEmail /></AdminLayout>} />
+        <Route path="/admin/settings/rules"            element={<AdminLayout><AdminSettingsRules /></AdminLayout>} />
+        <Route path="/admin/reports/revenue"           element={<AdminLayout><AdminRevenueReport /></AdminLayout>} />
+        <Route path="/admin/reports/users"             element={<AdminLayout><AdminUsersReport /></AdminLayout>} />
+        <Route path="/admin/reports/projects"          element={<AdminLayout><AdminProjectsReport /></AdminLayout>} />
+        <Route path="/admin/reports/disputes"          element={<AdminLayout><AdminDisputesReport /></AdminLayout>} />
+        <Route path="/admin/notifications"             element={<AdminLayout><AdminNotifications /></AdminLayout>} />
+        <Route path="/admin/announcements"             element={<AdminLayout><AdminAnnouncements /></AdminLayout>} />
 
-        {/* Admin — User Management */}
-        <Route path="/admin/users"                    element={<AdminLayout><AdminUsers /></AdminLayout>} />
-        <Route path="/admin/users/:id"                element={<AdminLayout><AdminUserDetail /></AdminLayout>} />
-        <Route path="/admin/freelancers"              element={<AdminLayout><AdminFreelancers /></AdminLayout>} />
-        <Route path="/admin/freelancers/:id"          element={<AdminLayout><AdminFreelancerDetail /></AdminLayout>} />
-        <Route path="/admin/agencies"                 element={<AdminLayout><AdminAgencies /></AdminLayout>} />
-        <Route path="/admin/agencies/:id"             element={<AdminLayout><AdminAgencyDetail /></AdminLayout>} />
-        <Route path="/admin/clients"                  element={<AdminLayout><AdminClients /></AdminLayout>} />
-        <Route path="/admin/clients/:id"              element={<AdminLayout><AdminClientDetail /></AdminLayout>} />
+        {/* ── Agency — WITHOUT layout ── */}
+        <Route path="/register-agency"   element={<AgencyLandingPage />} />
+        <Route path="/agency/onboarding" element={<RegisterAgency />} />
+        <Route path="/agency/:id"        element={<AgencyProfile />} />
 
-        {/* Admin — KYC */}
-        <Route path="/admin/kyc/agencies"             element={<AdminLayout><AdminKYCAgencies /></AdminLayout>} />
-        <Route path="/admin/kyc/freelancers"          element={<AdminLayout><AdminKYCFreelancers /></AdminLayout>} />
-        <Route path="/admin/kyc/:id"                  element={<AdminLayout><AdminKYCDetail /></AdminLayout>} />
-        <Route path="/admin/kyc"                      element={<AdminLayout><AdminKYC /></AdminLayout>} />
-
-        {/* Admin — Projects */}
-        <Route path="/admin/projects/at-risk"         element={<AdminLayout><AdminAtRiskProjects /></AdminLayout>} />
-        <Route path="/admin/projects/:id"             element={<AdminLayout><AdminProjectDetail /></AdminLayout>} />
-        <Route path="/admin/projects"                 element={<AdminLayout><AdminProjects /></AdminLayout>} />
-
-        {/* Admin — ProjectStream */}
-        <Route path="/admin/projectstream/freeze"     element={<AdminLayout><AdminFrozenChats /></AdminLayout>} />
-        <Route path="/admin/projectstream/:id"        element={<AdminLayout><AdminProjectStreamMonitor /></AdminLayout>} />
-
-        {/* Admin — Operations */}
-        <Route path="/admin/disputes/pending"         element={<AdminLayout><AdminDisputesPending /></AdminLayout>} />
-        <Route path="/admin/disputes/:id"             element={<AdminLayout><AdminDisputeDetail /></AdminLayout>} />
-        <Route path="/admin/disputes"                 element={<AdminLayout><AdminDisputes /></AdminLayout>} />
-        <Route path="/admin/payments"                 element={<AdminLayout><AdminPayments /></AdminLayout>} />
-        <Route path="/admin/escrow"                   element={<AdminLayout><AdminEscrow /></AdminLayout>} />
-        <Route path="/admin/payouts/:id"              element={<AdminLayout><AdminPayoutDetail /></AdminLayout>} />
-        <Route path="/admin/payouts"                  element={<AdminLayout><AdminPayouts /></AdminLayout>} />
-        <Route path="/admin/refunds"                  element={<AdminLayout><AdminRefunds /></AdminLayout>} />
-        <Route path="/admin/commission"               element={<AdminLayout><AdminCommission /></AdminLayout>} />
-
-        {/* Admin — Platform */}
-        <Route path="/admin/ai-settings"              element={<AdminLayout><AdminAISettings /></AdminLayout>} />
-        <Route path="/admin/ai-logs"                  element={<AdminLayout><AdminAILogs /></AdminLayout>} />
-        <Route path="/admin/ai-overrides"             element={<AdminLayout><AdminAIOverrides /></AdminLayout>} />
-        <Route path="/admin/audit"                    element={<AdminLayout><AdminAuditLogs /></AdminLayout>} />
-        <Route path="/admin/audit-logs"               element={<AdminLayout><AdminAuditLogsPage /></AdminLayout>} />
-        <Route path="/admin/admins/roles"             element={<AdminLayout><AdminRoles /></AdminLayout>} />
-        <Route path="/admin/admins"                   element={<AdminLayout><AdminAdmins /></AdminLayout>} />
-        <Route path="/admin/settings"                 element={<AdminLayout><AdminSettings /></AdminLayout>} />
-        <Route path="/admin/settings/general"         element={<AdminLayout><AdminSettingsGeneral /></AdminLayout>} />
-        <Route path="/admin/settings/commission"      element={<AdminLayout><AdminSettingsCommission /></AdminLayout>} />
-        <Route path="/admin/settings/policies"        element={<AdminLayout><AdminSettingsPolicies /></AdminLayout>} />
-        <Route path="/admin/settings/email"           element={<AdminLayout><AdminSettingsEmail /></AdminLayout>} />
-        <Route path="/admin/settings/rules"           element={<AdminLayout><AdminSettingsRules /></AdminLayout>} />
-
-        {/* Admin — Reports */}
-        <Route path="/admin/reports/revenue"          element={<AdminLayout><AdminRevenueReport /></AdminLayout>} />
-        <Route path="/admin/reports/users"            element={<AdminLayout><AdminUsersReport /></AdminLayout>} />
-        <Route path="/admin/reports/projects"         element={<AdminLayout><AdminProjectsReport /></AdminLayout>} />
-        <Route path="/admin/reports/disputes"         element={<AdminLayout><AdminDisputesReport /></AdminLayout>} />
-
-        {/* Admin — Communications */}
-        <Route path="/admin/notifications"            element={<AdminLayout><AdminNotifications /></AdminLayout>} />
-        <Route path="/admin/announcements"            element={<AdminLayout><AdminAnnouncements /></AdminLayout>} />
-
-        {/* Agency */}
-        <Route path="/register-agency"                element={<AgencyLandingPage />} />
-        <Route path="/agency/onboarding"              element={<RegisterAgency />} />
-        <Route path="/agency/dashboard"               element={<AgencyDashboard />} />
-        <Route path="/agency/proposals"               element={<AgencyProposals />} />
-        <Route path="/agency/contracts"               element={<AgencyContracts />} />
-        <Route path="/agency/earnings"                element={<AgencyEarnings />} />
-        <Route path="/agency/withdrawals"             element={<AgencyWithdrawals />} />
-        <Route path="/agency/kyc"                     element={<AgencyKYC />} />
-        <Route path="/agency/reviews"                 element={<AgencyReviews />} />
-        <Route path="/agency/notifications"           element={<AgencyNotifications />} />
-        <Route path="/agency/settings"                element={<AgencySettings />} />
-        <Route path="/agency/project/:id"             element={<ProjectDetailPage />} />
-        <Route path="/agency/channel2/:projectId"     element={<Channel2Page />} />
-        <Route path="/agency/:id"                     element={<AgencyProfile />} />
-        <Route path="/invite-team"                    element={<TeamOnboardingPage />} />
-
-        {/* Team Member */}
-        <Route path="/team/profile"                   element={<TeamProfile />} />
-        <Route path="/team/projects"                  element={<TeamProjects />} />
-        <Route path="/team/notifications"             element={<TeamNotifications />} />
-        <Route path="/team/dashboard"                 element={<TeamMemberDashboard />} />
-        <Route path="/accept-invite"                  element={<InviteAccept />} />
-
-        {/* Freelancer — Landing & Onboarding (NO layout) */}
-        <Route path="/freelancer"                     element={<Freelancer />} />
-        <Route path="/onboarding"                     element={<Onboarding />} />
-        <Route path="/profile/:id"                    element={<Profile />} />
-
-        {/* Freelancer — Dashboard & all pages (WITH shared sidebar+topbar) */}
-        <Route element={<FreelancerLayout />}>
-          <Route path="/dashboard"                    element={<Dashboard />} />
-          <Route path="/freelancer/proposals"         element={<FreelancerProposals />} />
-          <Route path="/freelancer/contracts"         element={<FreelancerContracts />} />
-          <Route path="/freelancer/reviews"           element={<FreelancerReviews />} />
-          <Route path="/freelancer/notifications"     element={<FreelancerNotifications />} />
-          <Route path="/freelancer/kyc"               element={<FreelancerKYC />} />
-          <Route path="/freelancer/earnings"          element={<FreelancerEarnings />} />
-          <Route path="/freelancer/withdrawals"       element={<FreelancerWithdrawals />} />
+        {/* ── Agency — WITH AgencyLayout ── */}
+        <Route element={<AgencyLayout />}>
+          <Route path="/agency/dashboard"            element={<AgencyDashboard />} />
+          <Route path="/agency/proposals"            element={<AgencyProposals />} />
+          <Route path="/agency/contracts"            element={<AgencyContracts />} />
+          <Route path="/agency/earnings"             element={<AgencyEarnings />} />
+          <Route path="/agency/withdrawals"          element={<AgencyWithdrawals />} />
+          <Route path="/agency/kyc"                  element={<AgencyKYC />} />
+          <Route path="/agency/reviews"              element={<AgencyReviews />} />
+          <Route path="/agency/notifications"        element={<AgencyNotifications />} />
+          <Route path="/agency/settings"             element={<AgencySettings />} />
+          <Route path="/agency/project/:id"          element={<ProjectDetailPage />} />
+          <Route path="/agency/channel2/:projectId"  element={<Channel2Page />} />
         </Route>
 
-        {/* Hire Talent */}
-        <Route path="/hire-talent"                    element={<HireTalentLanding />} />
-        <Route path="/hire-talent/dashboard"          element={<HireTalentDashboard />} />
-        <Route path="/hire-talent/onboarding"         element={<HireTalentOnboarding />} />
-        <Route path="/hire-talent/projects"           element={<ProjectList />} />
-        <Route path="/hire-talent/post-project"       element={<PostNewProject />} />
-        <Route path="/hire-talent/projects/:id"       element={<ClientProjectDetail />} />
-        <Route path="/hire-talent/disputes"           element={<ClientDisputes />} />
-        <Route path="/hire-talent/notifications"      element={<ClientNotifications />} />
-        <Route path="/hire-talent/payments"           element={<ClientPayments />} />
-        <Route path="/hire-talent/payments/:id"       element={<ClientTransactionDetail />} />
-        <Route path="/hire-talent/reviews"            element={<ClientReviews />} />
+        {/* ── Team — WITHOUT layout (onboarding flows) ── */}
+        <Route path="/invite-team"   element={<TeamOnboardingPage />} />
+        <Route path="/accept-invite" element={<InviteAccept />} />
 
-        {/* Project Demo */}
-        <Route path="/project-stream"                 element={<ProjectStreamDemo />} />
-        <Route path="/agency-channel-a"               element={<AgencyChannelADemo />} />
+        {/* ── Team — WITH TeamLayout (sidebar + header fixed) ── */}
+        <Route element={<TeamLayout />}>
+          <Route path="/team/dashboard"     element={<TeamMemberDashboard />} />
+          <Route path="/team/projects"      element={<TeamProjects />} />
+          <Route path="/team/notifications" element={<TeamNotifications />} />
+          <Route path="/team/profile"       element={<TeamProfile />} />
+        </Route>
+
+        {/* ── Freelancer ── */}
+        <Route path="/freelancer"  element={<Freelancer />} />
+        <Route path="/onboarding"  element={<Onboarding />} />
+        <Route path="/profile/:id" element={<Profile />} />
+
+        <Route element={<FreelancerLayout />}>
+          <Route path="/dashboard"                  element={<Dashboard />} />
+          <Route path="/freelancer/proposals"       element={<FreelancerProposals />} />
+          <Route path="/freelancer/contracts"       element={<FreelancerContracts />} />
+          <Route path="/freelancer/reviews"         element={<FreelancerReviews />} />
+          <Route path="/freelancer/notifications"   element={<FreelancerNotifications />} />
+          <Route path="/freelancer/kyc"             element={<FreelancerKYC />} />
+          <Route path="/freelancer/earnings"        element={<FreelancerEarnings />} />
+          <Route path="/freelancer/withdrawals"     element={<FreelancerWithdrawals />} />
+        </Route>
+
+        {/* ── Hire Talent ── */}
+        <Route path="/hire-talent"               element={<HireTalentLanding />} />
+        <Route path="/hire-talent/dashboard"     element={<HireTalentDashboard />} />
+        <Route path="/hire-talent/onboarding"    element={<HireTalentOnboarding />} />
+        <Route path="/hire-talent/projects"      element={<ProjectList />} />
+        <Route path="/hire-talent/post-project"  element={<PostNewProject />} />
+        <Route path="/hire-talent/projects/:id"  element={<ClientProjectDetail />} />
+        <Route path="/hire-talent/disputes"      element={<ClientDisputes />} />
+        <Route path="/hire-talent/notifications" element={<ClientNotifications />} />
+        <Route path="/hire-talent/payments"      element={<ClientPayments />} />
+        <Route path="/hire-talent/payments/:id"  element={<ClientTransactionDetail />} />
+        <Route path="/hire-talent/reviews"       element={<ClientReviews />} />
+
+        {/* ── Project Demos ── */}
+        <Route path="/project-stream"   element={<ProjectStreamDemo />} />
+        <Route path="/agency-channel-a" element={<AgencyChannelADemo />} />
 
       </Routes>
     </BrowserRouter>
