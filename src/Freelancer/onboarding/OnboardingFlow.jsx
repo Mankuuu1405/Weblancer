@@ -1,3 +1,8 @@
+
+
+
+
+
 // import { useState } from "react";
 
 // // ── Import all steps ──
@@ -66,12 +71,35 @@
 //   // Step 12 gets special props (no onNext, but onDashboard)
 //   if (currentStep === TOTAL_STEPS) {
 //     return (
+//     <>
+//       <style>{`
+//         /* ── Weblance Theme ── */
+//         .wbl-bg, .wbl-btn-inline {
+//           background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%) !important;
+//         }
+//         .wbl-btn-primary {
+//           display:inline-flex; align-items:center; justify-content:center; gap:8px;
+//           background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%) !important;
+//           color:#fff !important; border:none; cursor:pointer;
+//           font-weight:600; border-radius:12px; padding:12px 32px; font-size:15px;
+//           box-shadow:0 3px 18px rgba(13,40,85,0.28); transition:all .2s;
+//         }
+//         .wbl-btn-primary:hover { opacity:0.9; transform:translateY(-1px); }
+//         .wbl-progress-bar { background:linear-gradient(90deg,#6FDA44,#1B72C0) !important; }
+//         .wbl-step-active { border-color:#1B72C0 !important; color:#1B72C0 !important; }
+//         .wbl-step-done { background:linear-gradient(135deg,#6FDA44,#1B72C0) !important; border-color:transparent !important; }
+//         .wbl-text-active, .wbl-text-blue { color:#1B72C0 !important; }
+//         /* ───────────────────── */
+
+        
+// `}</style>
 //       <Step12_GoLive
 //         onBack={goBack}
 //         onDashboard={goToDashboard}
 //         currentStep={currentStep}
 //         totalSteps={TOTAL_STEPS}
 //       />
+//     </>
 //     );
 //   }
 
@@ -84,6 +112,9 @@
 //     />
 //   );
 // }
+
+
+
 
 
 
@@ -123,7 +154,6 @@ const STEP_COMPONENTS = [
 ];
 
 export default function OnboardingFlow() {
-  // currentStep: 1–12 = onboarding steps, "dashboard" = main dashboard
   const [currentStep, setCurrentStep] = useState(1);
 
   const goNext = () => {
@@ -145,46 +175,33 @@ export default function OnboardingFlow() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // ── Render Dashboard ──
-  if (currentStep === "dashboard") {
-    return <Dashboard />;
-  }
+  if (currentStep === "dashboard") return <Dashboard />;
 
-  // ── Render onboarding step ──
   const StepComponent = STEP_COMPONENTS[currentStep - 1];
 
-  // Step 12 gets special props (no onNext, but onDashboard)
   if (currentStep === TOTAL_STEPS) {
     return (
-    <>
-      <style>{`
-        /* ── Weblance Theme ── */
-        .wbl-bg, .wbl-btn-inline {
-          background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%) !important;
-        }
-        .wbl-btn-primary {
-          display:inline-flex; align-items:center; justify-content:center; gap:8px;
-          background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%) !important;
-          color:#fff !important; border:none; cursor:pointer;
-          font-weight:600; border-radius:12px; padding:12px 32px; font-size:15px;
-          box-shadow:0 3px 18px rgba(13,40,85,0.28); transition:all .2s;
-        }
-        .wbl-btn-primary:hover { opacity:0.9; transform:translateY(-1px); }
-        .wbl-progress-bar { background:linear-gradient(90deg,#6FDA44,#1B72C0) !important; }
-        .wbl-step-active { border-color:#1B72C0 !important; color:#1B72C0 !important; }
-        .wbl-step-done { background:linear-gradient(135deg,#6FDA44,#1B72C0) !important; border-color:transparent !important; }
-        .wbl-text-active, .wbl-text-blue { color:#1B72C0 !important; }
-        /* ───────────────────── */
-
-        
-`}</style>
-      <Step12_GoLive
-        onBack={goBack}
-        onDashboard={goToDashboard}
-        currentStep={currentStep}
-        totalSteps={TOTAL_STEPS}
-      />
-    </>
+      <>
+        <style>{`
+          .wbl-bg, .wbl-btn-inline { background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%) !important; }
+          .wbl-btn-primary {
+            display:inline-flex; align-items:center; justify-content:center; gap:8px;
+            background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%) !important;
+            color:#fff !important; border:none; cursor:pointer; font-weight:600;
+            border-radius:12px; padding:12px 32px; font-size:15px;
+            box-shadow:0 3px 18px rgba(13,40,85,0.28); transition:all .2s;
+          }
+          .wbl-btn-primary:hover { opacity:0.9; transform:translateY(-1px); }
+          .wbl-progress-bar { background:linear-gradient(90deg,#6FDA44,#1B72C0) !important; }
+          .wbl-text-blue { color:#1B72C0 !important; }
+        `}</style>
+        <Step12_GoLive
+          onBack={goBack}
+          onDashboard={goToDashboard}
+          currentStep={currentStep}
+          totalSteps={TOTAL_STEPS}
+        />
+      </>
     );
   }
 
@@ -197,3 +214,5 @@ export default function OnboardingFlow() {
     />
   );
 }
+
+
