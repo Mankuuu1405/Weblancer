@@ -340,7 +340,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiArrowUpRight, FiMenu, FiX } from "react-icons/fi";
-import {ChevronRight} from 'lucide-react'
+
 const Navbar = () => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -440,6 +440,7 @@ const Navbar = () => {
               {[
                 { label: "Features",     path: "/features"     },
                 { label: "How It Works", path: "/how-it-works" },
+                { label: "Hire Talent",  path: "/hire"         },
               ].map(({ label, path }) => (
                 <button key={label} className="nav-link-tw" onClick={() => navigate(path)}>
                   {label}
@@ -448,12 +449,12 @@ const Navbar = () => {
             </div>
 
             {/* Right — Gradient button */}
-            <div className="flex items-center flex-shrink-0">
+            <div className="flex items-center gap-2 flex-shrink-0">
               <button
-                onClick={() => navigate("/signin")}
+                onClick={() => navigate("/freelancer")}
                 className="hidden sm:inline-flex btn-nav-primary"
               >
-                Sign in <ChevronRight size={18}/>
+                Join as Freelancer <FiArrowUpRight size={13} />
               </button>
 
               {/* Hamburger */}

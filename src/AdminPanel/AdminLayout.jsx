@@ -1,5 +1,42 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import {
+  LayoutDashboard,
+  Users,
+  Briefcase,
+  Building2,
+  UserCheck,
+  ShieldCheck,
+  FolderKanban,
+  AlertTriangle,
+  MessageSquare,
+  Swords,
+  CreditCard,
+  Lock,
+  ArrowUpCircle,
+  RotateCcw,
+  Percent,
+  Bot,
+  ScrollText,
+  RefreshCw,
+  ClipboardList,
+  UserCog,
+  Shield,
+  Settings,
+  SlidersHorizontal,
+  FileText,
+  Mail,
+  BarChart2,
+  TrendingUp,
+  CheckCircle2,
+  Activity,
+  Bell,
+  Megaphone,
+  ChevronLeft,
+  ChevronRight,
+  BookOpen,
+  BadgeDollarSign,
+} from "lucide-react";
 
 (() => {
   if (document.getElementById("wl-admin-fonts")) return;
@@ -8,7 +45,6 @@ import { Link, useLocation } from "react-router-dom";
   l.href = "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap";
   document.head.appendChild(l);
 })();
-
 
 const G = {
   greenLight:  "#A8E063",
@@ -39,64 +75,64 @@ const navItems = [
   {
     section: "Overview",
     items: [
-      { label: "Dashboard", icon: "⊞", path: "/admin" },
+      { label: "Dashboard", icon: LayoutDashboard, path: "/admin" },
     ],
   },
   {
     section: "User Management",
     items: [
-      { label: "All Users",   icon: "◉", path: "/admin/users"       },
-      { label: "Freelancers", icon: "⟡", path: "/admin/freelancers" },
-      { label: "Agencies",    icon: "⬡", path: "/admin/agencies"    },
-      { label: "Clients",     icon: "◈", path: "/admin/clients"     },
-      { label: "KYC",         icon: "✦", path: "/admin/kyc"         },
+      { label: "All Users",   icon: Users,      path: "/admin/users"       },
+      { label: "Freelancers", icon: Briefcase,  path: "/admin/freelancers" },
+      { label: "Agencies",    icon: Building2,  path: "/admin/agencies"    },
+      { label: "Clients",     icon: UserCheck,  path: "/admin/clients"     },
+      { label: "KYC",         icon: ShieldCheck,path: "/admin/kyc"         },
     ],
   },
   {
     section: "Operations",
     items: [
-      { label: "Projects",      icon: "⊟", path: "/admin/projects"              },
-      { label: "At-Risk",       icon: "⚠", path: "/admin/projects/at-risk"      },
-      { label: "ProjectStream", icon: "💬", path: "/admin/projectstream/freeze"  },
-      { label: "Disputes",      icon: "⚑", path: "/admin/disputes"              },
-      { label: "Payments",      icon: "⊕", path: "/admin/payments"              },
-      { label: "Escrow",        icon: "🔐", path: "/admin/escrow"                },
-      { label: "Payouts",       icon: "⬆", path: "/admin/payouts"               },
-      { label: "Refunds",       icon: "↩", path: "/admin/refunds"               },
-      { label: "Commission",    icon: "◈", path: "/admin/commission"            },
+      { label: "Projects",      icon: FolderKanban,   path: "/admin/projects"            },
+      { label: "At-Risk",       icon: AlertTriangle,  path: "/admin/projects/at-risk"    },
+      { label: "ProjectStream", icon: MessageSquare,  path: "/admin/projectstream/freeze"},
+      { label: "Disputes",      icon: Swords,         path: "/admin/disputes"            },
+      { label: "Payments",      icon: CreditCard,     path: "/admin/payments"            },
+      { label: "Escrow",        icon: Lock,           path: "/admin/escrow"              },
+      { label: "Payouts",       icon: ArrowUpCircle,  path: "/admin/payouts"             },
+      { label: "Refunds",       icon: RotateCcw,      path: "/admin/refunds"             },
+      { label: "Commission",    icon: Percent,        path: "/admin/commission"          },
     ],
   },
   {
     section: "Platform",
     items: [
-      { label: "AI Settings",  icon: "◎", path: "/admin/ai-settings"           },
-      { label: "AI Logs",      icon: "≋", path: "/admin/ai-logs"               },
-      { label: "AI Overrides", icon: "↺", path: "/admin/ai-overrides"          },
-      { label: "Audit Logs",   icon: "≡", path: "/admin/audit-logs"            },
-      { label: "Admin Users",  icon: "⊞", path: "/admin/admins"                },
-      { label: "Roles",        icon: "◈", path: "/admin/admins/roles"          },
-      { label: "Settings",     icon: "⊙", path: "/admin/settings"              },
-      { label: "→ General",    icon: " ", path: "/admin/settings/general"      },
-      { label: "→ Commission", icon: " ", path: "/admin/settings/commission"   },
-      { label: "→ Policies",   icon: " ", path: "/admin/settings/policies"     },
-      { label: "→ Email Tmpl.",icon: " ", path: "/admin/settings/email"        },
-      { label: "→ Rules",      icon: " ", path: "/admin/settings/rules"        },
+      { label: "AI Settings",  icon: Bot,           path: "/admin/ai-settings"          },
+      { label: "AI Logs",      icon: ScrollText,    path: "/admin/ai-logs"              },
+      { label: "AI Overrides", icon: RefreshCw,     path: "/admin/ai-overrides"         },
+      { label: "Audit Logs",   icon: ClipboardList, path: "/admin/audit-logs"           },
+      { label: "Admin Users",  icon: UserCog,       path: "/admin/admins"               },
+      { label: "Roles",        icon: Shield,        path: "/admin/admins/roles"         },
+      { label: "Settings",     icon: Settings,      path: "/admin/settings"             },
+      { label: "General",      icon: SlidersHorizontal, path: "/admin/settings/general",    sub: true },
+      { label: "Commission",   icon: BadgeDollarSign,   path: "/admin/settings/commission", sub: true },
+      { label: "Policies",     icon: FileText,          path: "/admin/settings/policies",   sub: true },
+      { label: "Email Tmpl.",  icon: Mail,              path: "/admin/settings/email",      sub: true },
+      { label: "Rules",        icon: BookOpen,          path: "/admin/settings/rules",      sub: true },
     ],
   },
   {
     section: "Reports",
     items: [
-      { label: "Revenue",         icon: "₹", path: "/admin/reports/revenue"  },
-      { label: "User Growth",     icon: "◉", path: "/admin/reports/users"    },
-      { label: "Project Success", icon: "⊟", path: "/admin/reports/projects" },
-      { label: "Dispute Trends",  icon: "⚑", path: "/admin/reports/disputes" },
+      { label: "Revenue",         icon: BarChart2,   path: "/admin/reports/revenue"  },
+      { label: "User Growth",     icon: TrendingUp,  path: "/admin/reports/users"    },
+      { label: "Project Success", icon: CheckCircle2,path: "/admin/reports/projects" },
+      { label: "Dispute Trends",  icon: Activity,    path: "/admin/reports/disputes" },
     ],
   },
   {
     section: "Communications",
     items: [
-      { label: "Notifications", icon: "🔔", path: "/admin/notifications" },
-      { label: "Announcements", icon: "📢", path: "/admin/announcements" },
+      { label: "Notifications", icon: Bell,     path: "/admin/notifications" },
+      { label: "Announcements", icon: Megaphone,path: "/admin/announcements" },
     ],
   },
 ];
@@ -194,21 +230,27 @@ export default function AdminLayout({ children }) {
                   {group.section}
                 </p>
               )}
+              {collapsed && (
+                <div style={{ height: 1, background: "rgba(255,255,255,0.07)", margin: "8px 10px 6px" }} />
+              )}
+
               {group.items.map((item) => {
                 const active = location.pathname === item.path;
+                const Icon = item.icon;
                 return (
                   <Link key={item.path} to={item.path} style={{
                     display: "flex",
                     alignItems: "center",
                     gap: collapsed ? 0 : 8,
                     justifyContent: collapsed ? "center" : "flex-start",
-                    padding: collapsed ? "9px 0" : "8px 10px",
+                    padding: item.sub && !collapsed ? "6px 10px 6px 28px" : collapsed ? "9px 0" : "8px 10px",
                     borderRadius: 10,
                     marginBottom: 2,
                     background: active ? "rgba(110,192,48,0.15)" : "transparent",
                     border: active ? `1px solid rgba(110,192,48,0.25)` : "1px solid transparent",
                     transition: "all 0.12s",
                     cursor: "pointer",
+                    position: "relative",
                   }}
                     onMouseEnter={e => {
                       if (!active) {
@@ -223,19 +265,29 @@ export default function AdminLayout({ children }) {
                       }
                     }}
                   >
-                    <span style={{
-                      fontSize: 14,
-                      color: active ? G.green : "rgba(255,255,255,0.35)",
-                      flexShrink: 0,
-                      width: collapsed ? "auto" : 18,
-                      textAlign: "center",
-                    }}>
-                      {item.icon}
-                    </span>
+                    {active && (
+                      <div style={{
+                        position: "absolute",
+                        left: 0,
+                        top: "20%",
+                        bottom: "20%",
+                        width: 3,
+                        borderRadius: 4,
+                        background: G.gradGreen,
+                      }} />
+                    )}
+
+                    <Icon
+                      size={item.sub ? 13 : 15}
+                      style={{
+                        color: active ? G.green : "rgba(255,255,255,0.35)",
+                        flexShrink: 0,
+                      }}
+                    />
                     {!collapsed && (
                       <>
                         <span style={{
-                          fontSize: 12,
+                          fontSize: item.sub ? 11 : 12,
                           fontWeight: active ? 700 : 500,
                           color: active ? G.greenLight : "rgba(255,255,255,0.55)",
                           flex: 1,
@@ -360,7 +412,7 @@ export default function AdminLayout({ children }) {
             }}>
               <div style={{
                 width: 26, height: 26, borderRadius: "50%",
-                background: `linear-gradient(135deg, #4A6FA5 0%, #0F1A3B 100%)`,
+                background: G.gradNavy,
                 display: "flex", alignItems: "center", justifyContent: "center",
                 fontSize: 10, fontWeight: 700, color: G.white,
                 boxShadow: "0 2px 6px rgba(15,26,59,0.28)",

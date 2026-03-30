@@ -1,15 +1,15 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { mockUsers } from "./mockData";
+import { StatusBadge, TrustScore, RiskFlag, Avatar } from "./AdminComponents";
 import {
-  StatusBadge, TrustScore, RiskFlag, StatCard, Avatar,
-  SearchBar, FilterSelect, ActionBtn, PageHeader, Table
-} from "./AdminComponents";
+  Users, Briefcase, Building2, UserCheck, AlertTriangle,
+  Search, Filter, Download, Eye, MoreHorizontal,
+  ChevronLeft, ChevronRight, CheckSquare, Square,
+  Shield, TrendingUp, UserX, Bot, X
+} from "lucide-react";
 
-/* ── Freelancer Contracts theme tokens ───────────────────────
-   GREEN:  #A8E063 (light) → #6EC030 (mid) → #2E7D1F (deep)
-   NAVY:   #4A6FA5 (light) → #1A2B5E (mid) → #0F1A3B (deep)
-   ──────────────────────────────────────────────────────────── */
+/* ── Freelancer Contracts theme tokens ────────────────────────────────────── */
 const G = {
   greenLight:  "#A8E063",
   green:       "#6EC030",
@@ -42,6 +42,7 @@ const G = {
 };
 
 const FONT = "'Poppins', sans-serif";
+const PAGE_SIZE = 10;
 
 /* ── Stat card colours ── */
 const STAT_COLOR = {
@@ -50,6 +51,20 @@ const STAT_COLOR = {
   orange: { bg: G.amberBg,  border: G.amberBorder,  val: "#b45309",  label: "#b45309"  },
   red:    { bg: G.redBg,    border: G.redBorder,     val: "#dc2626",  label: "#dc2626"  },
 };
+
+function exportCSV(users) {
+  const headers = ["ID","Name","Email","Role","Status","Trust Score","KYC","Risk","Last Active","Joined"];
+  const rows = users.map(u => [
+    u.id, u.name, u.email, u.role, u.status,
+    u.trustScore, u.verification, u.riskLevel, u.lastActive, u.joinDate
+  ]);
+  const csv = [headers, ...rows].map(r => r.map(c => `"${c}"`).join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement("a");
+  a.href = url; a.download = "users_export.csv"; a.click();
+  URL.revokeObjectURL(url);
+}
 
 /* ── Small reusable pieces ── */
 function InlineStatCard({ label, value, sub, color = "gray" }) {
@@ -144,6 +159,25 @@ function InlineAvatar({ name }) {
   );
 }
 
+function Checkbox({ checked, indeterminate, onChange }) {
+  return (
+    <div
+      onClick={onChange}
+      style={{
+        width: 17, height: 17, borderRadius: 5, cursor: "pointer", flexShrink: 0,
+        background: checked || indeterminate ? G.gradNavy : G.white,
+        border: checked || indeterminate ? "none" : `2px solid ${G.border}`,
+        display: "flex", alignItems: "center", justifyContent: "center",
+        transition: "all 0.15s",
+        boxShadow: checked ? "0 2px 6px rgba(74,111,165,0.35)" : "none",
+      }}
+    >
+      {checked && <svg width="10" height="8" viewBox="0 0 10 8" fill="none"><path d="M1 4L3.5 6.5L9 1" stroke="#fff" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+      {indeterminate && !checked && <div style={{ width: 8, height: 2, background: "#fff", borderRadius: 2 }} />}
+    </div>
+  );
+}
+
 const btnPrimary = {
   display: "inline-flex", alignItems: "center", gap: 6,
   fontSize: 12, fontWeight: 700, fontFamily: FONT,
@@ -188,15 +222,28 @@ export default function AdminUsers() {
   const [riskFilter,   setRiskFilter]   = useState("");
   const [selected,     setSelected]     = useState([]);
   const [hovRow,       setHovRow]       = useState(null);
+  const [page,         setPage]         = useState(1);
 
-  const filtered = mockUsers.filter((u) => {
+  const filtered = useMemo(() => mockUsers.filter((u) => {
     const q           = search.toLowerCase();
     const matchSearch = u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || u.id.toLowerCase().includes(q);
     const matchRole   = !roleFilter   || u.role      === roleFilter;
     const matchStatus = !statusFilter || u.status    === statusFilter;
     const matchRisk   = !riskFilter   || u.riskLevel === riskFilter;
     return matchSearch && matchRole && matchStatus && matchRisk;
-  });
+  }), [search, roleFilter, statusFilter, riskFilter]);
+
+  // Pagination
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const safePage   = Math.min(page, totalPages);
+  const paged      = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+
+  // Selection
+  const allSelected  = paged.length > 0 && paged.every(u => selected.includes(u.id));
+  const someSelected = paged.some(u => selected.includes(u.id)) && !allSelected;
+
+  const toggleOne = (id) => setSelected(p => p.includes(id) ? p.filter(x => x !== id) : [...p, id]);
+  const toggleAll = () => setSelected(allSelected ? selected.filter(id => !paged.find(u => u.id === id)) : [...new Set([...selected, ...paged.map(u => u.id)])]);
 
   const stats = {
     total:     mockUsers.length,
@@ -205,10 +252,7 @@ export default function AdminUsers() {
     suspended: mockUsers.filter((u) => u.status === "Suspended" || u.status === "Banned").length,
   };
 
-  const toggleSelect = (id) =>
-    setSelected((prev) => prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]);
-  const toggleAll = () =>
-    setSelected(selected.length === filtered.length ? [] : filtered.map((u) => u.id));
+  const selectedUsers = mockUsers.filter(u => selected.includes(u.id));
 
   return (
     <div style={{ padding: "28px 28px 64px", fontFamily: FONT, background: G.bg, minHeight: "100%" }}>
@@ -232,10 +276,11 @@ export default function AdminUsers() {
               <span style={{ fontSize: 12, color: G.muted, fontWeight: 600, marginRight: 4 }}>{selected.length} selected</span>
               <button style={btnWarning}>Warn</button>
               <button style={btnDanger}>Suspend</button>
-              <button style={btnOutline}>Export</button>
+              <button style={btnOutline} onClick={() => exportCSV(selectedUsers)}>Export Selected</button>
+              <button onClick={() => setSelected([])} style={{ background: "none", border: "none", cursor: "pointer", color: G.muted, display: "flex", alignItems: "center", padding: 4 }}><X size={16} /></button>
             </>
           )}
-          <button style={btnPrimary}>⬇ Export All</button>
+          <button style={btnPrimary} onClick={() => exportCSV(filtered)}>⬇ Export All</button>
         </div>
       </div>
 
@@ -270,7 +315,7 @@ export default function AdminUsers() {
               <span style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)", fontSize: 13, color: G.muted }}>🔍</span>
               <input
                 value={search}
-                onChange={(e) => setSearch(e.target.value)}
+                onChange={(e) => { setSearch(e.target.value); setPage(1); }}
                 placeholder="Search name, email, ID…"
                 style={{
                   width: "100%", fontSize: 12, fontWeight: 500,
@@ -288,7 +333,7 @@ export default function AdminUsers() {
               { value: statusFilter, setter: setStatusFilter, label: "All Status",  opts: ["Active","Pending","Suspended","Banned"]       },
               { value: riskFilter,   setter: setRiskFilter,   label: "All Risk",    opts: ["Low","Medium","High"]                         },
             ].map(({ value, setter, label, opts }) => (
-              <select key={label} value={value} onChange={(e) => setter(e.target.value)}
+              <select key={label} value={value} onChange={(e) => { setter(e.target.value); setPage(1); }}
                 style={{
                   fontSize: 12, fontWeight: 600,
                   border: `1.5px solid ${value ? G.green : G.greenBorder}`,
@@ -312,9 +357,9 @@ export default function AdminUsers() {
           background: G.bg,
           borderBottom: `1px solid ${G.border}`,
         }}>
-          <input
-            type="checkbox"
-            checked={selected.length === filtered.length && filtered.length > 0}
+          <Checkbox
+            checked={allSelected}
+            indeterminate={someSelected}
             onChange={toggleAll}
           />
           <span style={{ fontSize: 11, color: G.muted, fontWeight: 600 }}>Select all</span>
@@ -339,113 +384,115 @@ export default function AdminUsers() {
               </tr>
             </thead>
             <tbody>
-              {filtered.map((user) => (
-                <tr
-                  key={user.id}
-                  style={{
-                    borderBottom: `1px solid ${G.border}`,
-                    background: hovRow === user.id ? G.greenBg : G.white,
-                    cursor: "pointer",
-                    transition: "background 0.1s",
-                  }}
-                  onMouseEnter={() => setHovRow(user.id)}
-                  onMouseLeave={() => setHovRow(null)}
-                  onClick={() => navigate(`/admin/users/${user.id}`)}
-                >
-                  {/* Checkbox */}
-                  <td style={{ padding: "12px 14px" }} onClick={(e) => e.stopPropagation()}>
-                    <input
-                      type="checkbox"
-                      checked={selected.includes(user.id)}
-                      onChange={() => toggleSelect(user.id)}
-                    />
-                  </td>
+              {paged.map((user) => {
+                const isSel = selected.includes(user.id);
+                return (
+                  <tr
+                    key={user.id}
+                    style={{
+                      borderBottom: `1px solid ${G.border}`,
+                      background: isSel ? G.greenBg : hovRow === user.id ? G.greenBg : G.white,
+                      cursor: "pointer",
+                      transition: "background 0.1s",
+                    }}
+                    onMouseEnter={() => setHovRow(user.id)}
+                    onMouseLeave={() => setHovRow(null)}
+                    onClick={() => navigate(`/admin/users/${user.id}`)}
+                  >
+                    {/* Checkbox */}
+                    <td style={{ padding: "12px 14px" }} onClick={(e) => e.stopPropagation()}>
+                      <Checkbox
+                        checked={isSel}
+                        onChange={() => toggleOne(user.id)}
+                      />
+                    </td>
 
-                  {/* User */}
-                  <td style={{ padding: "12px 14px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <InlineAvatar name={user.name} />
-                      <div>
-                        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                          <span style={{ fontSize: 13, fontWeight: 700, color: G.text }}>{user.name}</span>
-                          {user.aiFlag && (
-                            <span style={{
-                              fontSize: 9, fontWeight: 700,
-                              background: G.redBg, color: G.red,
-                              border: `1px solid ${G.redBorder}`,
-                              padding: "1px 6px", borderRadius: 99,
-                            }}>AI⚑</span>
-                          )}
+                    {/* User */}
+                    <td style={{ padding: "12px 14px" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        <InlineAvatar name={user.name} />
+                        <div>
+                          <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                            <span style={{ fontSize: 13, fontWeight: 700, color: G.text }}>{user.name}</span>
+                            {user.aiFlag && (
+                              <span style={{
+                                fontSize: 9, fontWeight: 700,
+                                background: G.redBg, color: G.red,
+                                border: `1px solid ${G.redBorder}`,
+                                padding: "1px 6px", borderRadius: 99,
+                              }}>AI⚑</span>
+                            )}
+                          </div>
+                          <span style={{ fontSize: 11, color: G.muted, display: "block" }}>{user.email}</span>
+                          <span style={{ fontSize: 10, color: G.border, display: "block" }}>{user.id}</span>
                         </div>
-                        <span style={{ fontSize: 11, color: G.muted, display: "block" }}>{user.email}</span>
-                        <span style={{ fontSize: 10, color: G.border, display: "block" }}>{user.id}</span>
                       </div>
-                    </div>
-                  </td>
+                    </td>
 
-                  {/* Role */}
-                  <td style={{ padding: "12px 14px" }}>
-                    <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, color: G.sub, fontWeight: 600 }}>
-                      <span style={{ fontSize: 14 }}>{roleIcon[user.role]}</span>
-                      {user.role}
-                    </span>
-                  </td>
+                    {/* Role */}
+                    <td style={{ padding: "12px 14px" }}>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, color: G.sub, fontWeight: 600 }}>
+                        <span style={{ fontSize: 14 }}>{roleIcon[user.role]}</span>
+                        {user.role}
+                      </span>
+                    </td>
 
-                  {/* Status */}
-                  <td style={{ padding: "12px 14px" }}>
-                    <InlineStatusBadge status={user.status} />
-                  </td>
+                    {/* Status */}
+                    <td style={{ padding: "12px 14px" }}>
+                      <InlineStatusBadge status={user.status} />
+                    </td>
 
-                  {/* Trust score */}
-                  <td style={{ padding: "12px 14px" }}>
-                    <InlineTrustScore score={user.trustScore} />
-                  </td>
+                    {/* Trust score */}
+                    <td style={{ padding: "12px 14px" }}>
+                      <InlineTrustScore score={user.trustScore} />
+                    </td>
 
-                  {/* KYC */}
-                  <td style={{ padding: "12px 14px" }}>
-                    <InlineStatusBadge status={user.verification} />
-                  </td>
+                    {/* KYC */}
+                    <td style={{ padding: "12px 14px" }}>
+                      <InlineStatusBadge status={user.verification} />
+                    </td>
 
-                  {/* Risk */}
-                  <td style={{ padding: "12px 14px" }}>
-                    <InlineRiskFlag level={user.riskLevel} />
-                  </td>
+                    {/* Risk */}
+                    <td style={{ padding: "12px 14px" }}>
+                      <InlineRiskFlag level={user.riskLevel} />
+                    </td>
 
-                  {/* Last active */}
-                  <td style={{ padding: "12px 14px", fontSize: 12, color: G.muted, whiteSpace: "nowrap" }}>{user.lastActive}</td>
+                    {/* Last active */}
+                    <td style={{ padding: "12px 14px", fontSize: 12, color: G.muted, whiteSpace: "nowrap" }}>{user.lastActive}</td>
 
-                  {/* Joined */}
-                  <td style={{ padding: "12px 14px", fontSize: 12, color: G.muted, whiteSpace: "nowrap" }}>{user.joinDate}</td>
+                    {/* Joined */}
+                    <td style={{ padding: "12px 14px", fontSize: 12, color: G.muted, whiteSpace: "nowrap" }}>{user.joinDate}</td>
 
-                  {/* Actions */}
-                  <td style={{ padding: "12px 14px" }} onClick={(e) => e.stopPropagation()}>
-                    <div style={{
-                      display: "flex", alignItems: "center", gap: 6,
-                      opacity: hovRow === user.id ? 1 : 0,
-                      transition: "opacity 0.15s",
-                    }}>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); navigate(`/admin/users/${user.id}`); }}
-                        style={{
-                          fontSize: 11, fontWeight: 700, fontFamily: FONT,
-                          background: G.gradNavy, color: G.white,
-                          border: "none", borderRadius: 100,
-                          padding: "6px 12px", cursor: "pointer",
-                          boxShadow: "0 2px 8px rgba(15,26,59,0.22)",
-                        }}>View</button>
-                      <button
-                        onClick={(e) => e.stopPropagation()}
-                        style={{
-                          fontSize: 13, fontWeight: 700, fontFamily: FONT,
-                          background: G.bg, color: G.sub,
-                          border: `1px solid ${G.border}`,
-                          borderRadius: 100, padding: "5px 10px",
-                          cursor: "pointer",
-                        }}>⋯</button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    {/* Actions */}
+                    <td style={{ padding: "12px 14px" }} onClick={(e) => e.stopPropagation()}>
+                      <div style={{
+                        display: "flex", alignItems: "center", gap: 6,
+                        opacity: hovRow === user.id || isSel ? 1 : 0,
+                        transition: "opacity 0.15s",
+                      }}>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); navigate(`/admin/users/${user.id}`); }}
+                          style={{
+                            fontSize: 11, fontWeight: 700, fontFamily: FONT,
+                            background: G.gradNavy, color: G.white,
+                            border: "none", borderRadius: 100,
+                            padding: "6px 12px", cursor: "pointer",
+                            boxShadow: "0 2px 8px rgba(15,26,59,0.22)",
+                          }}>View</button>
+                        <button
+                          onClick={(e) => e.stopPropagation()}
+                          style={{
+                            fontSize: 13, fontWeight: 700, fontFamily: FONT,
+                            background: G.bg, color: G.sub,
+                            border: `1px solid ${G.border}`,
+                            borderRadius: 100, padding: "5px 10px",
+                            cursor: "pointer",
+                          }}>⋯</button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>
@@ -475,22 +522,60 @@ export default function AdminUsers() {
           background: G.greenBg,
         }}>
           <span style={{ fontSize: 11, color: G.muted, fontWeight: 600 }}>
-            Showing {filtered.length} of {mockUsers.length} users
+            Showing {Math.min((safePage-1)*PAGE_SIZE+1, filtered.length)}–{Math.min(safePage*PAGE_SIZE, filtered.length)} of {filtered.length} users
           </span>
-          <div style={{ display: "flex", gap: 6 }}>
-            {["← Prev", "Next →"].map((label) => (
-              <button key={label} style={{
+          <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
+            <button
+              onClick={() => setPage(p => Math.max(1, p-1))}
+              disabled={safePage === 1}
+              style={{
                 fontSize: 12, fontWeight: 600, fontFamily: FONT,
                 padding: "7px 14px",
                 border: `1px solid ${G.greenBorder}`,
                 borderRadius: 100,
                 background: G.white, color: G.greenDeep,
-                cursor: "pointer", transition: "all 0.12s",
-              }}
-                onMouseEnter={e => { e.currentTarget.style.background = G.greenBg; e.currentTarget.style.borderColor = G.green; }}
-                onMouseLeave={e => { e.currentTarget.style.background = G.white;   e.currentTarget.style.borderColor = G.greenBorder; }}
-              >{label}</button>
-            ))}
+                cursor: safePage === 1 ? "not-allowed" : "pointer",
+                opacity: safePage === 1 ? 0.5 : 1,
+                transition: "all 0.12s",
+              }}>← Prev</button>
+
+            {Array.from({ length: totalPages }, (_, i) => i+1)
+              .filter(p => p === 1 || p === totalPages || Math.abs(p - safePage) <= 1)
+              .reduce((acc, p, idx, arr) => {
+                if (idx > 0 && p - arr[idx-1] > 1) acc.push("…");
+                acc.push(p);
+                return acc;
+              }, [])
+              .map((p, i) => p === "…" ? (
+                <span key={`e${i}`} style={{ padding: "0 4px", color: G.muted, fontSize: 12 }}>…</span>
+              ) : (
+                <button
+                  key={p}
+                  onClick={() => setPage(p)}
+                  style={{
+                    width: 32, height: 32, borderRadius: 8, fontSize: 12, fontWeight: 600, cursor: "pointer",
+                    background: p === safePage ? G.gradNavy : G.white,
+                    color: p === safePage ? "#fff" : G.navy,
+                    border: p === safePage ? "none" : `1px solid ${G.border}`,
+                    boxShadow: p === safePage ? "0 2px 8px rgba(15,26,59,0.3)" : "none",
+                  }}
+                >{p}</button>
+              ))
+            }
+
+            <button
+              onClick={() => setPage(p => Math.min(totalPages, p+1))}
+              disabled={safePage === totalPages}
+              style={{
+                fontSize: 12, fontWeight: 600, fontFamily: FONT,
+                padding: "7px 14px",
+                border: `1px solid ${G.greenBorder}`,
+                borderRadius: 100,
+                background: G.white, color: G.greenDeep,
+                cursor: safePage === totalPages ? "not-allowed" : "pointer",
+                opacity: safePage === totalPages ? 0.5 : 1,
+                transition: "all 0.12s",
+              }}>Next →</button>
           </div>
         </div>
       </div>
