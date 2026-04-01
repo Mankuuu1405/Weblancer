@@ -43,6 +43,7 @@ import AdminNotifications from "./AdminPanel/AdminNotifications";
 import AdminAnnouncements from "./AdminPanel/AdminAnnouncements";
 
 // Agency
+import AgencyLayout from "./RegisterAgency/AgencyLayout";
 import RegisterAgency from "./RegisterAgency/RegisterAgency";
 import AgencyProfile from "./RegisterAgency/AgencyProfile";
 import AgencyDashboard from "./RegisterAgency/AgencyDashboard";
@@ -59,11 +60,12 @@ import AgencySettings     from "./RegisterAgency/AgencySettings";
 import AgencyLandingPage from "./RegisterAgency/AgencyLandingPage";
 
 // Team Member pages
+import TeamLayout         from "./Team/TeamLayout";
 import TeamProfile        from "./Team/TeamProfile";
 import TeamProjects       from "./Team/TeamProjects";
 import TeamNotifications  from "./Team/TeamNotifications";
 import TeamMemberDashboard from "./Team/TeamMemberDashboard";
-import InviteAccept from "./Team/InviteAccept";
+import InviteAccept       from "./Team/InviteAccept";
 
 // Freelancer — Layout wrapper
 import FreelancerLayout from "./Freelancer/FreelancerLayout";
@@ -93,7 +95,6 @@ import ClientNotifications from "./hire-talent/ClientNotifications";
 import ClientPayments from "./hire-talent/ClientPayments";
 import ClientTransactionDetail from "./hire-talent/ClientTransactionDetail";
 import ClientReviews from "./hire-talent/ClientReviews";
-
 
 // Project Demo
 import ProjectStreamDemo from "./projectdemo/projectstreamDemo";
@@ -221,29 +222,35 @@ export default function App() {
         <Route path="/admin/notifications"            element={<AdminLayout><AdminNotifications /></AdminLayout>} />
         <Route path="/admin/announcements"            element={<AdminLayout><AdminAnnouncements /></AdminLayout>} />
 
-        {/* Agency */}
+        {/* Agency — WITHOUT layout */}
         <Route path="/register-agency"                element={<AgencyLandingPage />} />
         <Route path="/agency/onboarding"              element={<RegisterAgency />} />
-        <Route path="/agency/dashboard"               element={<AgencyDashboard />} />
-        <Route path="/agency/proposals"               element={<AgencyProposals />} />
-        <Route path="/agency/contracts"               element={<AgencyContracts />} />
-        <Route path="/agency/earnings"                element={<AgencyEarnings />} />
-        <Route path="/agency/withdrawals"             element={<AgencyWithdrawals />} />
-        <Route path="/agency/kyc"                     element={<AgencyKYC />} />
-        <Route path="/agency/reviews"                 element={<AgencyReviews />} />
-        <Route path="/agency/notifications"           element={<AgencyNotifications />} />
-        <Route path="/agency/settings"                element={<AgencySettings />} />
-        <Route path="/agency/project/:id"             element={<ProjectDetailPage />} />
-        <Route path="/agency/channel2/:projectId"     element={<Channel2Page />} />
         <Route path="/agency/:id"                     element={<AgencyProfile />} />
         <Route path="/invite-team"                    element={<TeamOnboardingPage />} />
 
+        {/* Agency — WITH layout */}
+        <Route element={<AgencyLayout />}>
+          <Route path="/agency/dashboard"             element={<AgencyDashboard />} />
+          <Route path="/agency/proposals"             element={<AgencyProposals />} />
+          <Route path="/agency/contracts"             element={<AgencyContracts />} />
+          <Route path="/agency/earnings"              element={<AgencyEarnings />} />
+          <Route path="/agency/withdrawals"           element={<AgencyWithdrawals />} />
+          <Route path="/agency/kyc"                   element={<AgencyKYC />} />
+          <Route path="/agency/reviews"               element={<AgencyReviews />} />
+          <Route path="/agency/notifications"         element={<AgencyNotifications />} />
+          <Route path="/agency/settings"              element={<AgencySettings />} />
+          <Route path="/agency/project/:id"           element={<ProjectDetailPage />} />
+          <Route path="/agency/channel2/:projectId"   element={<Channel2Page />} />
+        </Route>
+
         {/* Team Member */}
-        <Route path="/team/profile"                   element={<TeamProfile />} />
-        <Route path="/team/projects"                  element={<TeamProjects />} />
-        <Route path="/team/notifications"             element={<TeamNotifications />} />
-        <Route path="/team/dashboard"                 element={<TeamMemberDashboard />} />
         <Route path="/accept-invite"                  element={<InviteAccept />} />
+        <Route element={<TeamLayout />}>
+          <Route path="/team/dashboard"               element={<TeamMemberDashboard />} />
+          <Route path="/team/projects"                element={<TeamProjects />} />
+          <Route path="/team/notifications"           element={<TeamNotifications />} />
+          <Route path="/team/profile"                 element={<TeamProfile />} />
+        </Route>
 
         {/* Freelancer — Landing & Onboarding (NO layout) */}
         <Route path="/freelancer"                     element={<Freelancer />} />
