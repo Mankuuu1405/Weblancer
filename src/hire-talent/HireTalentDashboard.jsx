@@ -1,2786 +1,693 @@
-// import React, { useState } from 'react';
-// import {
-//   MessageSquare,
-//   FileText,
-//   Phone,
-//   Star,
-//   DollarSign,
-//   CheckCircle,
-//   AlertCircle,
-//   Calendar,
-//   Bell,
-//   Settings,
-//   ArrowRight,
-//   MoreVertical,
-//   ChevronDown,
-//   Plus,
-// } from 'lucide-react';
-
-// const HireTalentDashboard = () => {
-//   const [projects] = useState([
-//     {
-//       id: 1,
-//       title: 'Food Delivery Mobile App',
-//       status: 'Active',
-//       client: 'TechVision Agency',
-//       rating: 4.9,
-//       milestone: 'Design & Planning',
-//       progress: 40,
-//       daysAhead: 3,
-//       budget: 42000,
-//       spent: 8400,
-//       timeline: 90,
-//       communication: 90,
-//       quality: 100,
-//     },
-//   ]);
-
-//   const [activeTab, setActiveTab] = useState('overview');
-//   const [expandedMilestone, setExpandedMilestone] = useState(0);
-//   const [showAIBreakdown, setShowAIBreakdown] = useState(false);
-//   const [aiOverviewTab, setAIOverviewTab] = useState('overview');
-
-//   const milestones = [
-//     {
-//       id: 1,
-//       number: 1,
-//       title: 'Design & Planning',
-//       dueDate: 'Mar 11, 2026',
-//       amount: '$8,400',
-//       status: 'In Review',
-//       statusColor: 'yellow',
-//       deliverable: 'Deliverables ready for review',
-//     },
-//     {
-//       id: 2,
-//       number: 2,
-//       title: 'Core Development',
-//       dueDate: 'May 20, 2026',
-//       amount: '$21,000',
-//       status: 'Pending',
-//       statusColor: 'gray',
-//     },
-//     {
-//       id: 3,
-//       number: 3,
-//       title: 'Advanced Features',
-//       dueDate: 'Jul 1, 2026',
-//       amount: '$8,820',
-//       status: 'Pending',
-//       statusColor: 'gray',
-//     },
-//     {
-//       id: 4,
-//       number: 4,
-//       title: 'Testing & Launch',
-//       dueDate: 'Jul 25, 2026',
-//       amount: '$3,780',
-//       status: 'Pending',
-//       statusColor: 'gray',
-//     },
-//   ];
-
-//   const stats = [
-//     { label: 'Active Projects', value: '1', icon: CheckCircle, color: 'blue' },
-//     { label: 'In Escrow', value: '$42,000', icon: DollarSign, color: 'green' },
-//     { label: 'Messages', value: '3', icon: MessageSquare, color: 'purple' },
-//     { label: 'Trust Score', value: '75/100', icon: Star, color: 'yellow' },
-//   ];
-
-//   const upcomingDeadlines = [
-//     { title: 'Review wireframes', date: 'Feb 14', highlight: true },
-//     { title: 'Weekly check-in call', date: 'Feb 16', highlight: false },
-//     { title: 'Milestone 1 delivery', date: 'Mar 11', highlight: false },
-//   ];
-
-//   const insights = [
-//     { text: 'Your project is performing excellently', status: 'success' },
-//     { text: 'TechVision Agency is highly responsive', status: 'success' },
-//     { text: 'Timeline buffer exists for flexibility', status: 'success' },
-//     { text: 'Consider scheduling next milestone review early', status: 'warning' },
-//   ];
-
-//   const quickActions = [
-//     { title: 'Review Deliverables', icon: CheckCircle },
-//     { title: 'Message Team', icon: MessageSquare },
-//     { title: 'View Contract', icon: FileText },
-//     { title: 'Get Help', icon: AlertCircle },
-//   ];
-
-//   const getColorClasses = (color) => {
-//     const colors = {
-//       blue: 'bg-blue-100 text-blue-600',
-//       green: 'bg-green-100 text-green-600',
-//       purple: 'bg-purple-100 text-purple-600',
-//       yellow: 'bg-yellow-100 text-yellow-600',
-//     };
-//     return colors[color];
-//   };
-
-//   const getStatusBadgeColor = (status) => {
-//     switch (status) {
-//       case 'In Review':
-//         return 'bg-yellow-100 text-yellow-700';
-//       case 'Pending':
-//         return 'bg-gray-100 text-gray-600';
-//       default:
-//         return 'bg-gray-100 text-gray-600';
-//     }
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-gray-50">
-//       {/* Header */}
-//       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-//         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-//           <div className="flex items-center justify-between">
-//             <h1 className="text-2xl sm:text-3xl font-bold text-blue-600">ArcLancer</h1>
-//             <div className="flex items-center gap-2 sm:gap-4">
-//               <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition hidden sm:block">
-//                 <Bell size={20} />
-//                 <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-//               </button>
-//               <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition hidden sm:block">
-//                 <Settings size={20} />
-//               </button>
-//               <span className="text-sm font-medium text-gray-700 hidden sm:inline">Client</span>
-//             </div>
-//           </div>
-//         </div>
-//       </header>
-
-//       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-//         {/* Stats Grid */}
-//         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-//           {stats.map((stat, idx) => {
-//             const Icon = stat.icon;
-//             return (
-//               <div key={idx} className="bg-white rounded-lg p-5 sm:p-6 shadow-sm border border-gray-200">
-//                 <div className="flex items-start justify-between">
-//                   <div>
-//                     <p className="text-gray-600 text-sm font-medium">{stat.label}</p>
-//                     <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">{stat.value}</p>
-//                   </div>
-//                   <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${getColorClasses(stat.color)}`}>
-//                     <Icon size={24} />
-//                   </div>
-//                 </div>
-//               </div>
-//             );
-//           })}
-//         </div>
-
-//         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-//           {/* Main Content - 2/3 width */}
-//           <div className="lg:col-span-2 space-y-6">
-//             {/* Project Card with Tabs */}
-//             {projects.map((project) => (
-//               <div key={project.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-//                 {/* Project Header */}
-//                 <div className="p-5 sm:p-6 border-b border-gray-200">
-//                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
-//                     <div className="flex-1">
-//                       <div className="flex items-center gap-3 mb-2 flex-wrap">
-//                         <h2 className="text-lg sm:text-xl font-bold text-gray-900">{project.title}</h2>
-//                         <span className="inline-block bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full">
-//                           {project.status}
-//                         </span>
-//                       </div>
-//                       <p className="text-gray-600 text-sm">{project.client} • ⭐ {project.rating}</p>
-//                     </div>
-//                     <div className="flex items-center gap-2 flex-shrink-0">
-//                       <button className="flex items-center gap-2 px-3 py-2 text-gray-700 font-medium text-sm border border-gray-300 hover:bg-gray-50 rounded transition">
-//                         <MessageSquare size={16} />
-//                         Message
-//                       </button>
-//                       <button className="flex items-center gap-2 px-3 py-2 text-gray-700 font-medium text-sm border border-gray-300 hover:bg-gray-50 rounded transition">
-//                         <FileText size={16} />
-//                         Files
-//                       </button>
-//                       <button className="flex items-center gap-2 px-3 py-2 text-gray-700 font-medium text-sm border border-gray-300 hover:bg-gray-50 rounded transition">
-//                         <Phone size={16} />
-//                         Call
-//                       </button>
-//                     </div>
-//                   </div>
-
-//                   {/* Milestone Progress */}
-//                   <div className="mb-4">
-//                     <p className="text-gray-900 font-semibold text-sm mb-2">
-//                       Current: Milestone 1 — {project.milestone}
-//                     </p>
-//                     <div className="w-full bg-gray-200 rounded-full h-2.5">
-//                       <div
-//                         className="bg-blue-500 h-2.5 rounded-full transition-all duration-300"
-//                         style={{ width: `${project.progress}%` }}
-//                       ></div>
-//                     </div>
-//                     <p className="text-blue-600 text-xs font-medium mt-2">
-//                       ✓ {project.daysAhead} days ahead of schedule
-//                     </p>
-//                   </div>
-
-//                   {/* Budget Info */}
-//                   <div className="flex justify-between items-center">
-//                     <p className="text-gray-600 text-sm">
-//                       ${project.spent.toLocaleString()} of ${project.budget.toLocaleString()} in progress
-//                     </p>
-//                     <span className="text-gray-900 font-semibold text-sm">{project.progress}% overall</span>
-//                   </div>
-//                 </div>
-
-//                 {/* Tabs */}
-//                 <div className="px-5 sm:px-6 border-b border-gray-200 flex gap-8 overflow-x-auto">
-//                   {['Overview', 'Milestones', 'Files', 'Payments', 'AI Builder', 'Talent'].map((tab) => (
-//                     <button
-//                       key={tab}
-//                       onClick={() => setActiveTab(tab.toLowerCase())}
-//                       className={`py-4 font-medium text-sm border-b-2 transition whitespace-nowrap ${
-//                         activeTab === tab.toLowerCase()
-//                           ? 'border-blue-600 text-blue-600'
-//                           : 'border-transparent text-gray-600 hover:text-gray-900'
-//                       }`}
-//                     >
-//                       {tab}
-//                     </button>
-//                   ))}
-//                 </div>
-
-//                 {/* Tab Content */}
-//                 {activeTab === 'overview' && (
-//                   <div className="p-5 sm:p-6">
-//                     <p className="text-gray-600 text-sm">Project overview content</p>
-//                   </div>
-//                 )}
-
-//                 {activeTab === 'milestones' && (
-//                   <div className="p-5 sm:p-6 space-y-4">
-//                     {milestones.map((milestone, idx) => (
-//                       <div key={milestone.id} className="border border-gray-200 rounded-lg overflow-hidden">
-//                         <button
-//                           onClick={() => setExpandedMilestone(expandedMilestone === idx ? -1 : idx)}
-//                           className="w-full p-4 bg-gray-50 hover:bg-gray-100 transition flex items-center justify-between"
-//                         >
-//                           <div className="flex items-center gap-4 flex-1 text-left">
-//                             <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-semibold flex items-center justify-center text-sm">
-//                               {milestone.number}
-//                             </div>
-//                             <div className="flex-1">
-//                               <p className="font-semibold text-gray-900">{milestone.title}</p>
-//                               <p className="text-sm text-gray-600">Due: {milestone.dueDate}</p>
-//                             </div>
-//                           </div>
-//                           <div className="flex items-center gap-4">
-//                             <div className="text-right">
-//                               <p className="font-semibold text-gray-900">{milestone.amount}</p>
-//                               <span className={`text-xs font-semibold px-2 py-1 rounded ${getStatusBadgeColor(milestone.status)}`}>
-//                                 {milestone.status}
-//                               </span>
-//                             </div>
-//                             <ChevronDown
-//                               size={20}
-//                               className={`text-gray-400 transition ${expandedMilestone === idx ? 'rotate-180' : ''}`}
-//                             />
-//                           </div>
-//                         </button>
-
-//                         {expandedMilestone === idx && milestone.deliverable && (
-//                           <div className="p-4 bg-yellow-50 border-t border-gray-200">
-//                             <p className="text-sm text-gray-700 mb-4">{milestone.deliverable}</p>
-//                             <div className="flex gap-3">
-//                               <button className="px-3 py-1.5 bg-blue-600 text-white font-medium text-sm rounded hover:bg-blue-700 transition">
-//                                 Review Now
-//                               </button>
-//                               <button className="px-3 py-1.5 bg-white border border-gray-300 text-gray-700 font-medium text-sm rounded hover:bg-gray-50 transition">
-//                                 View Files
-//                               </button>
-//                             </div>
-//                           </div>
-//                         )}
-//                       </div>
-//                     ))}
-//                   </div>
-//                 )}
-
-//                 {activeTab === 'files' && (
-//                   <div className="p-5 sm:p-6 space-y-4">
-//                     {[
-//                       {
-//                         name: 'Wireframes_v1.pdf',
-//                         size: '2.4 MB',
-//                         time: '2 hours ago',
-//                         status: 'In Review',
-//                         statusColor: 'bg-yellow-100 text-yellow-700',
-//                       },
-//                       {
-//                         name: 'Requirements_Doc.docx',
-//                         size: '1.1 MB',
-//                         time: '3 days ago',
-//                         status: 'Approved',
-//                         statusColor: 'bg-green-100 text-green-700',
-//                       },
-//                       {
-//                         name: 'Design_System.fig',
-//                         size: '8.2 MB',
-//                         time: '1 hour ago',
-//                         status: 'New',
-//                         statusColor: 'bg-blue-100 text-blue-700',
-//                       },
-//                     ].map((file, idx) => (
-//                       <div key={idx} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
-//                         <div className="flex items-center gap-4 flex-1">
-//                           <FileText className="text-gray-400 flex-shrink-0" size={24} />
-//                           <div className="flex-1 min-w-0">
-//                             <p className="font-medium text-gray-900">{file.name}</p>
-//                             <p className="text-sm text-gray-600">{file.size} • {file.time}</p>
-//                           </div>
-//                         </div>
-//                         <div className="flex items-center gap-4">
-//                           <span className={`text-xs font-semibold px-3 py-1 rounded ${file.statusColor}`}>
-//                             {file.status}
-//                           </span>
-//                           <button className="px-4 py-2 text-blue-600 font-medium text-sm hover:bg-blue-50 rounded-lg transition">
-//                             Download
-//                           </button>
-//                         </div>
-//                       </div>
-//                     ))}
-//                   </div>
-//                 )}
-
-//                 {activeTab === 'payments' && (
-//                   <div className="p-5 sm:p-6 space-y-6">
-//                     <div>
-//                       <h3 className="text-lg font-bold text-gray-900 mb-4">Escrow Overview</h3>
-//                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-//                         <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-//                           <p className="text-gray-600 text-sm font-medium mb-2">Funded</p>
-//                           <p className="text-2xl font-bold text-gray-900">$42,000</p>
-//                         </div>
-//                         <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-//                           <p className="text-gray-600 text-sm font-medium mb-2">Released</p>
-//                           <p className="text-2xl font-bold text-gray-900">$0</p>
-//                         </div>
-//                         <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-//                           <p className="text-green-700 text-sm font-medium mb-2">Remaining</p>
-//                           <p className="text-2xl font-bold text-green-700">$42,000</p>
-//                         </div>
-//                       </div>
-//                     </div>
-
-//                     <div>
-//                       <div className="space-y-3">
-//                         {[
-//                           { title: 'Design & Planning', amount: '$8,400', status: 'In Review', color: 'yellow' },
-//                           { title: 'Core Development', amount: '$21,000', status: 'Pending', color: 'gray' },
-//                           { title: 'Advanced Features', amount: '$8,820', status: 'Pending', color: 'gray' },
-//                           { title: 'Testing & Launch', amount: '$3,780', status: 'Pending', color: 'gray' },
-//                         ].map((milestone, idx) => (
-//                           <div key={idx} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
-//                             <div className="flex-1">
-//                               <p className="font-medium text-gray-900">M{idx + 1} — {milestone.title}</p>
-//                             </div>
-//                             <div className="flex items-center gap-4">
-//                               <span className="font-semibold text-gray-900">{milestone.amount}</span>
-//                               <span className={`text-xs font-semibold px-3 py-1 rounded ${
-//                                 milestone.color === 'yellow' 
-//                                   ? 'bg-yellow-100 text-yellow-700'
-//                                   : 'bg-gray-100 text-gray-600'
-//                               }`}>
-//                                 {milestone.status}
-//                               </span>
-//                             </div>
-//                           </div>
-//                         ))}
-//                       </div>
-//                     </div>
-//                   </div>
-//                 )}
-
-//                 {activeTab === 'ai builder' && !showAIBreakdown && (
-//                   <div className="p-5 sm:p-6 space-y-6">
-//                     <div>
-//                       <div className="flex items-center gap-2 mb-2">
-//                         <span className="text-2xl">✨</span>
-//                         <h3 className="text-xl font-bold text-gray-900">What do you want to build?</h3>
-//                       </div>
-//                       <p className="text-gray-600 text-sm mb-4">Describe your project in plain English</p>
-//                       <textarea
-//                         className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-//                         rows="5"
-//                         placeholder="e.g., I want a food delivery app..."
-//                         defaultValue="e.g., I want a food delivery app for my city. Users should be able to order from local restaurants, track their delivery in real time, and pay securely..."
-//                       ></textarea>
-//                       <div className="flex gap-3 mt-4">
-//                         <button className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition text-sm">
-//                           🎤 Speak instead
-//                         </button>
-//                         <button className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition text-sm">
-//                           📎 Upload brief/document
-//                         </button>
-//                       </div>
-//                     </div>
-
-//                     <div className="bg-gray-50 border border-gray-200 rounded-lg p-5">
-//                       <p className="font-semibold text-gray-900 mb-3">Examples to inspire you:</p>
-//                       <div className="space-y-2 mb-4">
-//                         <p className="text-blue-600 hover:underline cursor-pointer text-sm">"E-commerce site for handmade jewelry"</p>
-//                         <p className="text-blue-600 hover:underline cursor-pointer text-sm">"HR management system for my 50-person company"</p>
-//                         <p className="text-blue-600 hover:underline cursor-pointer text-sm">"AI chatbot for my customer support team"</p>
-//                       </div>
-//                       <div className="space-y-2 mb-4">
-//                         <div className="flex items-center gap-2 text-sm text-gray-600">
-//                           <CheckCircle size={16} className="text-green-500" />
-//                           <span>No technical knowledge required</span>
-//                         </div>
-//                         <div className="flex items-center gap-2 text-sm text-gray-600">
-//                           <CheckCircle size={16} className="text-green-500" />
-//                           <span>AI will translate your idea</span>
-//                         </div>
-//                       </div>
-//                       <button 
-//                         onClick={() => setShowAIBreakdown(true)}
-//                         className="flex items-center gap-2 px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition"
-//                       >
-//                         <ArrowRight size={18} />
-//                         Analyze My Project
-//                       </button>
-//                     </div>
-//                   </div>
-//                 )}
-
-//                 {activeTab === 'ai builder' && showAIBreakdown && (
-//                   <div className="p-5 sm:p-6 space-y-6">
-//                     <div className="flex items-center justify-between">
-//                       <h2 className="text-2xl font-bold text-gray-900">AI Project Breakdown</h2>
-//                       <button 
-//                         onClick={() => setShowAIBreakdown(false)}
-//                         className="text-blue-600 font-medium hover:text-blue-700"
-//                       >
-//                         ← Edit Description
-//                       </button>
-//                     </div>
-
-//                     <div className="border-b border-gray-200 flex gap-8 overflow-x-auto">
-//                       {['Overview', 'Scope & Budget', 'Milestones', 'Talent Match', 'Validation'].map((tab) => (
-//                         <button
-//                           key={tab}
-//                           onClick={() => setAIOverviewTab(tab.toLowerCase())}
-//                           className={`py-4 font-medium text-sm border-b-2 transition whitespace-nowrap ${
-//                             aiOverviewTab === tab.toLowerCase()
-//                               ? 'border-blue-600 text-blue-600'
-//                               : 'border-transparent text-gray-600 hover:text-gray-900'
-//                           }`}
-//                         >
-//                           {tab}
-//                           {tab === 'Validation' && <span className="ml-2 text-yellow-500">⚠️</span>}
-//                         </button>
-//                       ))}
-//                     </div>
-
-//                     {/* Overview Tab */}
-//                     {aiOverviewTab === 'overview' && (
-//                       <div className="space-y-6">
-//                         <div>
-//                           <div className="flex items-center justify-between mb-3">
-//                             <h3 className="text-base font-bold text-gray-900">AI-Generated Project Brief</h3>
-//                             <span className="bg-purple-100 text-purple-700 text-xs font-semibold px-2 py-0.5 rounded">
-//                               AI GENERATED
-//                             </span>
-//                           </div>
-
-//                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-//                             <div className="bg-gray-50 p-3 rounded">
-//                               <p className="text-gray-600 text-xs font-medium mb-1">Project Name:</p>
-//                               <p className="text-gray-900 font-semibold text-sm">Food Delivery Platform</p>
-//                             </div>
-//                             <div className="bg-gray-50 p-3 rounded">
-//                               <p className="text-gray-600 text-xs font-medium mb-1">Type:</p>
-//                               <p className="text-gray-900 font-semibold text-sm">Mobile App + Web Admin</p>
-//                             </div>
-//                             <div className="bg-gray-50 p-3 rounded">
-//                               <p className="text-gray-600 text-xs font-medium mb-1">Industry:</p>
-//                               <p className="text-gray-900 font-semibold text-sm">Food & Restaurant Tech</p>
-//                             </div>
-//                             <div className="bg-gray-50 p-3 rounded">
-//                               <p className="text-gray-600 text-xs font-medium mb-1">Complexity:</p>
-//                               <p className="text-gray-900 font-semibold text-sm">Medium-High ●●●●○</p>
-//                             </div>
-//                           </div>
-//                         </div>
-
-//                         <div>
-//                           <h3 className="text-base font-bold text-gray-900 mb-3">Core Features (must-have)</h3>
-//                           <div className="space-y-2">
-//                             {[
-//                               'User registration & login (social + email)',
-//                               'Restaurant browse & search with filters',
-//                               'Menu display with photos & pricing',
-//                               'Shopping cart & order placement',
-//                               'Real-time order tracking (GPS)',
-//                               'Payment gateway integration',
-//                               'Push notifications (order updates)',
-//                               'Restaurant admin panel (order management)',
-//                             ].map((feature, idx) => (
-//                               <label key={idx} className="flex items-center gap-2 p-2 hover:bg-gray-50 rounded cursor-pointer">
-//                                 <input type="checkbox" defaultChecked className="w-4 h-4 accent-blue-600" />
-//                                 <span className="text-gray-900 text-sm">{feature}</span>
-//                               </label>
-//                             ))}
-//                           </div>
-//                         </div>
-
-//                         <div>
-//                           <h3 className="text-base font-bold text-gray-900 mb-3">Optional Features (nice-to-have)</h3>
-//                           <div className="space-y-2">
-//                             {[
-//                               'In-app chat (customer ↔ restaurant)',
-//                               'Ratings & reviews system',
-//                               'Promo codes & loyalty rewards',
-//                               'Analytics dashboard for restaurants',
-//                             ].map((feature, idx) => (
-//                               <label key={idx} className="flex items-center gap-2 p-2 hover:bg-gray-50 rounded cursor-pointer">
-//                                 <input type="checkbox" className="w-4 h-4 accent-blue-600" />
-//                                 <span className="text-gray-700 text-sm">{feature}</span>
-//                               </label>
-//                             ))}
-//                           </div>
-//                         </div>
-
-//                         <div className="flex gap-3 pt-4 border-t border-gray-200">
-//                           <button className="flex items-center gap-2 px-3 py-1.5 text-gray-600 border border-gray-300 rounded text-sm hover:bg-gray-50 transition">
-//                             <Plus size={16} />
-//                             Add Feature
-//                           </button>
-//                           <button className="flex items-center gap-2 px-3 py-1.5 text-gray-600 border border-gray-300 rounded text-sm hover:bg-gray-50 transition">
-//                             <FileText size={16} />
-//                             Edit Features
-//                           </button>
-//                         </div>
-//                       </div>
-//                     )}
-
-//                     {/* Scope & Budget Tab */}
-//                     {aiOverviewTab === 'scope & budget' && (
-//                       <div className="space-y-6">
-//                         <div>
-//                           <div className="flex items-center gap-2 mb-4">
-//                             <Calendar className="text-gray-600" size={20} />
-//                             <h3 className="text-lg font-bold text-gray-900">Timeline Estimate</h3>
-//                           </div>
-//                           <div className="space-y-3">
-//                             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-//                               <p className="text-gray-700">Discovery & Planning</p>
-//                               <p className="text-gray-900 font-semibold">2–3 weeks</p>
-//                             </div>
-//                             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-//                               <p className="text-gray-700">UI/UX Design</p>
-//                               <p className="text-gray-900 font-semibold">4–6 weeks</p>
-//                             </div>
-//                             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-//                               <p className="text-gray-700">Development</p>
-//                               <p className="text-gray-900 font-semibold">12–16 weeks</p>
-//                             </div>
-//                             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-//                               <p className="text-gray-700">Testing & Launch</p>
-//                               <p className="text-gray-900 font-semibold">2–4 weeks</p>
-//                             </div>
-//                             <div className="flex items-center justify-between p-4 bg-white rounded-lg border-2 border-blue-200">
-//                               <p className="font-bold text-gray-900">Total</p>
-//                               <p className="text-blue-600 font-bold">20–29 weeks (5–7 months)</p>
-//                             </div>
-//                           </div>
-//                         </div>
-
-//                         <div>
-//                           <div className="flex items-center gap-2 mb-4">
-//                             <DollarSign className="text-gray-600" size={20} />
-//                             <h3 className="text-lg font-bold text-gray-900">Budget Range</h3>
-//                           </div>
-//                           <div className="space-y-3">
-//                             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-//                               <p className="text-gray-700 font-medium">Conservative</p>
-//                               <p className="text-gray-900 font-semibold">$18,000 – $28,000</p>
-//                             </div>
-//                             <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg border-2 border-blue-300">
-//                               <p className="text-gray-900 font-medium">Realistic</p>
-//                               <p className="text-blue-600 font-bold">$28,000 – $45,000</p>
-//                             </div>
-//                             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-//                               <p className="text-gray-700 font-medium">Comfortable</p>
-//                               <p className="text-gray-900 font-semibold">$45,000 – $65,000</p>
-//                             </div>
-//                           </div>
-
-//                           <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-//                             <p className="font-semibold text-gray-900 mb-3">Breakdown:</p>
-//                             <div className="space-y-2">
-//                               <div className="flex items-center justify-between">
-//                                 <p className="text-gray-700">Design (20%)</p>
-//                                 <p className="text-gray-900 font-semibold">$5,600 – $13,000</p>
-//                               </div>
-//                               <div className="flex items-center justify-between">
-//                                 <p className="text-gray-700">Development (60%)</p>
-//                                 <p className="text-gray-900 font-semibold">$16,800 – $39,000</p>
-//                               </div>
-//                               <div className="flex items-center justify-between">
-//                                 <p className="text-gray-700">Testing/QA (10%)</p>
-//                                 <p className="text-gray-900 font-semibold">$2,800 – $6,500</p>
-//                               </div>
-//                               <div className="flex items-center justify-between">
-//                                 <p className="text-gray-700">Project Management</p>
-//                                 <p className="text-gray-900 font-semibold">$2,800 – $6,500</p>
-//                               </div>
-//                             </div>
-//                           </div>
-
-//                           <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-//                             <p className="text-gray-700">
-//                               <span className="font-semibold">Complexity & Risk Score:</span>
-//                               <span className="font-bold text-gray-900 ml-2">Medium (6.5/10)</span>
-//                             </p>
-//                           </div>
-//                         </div>
-//                       </div>
-//                     )}
-
-//                     {/* Milestones Tab */}
-//                     {aiOverviewTab === 'milestones' && (
-//                       <div className="space-y-6">
-//                         <h3 className="text-xl font-bold text-gray-900">AI-Generated Milestone Plan</h3>
-                        
-//                         <div className="space-y-6">
-//                           {[
-//                             {
-//                               number: 1,
-//                               title: 'Discovery & Design',
-//                               amount: '$8,400',
-//                               percent: '20%',
-//                               weeks: '3 weeks',
-//                               deliverables: ['Complete wireframes', 'High-fidelity UI designs', 'Technical architecture document', 'API design specification'],
-//                             },
-//                             {
-//                               number: 2,
-//                               title: 'Core Development',
-//                               amount: '$21,000',
-//                               percent: '50%',
-//                               weeks: '12 weeks',
-//                               deliverables: ['User app (iOS + Android)', 'Restaurant admin panel (web)', 'Payment integration', 'Core backend APIs'],
-//                             },
-//                             {
-//                               number: 3,
-//                               title: 'Advanced Features',
-//                               amount: '$8,820',
-//                               percent: '21%',
-//                               weeks: '6 weeks',
-//                               deliverables: ['Real-time tracking', 'Push notifications', 'Performance optimization'],
-//                             },
-//                             {
-//                               number: 4,
-//                               title: 'Testing & Launch',
-//                               amount: '$3,780',
-//                               percent: '9%',
-//                               weeks: '2 weeks',
-//                               deliverables: ['Full QA testing report', 'App store submission', 'Production deployment'],
-//                             },
-//                           ].map((milestone) => (
-//                             <div key={milestone.number} className="border-l-4 border-blue-500 pl-4">
-//                               <div className="flex items-start justify-between mb-3">
-//                                 <div>
-//                                   <div className="flex items-center gap-2 mb-1">
-//                                     <span className="bg-blue-100 text-blue-600 px-2 py-1 rounded text-sm font-bold">M{milestone.number}</span>
-//                                     <h4 className="text-lg font-bold text-gray-900">{milestone.title}</h4>
-//                                   </div>
-//                                 </div>
-//                                 <div className="text-right">
-//                                   <p className="font-bold text-gray-900">{milestone.amount} <span className="text-gray-600 font-normal">({milestone.percent})</span></p>
-//                                   <p className="text-sm text-gray-600">{milestone.weeks}</p>
-//                                 </div>
-//                               </div>
-//                               <div className="mt-3">
-//                                 <p className="text-gray-700 font-medium text-sm mb-2">Deliverables:</p>
-//                                 <ul className="space-y-1">
-//                                   {milestone.deliverables.map((item, idx) => (
-//                                     <li key={idx} className="flex items-center gap-2 text-gray-700 text-sm">
-//                                       <CheckCircle size={16} className="text-teal-500 flex-shrink-0" />
-//                                       {item}
-//                                     </li>
-//                                   ))}
-//                                 </ul>
-//                               </div>
-//                             </div>
-//                           ))}
-//                         </div>
-
-//                         <div className="flex gap-3 pt-6 border-t border-gray-200">
-//                           <button className="flex items-center gap-2 px-3 py-1.5 text-gray-600 border border-gray-300 rounded text-sm hover:bg-gray-50 transition">
-//                             <FileText size={16} />
-//                             Edit Milestones
-//                           </button>
-//                           <button className="flex items-center gap-2 px-3 py-1.5 text-gray-600 border border-gray-300 rounded text-sm hover:bg-gray-50 transition">
-//                             <Plus size={16} />
-//                             Add Milestone
-//                           </button>
-//                         </div>
-//                       </div>
-//                     )}
-
-//                     {/* Talent Match Tab */}
-//                     {aiOverviewTab === 'talent match' && (
-//                       <div className="space-y-6">
-//                         <div>
-//                           <div className="flex items-center gap-2 mb-4">
-//                             <span className="text-xl">👥</span>
-//                             <h3 className="text-lg font-bold text-gray-900">Best Talent Type for Your Project</h3>
-//                           </div>
-
-//                           {/* Recommended */}
-//                           <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
-//                             <div className="flex items-start gap-3 mb-3">
-//                               <CheckCircle className="text-green-600 flex-shrink-0" size={20} />
-//                               <h4 className="font-bold text-gray-900">Recommended: Mobile App Development Agency</h4>
-//                             </div>
-//                             <ul className="space-y-2 ml-8">
-//                               <li className="text-gray-700 text-sm">Multi-platform (iOS + Android) needed</li>
-//                               <li className="text-gray-700 text-sm">Design services required</li>
-//                               <li className="text-gray-700 text-sm">Budget supports agency pricing</li>
-//                               <li className="text-gray-700 text-sm">Timeline matches agency capacity</li>
-//                             </ul>
-//                           </div>
-
-//                           {/* Alternative */}
-//                           <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
-//                             <h4 className="font-bold text-gray-900 mb-2">Alternative: Senior Freelancer + Designer</h4>
-//                             <p className="text-gray-700 text-sm">Estimated savings: 25-30% • Risk: Higher coordination overhead</p>
-//                           </div>
-
-//                           {/* Action Buttons */}
-//                           <div className="flex gap-3 flex-wrap">
-//                             <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition text-sm">
-//                               <span>🔍</span>
-//                               Find Agencies
-//                             </button>
-//                             <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition text-sm">
-//                               <span>👤</span>
-//                               Find Freelancers
-//                             </button>
-//                           </div>
-//                         </div>
-//                       </div>
-//                     )}
-
-//                     {/* Validation Tab */}
-//                     {aiOverviewTab === 'validation' && (
-//                       <div className="space-y-6">
-//                         <div>
-//                           <div className="flex items-center justify-between mb-4">
-//                             <div className="flex items-center gap-2">
-//                               <span className="text-xl">⚠️</span>
-//                               <h3 className="text-lg font-bold text-gray-900">AI Validation Results</h3>
-//                             </div>
-//                             <span className="bg-yellow-100 text-yellow-700 text-xs font-bold px-3 py-1 rounded">
-//                               MEDIUM RISK ●●●○○
-//                             </span>
-//                           </div>
-
-//                           {/* Warning 1 - Timeline */}
-//                           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-//                             <div className="flex items-start gap-3 mb-2">
-//                               <AlertCircle className="text-yellow-600 flex-shrink-0 mt-0.5" size={20} />
-//                               <h4 className="font-bold text-gray-900">Timeline may be aggressive</h4>
-//                             </div>
-//                             <p className="text-gray-700 text-sm mb-3 ml-8">Your target of 3 months is 40% shorter than typical. This increases cost and risk.</p>
-//                             <button className="ml-8 flex items-center gap-2 text-blue-600 font-medium text-sm hover:text-blue-700">
-//                               <ArrowRight size={16} />
-//                               Extend to 5 months
-//                             </button>
-//                           </div>
-
-//                           {/* Warning 2 - Budget */}
-//                           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-//                             <div className="flex items-start gap-3 mb-2">
-//                               <AlertCircle className="text-yellow-600 flex-shrink-0 mt-0.5" size={20} />
-//                               <h4 className="font-bold text-gray-900">Budget slightly below market</h4>
-//                             </div>
-//                             <p className="text-gray-700 text-sm mb-3 ml-8">Your budget of $20,000 is 30% below the realistic range for this scope.</p>
-//                             <button className="ml-8 flex items-center gap-2 text-blue-600 font-medium text-sm hover:text-blue-700">
-//                               <ArrowRight size={16} />
-//                               Increase to $28,000+
-//                             </button>
-//                           </div>
-
-//                           {/* Info - First-time client */}
-//                           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-//                             <div className="flex items-start gap-3">
-//                               <CheckCircle className="text-blue-600 flex-shrink-0 mt-0.5" size={20} />
-//                               <div>
-//                                 <h4 className="font-bold text-gray-900">First-time client — enhanced monitoring</h4>
-//                                 <p className="text-gray-700 text-sm">Your first project will have admin oversight at every milestone.</p>
-//                               </div>
-//                             </div>
-//                           </div>
-
-//                           {/* Action Buttons */}
-//                           <div className="flex gap-3 flex-wrap">
-//                             <button className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition text-sm">
-//                               Apply Suggestions
-//                             </button>
-//                             <button className="px-4 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition text-sm">
-//                               Continue Anyway
-//                             </button>
-//                             <button className="px-4 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition text-sm">
-//                               Revise Project
-//                             </button>
-//                           </div>
-//                         </div>
-//                       </div>
-//                     )}
-//                   </div>
-//                 )}
-
-//                 {activeTab === 'talent' && (
-//                   <div className="p-5 sm:p-6 space-y-4">
-//                     <div className="mb-4">
-//                       <h3 className="text-lg font-bold text-gray-900 mb-1">AI Found 4 Matches</h3>
-//                       <p className="text-gray-600 text-sm">For your Food Delivery Platform project</p>
-//                     </div>
-
-//                     {[
-//                       {
-//                         number: 1,
-//                         name: 'TechVision Agency',
-//                         type: 'Agency',
-//                         location: 'Mumbai, India',
-//                         match: '98% Match',
-//                         rating: '4.9 (47 projects)',
-//                         available: 'Available Now',
-//                         budget: '$25K-$60K',
-//                         similar: 8,
-//                         disputes: 0,
-//                         risk: 'LOW',
-//                         icon: '🏆',
-//                       },
-//                       {
-//                         number: 2,
-//                         name: 'John Smith',
-//                         type: 'Freelancer',
-//                         location: 'Bangalore',
-//                         match: '91% Match',
-//                         rating: '4.8 (23 projects)',
-//                         available: 'Available in 1 week',
-//                         budget: '$15K-$35K',
-//                         similar: 5,
-//                         disputes: 0,
-//                         risk: 'LOW',
-//                         icon: '👤',
-//                       },
-//                       {
-//                         number: 3,
-//                         name: 'CodeCraft Agency',
-//                         type: 'Agency',
-//                         location: 'Delhi, India',
-//                         match: '89% Match',
-//                         rating: '4.7 (31 projects)',
-//                         available: 'Available in 1 week',
-//                         budget: '$20K-$50K',
-//                         similar: 5,
-//                         disputes: 1,
-//                         risk: 'MEDIUM',
-//                         icon: '👤',
-//                       },
-//                       {
-//                         number: 4,
-//                         name: 'Maria Chen',
-//                         type: 'Freelancer',
-//                         location: 'Singapore',
-//                         match: '85% Match',
-//                         rating: '4.6 (18 projects)',
-//                         available: 'Available in 2 weeks',
-//                         budget: '$12K-$28K',
-//                         similar: 3,
-//                         disputes: 0,
-//                         risk: 'LOW',
-//                         icon: 'M',
-//                       },
-//                     ].map((talent) => (
-//                       <div key={talent.number} className="bg-white border border-gray-200 rounded-lg p-4">
-//                         <div className="flex items-start justify-between mb-3">
-//                           <div className="flex items-start gap-3 flex-1">
-//                             <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">
-//                               {talent.icon}
-//                             </div>
-//                             <div className="flex-1 min-w-0">
-//                               <div className="flex items-center gap-2 flex-wrap mb-1">
-//                                 <h4 className="font-bold text-gray-900">#{talent.number} — {talent.name}</h4>
-//                                 <span className="text-blue-600 text-sm font-medium">{talent.match}</span>
-//                               </div>
-//                               <p className="text-gray-600 text-sm">{talent.type} • {talent.location}</p>
-//                               <div className="flex items-center gap-1 mt-1">
-//                                 <span className="text-yellow-500">⭐</span>
-//                                 <span className="text-gray-600 text-sm">{talent.rating} • {talent.available}</span>
-//                               </div>
-//                             </div>
-//                           </div>
-//                           <span className={`text-xs font-bold px-2 py-1 rounded flex-shrink-0 ${
-//                             talent.risk === 'LOW' 
-//                               ? 'bg-green-100 text-green-700' 
-//                               : 'bg-yellow-100 text-yellow-700'
-//                           }`}>
-//                             {talent.risk}
-//                           </span>
-//                         </div>
-
-//                         <div className="mb-3 text-sm text-gray-600 ml-13">
-//                           <span>Budget: {talent.budget}</span>
-//                           <span className="mx-4">Similar projects: {talent.similar}</span>
-//                           <span>Disputes: {talent.disputes}</span>
-//                         </div>
-
-//                         <div className="flex gap-2 ml-13">
-//                           <button className="flex items-center gap-2 px-3 py-1.5 text-gray-600 border border-gray-300 rounded text-sm hover:bg-gray-50 transition">
-//                             👁️ View Profile
-//                           </button>
-//                           <button className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white font-medium rounded text-sm hover:bg-blue-700 transition">
-//                             📧 Invite
-//                           </button>
-//                           <button className="flex items-center gap-2 px-3 py-1.5 text-gray-600 border border-gray-300 rounded text-sm hover:bg-gray-50 transition">
-//                             ⚖️ Compare
-//                           </button>
-//                         </div>
-//                       </div>
-//                     ))}
-//                   </div>
-//                 )}
-//               </div>
-//             ))}
-
-//             {/* Recent Activity */}
-//             {activeTab === 'overview' && (
-//               <>
-//                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-6">
-//                   <h3 className="text-lg font-bold text-gray-900 mb-4">Recent Activity</h3>
-//                   <div className="space-y-4">
-//                     <div className="flex gap-3">
-//                       <FileText className="text-gray-400 flex-shrink-0" size={20} />
-//                       <div>
-//                         <p className="font-medium text-gray-900 text-sm">Wireframes uploaded for review</p>
-//                         <p className="text-gray-500 text-xs">2 hours ago</p>
-//                       </div>
-//                     </div>
-//                     <div className="flex gap-3">
-//                       <Phone className="text-gray-400 flex-shrink-0" size={20} />
-//                       <div>
-//                         <p className="font-medium text-gray-900 text-sm">Kickoff meeting completed</p>
-//                         <p className="text-gray-500 text-xs">Yesterday</p>
-//                       </div>
-//                     </div>
-//                     <div className="flex gap-3">
-//                       <CheckCircle className="text-gray-400 flex-shrink-0" size={20} />
-//                       <div>
-//                         <p className="font-medium text-gray-900 text-sm">Project started</p>
-//                         <p className="text-gray-500 text-xs">2 days ago</p>
-//                       </div>
-//                     </div>
-//                     <div className="flex gap-3">
-//                       <DollarSign className="text-gray-400 flex-shrink-0" size={20} />
-//                       <div>
-//                         <p className="font-medium text-gray-900 text-sm">Escrow funded: $44,100</p>
-//                         <p className="text-gray-500 text-xs">3 days ago</p>
-//                       </div>
-//                     </div>
-//                   </div>
-//                 </div>
-
-//                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-6">
-//                   <h3 className="text-lg font-bold text-gray-900 mb-4">Upcoming Deadlines</h3>
-//                   <div className="space-y-3">
-//                     {upcomingDeadlines.map((deadline, idx) => (
-//                       <div
-//                         key={idx}
-//                         className={`flex items-center justify-between p-4 rounded-lg ${
-//                           deadline.highlight
-//                             ? 'bg-yellow-50 border border-yellow-200'
-//                             : 'bg-gray-50 border border-gray-200'
-//                         }`}
-//                       >
-//                         <div className="flex items-center gap-3">
-//                           <Calendar className={deadline.highlight ? 'text-yellow-600' : 'text-gray-400'} size={20} />
-//                           <p className="font-medium text-gray-900 text-sm">{deadline.title}</p>
-//                         </div>
-//                         <span className="text-gray-600 text-sm font-medium">{deadline.date}</span>
-//                       </div>
-//                     ))}
-//                   </div>
-//                 </div>
-
-//                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-6">
-//                   <h3 className="text-lg font-bold text-gray-900 mb-6">Project Health</h3>
-//                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-//                     <div>
-//                       <div className="flex items-center justify-between mb-2">
-//                         <p className="text-gray-700 font-medium text-sm">Timeline</p>
-//                         <span className="text-gray-900 font-bold text-sm">90%</span>
-//                       </div>
-//                       <div className="w-full bg-gray-200 rounded-full h-2">
-//                         <div className="bg-blue-500 h-2 rounded-full" style={{ width: '90%' }}></div>
-//                       </div>
-//                       <p className="text-blue-600 text-xs font-medium mt-2">3 days ahead</p>
-//                     </div>
-
-//                     <div>
-//                       <div className="flex items-center justify-between mb-2">
-//                         <p className="text-gray-700 font-medium text-sm">Budget</p>
-//                         <span className="text-gray-900 font-bold text-sm">20%</span>
-//                       </div>
-//                       <div className="w-full bg-gray-200 rounded-full h-2">
-//                         <div className="bg-green-500 h-2 rounded-full" style={{ width: '20%' }}></div>
-//                       </div>
-//                       <p className="text-green-600 text-xs font-medium mt-2">On track</p>
-//                     </div>
-
-//                     <div>
-//                       <div className="flex items-center justify-between mb-2">
-//                         <p className="text-gray-700 font-medium text-sm">Communication</p>
-//                         <span className="text-gray-900 font-bold text-sm">90%</span>
-//                       </div>
-//                       <div className="w-full bg-gray-200 rounded-full h-2">
-//                         <div className="bg-blue-500 h-2 rounded-full" style={{ width: '90%' }}></div>
-//                       </div>
-//                       <p className="text-blue-600 text-xs font-medium mt-2">Excellent</p>
-//                     </div>
-
-//                     <div>
-//                       <div className="flex items-center justify-between mb-2">
-//                         <p className="text-gray-700 font-medium text-sm">Quality</p>
-//                         <span className="text-gray-900 font-bold text-sm">100%</span>
-//                       </div>
-//                       <div className="w-full bg-gray-200 rounded-full h-2">
-//                         <div className="bg-blue-500 h-2 rounded-full" style={{ width: '100%' }}></div>
-//                       </div>
-//                       <p className="text-blue-600 text-xs font-medium mt-2">No revisions</p>
-//                     </div>
-//                   </div>
-//                 </div>
-//               </>
-//             )}
-//           </div>
-
-//           {/* Sidebar */}
-//           <div className="space-y-6">
-//             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-6">
-//               <div className="flex items-center gap-4 mb-6">
-//                 <div className="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-//                   <span className="text-white font-bold text-lg">SJ</span>
-//                 </div>
-//                 <div className="min-w-0">
-//                   <h4 className="font-bold text-gray-900">Sarah Johnson</h4>
-//                   <p className="text-gray-600 text-sm">Project Success Manager</p>
-//                 </div>
-//               </div>
-
-//               <div className="space-y-3 mb-6 pb-6 border-b border-gray-200">
-//                 <div className="flex items-center gap-2">
-//                   <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-//                   <p className="text-gray-700 text-sm">Response time: &lt; 4 hours</p>
-//                 </div>
-//               </div>
-
-//               <button className="w-full py-3 px-4 bg-blue-50 text-blue-600 font-semibold rounded-lg hover:bg-blue-100 transition text-sm mb-3 flex items-center justify-center gap-2">
-//                 💬 Live Chat
-//               </button>
-//               <button className="w-full py-3 px-4 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition text-sm">
-//                 📞 Schedule Call
-//               </button>
-//             </div>
-
-//             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-6">
-//               <h3 className="text-lg font-bold text-gray-900 mb-4">Quick Actions</h3>
-//               <div className="space-y-0">
-//                 {quickActions.map((action, idx) => {
-//                   const Icon = action.icon;
-//                   return (
-//                     <button
-//                       key={idx}
-//                       className="w-full flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition group border-b border-gray-100 last:border-b-0"
-//                     >
-//                       <div className="flex items-center gap-3 min-w-0">
-//                         <Icon className="text-gray-400 group-hover:text-gray-600 flex-shrink-0" size={20} />
-//                         <span className="text-gray-700 font-medium text-sm">{action.title}</span>
-//                       </div>
-//                       <ArrowRight className="text-gray-300 group-hover:text-gray-400 flex-shrink-0" size={18} />
-//                     </button>
-//                   );
-//                 })}
-//               </div>
-//             </div>
-
-//             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-6">
-//               <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-//                 ✨ Insights
-//               </h3>
-//               <div className="space-y-3">
-//                 {insights.map((insight, idx) => (
-//                   <div key={idx} className="flex items-start gap-3">
-//                     <div className="flex-shrink-0 mt-0.5">
-//                       {insight.status === 'success' ? (
-//                         <CheckCircle className="text-green-500" size={18} />
-//                       ) : (
-//                         <AlertCircle className="text-yellow-500" size={18} />
-//                       )}
-//                     </div>
-//                     <p className="text-gray-700 text-sm">{insight.text}</p>
-//                   </div>
-//                 ))}
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </main>
-//     </div>
-//   );
-// };
-
-// export default HireTalentDashboard;
-
-
-
-
-
-
-
-
-// import React, { useState } from 'react';
-// import {
-//   MessageSquare,
-//   FileText,
-//   Phone,
-//   Star,
-//   DollarSign,
-//   CheckCircle,
-//   AlertCircle,
-//   Calendar,
-//   Bell,
-//   Settings,
-//   ArrowRight,
-//   ChevronDown,
-//   Plus,
-// } from 'lucide-react';
-
-// const HireTalentDashboard = () => {
-//   const [projects] = useState([
-//     {
-//       id: 1,
-//       title: 'Food Delivery Mobile App',
-//       status: 'Active',
-//       client: 'TechVision Agency',
-//       rating: 4.9,
-//       milestone: 'Design & Planning',
-//       progress: 40,
-//       daysAhead: 3,
-//       budget: 42000,
-//       spent: 8400,
-//       timeline: 90,
-//       communication: 90,
-//       quality: 100,
-//     },
-//   ]);
-
-//   const [activeTab, setActiveTab] = useState('overview');
-//   const [expandedMilestone, setExpandedMilestone] = useState(0);
-//   const [showAIBreakdown, setShowAIBreakdown] = useState(false);
-//   const [aiOverviewTab, setAIOverviewTab] = useState('overview');
-//   const [dropdownOpen, setDropdownOpen] = useState(false);
-
-//   const milestones = [
-//     {
-//       id: 1,
-//       number: 1,
-//       title: 'Design & Planning',
-//       dueDate: 'Mar 11, 2026',
-//       amount: '$8,400',
-//       status: 'In Review',
-//       statusColor: 'yellow',
-//       deliverable: 'Deliverables ready for review',
-//     },
-//     {
-//       id: 2,
-//       number: 2,
-//       title: 'Core Development',
-//       dueDate: 'May 20, 2026',
-//       amount: '$21,000',
-//       status: 'Pending',
-//       statusColor: 'gray',
-//     },
-//     {
-//       id: 3,
-//       number: 3,
-//       title: 'Advanced Features',
-//       dueDate: 'Jul 1, 2026',
-//       amount: '$8,820',
-//       status: 'Pending',
-//       statusColor: 'gray',
-//     },
-//     {
-//       id: 4,
-//       number: 4,
-//       title: 'Testing & Launch',
-//       dueDate: 'Jul 25, 2026',
-//       amount: '$3,780',
-//       status: 'Pending',
-//       statusColor: 'gray',
-//     },
-//   ];
-
-//   const stats = [
-//     { label: 'Active Projects', value: '1', icon: CheckCircle, color: 'blue' },
-//     { label: 'In Escrow', value: '$42,000', icon: DollarSign, color: 'green' },
-//     { label: 'Messages', value: '3', icon: MessageSquare, color: 'purple' },
-//     { label: 'Trust Score', value: '75/100', icon: Star, color: 'yellow' },
-//   ];
-
-//   const upcomingDeadlines = [
-//     { title: 'Review wireframes', date: 'Feb 14', highlight: true },
-//     { title: 'Weekly check-in call', date: 'Feb 16', highlight: false },
-//     { title: 'Milestone 1 delivery', date: 'Mar 11', highlight: false },
-//   ];
-
-//   const insights = [
-//     { text: 'Your project is performing excellently', status: 'success' },
-//     { text: 'TechVision Agency is highly responsive', status: 'success' },
-//     { text: 'Timeline buffer exists for flexibility', status: 'success' },
-//     { text: 'Consider scheduling next milestone review early', status: 'warning' },
-//   ];
-
-//   const quickActions = [
-//     { title: 'Review Deliverables', icon: CheckCircle },
-//     { title: 'Message Team', icon: MessageSquare },
-//     { title: 'View Contract', icon: FileText },
-//     { title: 'Get Help', icon: AlertCircle },
-//   ];
-
-//   const getColorClasses = (color) => {
-//     const colors = {
-//       blue: 'bg-blue-100 text-blue-600',
-//       green: 'bg-green-100 text-green-600',
-//       purple: 'bg-purple-100 text-purple-600',
-//       yellow: 'bg-yellow-100 text-yellow-600',
-//     };
-//     return colors[color];
-//   };
-
-//   const getStatusBadgeColor = (status) => {
-//     switch (status) {
-//       case 'In Review':
-//         return 'bg-yellow-100 text-yellow-700';
-//       case 'Pending':
-//         return 'bg-gray-100 text-gray-600';
-//       default:
-//         return 'bg-gray-100 text-gray-600';
-//     }
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-gray-50">
-//       {/* Header */}
-//       <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-//         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-//           <div className="flex items-center justify-between">
-//             <h1 className="text-2xl sm:text-3xl font-bold text-blue-600">ArcLancer</h1>
-//             <div className="flex items-center gap-2 sm:gap-4">
-//               <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition hidden sm:block">
-//                 <Bell size={20} />
-//                 <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-//               </button>
-//               <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition hidden sm:block">
-//                 <Settings size={20} />
-//               </button>
-
-//               {/* Avatar with Dropdown */}
-//               <div className="relative">
-//                 <button
-//                   onClick={() => setDropdownOpen(!dropdownOpen)}
-//                   className="w-10 h-10 rounded-full bg-blue-900 text-white font-bold text-base flex items-center justify-center hover:bg-blue-800 transition"
-//                 >
-//                   A
-//                 </button>
-
-//                 {dropdownOpen && (
-//                   <>
-//                     {/* Backdrop */}
-//                     <div
-//                       className="fixed inset-0 z-40"
-//                       onClick={() => setDropdownOpen(false)}
-//                     />
-//                     {/* Dropdown */}
-//                     <div className="absolute right-0 top-12 z-50 w-56 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-//                       {/* User Info Header */}
-//                       <div
-//                         style={{
-//                           background: 'linear-gradient(135deg, #1e3a6e, #2563eb)',
-//                         }}
-//                         className="px-4 py-3"
-//                       >
-//                         <p className="text-white font-semibold text-sm">John Smith</p>
-//                         <p className="text-blue-200 text-xs mt-0.5">john@weblance.com</p>
-//                       </div>
-//                       {/* Menu Items */}
-//                       <div className="py-1">
-//                         <button
-//                           onClick={() => setDropdownOpen(false)}
-//                           className="w-full flex items-center gap-3 px-4 py-2.5 text-gray-700 hover:bg-gray-50 text-sm transition"
-//                         >
-//                           <Settings size={16} className="text-gray-400" />
-//                           Settings
-//                         </button>
-//                         <button
-//                           onClick={() => setDropdownOpen(false)}
-//                           className="w-full flex items-center gap-3 px-4 py-2.5 text-red-500 hover:bg-gray-50 text-sm transition"
-//                         >
-//                           <svg
-//                             width="16"
-//                             height="16"
-//                             fill="none"
-//                             stroke="currentColor"
-//                             strokeWidth="2"
-//                             viewBox="0 0 24 24"
-//                           >
-//                             <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
-//                           </svg>
-//                           Logout
-//                         </button>
-//                       </div>
-//                     </div>
-//                   </>
-//                 )}
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </header>
-
-//       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-//         {/* Stats Grid */}
-//         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-//           {stats.map((stat, idx) => {
-//             const Icon = stat.icon;
-//             return (
-//               <div key={idx} className="bg-white rounded-lg p-5 sm:p-6 shadow-sm border border-gray-200">
-//                 <div className="flex items-start justify-between">
-//                   <div>
-//                     <p className="text-gray-600 text-sm font-medium">{stat.label}</p>
-//                     <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">{stat.value}</p>
-//                   </div>
-//                   <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${getColorClasses(stat.color)}`}>
-//                     <Icon size={24} />
-//                   </div>
-//                 </div>
-//               </div>
-//             );
-//           })}
-//         </div>
-
-//         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-//           {/* Main Content */}
-//           <div className="lg:col-span-2 space-y-6">
-//             {projects.map((project) => (
-//               <div key={project.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-//                 {/* Project Header */}
-//                 <div className="p-5 sm:p-6 border-b border-gray-200">
-//                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
-//                     <div className="flex-1">
-//                       <div className="flex items-center gap-3 mb-2 flex-wrap">
-//                         <h2 className="text-lg sm:text-xl font-bold text-gray-900">{project.title}</h2>
-//                         <span className="inline-block bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full">
-//                           {project.status}
-//                         </span>
-//                       </div>
-//                       <p className="text-gray-600 text-sm">{project.client} • ⭐ {project.rating}</p>
-//                     </div>
-//                     <div className="flex items-center gap-2 flex-shrink-0">
-//                       <button className="flex items-center gap-2 px-3 py-2 text-gray-700 font-medium text-sm border border-gray-300 hover:bg-gray-50 rounded transition">
-//                         <MessageSquare size={16} /> Message
-//                       </button>
-//                       <button className="flex items-center gap-2 px-3 py-2 text-gray-700 font-medium text-sm border border-gray-300 hover:bg-gray-50 rounded transition">
-//                         <FileText size={16} /> Files
-//                       </button>
-//                       <button className="flex items-center gap-2 px-3 py-2 text-gray-700 font-medium text-sm border border-gray-300 hover:bg-gray-50 rounded transition">
-//                         <Phone size={16} /> Call
-//                       </button>
-//                     </div>
-//                   </div>
-
-//                   <div className="mb-4">
-//                     <p className="text-gray-900 font-semibold text-sm mb-2">
-//                       Current: Milestone 1 — {project.milestone}
-//                     </p>
-//                     <div className="w-full bg-gray-200 rounded-full h-2.5">
-//                       <div
-//                         className="bg-blue-500 h-2.5 rounded-full transition-all duration-300"
-//                         style={{ width: `${project.progress}%` }}
-//                       ></div>
-//                     </div>
-//                     <p className="text-blue-600 text-xs font-medium mt-2">
-//                       ✓ {project.daysAhead} days ahead of schedule
-//                     </p>
-//                   </div>
-
-//                   <div className="flex justify-between items-center">
-//                     <p className="text-gray-600 text-sm">
-//                       ${project.spent.toLocaleString()} of ${project.budget.toLocaleString()} in progress
-//                     </p>
-//                     <span className="text-gray-900 font-semibold text-sm">{project.progress}% overall</span>
-//                   </div>
-//                 </div>
-
-//                 {/* Tabs */}
-//                 <div className="px-5 sm:px-6 border-b border-gray-200 flex gap-8 overflow-x-auto">
-//                   {['Overview', 'Milestones', 'Files', 'Payments', 'AI Builder', 'Talent'].map((tab) => (
-//                     <button
-//                       key={tab}
-//                       onClick={() => setActiveTab(tab.toLowerCase())}
-//                       className={`py-4 font-medium text-sm border-b-2 transition whitespace-nowrap ${
-//                         activeTab === tab.toLowerCase()
-//                           ? 'border-blue-600 text-blue-600'
-//                           : 'border-transparent text-gray-600 hover:text-gray-900'
-//                       }`}
-//                     >
-//                       {tab}
-//                     </button>
-//                   ))}
-//                 </div>
-
-//                 {/* Tab Content */}
-//                 {activeTab === 'overview' && (
-//                   <div className="p-5 sm:p-6">
-//                     <p className="text-gray-600 text-sm">Project overview content</p>
-//                   </div>
-//                 )}
-
-//                 {activeTab === 'milestones' && (
-//                   <div className="p-5 sm:p-6 space-y-4">
-//                     {milestones.map((milestone, idx) => (
-//                       <div key={milestone.id} className="border border-gray-200 rounded-lg overflow-hidden">
-//                         <button
-//                           onClick={() => setExpandedMilestone(expandedMilestone === idx ? -1 : idx)}
-//                           className="w-full p-4 bg-gray-50 hover:bg-gray-100 transition flex items-center justify-between"
-//                         >
-//                           <div className="flex items-center gap-4 flex-1 text-left">
-//                             <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-semibold flex items-center justify-center text-sm">
-//                               {milestone.number}
-//                             </div>
-//                             <div className="flex-1">
-//                               <p className="font-semibold text-gray-900">{milestone.title}</p>
-//                               <p className="text-sm text-gray-600">Due: {milestone.dueDate}</p>
-//                             </div>
-//                           </div>
-//                           <div className="flex items-center gap-4">
-//                             <div className="text-right">
-//                               <p className="font-semibold text-gray-900">{milestone.amount}</p>
-//                               <span className={`text-xs font-semibold px-2 py-1 rounded ${getStatusBadgeColor(milestone.status)}`}>
-//                                 {milestone.status}
-//                               </span>
-//                             </div>
-//                             <ChevronDown
-//                               size={20}
-//                               className={`text-gray-400 transition ${expandedMilestone === idx ? 'rotate-180' : ''}`}
-//                             />
-//                           </div>
-//                         </button>
-//                         {expandedMilestone === idx && milestone.deliverable && (
-//                           <div className="p-4 bg-yellow-50 border-t border-gray-200">
-//                             <p className="text-sm text-gray-700 mb-4">{milestone.deliverable}</p>
-//                             <div className="flex gap-3">
-//                               <button className="px-3 py-1.5 bg-blue-600 text-white font-medium text-sm rounded hover:bg-blue-700 transition">
-//                                 Review Now
-//                               </button>
-//                               <button className="px-3 py-1.5 bg-white border border-gray-300 text-gray-700 font-medium text-sm rounded hover:bg-gray-50 transition">
-//                                 View Files
-//                               </button>
-//                             </div>
-//                           </div>
-//                         )}
-//                       </div>
-//                     ))}
-//                   </div>
-//                 )}
-
-//                 {activeTab === 'files' && (
-//                   <div className="p-5 sm:p-6 space-y-4">
-//                     {[
-//                       { name: 'Wireframes_v1.pdf', size: '2.4 MB', time: '2 hours ago', status: 'In Review', statusColor: 'bg-yellow-100 text-yellow-700' },
-//                       { name: 'Requirements_Doc.docx', size: '1.1 MB', time: '3 days ago', status: 'Approved', statusColor: 'bg-green-100 text-green-700' },
-//                       { name: 'Design_System.fig', size: '8.2 MB', time: '1 hour ago', status: 'New', statusColor: 'bg-blue-100 text-blue-700' },
-//                     ].map((file, idx) => (
-//                       <div key={idx} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
-//                         <div className="flex items-center gap-4 flex-1">
-//                           <FileText className="text-gray-400 flex-shrink-0" size={24} />
-//                           <div className="flex-1 min-w-0">
-//                             <p className="font-medium text-gray-900">{file.name}</p>
-//                             <p className="text-sm text-gray-600">{file.size} • {file.time}</p>
-//                           </div>
-//                         </div>
-//                         <div className="flex items-center gap-4">
-//                           <span className={`text-xs font-semibold px-3 py-1 rounded ${file.statusColor}`}>{file.status}</span>
-//                           <button className="px-4 py-2 text-blue-600 font-medium text-sm hover:bg-blue-50 rounded-lg transition">Download</button>
-//                         </div>
-//                       </div>
-//                     ))}
-//                   </div>
-//                 )}
-
-//                 {activeTab === 'payments' && (
-//                   <div className="p-5 sm:p-6 space-y-6">
-//                     <div>
-//                       <h3 className="text-lg font-bold text-gray-900 mb-4">Escrow Overview</h3>
-//                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-//                         <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-//                           <p className="text-gray-600 text-sm font-medium mb-2">Funded</p>
-//                           <p className="text-2xl font-bold text-gray-900">$42,000</p>
-//                         </div>
-//                         <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-//                           <p className="text-gray-600 text-sm font-medium mb-2">Released</p>
-//                           <p className="text-2xl font-bold text-gray-900">$0</p>
-//                         </div>
-//                         <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-//                           <p className="text-green-700 text-sm font-medium mb-2">Remaining</p>
-//                           <p className="text-2xl font-bold text-green-700">$42,000</p>
-//                         </div>
-//                       </div>
-//                     </div>
-//                     <div className="space-y-3">
-//                       {[
-//                         { title: 'Design & Planning', amount: '$8,400', status: 'In Review', color: 'yellow' },
-//                         { title: 'Core Development', amount: '$21,000', status: 'Pending', color: 'gray' },
-//                         { title: 'Advanced Features', amount: '$8,820', status: 'Pending', color: 'gray' },
-//                         { title: 'Testing & Launch', amount: '$3,780', status: 'Pending', color: 'gray' },
-//                       ].map((milestone, idx) => (
-//                         <div key={idx} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
-//                           <div className="flex-1">
-//                             <p className="font-medium text-gray-900">M{idx + 1} — {milestone.title}</p>
-//                           </div>
-//                           <div className="flex items-center gap-4">
-//                             <span className="font-semibold text-gray-900">{milestone.amount}</span>
-//                             <span className={`text-xs font-semibold px-3 py-1 rounded ${milestone.color === 'yellow' ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-600'}`}>
-//                               {milestone.status}
-//                             </span>
-//                           </div>
-//                         </div>
-//                       ))}
-//                     </div>
-//                   </div>
-//                 )}
-
-//                 {activeTab === 'ai builder' && !showAIBreakdown && (
-//                   <div className="p-5 sm:p-6 space-y-6">
-//                     <div>
-//                       <div className="flex items-center gap-2 mb-2">
-//                         <span className="text-2xl">✨</span>
-//                         <h3 className="text-xl font-bold text-gray-900">What do you want to build?</h3>
-//                       </div>
-//                       <p className="text-gray-600 text-sm mb-4">Describe your project in plain English</p>
-//                       <textarea
-//                         className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-//                         rows="5"
-//                         placeholder="e.g., I want a food delivery app..."
-//                         defaultValue="e.g., I want a food delivery app for my city. Users should be able to order from local restaurants, track their delivery in real time, and pay securely..."
-//                       ></textarea>
-//                       <div className="flex gap-3 mt-4">
-//                         <button className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition text-sm">
-//                           🎤 Speak instead
-//                         </button>
-//                         <button className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition text-sm">
-//                           📎 Upload brief/document
-//                         </button>
-//                       </div>
-//                     </div>
-//                     <div className="bg-gray-50 border border-gray-200 rounded-lg p-5">
-//                       <p className="font-semibold text-gray-900 mb-3">Examples to inspire you:</p>
-//                       <div className="space-y-2 mb-4">
-//                         <p className="text-blue-600 hover:underline cursor-pointer text-sm">"E-commerce site for handmade jewelry"</p>
-//                         <p className="text-blue-600 hover:underline cursor-pointer text-sm">"HR management system for my 50-person company"</p>
-//                         <p className="text-blue-600 hover:underline cursor-pointer text-sm">"AI chatbot for my customer support team"</p>
-//                       </div>
-//                       <div className="space-y-2 mb-4">
-//                         <div className="flex items-center gap-2 text-sm text-gray-600">
-//                           <CheckCircle size={16} className="text-green-500" />
-//                           <span>No technical knowledge required</span>
-//                         </div>
-//                         <div className="flex items-center gap-2 text-sm text-gray-600">
-//                           <CheckCircle size={16} className="text-green-500" />
-//                           <span>AI will translate your idea</span>
-//                         </div>
-//                       </div>
-//                       <button
-//                         onClick={() => setShowAIBreakdown(true)}
-//                         className="flex items-center gap-2 px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition"
-//                       >
-//                         <ArrowRight size={18} />
-//                         Analyze My Project
-//                       </button>
-//                     </div>
-//                   </div>
-//                 )}
-
-//                 {activeTab === 'ai builder' && showAIBreakdown && (
-//                   <div className="p-5 sm:p-6 space-y-6">
-//                     <div className="flex items-center justify-between">
-//                       <h2 className="text-2xl font-bold text-gray-900">AI Project Breakdown</h2>
-//                       <button onClick={() => setShowAIBreakdown(false)} className="text-blue-600 font-medium hover:text-blue-700">
-//                         ← Edit Description
-//                       </button>
-//                     </div>
-
-//                     <div className="border-b border-gray-200 flex gap-8 overflow-x-auto">
-//                       {['Overview', 'Scope & Budget', 'Milestones', 'Talent Match', 'Validation'].map((tab) => (
-//                         <button
-//                           key={tab}
-//                           onClick={() => setAIOverviewTab(tab.toLowerCase())}
-//                           className={`py-4 font-medium text-sm border-b-2 transition whitespace-nowrap ${
-//                             aiOverviewTab === tab.toLowerCase()
-//                               ? 'border-blue-600 text-blue-600'
-//                               : 'border-transparent text-gray-600 hover:text-gray-900'
-//                           }`}
-//                         >
-//                           {tab}
-//                           {tab === 'Validation' && <span className="ml-2 text-yellow-500">⚠️</span>}
-//                         </button>
-//                       ))}
-//                     </div>
-
-//                     {aiOverviewTab === 'overview' && (
-//                       <div className="space-y-6">
-//                         <div>
-//                           <div className="flex items-center justify-between mb-3">
-//                             <h3 className="text-base font-bold text-gray-900">AI-Generated Project Brief</h3>
-//                             <span className="bg-purple-100 text-purple-700 text-xs font-semibold px-2 py-0.5 rounded">AI GENERATED</span>
-//                           </div>
-//                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-//                             {[
-//                               { label: 'Project Name:', value: 'Food Delivery Platform' },
-//                               { label: 'Type:', value: 'Mobile App + Web Admin' },
-//                               { label: 'Industry:', value: 'Food & Restaurant Tech' },
-//                               { label: 'Complexity:', value: 'Medium-High ●●●●○' },
-//                             ].map((item, idx) => (
-//                               <div key={idx} className="bg-gray-50 p-3 rounded">
-//                                 <p className="text-gray-600 text-xs font-medium mb-1">{item.label}</p>
-//                                 <p className="text-gray-900 font-semibold text-sm">{item.value}</p>
-//                               </div>
-//                             ))}
-//                           </div>
-//                         </div>
-//                         <div>
-//                           <h3 className="text-base font-bold text-gray-900 mb-3">Core Features (must-have)</h3>
-//                           <div className="space-y-2">
-//                             {[
-//                               'User registration & login (social + email)',
-//                               'Restaurant browse & search with filters',
-//                               'Menu display with photos & pricing',
-//                               'Shopping cart & order placement',
-//                               'Real-time order tracking (GPS)',
-//                               'Payment gateway integration',
-//                               'Push notifications (order updates)',
-//                               'Restaurant admin panel (order management)',
-//                             ].map((feature, idx) => (
-//                               <label key={idx} className="flex items-center gap-2 p-2 hover:bg-gray-50 rounded cursor-pointer">
-//                                 <input type="checkbox" defaultChecked className="w-4 h-4 accent-blue-600" />
-//                                 <span className="text-gray-900 text-sm">{feature}</span>
-//                               </label>
-//                             ))}
-//                           </div>
-//                         </div>
-//                         <div>
-//                           <h3 className="text-base font-bold text-gray-900 mb-3">Optional Features (nice-to-have)</h3>
-//                           <div className="space-y-2">
-//                             {[
-//                               'In-app chat (customer ↔ restaurant)',
-//                               'Ratings & reviews system',
-//                               'Promo codes & loyalty rewards',
-//                               'Analytics dashboard for restaurants',
-//                             ].map((feature, idx) => (
-//                               <label key={idx} className="flex items-center gap-2 p-2 hover:bg-gray-50 rounded cursor-pointer">
-//                                 <input type="checkbox" className="w-4 h-4 accent-blue-600" />
-//                                 <span className="text-gray-700 text-sm">{feature}</span>
-//                               </label>
-//                             ))}
-//                           </div>
-//                         </div>
-//                         <div className="flex gap-3 pt-4 border-t border-gray-200">
-//                           <button className="flex items-center gap-2 px-3 py-1.5 text-gray-600 border border-gray-300 rounded text-sm hover:bg-gray-50 transition">
-//                             <Plus size={16} /> Add Feature
-//                           </button>
-//                           <button className="flex items-center gap-2 px-3 py-1.5 text-gray-600 border border-gray-300 rounded text-sm hover:bg-gray-50 transition">
-//                             <FileText size={16} /> Edit Features
-//                           </button>
-//                         </div>
-//                       </div>
-//                     )}
-
-//                     {aiOverviewTab === 'scope & budget' && (
-//                       <div className="space-y-6">
-//                         <div>
-//                           <div className="flex items-center gap-2 mb-4">
-//                             <Calendar className="text-gray-600" size={20} />
-//                             <h3 className="text-lg font-bold text-gray-900">Timeline Estimate</h3>
-//                           </div>
-//                           <div className="space-y-3">
-//                             {[
-//                               { label: 'Discovery & Planning', value: '2–3 weeks' },
-//                               { label: 'UI/UX Design', value: '4–6 weeks' },
-//                               { label: 'Development', value: '12–16 weeks' },
-//                               { label: 'Testing & Launch', value: '2–4 weeks' },
-//                             ].map((item, idx) => (
-//                               <div key={idx} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-//                                 <p className="text-gray-700">{item.label}</p>
-//                                 <p className="text-gray-900 font-semibold">{item.value}</p>
-//                               </div>
-//                             ))}
-//                             <div className="flex items-center justify-between p-4 bg-white rounded-lg border-2 border-blue-200">
-//                               <p className="font-bold text-gray-900">Total</p>
-//                               <p className="text-blue-600 font-bold">20–29 weeks (5–7 months)</p>
-//                             </div>
-//                           </div>
-//                         </div>
-//                         <div>
-//                           <div className="flex items-center gap-2 mb-4">
-//                             <DollarSign className="text-gray-600" size={20} />
-//                             <h3 className="text-lg font-bold text-gray-900">Budget Range</h3>
-//                           </div>
-//                           <div className="space-y-3">
-//                             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-//                               <p className="text-gray-700 font-medium">Conservative</p>
-//                               <p className="text-gray-900 font-semibold">$18,000 – $28,000</p>
-//                             </div>
-//                             <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg border-2 border-blue-300">
-//                               <p className="text-gray-900 font-medium">Realistic</p>
-//                               <p className="text-blue-600 font-bold">$28,000 – $45,000</p>
-//                             </div>
-//                             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-//                               <p className="text-gray-700 font-medium">Comfortable</p>
-//                               <p className="text-gray-900 font-semibold">$45,000 – $65,000</p>
-//                             </div>
-//                           </div>
-//                           <div className="mt-6 p-4 bg-gray-50 rounded-lg border border-gray-200">
-//                             <p className="font-semibold text-gray-900 mb-3">Breakdown:</p>
-//                             <div className="space-y-2">
-//                               {[
-//                                 { label: 'Design (20%)', value: '$5,600 – $13,000' },
-//                                 { label: 'Development (60%)', value: '$16,800 – $39,000' },
-//                                 { label: 'Testing/QA (10%)', value: '$2,800 – $6,500' },
-//                                 { label: 'Project Management', value: '$2,800 – $6,500' },
-//                               ].map((item, idx) => (
-//                                 <div key={idx} className="flex items-center justify-between">
-//                                   <p className="text-gray-700">{item.label}</p>
-//                                   <p className="text-gray-900 font-semibold">{item.value}</p>
-//                                 </div>
-//                               ))}
-//                             </div>
-//                           </div>
-//                           <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-//                             <p className="text-gray-700">
-//                               <span className="font-semibold">Complexity & Risk Score:</span>
-//                               <span className="font-bold text-gray-900 ml-2">Medium (6.5/10)</span>
-//                             </p>
-//                           </div>
-//                         </div>
-//                       </div>
-//                     )}
-
-//                     {aiOverviewTab === 'milestones' && (
-//                       <div className="space-y-6">
-//                         <h3 className="text-xl font-bold text-gray-900">AI-Generated Milestone Plan</h3>
-//                         <div className="space-y-6">
-//                           {[
-//                             { number: 1, title: 'Discovery & Design', amount: '$8,400', percent: '20%', weeks: '3 weeks', deliverables: ['Complete wireframes', 'High-fidelity UI designs', 'Technical architecture document', 'API design specification'] },
-//                             { number: 2, title: 'Core Development', amount: '$21,000', percent: '50%', weeks: '12 weeks', deliverables: ['User app (iOS + Android)', 'Restaurant admin panel (web)', 'Payment integration', 'Core backend APIs'] },
-//                             { number: 3, title: 'Advanced Features', amount: '$8,820', percent: '21%', weeks: '6 weeks', deliverables: ['Real-time tracking', 'Push notifications', 'Performance optimization'] },
-//                             { number: 4, title: 'Testing & Launch', amount: '$3,780', percent: '9%', weeks: '2 weeks', deliverables: ['Full QA testing report', 'App store submission', 'Production deployment'] },
-//                           ].map((milestone) => (
-//                             <div key={milestone.number} className="border-l-4 border-blue-500 pl-4">
-//                               <div className="flex items-start justify-between mb-3">
-//                                 <div className="flex items-center gap-2 mb-1">
-//                                   <span className="bg-blue-100 text-blue-600 px-2 py-1 rounded text-sm font-bold">M{milestone.number}</span>
-//                                   <h4 className="text-lg font-bold text-gray-900">{milestone.title}</h4>
-//                                 </div>
-//                                 <div className="text-right">
-//                                   <p className="font-bold text-gray-900">{milestone.amount} <span className="text-gray-600 font-normal">({milestone.percent})</span></p>
-//                                   <p className="text-sm text-gray-600">{milestone.weeks}</p>
-//                                 </div>
-//                               </div>
-//                               <div className="mt-3">
-//                                 <p className="text-gray-700 font-medium text-sm mb-2">Deliverables:</p>
-//                                 <ul className="space-y-1">
-//                                   {milestone.deliverables.map((item, idx) => (
-//                                     <li key={idx} className="flex items-center gap-2 text-gray-700 text-sm">
-//                                       <CheckCircle size={16} className="text-teal-500 flex-shrink-0" />
-//                                       {item}
-//                                     </li>
-//                                   ))}
-//                                 </ul>
-//                               </div>
-//                             </div>
-//                           ))}
-//                         </div>
-//                         <div className="flex gap-3 pt-6 border-t border-gray-200">
-//                           <button className="flex items-center gap-2 px-3 py-1.5 text-gray-600 border border-gray-300 rounded text-sm hover:bg-gray-50 transition">
-//                             <FileText size={16} /> Edit Milestones
-//                           </button>
-//                           <button className="flex items-center gap-2 px-3 py-1.5 text-gray-600 border border-gray-300 rounded text-sm hover:bg-gray-50 transition">
-//                             <Plus size={16} /> Add Milestone
-//                           </button>
-//                         </div>
-//                       </div>
-//                     )}
-
-//                     {aiOverviewTab === 'talent match' && (
-//                       <div className="space-y-6">
-//                         <div className="flex items-center gap-2 mb-4">
-//                           <span className="text-xl">👥</span>
-//                           <h3 className="text-lg font-bold text-gray-900">Best Talent Type for Your Project</h3>
-//                         </div>
-//                         <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
-//                           <div className="flex items-start gap-3 mb-3">
-//                             <CheckCircle className="text-green-600 flex-shrink-0" size={20} />
-//                             <h4 className="font-bold text-gray-900">Recommended: Mobile App Development Agency</h4>
-//                           </div>
-//                           <ul className="space-y-2 ml-8">
-//                             {['Multi-platform (iOS + Android) needed', 'Design services required', 'Budget supports agency pricing', 'Timeline matches agency capacity'].map((item, idx) => (
-//                               <li key={idx} className="text-gray-700 text-sm">{item}</li>
-//                             ))}
-//                           </ul>
-//                         </div>
-//                         <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
-//                           <h4 className="font-bold text-gray-900 mb-2">Alternative: Senior Freelancer + Designer</h4>
-//                           <p className="text-gray-700 text-sm">Estimated savings: 25-30% • Risk: Higher coordination overhead</p>
-//                         </div>
-//                         <div className="flex gap-3 flex-wrap">
-//                           <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition text-sm">
-//                             🔍 Find Agencies
-//                           </button>
-//                           <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition text-sm">
-//                             👤 Find Freelancers
-//                           </button>
-//                         </div>
-//                       </div>
-//                     )}
-
-//                     {aiOverviewTab === 'validation' && (
-//                       <div className="space-y-6">
-//                         <div className="flex items-center justify-between mb-4">
-//                           <div className="flex items-center gap-2">
-//                             <span className="text-xl">⚠️</span>
-//                             <h3 className="text-lg font-bold text-gray-900">AI Validation Results</h3>
-//                           </div>
-//                           <span className="bg-yellow-100 text-yellow-700 text-xs font-bold px-3 py-1 rounded">MEDIUM RISK ●●●○○</span>
-//                         </div>
-//                         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-//                           <div className="flex items-start gap-3 mb-2">
-//                             <AlertCircle className="text-yellow-600 flex-shrink-0 mt-0.5" size={20} />
-//                             <h4 className="font-bold text-gray-900">Timeline may be aggressive</h4>
-//                           </div>
-//                           <p className="text-gray-700 text-sm mb-3 ml-8">Your target of 3 months is 40% shorter than typical. This increases cost and risk.</p>
-//                           <button className="ml-8 flex items-center gap-2 text-blue-600 font-medium text-sm hover:text-blue-700">
-//                             <ArrowRight size={16} /> Extend to 5 months
-//                           </button>
-//                         </div>
-//                         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-4">
-//                           <div className="flex items-start gap-3 mb-2">
-//                             <AlertCircle className="text-yellow-600 flex-shrink-0 mt-0.5" size={20} />
-//                             <h4 className="font-bold text-gray-900">Budget slightly below market</h4>
-//                           </div>
-//                           <p className="text-gray-700 text-sm mb-3 ml-8">Your budget of $20,000 is 30% below the realistic range for this scope.</p>
-//                           <button className="ml-8 flex items-center gap-2 text-blue-600 font-medium text-sm hover:text-blue-700">
-//                             <ArrowRight size={16} /> Increase to $28,000+
-//                           </button>
-//                         </div>
-//                         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-//                           <div className="flex items-start gap-3">
-//                             <CheckCircle className="text-blue-600 flex-shrink-0 mt-0.5" size={20} />
-//                             <div>
-//                               <h4 className="font-bold text-gray-900">First-time client — enhanced monitoring</h4>
-//                               <p className="text-gray-700 text-sm">Your first project will have admin oversight at every milestone.</p>
-//                             </div>
-//                           </div>
-//                         </div>
-//                         <div className="flex gap-3 flex-wrap">
-//                           <button className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition text-sm">Apply Suggestions</button>
-//                           <button className="px-4 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition text-sm">Continue Anyway</button>
-//                           <button className="px-4 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition text-sm">Revise Project</button>
-//                         </div>
-//                       </div>
-//                     )}
-//                   </div>
-//                 )}
-
-//                 {activeTab === 'talent' && (
-//                   <div className="p-5 sm:p-6 space-y-4">
-//                     <div className="mb-4">
-//                       <h3 className="text-lg font-bold text-gray-900 mb-1">AI Found 4 Matches</h3>
-//                       <p className="text-gray-600 text-sm">For your Food Delivery Platform project</p>
-//                     </div>
-//                     {[
-//                       { number: 1, name: 'TechVision Agency', type: 'Agency', location: 'Mumbai, India', match: '98% Match', rating: '4.9 (47 projects)', available: 'Available Now', budget: '$25K-$60K', similar: 8, disputes: 0, risk: 'LOW', icon: '🏆' },
-//                       { number: 2, name: 'John Smith', type: 'Freelancer', location: 'Bangalore', match: '91% Match', rating: '4.8 (23 projects)', available: 'Available in 1 week', budget: '$15K-$35K', similar: 5, disputes: 0, risk: 'LOW', icon: '👤' },
-//                       { number: 3, name: 'CodeCraft Agency', type: 'Agency', location: 'Delhi, India', match: '89% Match', rating: '4.7 (31 projects)', available: 'Available in 1 week', budget: '$20K-$50K', similar: 5, disputes: 1, risk: 'MEDIUM', icon: '👤' },
-//                       { number: 4, name: 'Maria Chen', type: 'Freelancer', location: 'Singapore', match: '85% Match', rating: '4.6 (18 projects)', available: 'Available in 2 weeks', budget: '$12K-$28K', similar: 3, disputes: 0, risk: 'LOW', icon: 'M' },
-//                     ].map((talent) => (
-//                       <div key={talent.number} className="bg-white border border-gray-200 rounded-lg p-4">
-//                         <div className="flex items-start justify-between mb-3">
-//                           <div className="flex items-start gap-3 flex-1">
-//                             <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">
-//                               {talent.icon}
-//                             </div>
-//                             <div className="flex-1 min-w-0">
-//                               <div className="flex items-center gap-2 flex-wrap mb-1">
-//                                 <h4 className="font-bold text-gray-900">#{talent.number} — {talent.name}</h4>
-//                                 <span className="text-blue-600 text-sm font-medium">{talent.match}</span>
-//                               </div>
-//                               <p className="text-gray-600 text-sm">{talent.type} • {talent.location}</p>
-//                               <div className="flex items-center gap-1 mt-1">
-//                                 <span className="text-yellow-500">⭐</span>
-//                                 <span className="text-gray-600 text-sm">{talent.rating} • {talent.available}</span>
-//                               </div>
-//                             </div>
-//                           </div>
-//                           <span className={`text-xs font-bold px-2 py-1 rounded flex-shrink-0 ${talent.risk === 'LOW' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-//                             {talent.risk}
-//                           </span>
-//                         </div>
-//                         <div className="mb-3 text-sm text-gray-600">
-//                           <span>Budget: {talent.budget}</span>
-//                           <span className="mx-4">Similar projects: {talent.similar}</span>
-//                           <span>Disputes: {talent.disputes}</span>
-//                         </div>
-//                         <div className="flex gap-2">
-//                           <button className="flex items-center gap-2 px-3 py-1.5 text-gray-600 border border-gray-300 rounded text-sm hover:bg-gray-50 transition">👁️ View Profile</button>
-//                           <button className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white font-medium rounded text-sm hover:bg-blue-700 transition">📧 Invite</button>
-//                           <button className="flex items-center gap-2 px-3 py-1.5 text-gray-600 border border-gray-300 rounded text-sm hover:bg-gray-50 transition">⚖️ Compare</button>
-//                         </div>
-//                       </div>
-//                     ))}
-//                   </div>
-//                 )}
-//               </div>
-//             ))}
-
-//             {activeTab === 'overview' && (
-//               <>
-//                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-6">
-//                   <h3 className="text-lg font-bold text-gray-900 mb-4">Recent Activity</h3>
-//                   <div className="space-y-4">
-//                     {[
-//                       { icon: FileText, text: 'Wireframes uploaded for review', time: '2 hours ago' },
-//                       { icon: Phone, text: 'Kickoff meeting completed', time: 'Yesterday' },
-//                       { icon: CheckCircle, text: 'Project started', time: '2 days ago' },
-//                       { icon: DollarSign, text: 'Escrow funded: $44,100', time: '3 days ago' },
-//                     ].map((item, idx) => {
-//                       const Icon = item.icon;
-//                       return (
-//                         <div key={idx} className="flex gap-3">
-//                           <Icon className="text-gray-400 flex-shrink-0" size={20} />
-//                           <div>
-//                             <p className="font-medium text-gray-900 text-sm">{item.text}</p>
-//                             <p className="text-gray-500 text-xs">{item.time}</p>
-//                           </div>
-//                         </div>
-//                       );
-//                     })}
-//                   </div>
-//                 </div>
-
-//                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-6">
-//                   <h3 className="text-lg font-bold text-gray-900 mb-4">Upcoming Deadlines</h3>
-//                   <div className="space-y-3">
-//                     {upcomingDeadlines.map((deadline, idx) => (
-//                       <div key={idx} className={`flex items-center justify-between p-4 rounded-lg ${deadline.highlight ? 'bg-yellow-50 border border-yellow-200' : 'bg-gray-50 border border-gray-200'}`}>
-//                         <div className="flex items-center gap-3">
-//                           <Calendar className={deadline.highlight ? 'text-yellow-600' : 'text-gray-400'} size={20} />
-//                           <p className="font-medium text-gray-900 text-sm">{deadline.title}</p>
-//                         </div>
-//                         <span className="text-gray-600 text-sm font-medium">{deadline.date}</span>
-//                       </div>
-//                     ))}
-//                   </div>
-//                 </div>
-
-//                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-6">
-//                   <h3 className="text-lg font-bold text-gray-900 mb-6">Project Health</h3>
-//                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-//                     {[
-//                       { label: 'Timeline', value: 90, color: 'bg-blue-500', note: '3 days ahead', noteColor: 'text-blue-600' },
-//                       { label: 'Budget', value: 20, color: 'bg-green-500', note: 'On track', noteColor: 'text-green-600' },
-//                       { label: 'Communication', value: 90, color: 'bg-blue-500', note: 'Excellent', noteColor: 'text-blue-600' },
-//                       { label: 'Quality', value: 100, color: 'bg-blue-500', note: 'No revisions', noteColor: 'text-blue-600' },
-//                     ].map((item, idx) => (
-//                       <div key={idx}>
-//                         <div className="flex items-center justify-between mb-2">
-//                           <p className="text-gray-700 font-medium text-sm">{item.label}</p>
-//                           <span className="text-gray-900 font-bold text-sm">{item.value}%</span>
-//                         </div>
-//                         <div className="w-full bg-gray-200 rounded-full h-2">
-//                           <div className={`${item.color} h-2 rounded-full`} style={{ width: `${item.value}%` }}></div>
-//                         </div>
-//                         <p className={`${item.noteColor} text-xs font-medium mt-2`}>{item.note}</p>
-//                       </div>
-//                     ))}
-//                   </div>
-//                 </div>
-//               </>
-//             )}
-//           </div>
-
-//           {/* Sidebar */}
-//           <div className="space-y-6">
-//             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-6">
-//               <div className="flex items-center gap-4 mb-6">
-//                 <div className="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-//                   <span className="text-white font-bold text-lg">SJ</span>
-//                 </div>
-//                 <div className="min-w-0">
-//                   <h4 className="font-bold text-gray-900">Sarah Johnson</h4>
-//                   <p className="text-gray-600 text-sm">Project Success Manager</p>
-//                 </div>
-//               </div>
-//               <div className="space-y-3 mb-6 pb-6 border-b border-gray-200">
-//                 <div className="flex items-center gap-2">
-//                   <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-//                   <p className="text-gray-700 text-sm">Response time: &lt; 4 hours</p>
-//                 </div>
-//               </div>
-//               <button className="w-full py-3 px-4 bg-blue-50 text-blue-600 font-semibold rounded-lg hover:bg-blue-100 transition text-sm mb-3 flex items-center justify-center gap-2">
-//                 💬 Live Chat
-//               </button>
-//               <button className="w-full py-3 px-4 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition text-sm">
-//                 📞 Schedule Call
-//               </button>
-//             </div>
-
-//             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-6">
-//               <h3 className="text-lg font-bold text-gray-900 mb-4">Quick Actions</h3>
-//               <div className="space-y-0">
-//                 {quickActions.map((action, idx) => {
-//                   const Icon = action.icon;
-//                   return (
-//                     <button key={idx} className="w-full flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition group border-b border-gray-100 last:border-b-0">
-//                       <div className="flex items-center gap-3 min-w-0">
-//                         <Icon className="text-gray-400 group-hover:text-gray-600 flex-shrink-0" size={20} />
-//                         <span className="text-gray-700 font-medium text-sm">{action.title}</span>
-//                       </div>
-//                       <ArrowRight className="text-gray-300 group-hover:text-gray-400 flex-shrink-0" size={18} />
-//                     </button>
-//                   );
-//                 })}
-//               </div>
-//             </div>
-
-//             <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-6">
-//               <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">✨ Insights</h3>
-//               <div className="space-y-3">
-//                 {insights.map((insight, idx) => (
-//                   <div key={idx} className="flex items-start gap-3">
-//                     <div className="flex-shrink-0 mt-0.5">
-//                       {insight.status === 'success' ? (
-//                         <CheckCircle className="text-green-500" size={18} />
-//                       ) : (
-//                         <AlertCircle className="text-yellow-500" size={18} />
-//                       )}
-//                     </div>
-//                     <p className="text-gray-700 text-sm">{insight.text}</p>
-//                   </div>
-//                 ))}
-//               </div>
-//             </div>
-//           </div>
-//         </div>
-//       </main>
-//     </div>
-//   );
-// };
-
-// export default HireTalentDashboard;
-
-
-
-
-
-
-
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
-  MessageSquare,
-  FileText,
-  Phone,
-  Star,
-  DollarSign,
-  CheckCircle,
-  AlertCircle,
-  Calendar,
-  Bell,
-  Settings,
-  ArrowRight,
-  ChevronDown,
-  Plus,
+  FolderOpen, DollarSign, Star, Flag, Shield, MessageSquare,
+  TrendingUp, AlertCircle, CheckCircle, ChevronRight, Plus,
+  ArrowRight, Zap, Send, X, CreditCard, Bell,
+  LayoutDashboard, FileText, Briefcase, Users,
+  Settings, LogOut, ChevronsLeft, ChevronsRight,
 } from 'lucide-react';
-import SettingsPage from './SettingsPage.jsx';
 
-const HireTalentDashboard = () => {
-  const [projects] = useState([
-    {
-      id: 1,
-      title: 'Food Delivery Mobile App',
-      status: 'Active',
-      client: 'TechVision Agency',
-      rating: 4.9,
-      milestone: 'Design & Planning',
-      progress: 40,
-      daysAhead: 3,
-      budget: 42000,
-      spent: 8400,
-    },
-  ]);
+const ACCENT_GRAD = 'linear-gradient(135deg, #22c55e, #0ea5e9)';
+const NAVY = '#1e3a5f';
 
-  const [activeTab, setActiveTab] = useState('overview');
-  const [expandedMilestone, setExpandedMilestone] = useState(0);
-  const [showAIBreakdown, setShowAIBreakdown] = useState(false);
-  const [aiOverviewTab, setAIOverviewTab] = useState('overview');
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [showSettings, setShowSettings] = useState(false);
+const ACTIVE_PROJECTS = [
+  { id: 1, title: 'Food Delivery Mobile App', talent: 'TechVision Agency', status: 'On Track', progress: 40, milestone: 'M2/4', escrow: 42000, deadline: 'Jul 25', action: 'Review Milestone' },
+];
+const RECENT_TRANSACTIONS = [
+  { label: 'Escrow funded — Food Delivery App', amount: '-$42,000', time: '3 days ago',    type: 'escrow' },
+  { label: 'Refund received — AI Chatbot',      amount: '+$1,500',  time: '3 months ago', type: 'refund' },
+  { label: 'Final payment — E-Commerce',        amount: '-$18,500', time: '3 months ago', type: 'released' },
+];
+const NOTIFICATIONS_DATA = [
+  { text: 'Wireframes_v1.pdf ready for review', time: '2h ago', unread: true },
+  { text: 'New message from Arjun Mehta',        time: '3h ago', unread: true },
+  { text: 'Admin: Project 3 days ahead',         time: '4h ago', unread: true },
+  { text: 'Escrow funded successfully',          time: '3d ago', unread: false },
+];
+const INVITE_TALENTS = [
+  { id: 1, name: 'TechVision Agency', type: 'Agency',     match: '98%', rating: 4.9, initials: 'TV', risk: 'LOW' },
+  { id: 2, name: 'John Smith',        type: 'Freelancer', match: '91%', rating: 4.8, initials: 'JS', risk: 'LOW' },
+];
 
-  if (showSettings) {
-    return <SettingsPage onBack={() => setShowSettings(false)} />;
+const NAV_SECTIONS = [
+  {
+    label: 'OVERVIEW',
+    items: [
+      { icon: LayoutDashboard, label: 'Dashboard',     route: '/hire-talent',               active: true,  badge: null },
+    ],
+  },
+  {
+    label: 'WORK',
+    items: [
+      { icon: Briefcase,       label: 'Projects',      route: '/hire-talent/projects',      active: false, badge: null },
+      { icon: Users,           label: 'Talent',        route: '/hire-talent/talent',        active: false, badge: null },
+      { icon: FileText,        label: 'Contracts',     route: '/hire-talent/contracts',     active: false, badge: null },
+      { icon: Star,            label: 'Reviews',       route: '/hire-talent/reviews',       active: false, badge: null },
+    ],
+  },
+  {
+    label: 'FINANCE',
+    items: [
+      { icon: Shield,          label: 'Escrow',        route: '/hire-talent/payments',      active: false, badge: null },
+      { icon: CreditCard,      label: 'Payments',      route: '/hire-talent/payments',      active: false, badge: null },
+      { icon: Flag,            label: 'Disputes',      route: '/hire-talent/disputes',      active: false, badge: '1' },
+    ],
+  },
+  {
+    label: 'ACCOUNT',
+    items: [
+      { icon: Settings,        label: 'Settings',      route: '/hire-talent/settings',      active: false, badge: '!' },
+      { icon: Bell,            label: 'Notifications', route: '/hire-talent/notifications', active: false, badge: '3' },
+    ],
+  },
+];
+
+const styles = `
+  *, *::before, *::after { box-sizing: border-box; }
+  .htd-root {
+    display: flex; height: 100vh; overflow: hidden;
+    background: #f4f7fb; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   }
 
-  const milestones = [
-    { id: 1, number: 1, title: 'Design & Planning', dueDate: 'Mar 11, 2026', amount: '$8,400',  status: 'In Review', deliverable: 'Deliverables ready for review' },
-    { id: 2, number: 2, title: 'Core Development',  dueDate: 'May 20, 2026', amount: '$21,000', status: 'Pending' },
-    { id: 3, number: 3, title: 'Advanced Features', dueDate: 'Jul 1, 2026',  amount: '$8,820',  status: 'Pending' },
-    { id: 4, number: 4, title: 'Testing & Launch',  dueDate: 'Jul 25, 2026', amount: '$3,780',  status: 'Pending' },
-  ];
+  /* ─── SIDEBAR ─── */
+  .htd-sidebar {
+    width: 220px; min-width: 220px; background: linear-gradient(160deg, #0e6ea8 0%, #0a5a9e 50%, #1e3a5f 100%);
+    display: flex; flex-direction: column;
+    transition: width .25s ease, min-width .25s ease;
+    overflow: hidden; flex-shrink: 0;
+    box-shadow: 3px 0 20px rgba(14,110,168,.35);
+  }
+  .htd-sidebar.col { width: 64px; min-width: 64px; }
 
-  const stats = [
-    { label: 'Active Projects', value: '1',      icon: CheckCircle,   color: 'blue' },
-    { label: 'In Escrow',       value: '$42,000', icon: DollarSign,    color: 'green' },
-    { label: 'Messages',        value: '3',       icon: MessageSquare, color: 'purple' },
-    { label: 'Trust Score',     value: '75/100',  icon: Star,          color: 'yellow' },
-  ];
+  .htd-sb-logo {
+    display: flex; align-items: center; gap: 10px;
+    padding: 20px 14px 16px;
+    border-bottom: 1px solid rgba(255,255,255,.1); flex-shrink: 0;
+  }
+  .htd-sb-logo-icon {
+    width: 36px; height: 36px; border-radius: 9px; flex-shrink: 0;
+    background: linear-gradient(135deg,#22c55e,#0ea5e9);
+    display: flex; align-items: center; justify-content: center;
+     font-weight: 800; font-size: 15px; color: #fff;
+  }
+  .htd-sb-logo-name {  font-weight:800; font-size:16px; color:#fff; white-space:nowrap; overflow:hidden; }
+  .htd-sb-logo-role { font-size:10px; color:rgba(255,255,255,.45); text-transform:uppercase; letter-spacing:.06em; white-space:nowrap; }
 
-  const upcomingDeadlines = [
-    { title: 'Review wireframes',    date: 'Feb 14', highlight: true },
-    { title: 'Weekly check-in call', date: 'Feb 16', highlight: false },
-    { title: 'Milestone 1 delivery', date: 'Mar 11', highlight: false },
-  ];
+  .htd-sb-nav { flex:1; overflow-y:auto; padding:8px 0; scrollbar-width:none; }
+  .htd-sb-nav::-webkit-scrollbar { display:none; }
 
-  const insights = [
-    { text: 'Your project is performing excellently',          status: 'success' },
-    { text: 'TechVision Agency is highly responsive',          status: 'success' },
-    { text: 'Timeline buffer exists for flexibility',          status: 'success' },
-    { text: 'Consider scheduling next milestone review early', status: 'warning' },
-  ];
+  .htd-sb-section-label {
+    font-size:9px; font-weight:700; color:rgba(255,255,255,.35);
+    letter-spacing:.1em; text-transform:uppercase;
+    padding:12px 16px 4px; white-space:nowrap; overflow:hidden;
+  }
+  .htd-sidebar.col .htd-sb-section-label { opacity:0; height:0; padding:0; }
 
-  const quickActions = [
-    { title: 'Review Deliverables', icon: CheckCircle },
-    { title: 'Message Team',        icon: MessageSquare },
-    { title: 'View Contract',       icon: FileText },
-    { title: 'Get Help',            icon: AlertCircle },
-  ];
+  .htd-sb-item {
+    display:flex; align-items:center; gap:10px;
+    padding:9px 12px; margin:1px 7px; border-radius:10px;
+    cursor:pointer; transition:background .15s;
+    border:none; background:transparent; width:calc(100% - 14px);
+    color:rgba(255,255,255,.65); position:relative; 
+  }
+  .htd-sb-item:hover { background:rgba(255,255,255,.1); color:#fff; }
+  .htd-sb-item.active { background:rgba(255,255,255,.15); color:#fff; }
+  .htd-sb-item.active::before {
+    content:''; position:absolute; left:-7px; top:50%; transform:translateY(-50%);
+    width:3px; height:18px; border-radius:0 3px 3px 0;
+    background:linear-gradient(180deg,#22c55e,#0ea5e9);
+  }
+  .htd-sb-label { font-size:13px; font-weight:500; white-space:nowrap; overflow:hidden; }
+  .htd-sb-badge {
+    margin-left:auto; min-width:17px; height:17px; border-radius:9px;
+    background:#ef4444; color:#fff; font-size:9px; font-weight:700;
+    display:flex; align-items:center; justify-content:center; padding:0 4px; flex-shrink:0;
+  }
+  .htd-sb-badge.warn { background:#f59e0b; }
+  .htd-sidebar.col .htd-sb-badge { position:absolute; top:4px; right:4px; min-width:8px; height:8px; border-radius:50%; padding:0; font-size:0; }
 
-  const getColorClasses = (color) => ({
-    blue:   'bg-blue-100 text-blue-600',
-    green:  'bg-green-100 text-green-600',
-    purple: 'bg-purple-100 text-purple-600',
-    yellow: 'bg-yellow-100 text-yellow-600',
-  }[color]);
+  .htd-sb-collapse {
+    padding:10px 7px; border-top:1px solid rgba(255,255,255,.1); flex-shrink:0;
+  }
+  .htd-collapse-btn {
+    width:100%; display:flex; align-items:center; gap:8px; padding:8px 10px;
+    border-radius:9px; background:rgba(255,255,255,.07); border:none; cursor:pointer;
+    color:rgba(255,255,255,.55); font-size:12px; font-weight:500;
+     transition:background .15s,color .15s;
+    white-space:nowrap; overflow:hidden;
+  }
+  .htd-collapse-btn:hover { background:rgba(255,255,255,.12); color:#fff; }
 
-  const getStatusBadgeColor = (status) =>
-    status === 'In Review' ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-600';
+  .htd-sb-user {
+    display:flex; align-items:center; gap:10px;
+    padding:13px 14px; border-top:1px solid rgba(255,255,255,.1); flex-shrink:0;
+  }
+  .htd-sb-avatar {
+    width:33px; height:33px; border-radius:9px; flex-shrink:0;
+    background:linear-gradient(135deg,#22c55e,#0ea5e9);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:12px; color:#fff;
+  }
+  .htd-sb-uname { font-size:12px; font-weight:600; color:#fff; white-space:nowrap; overflow:hidden; }
+  .htd-sb-urole { font-size:10px; color:rgba(255,255,255,.4); white-space:nowrap; }
+
+  /* ─── MAIN ─── */
+  .htd-main { flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0; }
+
+  .htd-topbar {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 22px; height:58px; background:#fff;
+    border-bottom:1px solid #e8eef5; flex-shrink:0;
+  }
+
+  .htd-content { flex:1; overflow-y:auto; padding:20px 22px; }
+
+  /* ─── COMPONENTS ─── */
+  .htd-stat-card {
+    position:relative; overflow:hidden; border-radius:14px;
+    background:#fff; border:1px solid #e8eef5; padding:16px; cursor:pointer;
+    transition:transform .2s,box-shadow .2s,border-color .2s;
+  }
+  .htd-stat-card:hover { transform:translateY(-2px); box-shadow:0 8px 22px rgba(30,58,95,.1); }
+  .htd-stat-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; opacity:0; transition:opacity .2s; }
+  .htd-stat-card:hover::before { opacity:1; }
+  .htd-stat-card.green::before  { background:linear-gradient(90deg,#22c55e,#0ea5e9); }
+  .htd-stat-card.blue::before   { background:linear-gradient(90deg,#0ea5e9,#1e3a5f); }
+  .htd-stat-card.navy::before   { background:linear-gradient(90deg,#1e3a5f,#0ea5e9); }
+  .htd-stat-card.red::before    { background:linear-gradient(90deg,#ef4444,#f97316); }
+  .htd-stat-card.purple::before { background:linear-gradient(90deg,#8b5cf6,#0ea5e9); }
+  .htd-stat-card.amber::before  { background:linear-gradient(90deg,#f59e0b,#22c55e); }
+
+  .htd-panel { background:#fff; border-radius:16px; border:1px solid #e8eef5; overflow:hidden; }
+  .htd-panel-head {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:13px 16px; border-bottom:1px solid #f0f4f8;
+  }
+  .htd-section-title {  font-size:13px; font-weight:700; color:#1e3a5f; }
+  .htd-section-bar { position:relative; padding-left:10px; }
+  .htd-section-bar::before {
+    content:''; position:absolute; left:0; top:0; bottom:0;
+    width:3px; border-radius:99px;
+    background:linear-gradient(180deg,#22c55e,#0ea5e9);
+  }
+
+  .htd-btn-primary {
+    display:inline-flex; align-items:center; gap:5px;
+    padding:7px 13px; border-radius:9px; border:none; cursor:pointer;
+    color:#fff; font-size:12px; font-weight:600; 
+    background:linear-gradient(135deg,#22c55e,#0ea5e9); transition:opacity .15s,transform .15s;
+  }
+  .htd-btn-primary:hover { opacity:.9; transform:scale(1.02); }
+  .htd-btn-primary:disabled { background:#cbd5e1!important; cursor:not-allowed; transform:none; opacity:1; }
+
+  .htd-view-link {
+    font-size:12px; font-weight:600; color:#0ea5e9; background:none; border:none;
+    cursor:pointer; display:flex; align-items:center; gap:3px; transition:color .15s;
+  }
+  .htd-view-link:hover { color:#0284c7; }
+
+  .htd-progress-bar { width:100%; height:7px; background:#e8eef5; border-radius:99px; overflow:hidden; }
+  .htd-progress-fill { height:100%; border-radius:99px; background:linear-gradient(90deg,#22c55e,#0ea5e9); transition:width .5s; }
+
+  .htd-avatar {
+    width:37px; height:37px; border-radius:9px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-weight:700; font-size:13px;
+    background:linear-gradient(135deg,#22c55e,#0ea5e9);
+  }
+
+  .htd-badge { font-size:10px; font-weight:700; padding:2px 7px; border-radius:99px; white-space:nowrap; }
+  .htd-badge.green  { background:#dcfce7; color:#16a34a; }
+  .htd-badge.blue   { background:#dbeafe; color:#1d4ed8; }
+
+  .htd-pulsedot { width:6px; height:6px; border-radius:50%; background:#22c55e; animation:htdp 2s infinite; }
+  @keyframes htdp { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
+
+  .htd-kyc {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 14px; border-radius:12px;
+    background:linear-gradient(135deg,#fffbeb,#fefce8);
+    border:1px solid #fcd34d; margin-bottom:16px;
+  }
+
+  .htd-proj-card { padding:13px; background:#f8fafc; border-radius:12px; border:1px solid #e8eef5; }
+
+  .htd-post-btn {
+    width:100%; display:flex; align-items:center; justify-content:center; gap:7px;
+    padding:11px; border:2px dashed #cbd5e1; border-radius:11px;
+    background:none; cursor:pointer; font-size:13px; font-weight:500;
+    color:#94a3b8;  transition:all .2s;
+  }
+  .htd-post-btn:hover { border-color:#22c55e; color:#16a34a; background:#f0fdf4; }
+
+  .htd-talent-row { display:flex; align-items:center; gap:10px; padding:10px; background:#f8fafc; border-radius:11px; border:1px solid #e8eef5; }
+
+  .htd-insight-card {
+    border-radius:14px; padding:16px;
+    background:linear-gradient(135deg,#f0fdf4 0%,#eff6ff 60%,#f0f9ff 100%);
+    border:1px solid #bfdbfe;
+  }
+
+  .htd-qa-btn {
+    width:100%; display:flex; align-items:center; justify-content:space-between;
+    padding:8px 9px; border-radius:9px; background:transparent; border:none; cursor:pointer;
+     transition:background .15s;
+  }
+  .htd-qa-btn:hover { background:#f8fafc; }
+
+  .htd-tx-icon { width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+
+  .htd-modal-bg {
+    position:fixed; inset:0; background:rgba(15,23,42,.52);
+    display:flex; align-items:center; justify-content:center; z-index:50; padding:16px;
+    backdrop-filter:blur(4px);
+  }
+  .htd-modal { background:#fff; border-radius:20px; padding:24px; max-width:430px; width:100%; box-shadow:0 24px 60px rgba(15,23,42,.2); }
+
+  .htd-input {
+    width:100%; padding:9px 12px; border:1.5px solid #e2e8f0; border-radius:9px;
+    font-size:13px;  outline:none; transition:border-color .2s;
+  }
+  .htd-input:focus { border-color:#0ea5e9; }
+`;
+
+export default function HireTalentDashboard() {
+  const navigate = useNavigate();
+  const [collapsed, setCollapsed]     = useState(false);
+  const [inviteModal, setInviteModal] = useState(null);
+  const [inviteMsg, setInviteMsg]     = useState('');
+  const [inviteBudget, setInviteBudget] = useState('');
+  const [inviteSent, setInviteSent]   = useState(false);
+  const canSend = inviteMsg.trim() && inviteBudget;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* ── Header ── */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl sm:text-3xl font-bold text-blue-600">ArcLancer</h1>
-            <div className="flex items-center gap-2 sm:gap-4">
-              <button className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition hidden sm:block">
-                <Bell size={20} />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
-              </button>
-              <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition hidden sm:block">
-                <Settings size={20} />
-              </button>
+    <>
+      <style>{styles}</style>
+      <div className="htd-root">
 
-              {/* Avatar + Dropdown */}
-              <div className="relative">
-                <button
-                  onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="w-10 h-10 rounded-full bg-blue-900 text-white font-bold text-base flex items-center justify-center hover:bg-blue-800 transition"
-                >
-                  A
-                </button>
+        {/* ══ SIDEBAR ══ */}
+        <div className={`htd-sidebar${collapsed ? ' col' : ''}`}>
 
-                {dropdownOpen && (
-                  <>
-                    <div className="fixed inset-0 z-40" onClick={() => setDropdownOpen(false)} />
-                    <div className="absolute right-0 top-12 z-50 w-56 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-                      <div
-                        style={{ background: 'linear-gradient(135deg, #1e3a6e, #2563eb)' }}
-                        className="px-4 py-3"
-                      >
-                        <p className="text-white font-semibold text-sm">John Smith</p>
-                        <p className="text-blue-200 text-xs mt-0.5">john@weblance.com</p>
-                      </div>
-                      <div className="py-1">
-                        <button
-                          onClick={() => { setDropdownOpen(false); setShowSettings(true); }}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-gray-700 hover:bg-gray-50 text-sm transition"
-                        >
-                          <Settings size={16} className="text-gray-400" /> Settings
-                        </button>
-                        <button
-                          onClick={() => setDropdownOpen(false)}
-                          className="w-full flex items-center gap-3 px-4 py-2.5 text-red-500 hover:bg-gray-50 text-sm transition"
-                        >
-                          <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
-                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
-                          </svg>
-                          Logout
-                        </button>
-                      </div>
-                    </div>
-                  </>
-                )}
+          {/* Logo */}
+          <div className="htd-sb-logo">
+            <div className="htd-sb-logo-icon">W</div>
+            {!collapsed && (
+              <div style={{ overflow: 'hidden' }}>
+                <div className="htd-sb-logo-name">WebLance</div>
+                <div className="htd-sb-logo-role">Hire Talent</div>
               </div>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-
-        {/* ── Stats ── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          {stats.map((stat, idx) => {
-            const Icon = stat.icon;
-            return (
-              <div key={idx} className="bg-white rounded-lg p-5 sm:p-6 shadow-sm border border-gray-200">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-gray-600 text-sm font-medium">{stat.label}</p>
-                    <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">{stat.value}</p>
-                  </div>
-                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${getColorClasses(stat.color)}`}>
-                    <Icon size={24} />
-                  </div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-          {/* ── Main ── */}
-          <div className="lg:col-span-2 space-y-6">
-            {projects.map((project) => (
-              <div key={project.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-
-                {/* Project Header */}
-                <div className="p-5 sm:p-6 border-b border-gray-200">
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2 flex-wrap">
-                        <h2 className="text-lg sm:text-xl font-bold text-gray-900">{project.title}</h2>
-                        <span className="inline-block bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full">{project.status}</span>
-                      </div>
-                      <p className="text-gray-600 text-sm">{project.client} • ⭐ {project.rating}</p>
-                    </div>
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <button className="flex items-center gap-2 px-3 py-2 text-gray-700 font-medium text-sm border border-gray-300 hover:bg-gray-50 rounded transition"><MessageSquare size={16} /> Message</button>
-                      <button className="flex items-center gap-2 px-3 py-2 text-gray-700 font-medium text-sm border border-gray-300 hover:bg-gray-50 rounded transition"><FileText size={16} /> Files</button>
-                      <button className="flex items-center gap-2 px-3 py-2 text-gray-700 font-medium text-sm border border-gray-300 hover:bg-gray-50 rounded transition"><Phone size={16} /> Call</button>
-                    </div>
-                  </div>
-                  <div className="mb-4">
-                    <p className="text-gray-900 font-semibold text-sm mb-2">Current: Milestone 1 — {project.milestone}</p>
-                    <div className="w-full bg-gray-200 rounded-full h-2.5">
-                      <div className="bg-blue-500 h-2.5 rounded-full transition-all duration-300" style={{ width: `${project.progress}%` }} />
-                    </div>
-                    <p className="text-blue-600 text-xs font-medium mt-2">✓ {project.daysAhead} days ahead of schedule</p>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <p className="text-gray-600 text-sm">${project.spent.toLocaleString()} of ${project.budget.toLocaleString()} in progress</p>
-                    <span className="text-gray-900 font-semibold text-sm">{project.progress}% overall</span>
-                  </div>
-                </div>
-
-                {/* Tabs */}
-                <div className="px-5 sm:px-6 border-b border-gray-200 flex gap-8 overflow-x-auto">
-                  {['Overview', 'Milestones', 'Files', 'Payments', 'AI Builder', 'Talent'].map((tab) => (
-                    <button
-                      key={tab}
-                      onClick={() => setActiveTab(tab.toLowerCase())}
-                      className={`py-4 font-medium text-sm border-b-2 transition whitespace-nowrap ${
-                        activeTab === tab.toLowerCase()
-                          ? 'border-blue-600 text-blue-600'
-                          : 'border-transparent text-gray-600 hover:text-gray-900'
-                      }`}
-                    >
-                      {tab}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Overview */}
-                {activeTab === 'overview' && (
-                  <div className="p-5 sm:p-6">
-                    <p className="text-gray-600 text-sm">Project overview content</p>
-                  </div>
-                )}
-
-                {/* Milestones */}
-                {activeTab === 'milestones' && (
-                  <div className="p-5 sm:p-6 space-y-4">
-                    {milestones.map((milestone, idx) => (
-                      <div key={milestone.id} className="border border-gray-200 rounded-lg overflow-hidden">
-                        <button
-                          onClick={() => setExpandedMilestone(expandedMilestone === idx ? -1 : idx)}
-                          className="w-full p-4 bg-gray-50 hover:bg-gray-100 transition flex items-center justify-between"
-                        >
-                          <div className="flex items-center gap-4 flex-1 text-left">
-                            <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-semibold flex items-center justify-center text-sm">{milestone.number}</div>
-                            <div className="flex-1">
-                              <p className="font-semibold text-gray-900">{milestone.title}</p>
-                              <p className="text-sm text-gray-600">Due: {milestone.dueDate}</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-4">
-                            <div className="text-right">
-                              <p className="font-semibold text-gray-900">{milestone.amount}</p>
-                              <span className={`text-xs font-semibold px-2 py-1 rounded ${getStatusBadgeColor(milestone.status)}`}>{milestone.status}</span>
-                            </div>
-                            <ChevronDown size={20} className={`text-gray-400 transition ${expandedMilestone === idx ? 'rotate-180' : ''}`} />
-                          </div>
-                        </button>
-                        {expandedMilestone === idx && milestone.deliverable && (
-                          <div className="p-4 bg-yellow-50 border-t border-gray-200">
-                            <p className="text-sm text-gray-700 mb-4">{milestone.deliverable}</p>
-                            <div className="flex gap-3">
-                              <button className="px-3 py-1.5 bg-blue-600 text-white font-medium text-sm rounded hover:bg-blue-700 transition">Review Now</button>
-                              <button className="px-3 py-1.5 bg-white border border-gray-300 text-gray-700 font-medium text-sm rounded hover:bg-gray-50 transition">View Files</button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* Files */}
-                {activeTab === 'files' && (
-                  <div className="p-5 sm:p-6 space-y-4">
-                    {[
-                      { name: 'Wireframes_v1.pdf',     size: '2.4 MB', time: '2 hours ago', status: 'In Review', statusColor: 'bg-yellow-100 text-yellow-700' },
-                      { name: 'Requirements_Doc.docx', size: '1.1 MB', time: '3 days ago',  status: 'Approved',  statusColor: 'bg-green-100 text-green-700' },
-                      { name: 'Design_System.fig',     size: '8.2 MB', time: '1 hour ago',  status: 'New',       statusColor: 'bg-blue-100 text-blue-700' },
-                    ].map((file, idx) => (
-                      <div key={idx} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
-                        <div className="flex items-center gap-4 flex-1">
-                          <FileText className="text-gray-400 flex-shrink-0" size={24} />
-                          <div className="flex-1 min-w-0">
-                            <p className="font-medium text-gray-900">{file.name}</p>
-                            <p className="text-sm text-gray-600">{file.size} • {file.time}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <span className={`text-xs font-semibold px-3 py-1 rounded ${file.statusColor}`}>{file.status}</span>
-                          <button className="px-4 py-2 text-blue-600 font-medium text-sm hover:bg-blue-50 rounded-lg transition">Download</button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* Payments */}
-                {activeTab === 'payments' && (
-                  <div className="p-5 sm:p-6 space-y-6">
-                    <div>
-                      <h3 className="text-lg font-bold text-gray-900 mb-4">Escrow Overview</h3>
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4"><p className="text-gray-600 text-sm font-medium mb-2">Funded</p><p className="text-2xl font-bold text-gray-900">$42,000</p></div>
-                        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4"><p className="text-gray-600 text-sm font-medium mb-2">Released</p><p className="text-2xl font-bold text-gray-900">$0</p></div>
-                        <div className="bg-green-50 border border-green-200 rounded-lg p-4"><p className="text-green-700 text-sm font-medium mb-2">Remaining</p><p className="text-2xl font-bold text-green-700">$42,000</p></div>
-                      </div>
-                    </div>
-                    <div className="space-y-3">
-                      {[
-                        { title: 'Design & Planning', amount: '$8,400',  status: 'In Review', color: 'yellow' },
-                        { title: 'Core Development',  amount: '$21,000', status: 'Pending',   color: 'gray' },
-                        { title: 'Advanced Features', amount: '$8,820',  status: 'Pending',   color: 'gray' },
-                        { title: 'Testing & Launch',  amount: '$3,780',  status: 'Pending',   color: 'gray' },
-                      ].map((m, idx) => (
-                        <div key={idx} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
-                          <p className="font-medium text-gray-900">M{idx + 1} — {m.title}</p>
-                          <div className="flex items-center gap-4">
-                            <span className="font-semibold text-gray-900">{m.amount}</span>
-                            <span className={`text-xs font-semibold px-3 py-1 rounded ${m.color === 'yellow' ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-600'}`}>{m.status}</span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* AI Builder */}
-                {activeTab === 'ai builder' && !showAIBreakdown && (
-                  <div className="p-5 sm:p-6 space-y-6">
-                    <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-2xl">✨</span>
-                        <h3 className="text-xl font-bold text-gray-900">What do you want to build?</h3>
-                      </div>
-                      <p className="text-gray-600 text-sm mb-4">Describe your project in plain English</p>
-                      <textarea className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none" rows="5" defaultValue="e.g., I want a food delivery app for my city. Users should be able to order from local restaurants, track their delivery in real time, and pay securely..." />
-                      <div className="flex gap-3 mt-4">
-                        <button className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition text-sm">🎤 Speak instead</button>
-                        <button className="flex items-center gap-2 px-3 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition text-sm">📎 Upload brief/document</button>
-                      </div>
-                    </div>
-                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-5">
-                      <p className="font-semibold text-gray-900 mb-3">Examples to inspire you:</p>
-                      <div className="space-y-2 mb-4">
-                        <p className="text-blue-600 hover:underline cursor-pointer text-sm">"E-commerce site for handmade jewelry"</p>
-                        <p className="text-blue-600 hover:underline cursor-pointer text-sm">"HR management system for my 50-person company"</p>
-                        <p className="text-blue-600 hover:underline cursor-pointer text-sm">"AI chatbot for my customer support team"</p>
-                      </div>
-                      <div className="space-y-2 mb-4">
-                        <div className="flex items-center gap-2 text-sm text-gray-600"><CheckCircle size={16} className="text-green-500" /><span>No technical knowledge required</span></div>
-                        <div className="flex items-center gap-2 text-sm text-gray-600"><CheckCircle size={16} className="text-green-500" /><span>AI will translate your idea</span></div>
-                      </div>
-                      <button onClick={() => setShowAIBreakdown(true)} className="flex items-center gap-2 px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition">
-                        <ArrowRight size={18} /> Analyze My Project
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                {activeTab === 'ai builder' && showAIBreakdown && (
-                  <div className="p-5 sm:p-6 space-y-6">
-                    <div className="flex items-center justify-between">
-                      <h2 className="text-2xl font-bold text-gray-900">AI Project Breakdown</h2>
-                      <button onClick={() => setShowAIBreakdown(false)} className="text-blue-600 font-medium hover:text-blue-700">← Edit Description</button>
-                    </div>
-                    <div className="border-b border-gray-200 flex gap-8 overflow-x-auto">
-                      {['Overview', 'Scope & Budget', 'Milestones', 'Talent Match', 'Validation'].map((tab) => (
-                        <button key={tab} onClick={() => setAIOverviewTab(tab.toLowerCase())}
-                          className={`py-4 font-medium text-sm border-b-2 transition whitespace-nowrap ${aiOverviewTab === tab.toLowerCase() ? 'border-blue-600 text-blue-600' : 'border-transparent text-gray-600 hover:text-gray-900'}`}>
-                          {tab}{tab === 'Validation' && <span className="ml-2 text-yellow-500">⚠️</span>}
-                        </button>
-                      ))}
-                    </div>
-
-                    {aiOverviewTab === 'overview' && (
-                      <div className="space-y-6">
-                        <div>
-                          <div className="flex items-center justify-between mb-3">
-                            <h3 className="text-base font-bold text-gray-900">AI-Generated Project Brief</h3>
-                            <span className="bg-purple-100 text-purple-700 text-xs font-semibold px-2 py-0.5 rounded">AI GENERATED</span>
-                          </div>
-                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
-                            {[{ label: 'Project Name:', value: 'Food Delivery Platform' }, { label: 'Type:', value: 'Mobile App + Web Admin' }, { label: 'Industry:', value: 'Food & Restaurant Tech' }, { label: 'Complexity:', value: 'Medium-High ●●●●○' }].map((item, idx) => (
-                              <div key={idx} className="bg-gray-50 p-3 rounded">
-                                <p className="text-gray-600 text-xs font-medium mb-1">{item.label}</p>
-                                <p className="text-gray-900 font-semibold text-sm">{item.value}</p>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                        <div>
-                          <h3 className="text-base font-bold text-gray-900 mb-3">Core Features (must-have)</h3>
-                          <div className="space-y-2">
-                            {['User registration & login (social + email)', 'Restaurant browse & search with filters', 'Menu display with photos & pricing', 'Shopping cart & order placement', 'Real-time order tracking (GPS)', 'Payment gateway integration', 'Push notifications (order updates)', 'Restaurant admin panel (order management)'].map((f, idx) => (
-                              <label key={idx} className="flex items-center gap-2 p-2 hover:bg-gray-50 rounded cursor-pointer">
-                                <input type="checkbox" defaultChecked className="w-4 h-4 accent-blue-600" />
-                                <span className="text-gray-900 text-sm">{f}</span>
-                              </label>
-                            ))}
-                          </div>
-                        </div>
-                        <div>
-                          <h3 className="text-base font-bold text-gray-900 mb-3">Optional Features (nice-to-have)</h3>
-                          <div className="space-y-2">
-                            {['In-app chat (customer ↔ restaurant)', 'Ratings & reviews system', 'Promo codes & loyalty rewards', 'Analytics dashboard for restaurants'].map((f, idx) => (
-                              <label key={idx} className="flex items-center gap-2 p-2 hover:bg-gray-50 rounded cursor-pointer">
-                                <input type="checkbox" className="w-4 h-4 accent-blue-600" />
-                                <span className="text-gray-700 text-sm">{f}</span>
-                              </label>
-                            ))}
-                          </div>
-                        </div>
-                        <div className="flex gap-3 pt-4 border-t border-gray-200">
-                          <button className="flex items-center gap-2 px-3 py-1.5 text-gray-600 border border-gray-300 rounded text-sm hover:bg-gray-50 transition"><Plus size={16} /> Add Feature</button>
-                          <button className="flex items-center gap-2 px-3 py-1.5 text-gray-600 border border-gray-300 rounded text-sm hover:bg-gray-50 transition"><FileText size={16} /> Edit Features</button>
-                        </div>
-                      </div>
-                    )}
-
-                    {aiOverviewTab === 'scope & budget' && (
-                      <div className="space-y-6">
-                        <div>
-                          <div className="flex items-center gap-2 mb-4"><Calendar className="text-gray-600" size={20} /><h3 className="text-lg font-bold text-gray-900">Timeline Estimate</h3></div>
-                          <div className="space-y-3">
-                            {[{ l: 'Discovery & Planning', v: '2–3 weeks' }, { l: 'UI/UX Design', v: '4–6 weeks' }, { l: 'Development', v: '12–16 weeks' }, { l: 'Testing & Launch', v: '2–4 weeks' }].map((item, idx) => (
-                              <div key={idx} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200"><p className="text-gray-700">{item.l}</p><p className="text-gray-900 font-semibold">{item.v}</p></div>
-                            ))}
-                            <div className="flex items-center justify-between p-4 bg-white rounded-lg border-2 border-blue-200"><p className="font-bold text-gray-900">Total</p><p className="text-blue-600 font-bold">20–29 weeks (5–7 months)</p></div>
-                          </div>
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2 mb-4"><DollarSign className="text-gray-600" size={20} /><h3 className="text-lg font-bold text-gray-900">Budget Range</h3></div>
-                          <div className="space-y-3">
-                            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200"><p className="text-gray-700 font-medium">Conservative</p><p className="text-gray-900 font-semibold">$18,000 – $28,000</p></div>
-                            <div className="flex items-center justify-between p-4 bg-blue-50 rounded-lg border-2 border-blue-300"><p className="text-gray-900 font-medium">Realistic</p><p className="text-blue-600 font-bold">$28,000 – $45,000</p></div>
-                            <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200"><p className="text-gray-700 font-medium">Comfortable</p><p className="text-gray-900 font-semibold">$45,000 – $65,000</p></div>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {aiOverviewTab === 'milestones' && (
-                      <div className="space-y-6">
-                        <h3 className="text-xl font-bold text-gray-900">AI-Generated Milestone Plan</h3>
-                        <div className="space-y-6">
-                          {[
-                            { n: 1, t: 'Discovery & Design',  a: '$8,400',  p: '20%', w: '3 weeks',  d: ['Complete wireframes', 'High-fidelity UI designs', 'Technical architecture document', 'API design specification'] },
-                            { n: 2, t: 'Core Development',    a: '$21,000', p: '50%', w: '12 weeks', d: ['User app (iOS + Android)', 'Restaurant admin panel (web)', 'Payment integration', 'Core backend APIs'] },
-                            { n: 3, t: 'Advanced Features',   a: '$8,820',  p: '21%', w: '6 weeks',  d: ['Real-time tracking', 'Push notifications', 'Performance optimization'] },
-                            { n: 4, t: 'Testing & Launch',    a: '$3,780',  p: '9%',  w: '2 weeks',  d: ['Full QA testing report', 'App store submission', 'Production deployment'] },
-                          ].map((m) => (
-                            <div key={m.n} className="border-l-4 border-blue-500 pl-4">
-                              <div className="flex items-start justify-between mb-3">
-                                <div className="flex items-center gap-2"><span className="bg-blue-100 text-blue-600 px-2 py-1 rounded text-sm font-bold">M{m.n}</span><h4 className="text-lg font-bold text-gray-900">{m.t}</h4></div>
-                                <div className="text-right"><p className="font-bold text-gray-900">{m.a} <span className="text-gray-600 font-normal">({m.p})</span></p><p className="text-sm text-gray-600">{m.w}</p></div>
-                              </div>
-                              <ul className="space-y-1 mt-2">{m.d.map((item, idx) => (<li key={idx} className="flex items-center gap-2 text-gray-700 text-sm"><CheckCircle size={16} className="text-teal-500 flex-shrink-0" />{item}</li>))}</ul>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {aiOverviewTab === 'talent match' && (
-                      <div className="space-y-4">
-                        <div className="flex items-center gap-2"><span className="text-xl">👥</span><h3 className="text-lg font-bold text-gray-900">Best Talent Type for Your Project</h3></div>
-                        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                          <div className="flex items-start gap-3 mb-3"><CheckCircle className="text-green-600 flex-shrink-0" size={20} /><h4 className="font-bold text-gray-900">Recommended: Mobile App Development Agency</h4></div>
-                          <ul className="space-y-2 ml-8">{['Multi-platform (iOS + Android) needed', 'Design services required', 'Budget supports agency pricing', 'Timeline matches agency capacity'].map((item, idx) => (<li key={idx} className="text-gray-700 text-sm">{item}</li>))}</ul>
-                        </div>
-                        <div className="flex gap-3 flex-wrap">
-                          <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition text-sm">🔍 Find Agencies</button>
-                          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition text-sm">👤 Find Freelancers</button>
-                        </div>
-                      </div>
-                    )}
-
-                    {aiOverviewTab === 'validation' && (
-                      <div className="space-y-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2"><span className="text-xl">⚠️</span><h3 className="text-lg font-bold text-gray-900">AI Validation Results</h3></div>
-                          <span className="bg-yellow-100 text-yellow-700 text-xs font-bold px-3 py-1 rounded">MEDIUM RISK ●●●○○</span>
-                        </div>
-                        {[
-                          { title: 'Timeline may be aggressive',  desc: 'Your target of 3 months is 40% shorter than typical. This increases cost and risk.', action: 'Extend to 5 months' },
-                          { title: 'Budget slightly below market', desc: 'Your budget of $20,000 is 30% below the realistic range for this scope.',            action: 'Increase to $28,000+' },
-                        ].map((item, idx) => (
-                          <div key={idx} className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                            <div className="flex items-start gap-3 mb-2"><AlertCircle className="text-yellow-600 flex-shrink-0 mt-0.5" size={20} /><h4 className="font-bold text-gray-900">{item.title}</h4></div>
-                            <p className="text-gray-700 text-sm mb-3 ml-8">{item.desc}</p>
-                            <button className="ml-8 flex items-center gap-2 text-blue-600 font-medium text-sm"><ArrowRight size={16} /> {item.action}</button>
-                          </div>
-                        ))}
-                        <div className="flex gap-3 flex-wrap">
-                          <button className="px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition text-sm">Apply Suggestions</button>
-                          <button className="px-4 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition text-sm">Continue Anyway</button>
-                          <button className="px-4 py-2 bg-white border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition text-sm">Revise Project</button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Talent */}
-                {activeTab === 'talent' && (
-                  <div className="p-5 sm:p-6 space-y-4">
-                    <div className="mb-4">
-                      <h3 className="text-lg font-bold text-gray-900 mb-1">AI Found 4 Matches</h3>
-                      <p className="text-gray-600 text-sm">For your Food Delivery Platform project</p>
-                    </div>
-                    {[
-                      { number: 1, name: 'TechVision Agency', type: 'Agency',     location: 'Mumbai, India',    match: '98% Match', rating: '4.9 (47 projects)', available: 'Available Now',        budget: '$25K-$60K', similar: 8, disputes: 0, risk: 'LOW',    icon: '🏆' },
-                      { number: 2, name: 'John Smith',        type: 'Freelancer', location: 'Bangalore',        match: '91% Match', rating: '4.8 (23 projects)', available: 'Available in 1 week',  budget: '$15K-$35K', similar: 5, disputes: 0, risk: 'LOW',    icon: '👤' },
-                      { number: 3, name: 'CodeCraft Agency',  type: 'Agency',     location: 'Delhi, India',     match: '89% Match', rating: '4.7 (31 projects)', available: 'Available in 1 week',  budget: '$20K-$50K', similar: 5, disputes: 1, risk: 'MEDIUM', icon: '👤' },
-                      { number: 4, name: 'Maria Chen',        type: 'Freelancer', location: 'Singapore',        match: '85% Match', rating: '4.6 (18 projects)', available: 'Available in 2 weeks', budget: '$12K-$28K', similar: 3, disputes: 0, risk: 'LOW',    icon: 'M'  },
-                    ].map((talent) => (
-                      <div key={talent.number} className="bg-white border border-gray-200 rounded-lg p-4">
-                        <div className="flex items-start justify-between mb-3">
-                          <div className="flex items-start gap-3 flex-1">
-                            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0 text-sm font-bold">{talent.icon}</div>
-                            <div className="flex-1 min-w-0">
-                              <div className="flex items-center gap-2 flex-wrap mb-1">
-                                <h4 className="font-bold text-gray-900">#{talent.number} — {talent.name}</h4>
-                                <span className="text-blue-600 text-sm font-medium">{talent.match}</span>
-                              </div>
-                              <p className="text-gray-600 text-sm">{talent.type} • {talent.location}</p>
-                              <div className="flex items-center gap-1 mt-1">
-                                <span className="text-yellow-500">⭐</span>
-                                <span className="text-gray-600 text-sm">{talent.rating} • {talent.available}</span>
-                              </div>
-                            </div>
-                          </div>
-                          <span className={`text-xs font-bold px-2 py-1 rounded flex-shrink-0 ${talent.risk === 'LOW' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>{talent.risk}</span>
-                        </div>
-                        <div className="mb-3 text-sm text-gray-600">
-                          <span>Budget: {talent.budget}</span><span className="mx-4">Similar projects: {talent.similar}</span><span>Disputes: {talent.disputes}</span>
-                        </div>
-                        <div className="flex gap-2">
-                          <button className="flex items-center gap-2 px-3 py-1.5 text-gray-600 border border-gray-300 rounded text-sm hover:bg-gray-50 transition">👁️ View Profile</button>
-                          <button className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white font-medium rounded text-sm hover:bg-blue-700 transition">📧 Invite</button>
-                          <button className="flex items-center gap-2 px-3 py-1.5 text-gray-600 border border-gray-300 rounded text-sm hover:bg-gray-50 transition">⚖️ Compare</button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-
-            {/* Overview extra cards */}
-            {activeTab === 'overview' && (
-              <>
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-4">Recent Activity</h3>
-                  <div className="space-y-4">
-                    {[
-                      { icon: FileText,    text: 'Wireframes uploaded for review', time: '2 hours ago' },
-                      { icon: Phone,       text: 'Kickoff meeting completed',       time: 'Yesterday' },
-                      { icon: CheckCircle, text: 'Project started',                 time: '2 days ago' },
-                      { icon: DollarSign,  text: 'Escrow funded: $44,100',          time: '3 days ago' },
-                    ].map((item, idx) => {
-                      const Icon = item.icon;
-                      return (
-                        <div key={idx} className="flex gap-3">
-                          <Icon className="text-gray-400 flex-shrink-0" size={20} />
-                          <div>
-                            <p className="font-medium text-gray-900 text-sm">{item.text}</p>
-                            <p className="text-gray-500 text-xs">{item.time}</p>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-4">Upcoming Deadlines</h3>
-                  <div className="space-y-3">
-                    {upcomingDeadlines.map((deadline, idx) => (
-                      <div key={idx} className={`flex items-center justify-between p-4 rounded-lg ${deadline.highlight ? 'bg-yellow-50 border border-yellow-200' : 'bg-gray-50 border border-gray-200'}`}>
-                        <div className="flex items-center gap-3">
-                          <Calendar className={deadline.highlight ? 'text-yellow-600' : 'text-gray-400'} size={20} />
-                          <p className="font-medium text-gray-900 text-sm">{deadline.title}</p>
-                        </div>
-                        <span className="text-gray-600 text-sm font-medium">{deadline.date}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-6">Project Health</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    {[
-                      { label: 'Timeline',      value: 90,  color: 'bg-blue-500',  note: '3 days ahead', noteColor: 'text-blue-600' },
-                      { label: 'Budget',        value: 20,  color: 'bg-green-500', note: 'On track',     noteColor: 'text-green-600' },
-                      { label: 'Communication', value: 90,  color: 'bg-blue-500',  note: 'Excellent',    noteColor: 'text-blue-600' },
-                      { label: 'Quality',       value: 100, color: 'bg-blue-500',  note: 'No revisions', noteColor: 'text-blue-600' },
-                    ].map((item, idx) => (
-                      <div key={idx}>
-                        <div className="flex items-center justify-between mb-2">
-                          <p className="text-gray-700 font-medium text-sm">{item.label}</p>
-                          <span className="text-gray-900 font-bold text-sm">{item.value}%</span>
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div className={`${item.color} h-2 rounded-full`} style={{ width: `${item.value}%` }} />
-                        </div>
-                        <p className={`${item.noteColor} text-xs font-medium mt-2`}>{item.note}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </>
             )}
           </div>
 
-          {/* ── Sidebar ── */}
-          <div className="space-y-6">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-6">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-white font-bold text-lg">SJ</span>
-                </div>
-                <div className="min-w-0">
-                  <h4 className="font-bold text-gray-900">Sarah Johnson</h4>
-                  <p className="text-gray-600 text-sm">Project Success Manager</p>
-                </div>
-              </div>
-              <div className="space-y-3 mb-6 pb-6 border-b border-gray-200">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0" />
-                  <p className="text-gray-700 text-sm">Response time: &lt; 4 hours</p>
-                </div>
-              </div>
-              <button className="w-full py-3 px-4 bg-blue-50 text-blue-600 font-semibold rounded-lg hover:bg-blue-100 transition text-sm mb-3 flex items-center justify-center gap-2">💬 Live Chat</button>
-              <button className="w-full py-3 px-4 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition text-sm">📞 Schedule Call</button>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Quick Actions</h3>
-              <div className="space-y-0">
-                {quickActions.map((action, idx) => {
-                  const Icon = action.icon;
+          {/* Navigation */}
+          <nav className="htd-sb-nav">
+            {NAV_SECTIONS.map(sec => (
+              <div key={sec.label}>
+                <div className="htd-sb-section-label">{sec.label}</div>
+                {sec.items.map(item => {
+                  const Icon = item.icon;
                   return (
-                    <button key={idx} className="w-full flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition group border-b border-gray-100 last:border-b-0">
-                      <div className="flex items-center gap-3 min-w-0">
-                        <Icon className="text-gray-400 group-hover:text-gray-600 flex-shrink-0" size={20} />
-                        <span className="text-gray-700 font-medium text-sm">{action.title}</span>
-                      </div>
-                      <ArrowRight className="text-gray-300 group-hover:text-gray-400 flex-shrink-0" size={18} />
+                    <button key={item.label}
+                      className={`htd-sb-item${item.active ? ' active' : ''}`}
+                      onClick={() => navigate(item.route)}
+                      title={collapsed ? item.label : undefined}>
+                      <Icon size={16} style={{ flexShrink: 0 }} />
+                      {!collapsed && <span className="htd-sb-label">{item.label}</span>}
+                      {item.badge && (
+                        <span className={`htd-sb-badge${item.badge === '!' ? ' warn' : ''}`}>
+                          {collapsed ? '' : item.badge}
+                        </span>
+                      )}
                     </button>
                   );
                 })}
               </div>
-            </div>
+            ))}
+            <button className="htd-sb-item" onClick={() => {}} title={collapsed ? 'Log Out' : undefined}>
+              <LogOut size={16} style={{ flexShrink: 0 }} />
+              {!collapsed && <span className="htd-sb-label">Log Out</span>}
+            </button>
+          </nav>
 
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">✨ Insights</h3>
-              <div className="space-y-3">
-                {insights.map((insight, idx) => (
-                  <div key={idx} className="flex items-start gap-3">
-                    <div className="flex-shrink-0 mt-0.5">
-                      {insight.status === 'success'
-                        ? <CheckCircle className="text-green-500" size={18} />
-                        : <AlertCircle className="text-yellow-500" size={18} />}
-                    </div>
-                    <p className="text-gray-700 text-sm">{insight.text}</p>
-                  </div>
-                ))}
+          {/* Collapse button */}
+          <div className="htd-sb-collapse">
+            <button className="htd-collapse-btn" onClick={() => setCollapsed(c => !c)}>
+              {collapsed
+                ? <ChevronsRight size={15} style={{ flexShrink: 0 }} />
+                : <><ChevronsLeft size={15} style={{ flexShrink: 0 }} /><span>Collapse</span></>}
+            </button>
+          </div>
+
+          {/* User */}
+          <div className="htd-sb-user">
+            <div className="htd-sb-avatar">AK</div>
+            {!collapsed && (
+              <div style={{ overflow: 'hidden' }}>
+                <div className="htd-sb-uname">Arjun Kapoor</div>
+                <div className="htd-sb-urole">Trust: 75 · Good Standing</div>
               </div>
+            )}
+          </div>
+        </div>
+
+        {/* ══ MAIN ══ */}
+        <div className="htd-main">
+
+          {/* Top bar */}
+          <div className="htd-topbar">
+            <div>
+              <h1 style={{ fontSize: 17, fontWeight: 800, color: NAVY, margin: 0,  }}>Dashboard</h1>
+              <p style={{ fontSize: 12, color: '#64748b', margin: 0 }}>Overview · March 2026</p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ position: 'relative', cursor: 'pointer' }} onClick={() => navigate('/hire-talent/notifications')}>
+                <div style={{ width: 34, height: 34, borderRadius: 9, background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Bell size={16} color={NAVY} />
+                </div>
+                <span style={{ position: 'absolute', top: -2, right: -2, width: 14, height: 14, background: '#ef4444', borderRadius: '50%', fontSize: 8, fontWeight: 700, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #fff' }}>3</span>
+              </div>
+              <div style={{ width: 34, height: 34, borderRadius: 9, background: 'linear-gradient(135deg,#22c55e,#0ea5e9)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: 12, cursor: 'pointer' }}>AK</div>
             </div>
           </div>
 
-        </div>
-      </main>
-    </div>
-  );
-};
+          {/* Content */}
+          <div className="htd-content">
 
-export default HireTalentDashboard;
+            {/* KYC */}
+            <div className="htd-kyc">
+              <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+                <AlertCircle size={15} color="#d97706" />
+                <div>
+                  <p style={{ fontSize: 12, fontWeight: 700, color: '#92400e', margin: 0 }}>Payment verification pending — escrow locked</p>
+                  <p style={{ fontSize: 11, color: '#b45309', margin: '2px 0 0' }}>Complete billing setup to unlock full payment features</p>
+                </div>
+              </div>
+              <button onClick={() => navigate('/hire-talent/settings')}
+                style={{ fontSize: 11, fontWeight: 700, color: '#d97706', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 3, whiteSpace: 'nowrap', marginLeft: 10 }}>
+                Complete Setup <ArrowRight size={11} />
+              </button>
+            </div>
+
+            {/* Stat grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 11, marginBottom: 18 }}>
+              {[
+                { label: 'ACTIVE PROJECTS', value: '1',       sub: 'On track',       icon: FolderOpen,    color: 'green',  iconBg: '#dcfce7', iconClr: '#16a34a', route: '/hire-talent/projects', valClr: '#16a34a' },
+                { label: 'IN ESCROW',       value: '$42,000', sub: 'Protected funds', icon: Shield,        color: 'blue',   iconBg: '#dbeafe', iconClr: '#1d4ed8', route: '/hire-talent/payments', valClr: '#1d4ed8' },
+                { label: 'TRUST SCORE',     value: '75/100',  sub: 'Good standing',  icon: TrendingUp,    color: 'navy',   iconBg: '#e0f2fe', iconClr: NAVY,      route: null,                    valClr: NAVY },
+                { label: 'OPEN DISPUTES',   value: '1',       sub: 'Under review',   icon: Flag,          color: 'red',    iconBg: '#fee2e2', iconClr: '#dc2626', route: '/hire-talent/disputes', valClr: '#dc2626' },
+                { label: 'MESSAGES',        value: '3',       sub: '3 unread',       icon: MessageSquare, color: 'purple', iconBg: '#ede9fe', iconClr: '#7c3aed', route: '/project-stream',       valClr: '#7c3aed' },
+                { label: 'AVG RATING',      value: '4.8',     sub: 'Top Rated ⭐',   icon: Star,          color: 'amber',  iconBg: '#fef3c7', iconClr: '#d97706', route: '/hire-talent/reviews',  valClr: '#d97706' },
+              ].map((card, i) => {
+                const Icon = card.icon;
+                return (
+                  <div key={i} className={`htd-stat-card ${card.color}`} onClick={() => card.route && navigate(card.route)}>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 10 }}>
+                      <p style={{ fontSize: 9, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '.08em', margin: 0 }}>{card.label}</p>
+                      <div style={{ width: 34, height: 34, borderRadius: 8, background: card.iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Icon size={15} color={card.iconClr} />
+                      </div>
+                    </div>
+                    <p style={{ fontSize: 22, fontWeight: 800, color: card.valClr, margin: 0,  }}>{card.value}</p>
+                    <p style={{ fontSize: 11, fontWeight: 500, color: card.valClr, opacity: .65, margin: '3px 0 0' }}>{card.sub}</p>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* 3-column grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 278px', gap: 14 }}>
+
+              {/* ── Col 1 ── */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+
+                {/* Active Projects */}
+                <div className="htd-panel">
+                  <div className="htd-panel-head">
+                    <div className="htd-section-bar"><span className="htd-section-title">Active Projects</span></div>
+                    <button className="htd-view-link" onClick={() => navigate('/hire-talent/projects')}>View All <ArrowRight size={11} /></button>
+                  </div>
+                  <div style={{ padding: 12, display: 'flex', flexDirection: 'column', gap: 9 }}>
+                    {ACTIVE_PROJECTS.map(proj => (
+                      <div key={proj.id} className="htd-proj-card">
+                        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 9 }}>
+                          <div>
+                            <p style={{ fontSize: 13, fontWeight: 700, color: NAVY, margin: 0 }}>{proj.title}</p>
+                            <p style={{ fontSize: 11, color: '#94a3b8', margin: '2px 0 0' }}>{proj.talent}</p>
+                          </div>
+                          <div className="htd-badge green" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <div className="htd-pulsedot" />{proj.status}
+                          </div>
+                        </div>
+                        <div style={{ marginBottom: 9 }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                            <span style={{ fontSize: 11, color: '#64748b' }}>{proj.milestone} · Due {proj.deadline}</span>
+                            <span style={{ fontSize: 11, fontWeight: 700, color: NAVY }}>{proj.progress}%</span>
+                          </div>
+                          <div className="htd-progress-bar"><div className="htd-progress-fill" style={{ width: `${proj.progress}%` }} /></div>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                          <span style={{ fontSize: 11, fontWeight: 600, color: '#059669', display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <Shield size={11} />${proj.escrow.toLocaleString()} in escrow
+                          </span>
+                          <button className="htd-btn-primary" onClick={() => navigate(`/hire-talent/projects/${proj.id}`)}>
+                            {proj.action} <ChevronRight size={11} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                    <button className="htd-post-btn" onClick={() => navigate('/hire-talent/post-project')}>
+                      <Plus size={14} /> Post New Project
+                    </button>
+                  </div>
+                </div>
+
+                {/* Recent Transactions */}
+                <div className="htd-panel">
+                  <div className="htd-panel-head">
+                    <div className="htd-section-bar"><span className="htd-section-title">Recent Transactions</span></div>
+                    <button className="htd-view-link" onClick={() => navigate('/hire-talent/payments')}>View All <ArrowRight size={11} /></button>
+                  </div>
+                  <div>
+                    {RECENT_TRANSACTIONS.map((tx, i) => (
+                      <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '11px 14px', borderBottom: i < RECENT_TRANSACTIONS.length - 1 ? '1px solid #f1f5f9' : 'none' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+                          <div className="htd-tx-icon" style={{ background: tx.type === 'escrow' ? '#dcfce7' : tx.type === 'refund' ? '#fef3c7' : '#dbeafe' }}>
+                            <DollarSign size={13} color={tx.type === 'escrow' ? '#16a34a' : tx.type === 'refund' ? '#d97706' : '#1d4ed8'} />
+                          </div>
+                          <div>
+                            <p style={{ fontSize: 12, fontWeight: 600, color: NAVY, margin: 0, maxWidth: 165, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{tx.label}</p>
+                            <p style={{ fontSize: 11, color: '#94a3b8', margin: '2px 0 0' }}>{tx.time}</p>
+                          </div>
+                        </div>
+                        <span style={{ fontSize: 13, fontWeight: 700, color: tx.amount.startsWith('+') ? '#d97706' : NAVY }}>{tx.amount}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* ── Col 2 ── */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+
+                {/* AI Matched Talent */}
+                <div className="htd-panel">
+                  <div className="htd-panel-head">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                      <div style={{ width: 22, height: 22, borderRadius: 6, background: 'linear-gradient(135deg,#dbeafe,#dcfce7)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Zap size={12} color="#0ea5e9" />
+                      </div>
+                      <div className="htd-section-bar"><span className="htd-section-title">AI Matched Talent</span></div>
+                    </div>
+                    <span style={{ fontSize: 11, color: '#94a3b8' }}>Food Delivery App</span>
+                  </div>
+                  <div style={{ padding: 11, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    {INVITE_TALENTS.map(talent => (
+                      <div key={talent.id} className="htd-talent-row">
+                        <div className="htd-avatar">{talent.initials}</div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                            <p style={{ fontSize: 13, fontWeight: 700, color: NAVY, margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{talent.name}</p>
+                            <span style={{ fontSize: 11, fontWeight: 700, color: '#16a34a', flexShrink: 0 }}>{talent.match}</span>
+                          </div>
+                          <p style={{ fontSize: 11, color: '#94a3b8', margin: '2px 0 0' }}>{talent.type} · ⭐ {talent.rating}</p>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+                          <span className="htd-badge green">{talent.risk}</span>
+                          <button className="htd-btn-primary" style={{ padding: '5px 9px' }}
+                            onClick={() => { setInviteModal(talent); setInviteMsg(''); setInviteBudget(''); setInviteSent(false); }}>
+                            <Send size={11} /> Invite
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* AI Insights */}
+                <div className="htd-insight-card">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+                    <div style={{ width: 24, height: 24, borderRadius: 7, background: 'linear-gradient(135deg,#22c55e,#0ea5e9)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Zap size={13} color="#fff" />
+                    </div>
+                    <span className="htd-section-title">AI Insights</span>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+                    {[
+                      { text: 'Project performing excellently',       ok: true },
+                      { text: 'Agency is highly responsive',          ok: true },
+                      { text: 'Good timeline buffer available',       ok: true },
+                      { text: 'Review Milestone 1 deliverables soon', ok: false },
+                    ].map((ins, i) => (
+                      <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, background: 'rgba(255,255,255,.65)', padding: '7px 9px', borderRadius: 8 }}>
+                        {ins.ok ? <CheckCircle size={12} color="#16a34a" style={{ flexShrink: 0, marginTop: 1 }} /> : <AlertCircle size={12} color="#d97706" style={{ flexShrink: 0, marginTop: 1 }} />}
+                        <p style={{ fontSize: 12, color: '#374151', margin: 0 }}>{ins.text}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Trust Score */}
+                <div className="htd-panel" style={{ padding: 14 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 9 }}>
+                    <span className="htd-section-title">Trust Score</span>
+                    <span style={{ fontSize: 19, fontWeight: 800, color: NAVY,  }}>75<span style={{ fontSize: 12, color: '#94a3b8', fontWeight: 500 }}>/100</span></span>
+                  </div>
+                  <div style={{ height: 7, background: '#e8eef5', borderRadius: 99, overflow: 'hidden' }}>
+                    <div style={{ height: '100%', width: '75%', background: 'linear-gradient(90deg,#22c55e,#0ea5e9)', borderRadius: 99 }} />
+                  </div>
+                  <p style={{ fontSize: 11, color: '#64748b', margin: '6px 0 0' }}>Good standing · Complete milestones to improve</p>
+                </div>
+              </div>
+
+              {/* ── Col 3 (right sidebar) ── */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+
+                {/* Notifications */}
+                <div className="htd-panel">
+                  <div className="htd-panel-head">
+                    <div className="htd-section-bar"><span className="htd-section-title">Notifications</span></div>
+                    <button className="htd-view-link" onClick={() => navigate('/hire-talent/notifications')}>All <ArrowRight size={11} /></button>
+                  </div>
+                  <div>
+                    {NOTIFICATIONS_DATA.map((n, i) => (
+                      <div key={i} onClick={() => navigate('/hire-talent/notifications')}
+                        style={{ display: 'flex', alignItems: 'flex-start', gap: 9, padding: '10px 13px', borderBottom: i < NOTIFICATIONS_DATA.length - 1 ? '1px solid #f1f5f9' : 'none', cursor: 'pointer', background: n.unread ? 'rgba(14,165,233,.04)' : 'transparent' }}>
+                        <div style={{ width: 7, height: 7, borderRadius: '50%', background: n.unread ? '#0ea5e9' : '#cbd5e1', flexShrink: 0, marginTop: 5 }} />
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <p style={{ fontSize: 12, fontWeight: n.unread ? 600 : 400, color: n.unread ? NAVY : '#64748b', margin: 0, lineHeight: 1.4 }}>{n.text}</p>
+                          <p style={{ fontSize: 11, color: '#94a3b8', margin: '2px 0 0' }}>{n.time}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Quick Actions */}
+                <div className="htd-panel">
+                  <div className="htd-panel-head">
+                    <div className="htd-section-bar"><span className="htd-section-title">Quick Actions</span></div>
+                  </div>
+                  <div style={{ padding: '7px 7px', display: 'flex', flexDirection: 'column', gap: 1 }}>
+                    {[
+                      { label: 'Review Deliverables', icon: CheckCircle,   route: '/hire-talent/projects/1', iconBg: '#dcfce7', iconClr: '#16a34a' },
+                      { label: 'Message Team',         icon: MessageSquare, route: '/project-stream',        iconBg: '#dbeafe', iconClr: '#1d4ed8' },
+                      { label: 'My Projects',          icon: FolderOpen,    route: '/hire-talent/projects',  iconBg: '#ede9fe', iconClr: '#7c3aed' },
+                      { label: 'My Reviews',           icon: Star,          route: '/hire-talent/reviews',   iconBg: '#fef3c7', iconClr: '#d97706' },
+                      { label: 'Disputes',             icon: Flag,          route: '/hire-talent/disputes',  iconBg: '#fee2e2', iconClr: '#dc2626' },
+                      { label: 'Payments',             icon: CreditCard,    route: '/hire-talent/payments',  iconBg: '#dcfce7', iconClr: '#059669' },
+                    ].map((a, i) => {
+                      const Icon = a.icon;
+                      return (
+                        <button key={i} className="htd-qa-btn" onClick={() => navigate(a.route)}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+                            <div style={{ width: 27, height: 27, borderRadius: 7, background: a.iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              <Icon size={13} color={a.iconClr} />
+                            </div>
+                            <span style={{ fontSize: 13, fontWeight: 500, color: '#374151' }}>{a.label}</span>
+                          </div>
+                          <ChevronRight size={13} color="#cbd5e1" />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ══ INVITE MODAL ══ */}
+      {inviteModal && (
+        <div className="htd-modal-bg">
+          <div className="htd-modal">
+            {!inviteSent ? (
+              <>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+                  <h3 style={{ fontSize: 16, fontWeight: 800, color: NAVY, margin: 0,  }}>Send Invitation</h3>
+                  <button onClick={() => setInviteModal(null)}
+                    style={{ width: 28, height: 28, borderRadius: 7, background: '#f1f5f9', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <X size={14} color="#64748b" />
+                  </button>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: 10, background: '#f8fafc', borderRadius: 11, border: '1px solid #e8eef5', marginBottom: 13 }}>
+                  <div className="htd-avatar">{inviteModal.initials}</div>
+                  <div>
+                    <p style={{ fontSize: 13, fontWeight: 700, color: NAVY, margin: 0 }}>{inviteModal.name}</p>
+                    <p style={{ fontSize: 11, color: '#94a3b8', margin: '2px 0 0' }}>{inviteModal.type} · ⭐ {inviteModal.rating} · {inviteModal.match} match</p>
+                  </div>
+                </div>
+                <div style={{ marginBottom: 12 }}>
+                  <p style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 5 }}>Project</p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 7, padding: 10, background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 9 }}>
+                    <FolderOpen size={13} color="#1d4ed8" />
+                    <p style={{ fontSize: 13, fontWeight: 600, color: '#1d4ed8', margin: 0 }}>Food Delivery Mobile App</p>
+                    <span className="htd-badge blue" style={{ marginLeft: 'auto' }}>Active</span>
+                  </div>
+                </div>
+                <div style={{ marginBottom: 12 }}>
+                  <p style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 5 }}>Proposed Budget</p>
+                  <div style={{ position: 'relative' }}>
+                    <span style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: 13 }}>$</span>
+                    <input type="number" placeholder="e.g. 42000" value={inviteBudget}
+                      onChange={e => setInviteBudget(e.target.value)} className="htd-input" style={{ paddingLeft: 24 }} />
+                  </div>
+                  <p style={{ fontSize: 11, color: '#94a3b8', margin: '4px 0 0' }}>AI suggested: $28,000 – $45,000</p>
+                </div>
+                <div style={{ marginBottom: 16 }}>
+                  <p style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 5 }}>Message</p>
+                  <textarea rows={3} placeholder={`Hi ${inviteModal.name}, I'd love to discuss my project...`}
+                    value={inviteMsg} onChange={e => setInviteMsg(e.target.value)}
+                    className="htd-input" style={{ resize: 'none', lineHeight: 1.5 }} />
+                </div>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button onClick={() => setInviteModal(null)}
+                    style={{ flex: 1, padding: '10px 0', border: '1.5px solid #e2e8f0', borderRadius: 9, fontSize: 13, fontWeight: 600, color: '#64748b', background: '#fff', cursor: 'pointer' }}>
+                    Cancel
+                  </button>
+                  <button disabled={!canSend} onClick={() => setInviteSent(true)}
+                    className="htd-btn-primary" style={{ flex: 1, justifyContent: 'center', padding: '10px 0', borderRadius: 9, fontSize: 13 }}>
+                    <Send size={12} /> Send Invitation
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div style={{ textAlign: 'center', padding: '12px 0' }}>
+                <div style={{ width: 58, height: 58, borderRadius: '50%', background: '#dcfce7', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 13px' }}>
+                  <CheckCircle size={28} color="#16a34a" />
+                </div>
+                <h3 style={{ fontSize: 16, fontWeight: 800, color: NAVY, margin: '0 0 7px',  }}>Invitation Sent!</h3>
+                <p style={{ fontSize: 13, color: '#64748b', margin: '0 0 16px' }}><strong>{inviteModal.name}</strong> has 7 days to respond.</p>
+                <button className="htd-btn-primary" onClick={() => setInviteModal(null)}
+                  style={{ width: '100%', justifyContent: 'center', padding: '10px 0', borderRadius: 9, fontSize: 13 }}>
+                  Done
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
