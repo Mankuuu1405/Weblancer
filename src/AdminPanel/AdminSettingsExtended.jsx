@@ -2,6 +2,79 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PageHeader, SectionCard, ActionBtn } from "./AdminComponents";
 
+const G = {
+  greenLight:  "#A8E063",
+  green:       "#6EC030",
+  greenDeep:   "#2E7D1F",
+  greenBg:     "#f1fce8",
+  greenBorder: "#d4edbb",
+
+  navyLight:   "#4A6FA5",
+  navy:        "#1A2B5E",
+  navyDeep:    "#0F1A3B",
+  navyBg:      "#e8edf7",
+  navyBorder:  "#b8c6e0",
+
+  gradGreen: "linear-gradient(135deg, #A8E063 0%, #2E7D1F 100%)",
+  gradNavy:  "linear-gradient(135deg, #4A6FA5 0%, #0F1A3B 100%)",
+
+  text:        "#1C1C1C",
+  sub:         "#4b5563",
+  muted:       "#9ca3af",
+  border:      "#e5e7eb",
+  bg:          "#f9fafb",
+  white:       "#ffffff",
+
+  amber:       "#f59e0b",
+  amberBg:     "#fffbeb",
+  amberBorder: "#fde68a",
+  amberText:   "#92400e",
+  red:         "#ef4444",
+  redBg:       "#fef2f2",
+  redBorder:   "#fecaca",
+  redText:     "#dc2626",
+  blue:        "#3b82f6",
+  blueBg:      "#eff6ff",
+  blueBorder:  "#bfdbfe",
+  blueText:    "#1d4ed8",
+};
+const FONT = "'Poppins', sans-serif";
+
+const btnNavy = {
+  display: "inline-flex", alignItems: "center", gap: 6,
+  fontSize: 12, fontWeight: 700, fontFamily: FONT,
+  background: G.gradNavy, color: G.white,
+  border: "none", borderRadius: 100,
+  padding: "8px 18px", cursor: "pointer",
+  boxShadow: "0 3px 12px rgba(15,26,59,0.25)",
+  whiteSpace: "nowrap",
+};
+const btnGreen = {
+  display: "inline-flex", alignItems: "center", gap: 6,
+  fontSize: 12, fontWeight: 700, fontFamily: FONT,
+  background: G.gradGreen, color: G.white,
+  border: "none", borderRadius: 100,
+  padding: "8px 18px", cursor: "pointer",
+  boxShadow: "0 2px 10px rgba(46,125,31,0.22)",
+  whiteSpace: "nowrap",
+};
+const btnOutline = {
+  display: "inline-flex", alignItems: "center", gap: 6,
+  fontSize: 12, fontWeight: 700, fontFamily: FONT,
+  background: G.greenBg, color: G.greenDeep,
+  border: `1px solid ${G.greenBorder}`,
+  borderRadius: 100, padding: "8px 18px", cursor: "pointer",
+  whiteSpace: "nowrap",
+};
+const btnWarning = {
+  ...btnOutline,
+  background: G.amberBg, color: G.amberText, border: `1px solid ${G.amberBorder}`,
+};
+const btnDanger = {
+  ...btnOutline,
+  background: G.redBg, color: G.redText, border: `1px solid ${G.redBorder}`,
+};
+
 // ─── SHARED COMPONENTS ────────────────────────────────────────────────────────
 function SettingRow({ label, desc, children }) {
   return (
@@ -18,8 +91,8 @@ function SettingRow({ label, desc, children }) {
 function Toggle({ value, onChange }) {
   return (
     <button onClick={() => onChange(!value)}
-      className={`relative w-10 h-5 rounded-full transition-colors ${value ? "bg-green-500" : "bg-gray-200"}`}>
-      <span className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${value ? "translate-x-5" : "translate-x-0.5"}`} />
+      className={`relative w-10 h-5 rounded-full transition-colors ${value ? "bg-green-5  00" : "bg-gray-200"}`}>
+      <span className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${value ? "translate-x-0.5" : "-translate-x-[18px]"}`} />
     </button>
   );
 }
@@ -34,10 +107,11 @@ function TextInput({ value, onChange, placeholder, className = "" }) {
 function SaveBar({ onSave, saved }) {
   return (
     <div className="flex justify-end gap-3 mt-6 pt-5 border-t border-gray-100">
-      <ActionBtn label="Discard" />
+      <ActionBtn label="Discard" style={btnDanger}/>
       <ActionBtn
         label={saved ? "✓ Saved!" : "Save Changes"}
         variant="primary" size="md"
+        style={btnGreen}
         onClick={onSave}
       />
     </div>
@@ -327,7 +401,7 @@ export function AdminSettingsPolicies() {
   return (
     <div className="p-6">
       <PageHeader title="Settings" subtitle="Platform configuration & system preferences"
-        actions={<ActionBtn label="+ New Policy" variant="primary" size="md" />}
+        actions={<ActionBtn label="+ New Policy" variant="primary" size="md" style={btnNavy} />}
       />
       <SettingsNav active="policies" />
 
@@ -635,7 +709,7 @@ export function AdminSettingsRules() {
       <PageHeader
         title="Settings"
         subtitle="Platform configuration & system preferences"
-        actions={<ActionBtn label="+ New Rule" variant="primary" size="md" />}
+        actions={<ActionBtn label="+ New Rule" variant="primary" size="md" style={btnNavy}/>}
       />
       <SettingsNav active="rules" />
 

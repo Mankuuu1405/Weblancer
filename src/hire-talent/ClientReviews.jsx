@@ -132,7 +132,7 @@ export default function ClientReviews() {
     <div className="min-h-screen bg-gray-50">
 
       {/* ── Header ── */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+      {/* <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
@@ -162,7 +162,55 @@ export default function ClientReviews() {
             </div>
           </div>
         </div>
-      </header>
+</header> */}
+
+
+
+
+<header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+  <div className="max-w-3xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
+    
+    {/* Left Side */}
+    <div className="flex items-center gap-3">
+      
+      {/* Back Button */}
+      <button
+        onClick={() => navigate(-1)}
+        className="p-2 rounded-lg text-gray-400 hover:bg-gray-100 transition"
+      >
+        <ArrowLeft size={18} />
+      </button>
+
+      {/* Logo (WebLance removed) */}
+      <img
+        src="/image-removebg-preview.png"
+        alt="Logo"
+        className="h-8 w-auto cursor-pointer"
+        onClick={() => navigate("/")}
+      />
+    </div>
+
+    {/* Right Side */}
+    <div className="flex items-center gap-2">
+      <button
+        onClick={() => navigate('/hire-talent/notifications')}
+        className="relative p-2 text-gray-400 hover:bg-gray-100 rounded-lg transition"
+      >
+        <Bell size={18} />
+        <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-red-500 rounded-full" />
+      </button>
+
+      <button className="p-2 text-gray-400 hover:bg-gray-100 rounded-lg transition">
+        <Settings size={18} />
+      </button>
+
+      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-blue-700 flex items-center justify-center text-white text-xs font-bold ml-1">
+        CL
+      </div>
+    </div>
+
+  </div>
+</header>
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
 

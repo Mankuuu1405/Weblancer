@@ -251,7 +251,7 @@ const ProjectList = () => {
     <div className="min-h-screen bg-gray-50">
 
       {/* ── Header ── */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+      {/* <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
           <div className="flex items-center justify-between">
             <span className="text-2xl font-extrabold tracking-tight select-none">
@@ -275,8 +275,42 @@ const ProjectList = () => {
             </div>
           </div>
         </div>
-      </header>
+      </header> */}
 
+
+
+{/* ── Header ── */}
+<header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5">
+    <div className="flex items-center justify-between">
+
+      {/* Logo Image */}
+      <img
+        src="/image-removebg-preview.png"
+        alt="Weblance"
+        className="h-10 w-auto block"
+      />
+
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => navigate('/hire-talent/notifications')}
+          className="relative p-2 text-gray-400 hover:bg-gray-100 rounded-lg transition"
+        >
+          <Bell size={20} />
+          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full" />
+        </button>
+
+        <button className="p-2 text-gray-400 hover:bg-gray-100 rounded-lg transition">
+          <Settings size={20} />
+        </button>
+
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-400 to-blue-700 flex items-center justify-center text-white text-xs font-bold ml-1">
+          CL
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
         {/* ── Page Heading ── */}

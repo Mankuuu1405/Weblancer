@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import {
-  StatCard, Avatar, SearchBar, FilterSelect,
+  Avatar, SearchBar, FilterSelect,
   ActionBtn, PageHeader, SectionCard
 } from "./AdminComponents";
 
@@ -21,9 +21,9 @@ const mockProjects = [
     participants: 5,
     lastMessage: { sender: "Raj Kumar", text: "Yes Priya, share them in Channel 1.", time: "5m ago" },
     messages: [
-      { id: "M1", sender: "Weblance Admin", role: "admin", color: "red",    text: "Please ensure all deliverables are uploaded before the deadline.", time: "Mar 14 · 04:30 PM", type: "Normal",   msgType: "Normal"   },
-      { id: "M2", sender: "Priya S.",       role: "team",  color: "yellow", text: "UI screens for milestone 3 are ready for review. Should I share in the client channel?", time: "Mar 14 · 05:00 PM", type: "Normal", msgType: "Normal" },
-      { id: "M3", sender: "Raj Kumar",      role: "agency",color: "blue",   text: "Yes Priya, share them in Channel 1 with the client. Good work!", time: "Mar 14 · 05:15 PM", type: "Normal", msgType: "Normal" },
+      { id: "M1", sender: "Weblance Admin", role: "admin", color: "red", text: "Please ensure all deliverables are uploaded before the deadline.", time: "Mar 14 · 04:30 PM", type: "Normal", msgType: "Normal" },
+      { id: "M2", sender: "Priya S.", role: "team", color: "yellow", text: "UI screens for milestone 3 are ready for review. Should I share in the client channel?", time: "Mar 14 · 05:00 PM", type: "Normal", msgType: "Normal" },
+      { id: "M3", sender: "Raj Kumar", role: "agency", color: "blue", text: "Yes Priya, share them in Channel 1 with the client. Good work!", time: "Mar 14 · 05:15 PM", type: "Normal", msgType: "Normal" },
     ],
   },
   {
@@ -40,8 +40,8 @@ const mockProjects = [
     participants: 3,
     lastMessage: { sender: "Weblance Admin", text: "⚠ Client has been unresponsive for 8 days. Reminder sent.", time: "4h ago" },
     messages: [
-      { id: "M1", sender: "Arjun Dev",      role: "talent", color: "blue", text: "Milestone 2 is 60% done. Waiting for client feedback on the appointment flow.", time: "Mar 8 · 10:00 AM", type: "Update",  msgType: "Update"  },
-      { id: "M2", sender: "Weblance Admin", role: "admin",  color: "red",  text: "⚠ Client has been unresponsive for 8 days. Reminder has been sent automatically.", time: "Mar 10 · 09:00 AM", type: "Warning", msgType: "Warning" },
+      { id: "M1", sender: "Arjun Dev", role: "talent", color: "blue", text: "Milestone 2 is 60% done. Waiting for client feedback on the appointment flow.", time: "Mar 8 · 10:00 AM", type: "Update", msgType: "Update" },
+      { id: "M2", sender: "Weblance Admin", role: "admin", color: "red", text: "⚠ Client has been unresponsive for 8 days. Reminder has been sent automatically.", time: "Mar 10 · 09:00 AM", type: "Warning", msgType: "Warning" },
     ],
   },
   {
@@ -58,8 +58,8 @@ const mockProjects = [
     participants: 3,
     lastMessage: { sender: "Weblance Admin", text: "⚠ High risk project flagged. Scope changes must be formally approved.", time: "2d ago" },
     messages: [
-      { id: "M1", sender: "Weblance Admin", role: "admin",  color: "red",  text: "⚠ This project has been flagged as high risk. Scope changes must be formally approved going forward.", time: "Mar 10 · 08:00 AM", type: "Warning", msgType: "Warning" },
-      { id: "M2", sender: "Rahul Sharma",   role: "talent", color: "blue", text: "I've completed 80% of the backend. Waiting for the updated API spec from the client.", time: "Mar 12 · 02:00 PM", type: "Update", msgType: "Update" },
+      { id: "M1", sender: "Weblance Admin", role: "admin", color: "red", text: "⚠ This project has been flagged as high risk. Scope changes must be formally approved going forward.", time: "Mar 10 · 08:00 AM", type: "Warning", msgType: "Warning" },
+      { id: "M2", sender: "Rahul Sharma", role: "talent", color: "blue", text: "I've completed 80% of the backend. Waiting for the updated API spec from the client.", time: "Mar 12 · 02:00 PM", type: "Update", msgType: "Update" },
     ],
   },
   {
@@ -79,8 +79,8 @@ const mockProjects = [
     participants: 5,
     lastMessage: { sender: "Weblance Admin", text: "🔒 Chat frozen pending dispute resolution.", time: "7d ago" },
     messages: [
-      { id: "M1", sender: "Weblance Admin",      role: "admin",  color: "red",  text: "🔒 Chat frozen pending dispute resolution. Only official admin messages allowed.", time: "Mar 8 · 06:00 PM", type: "Warning", msgType: "Warning" },
-      { id: "M2", sender: "System",              role: "system", color: "gray", text: "Escrow ₹1,40,000 has been frozen automatically due to active dispute DSP-002.", time: "Mar 8 · 06:01 PM", type: "System", msgType: "System" },
+      { id: "M1", sender: "Weblance Admin", role: "admin", color: "red", text: "🔒 Chat frozen pending dispute resolution. Only official admin messages allowed.", time: "Mar 8 · 06:00 PM", type: "Warning", msgType: "Warning" },
+      { id: "M2", sender: "System", role: "system", color: "gray", text: "Escrow ₹1,40,000 has been frozen automatically due to active dispute DSP-002.", time: "Mar 8 · 06:01 PM", type: "System", msgType: "System" },
     ],
   },
   {
@@ -105,28 +105,28 @@ const mockProjects = [
 // ─── SHARED STYLES ─────────────────────────────────────────────────────────────
 const healthStyle = {
   "On Track": "bg-green-50 text-green-700 border border-green-200",
-  "At Risk":  "bg-yellow-50 text-yellow-700 border border-yellow-200",
-  "Delayed":  "bg-orange-50 text-orange-700 border border-orange-200",
+  "At Risk": "bg-yellow-50 text-yellow-700 border border-yellow-200",
+  "Delayed": "bg-orange-50 text-orange-700 border border-orange-200",
   "Disputed": "bg-red-50 text-red-700 border border-red-200",
-  "Completed":"bg-gray-50 text-gray-600 border border-gray-200",
-  "Pending":  "bg-blue-50 text-blue-700 border border-blue-200",
+  "Completed": "bg-gray-50 text-gray-600 border border-gray-200",
+  "Pending": "bg-blue-50 text-blue-700 border border-blue-200",
 };
 
 const msgColorMap = {
-  red:  "bg-red-50 border-l-4 border-red-400",
+  red: "bg-red-50 border-l-4 border-red-400",
   blue: "bg-blue-50 border-l-4 border-blue-400",
   yellow: "bg-yellow-50 border-l-4 border-yellow-400",
-  green:  "bg-green-50 border-l-4 border-green-400",
-  gray:   "bg-gray-50 border-l-4 border-gray-300",
+  green: "bg-green-50 border-l-4 border-green-400",
+  gray: "bg-gray-50 border-l-4 border-gray-300",
 };
 
 const roleBadge = {
-  admin:    "bg-red-100 text-red-700",
-  agency:   "bg-blue-100 text-blue-700",
-  talent:   "bg-blue-100 text-blue-700",
-  team:     "bg-yellow-100 text-yellow-700",
-  client:   "bg-green-100 text-green-700",
-  system:   "bg-gray-100 text-gray-500",
+  admin: "bg-red-100 text-red-700",
+  agency: "bg-blue-100 text-blue-700",
+  talent: "bg-blue-100 text-blue-700",
+  team: "bg-yellow-100 text-yellow-700",
+  client: "bg-green-100 text-green-700",
+  system: "bg-gray-100 text-gray-500",
 };
 
 const roleLabel = {
@@ -241,7 +241,86 @@ function ChatView({ project, onFreeze, onUnfreeze, showSend = true }) {
   );
 }
 
-// ─── PAGE 1: /admin/projects/at-risk ─────────────────────────────────────────
+
+/* ── Freelancer Contracts theme tokens ───────────────────────
+   GREEN:  #A8E063 (light) → #6EC030 (mid) → #2E7D1F (deep)
+   NAVY:   #4A6FA5 (light) → #1A2B5E (mid) → #0F1A3B (deep)
+   ──────────────────────────────────────────────────────────── */
+const G = {
+  greenLight: "#A8E063",
+  green: "#6EC030",
+  greenDeep: "#2E7D1F",
+  greenBg: "#f1fce8",
+  greenBorder: "#d4edbb",
+
+  navyLight: "#4A6FA5",
+  navy: "#1A2B5E",
+  navyDeep: "#0F1A3B",
+  navyBg: "#e8edf7",
+  navyBorder: "#b8c6e0",
+
+  gradGreen: "linear-gradient(135deg, #A8E063 0%, #2E7D1F 100%)",
+  gradNavy: "linear-gradient(135deg, #4A6FA5 0%, #0F1A3B 100%)",
+
+  text: "#1C1C1C",
+  sub: "#4b5563",
+  muted: "#9ca3af",
+  border: "#e5e7eb",
+  bg: "#f9fafb",
+  white: "#ffffff",
+
+  amber: "#f59e0b",
+  amberBg: "#fffbeb",
+  amberBorder: "#fde68a",
+  amberText: "#92400e",
+  red: "#ef4444",
+  redBg: "#fef2f2",
+  redBorder: "#fecaca",
+  redText: "#dc2626",
+  orange: "#f97316",
+  orangeBg: "#fff7ed",
+  orangeBorder: "#fed7aa",
+  orangeText: "#c2410c",
+};
+const FONT = "'Poppins', sans-serif";
+
+const HEALTH_STYLE = {
+  "At Risk": { bg: G.amberBg, text: G.amberText, dot: G.amber },
+  "Delayed": { bg: G.orangeBg, text: G.orangeText, dot: G.orange },
+  "Disputed": { bg: G.redBg, text: G.redText, dot: G.red },
+};
+
+/* ── Shared mini-components ── */
+function StatCard({ label, value, sub, color = "gray" }) {
+  const map = {
+    gray: { bg: G.bg, border: G.border, val: G.text, lbl: G.muted },
+    green: { bg: G.greenBg, border: G.greenBorder, val: G.greenDeep, lbl: G.greenDeep },
+    orange: { bg: G.orangeBg, border: G.orangeBorder, val: G.orangeText, lbl: G.orangeText },
+    red: { bg: G.redBg, border: G.redBorder, val: G.redText, lbl: G.redText },
+  };
+  const c = map[color] || map.gray;
+  return (
+    <div style={{ background: c.bg, border: `1px solid ${c.border}`, borderRadius: 14, padding: "16px 20px", flex: 1, minWidth: 0, boxShadow: "0 2px 8px rgba(110,192,48,0.05)" }}>
+      <p style={{ fontSize: 10, fontWeight: 700, color: c.lbl, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>{label}</p>
+      <p style={{ fontSize: 26, fontWeight: 800, color: c.val, margin: 0, lineHeight: 1 }}>{value}</p>
+      {sub && <p style={{ fontSize: 11, color: G.muted, marginTop: 5 }}>{sub}</p>}
+    </div>
+  );
+}
+
+const btnNavy = { display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, fontWeight: 700, fontFamily: FONT, background: G.gradNavy, color: G.white, border: "none", borderRadius: 100, padding: "8px 16px", cursor: "pointer", boxShadow: "0 3px 12px rgba(15,26,59,0.25)", whiteSpace: "nowrap" };
+const btnGreen = { display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, fontWeight: 700, fontFamily: FONT, background: G.gradGreen, color: G.white, border: "none", borderRadius: 100, padding: "8px 16px", cursor: "pointer", boxShadow: "0 2px 10px rgba(46,125,31,0.22)", whiteSpace: "nowrap" };
+const btnOutline = { display: "inline-flex", alignItems: "center", gap: 6, fontSize: 12, fontWeight: 700, fontFamily: FONT, background: G.greenBg, color: G.greenDeep, border: `1px solid ${G.greenBorder}`, borderRadius: 100, padding: "8px 16px", cursor: "pointer", whiteSpace: "nowrap" };
+const btnWarn = { ...btnOutline, background: G.amberBg, color: G.amberText, border: `1px solid ${G.amberBorder}` };
+const btnDanger = { ...btnOutline, background: G.redBg, color: G.redText, border: `1px solid ${G.redBorder}` };
+
+// /* ── Mock data (same shape as AdminProjects) ── */
+// const mockProjects = [
+//   { id:"PRJ-002", title:"Patient Appointment App", client:{name:"HealthFirst Clinic",id:"CL-001",type:"Startup"}, talent:{name:"Arjun Dev",id:"FL-002",type:"Freelancer"}, status:"In Progress", health:"At Risk", budget:320000, escrow:160000, deadline:"Apr 25, 2026", riskLevel:"Medium", aiFlag:true, progress:35, scopeChanges:3, clientSilenceDays:8, talentSilenceDays:0, chatFrozen:false, aiRiskReason:"Client has been unresponsive for 8 days. Scope changed 3 times. Moderate risk of deadline breach. Admin attention recommended." },
+//   { id:"PRJ-003", title:"E-Commerce Platform Revamp", client:{name:"ShopEasy Retail",id:"CL-002",type:"Enterprise"}, talent:{name:"Rahul Sharma",id:"FL-001",type:"Freelancer"}, status:"In Progress", health:"Delayed", budget:185000, escrow:92500, deadline:"Apr 10, 2026", riskLevel:"High", aiFlag:true, progress:28, scopeChanges:5, clientSilenceDays:5, talentSilenceDays:2, chatFrozen:false, aiRiskReason:"Milestone 1 delivered 13 days late. Scope changed 5 times without approval. Client silence and talent inactivity both detected. High risk of dispute." },
+//   { id:"PRJ-006", title:"Mobile Banking App", client:{name:"Vikram Singh",id:"CL-002",type:"Enterprise"}, talent:{name:"TechNova Solutions",id:"AG-001",type:"Agency"}, status:"Disputed", health:"Disputed", budget:280000, escrow:140000, deadline:"Apr 5, 2026", riskLevel:"High", aiFlag:true, progress:50, scopeChanges:2, clientSilenceDays:0, talentSilenceDays:0, chatFrozen:true, aiRiskReason:"Active dispute on Milestone 3. Escrow ₹1,40,000 frozen. AI verdict: Mixed fault — 60% Agency, 40% Client. Chat frozen pending resolution." },
+// ];
+
 export function AdminAtRiskProjects() {
   const navigate = useNavigate();
   const [search, setSearch] = useState("");
@@ -261,157 +340,258 @@ export function AdminAtRiskProjects() {
   });
 
   return (
-    <div className="p-6">
-      <PageHeader
-        title="At-Risk Projects"
-        subtitle="Projects flagged by AI — delayed, at risk, or in active dispute"
-        actions={
-          <div className="flex gap-2">
-            <ActionBtn label="← All Projects" onClick={() => navigate("/admin/projects")} />
-            <ActionBtn label="Frozen Chats" onClick={() => navigate("/admin/projectstream/freeze")} />
-          </div>
-        }
-      />
+    <div style={{ padding: "28px 28px 64px", fontFamily: FONT, background: G.bg, minHeight: "100%" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+        * { font-family: 'Poppins', sans-serif; }
+        input, select { outline: none; font-family: 'Poppins', sans-serif; }
+      `}</style>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <StatCard label="Total At Risk"  value={atRiskProjects.length}                                     color="orange" />
-        <StatCard label="Delayed"        value={atRiskProjects.filter(p => p.health === "Delayed").length}  color="orange" />
-        <StatCard label="Disputed"       value={atRiskProjects.filter(p => p.health === "Disputed").length} color="red"    />
+      {/* ── Header ── */}
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 24 }}>
+        <div>
+          <h1 style={{ fontSize: 22, fontWeight: 800, color: G.text, margin: 0, letterSpacing: "-0.4px" }}>At-Risk Projects</h1>
+          <p style={{ fontSize: 13, color: G.muted, marginTop: 3 }}>Projects flagged by AI — delayed, at risk, or in active dispute</p>
+        </div>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button style={btnOutline} onClick={() => navigate("/admin/projects")}>← All Projects</button>
+          <button style={btnNavy} onClick={() => navigate("/admin/projectstream/freeze")}>Frozen Chats</button>
+        </div>
+      </div>
+
+      {/* ── Stats ── */}
+      <div style={{ display: "flex", gap: 14, marginBottom: 24 }}>
+        <StatCard label="Total At Risk" value={atRiskProjects.length} color="orange" />
+        <StatCard label="Delayed" value={atRiskProjects.filter(p => p.health === "Delayed").length} color="orange" />
+        <StatCard label="Disputed" value={atRiskProjects.filter(p => p.health === "Disputed").length} color="red" />
         <StatCard label="Escrow at Stake" value={`₹${(atRiskProjects.reduce((s, p) => s + p.escrow, 0) / 100000).toFixed(1)}L`} color="red" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-        <SearchBar value={search} onChange={setSearch} placeholder="Search project, client, talent...">
-          <FilterSelect value={riskFilter} onChange={setRiskFilter} label="All Risk"
-            options={[{ value: "High", label: "High" }, { value: "Medium", label: "Medium" }]} />
-        </SearchBar>
+      {/* ── Filter bar ── */}
+      <div style={{
+        display: "flex", gap: 10, alignItems: "center", marginBottom: 20,
+        background: G.white, border: `1px solid ${G.greenBorder}`,
+        borderRadius: 12, padding: "12px 16px",
+        boxShadow: "0 2px 8px rgba(110,192,48,0.05)",
+      }}>
+        <div style={{ position: "relative", flex: "1 1 240px", maxWidth: 320 }}>
+          <span style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)", fontSize: 13, color: G.muted }}>🔍</span>
+          <input
+            value={search} onChange={e => setSearch(e.target.value)}
+            placeholder="Search project, client, talent…"
+            style={{ width: "100%", fontSize: 12, fontWeight: 500, border: `1.5px solid ${G.greenBorder}`, borderRadius: 100, padding: "8px 12px 8px 32px", background: G.white, color: G.text, boxSizing: "border-box" }}
+          />
+        </div>
+        <select value={riskFilter} onChange={e => setRiskFilter(e.target.value)}
+          style={{ fontSize: 12, fontWeight: 600, border: `1.5px solid ${riskFilter ? G.green : G.greenBorder}`, borderRadius: 100, padding: "8px 14px", background: riskFilter ? G.greenBg : G.white, color: riskFilter ? G.greenDeep : G.sub, cursor: "pointer" }}>
+          <option value="">All Risk</option>
+          <option value="High">High</option>
+          <option value="Medium">Medium</option>
+        </select>
+        <span style={{ fontSize: 11, color: G.muted, fontWeight: 600, marginLeft: "auto" }}>{filtered.length} results</span>
       </div>
 
-      <div className="space-y-4">
-        {filtered.map(p => (
-          <div
-            key={p.id}
-            className={`bg-white rounded-xl border shadow-sm transition-all cursor-pointer hover:shadow-md ${selected?.id === p.id ? "border-green-300 ring-1 ring-green-200" : "border-gray-100"}`}
-            onClick={() => setSelected(selected?.id === p.id ? null : p)}
-          >
-            <div className="p-5">
-              {/* Top row */}
-              <div className="flex items-start justify-between gap-3 mb-3">
-                <div>
-                  <div className="flex items-center gap-2 flex-wrap mb-1">
-                    <h3 className="text-base font-bold text-gray-900">{p.title}</h3>
-                    <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${healthStyle[p.health]}`}>{p.health}</span>
-                    {p.aiFlag && <span className="text-[10px] bg-red-50 text-red-500 border border-red-200 px-1.5 py-0.5 rounded-full font-semibold">AI⚑</span>}
-                  </div>
-                  <p className="text-xs text-gray-500">{p.id} · {p.client.name} → {p.talent.name} ({p.talent.type})</p>
-                </div>
-                <span className={`text-xs font-bold px-2 py-1 rounded-lg shrink-0 ${p.riskLevel === "High" ? "bg-red-50 text-red-600" : "bg-yellow-50 text-yellow-700"}`}>
-                  {p.riskLevel} Risk
-                </span>
-              </div>
+      {/* ── Cards ── */}
+      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+        {filtered.map(p => {
+          const hs = HEALTH_STYLE[p.health] || HEALTH_STYLE["At Risk"];
+          const isSelected = selected?.id === p.id;
+          const isHigh = p.riskLevel === "High";
 
-              {/* AI Risk Reason */}
-              {p.aiRiskReason && (
-                <div className="mb-3 p-3 bg-orange-50 rounded-lg border border-orange-100 flex items-start gap-2">
-                  <span className="text-orange-500 text-sm shrink-0 mt-0.5">◎</span>
-                  <p className="text-xs text-orange-800 leading-relaxed">{p.aiRiskReason}</p>
-                </div>
-              )}
+          return (
+            <div
+              key={p.id}
+              onClick={() => setSelected(isSelected ? null : p)}
+              style={{
+                background: G.white,
+                border: `1.5px solid ${isSelected ? G.green : p.health === "Disputed" ? G.redBorder : p.health === "Delayed" ? G.orangeBorder : G.amberBorder}`,
+                borderRadius: 16,
+                cursor: "pointer",
+                transition: "all 0.15s",
+                boxShadow: isSelected
+                  ? "0 4px 24px rgba(110,192,48,0.14)"
+                  : p.health === "Disputed"
+                    ? "0 2px 12px rgba(239,68,68,0.08)"
+                    : "0 2px 8px rgba(249,115,22,0.07)",
+                overflow: "hidden",
+              }}
+            >
+              {/* Coloured top stripe */}
+              <div style={{
+                height: 3,
+                background: p.health === "Disputed"
+                  ? `linear-gradient(90deg, ${G.red} 0%, ${G.redBorder} 100%)`
+                  : p.health === "Delayed"
+                    ? `linear-gradient(90deg, ${G.orange} 0%, ${G.orangeBorder} 100%)`
+                    : `linear-gradient(90deg, ${G.amber} 0%, ${G.amberBorder} 100%)`,
+              }} />
 
-              {/* Progress + stats */}
-              <div className="flex items-center gap-6 mb-4">
-                <div className="flex-1">
-                  <div className="flex justify-between text-xs text-gray-500 mb-1">
-                    <span>Progress</span>
-                    <span className="font-semibold">{p.progress}%</span>
-                  </div>
-                  <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-                    <div
-                      className={`h-full rounded-full ${p.riskLevel === "High" ? "bg-orange-400" : "bg-yellow-400"}`}
-                      style={{ width: `${p.progress}%` }}
-                    />
-                  </div>
-                </div>
-                <div className="flex items-center gap-4 shrink-0">
-                  {[
-                    { label: "Escrow",  value: p.escrow > 0 ? `₹${(p.escrow / 1000).toFixed(0)}k` : "—",  color: "text-orange-500" },
-                    { label: "Deadline",value: p.deadline, color: "text-gray-700" },
-                    { label: "Scope Δ", value: p.scopeChanges, color: p.scopeChanges > 2 ? "text-red-500" : "text-gray-600" },
-                  ].map(s => (
-                    <div key={s.label} className="text-center">
-                      <p className={`text-sm font-bold ${s.color}`}>{s.value}</p>
-                      <p className="text-[10px] text-gray-400">{s.label}</p>
+              <div style={{ padding: "18px 20px" }}>
+
+                {/* ── Top row ── */}
+                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 12, marginBottom: 12 }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 4 }}>
+                      <h3 style={{ fontSize: 15, fontWeight: 700, color: G.text, margin: 0 }}>{p.title}</h3>
+                      {/* Health badge */}
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: 5, fontSize: 11, fontWeight: 700, background: hs.bg, color: hs.text, padding: "3px 10px", borderRadius: 99 }}>
+                        <span style={{ width: 5, height: 5, borderRadius: "50%", background: hs.dot }} />
+                        {p.health}
+                      </span>
+                      {p.aiFlag && (
+                        <span style={{ fontSize: 9, fontWeight: 700, background: G.redBg, color: G.redText, border: `1px solid ${G.redBorder}`, padding: "1px 7px", borderRadius: 99 }}>AI⚑</span>
+                      )}
                     </div>
-                  ))}
+                    <p style={{ fontSize: 12, color: G.muted, margin: 0 }}>
+                      {p.id} · {p.client.name} → {p.talent.name} ({p.talent.type})
+                    </p>
+                  </div>
+
+                  {/* Risk pill */}
+                  <span style={{
+                    fontSize: 11, fontWeight: 700, padding: "5px 12px", borderRadius: 10, flexShrink: 0,
+                    background: isHigh ? G.redBg : G.amberBg,
+                    color: isHigh ? G.redText : G.amberText,
+                    border: `1px solid ${isHigh ? G.redBorder : G.amberBorder}`,
+                  }}>
+                    {p.riskLevel} Risk
+                  </span>
+                </div>
+
+                {/* ── AI Risk Reason ── */}
+                {p.aiRiskReason && (
+                  <div style={{
+                    display: "flex", alignItems: "flex-start", gap: 10,
+                    padding: "10px 14px", marginBottom: 14,
+                    background: G.orangeBg, border: `1px solid ${G.orangeBorder}`,
+                    borderRadius: 10,
+                  }}>
+                    <span style={{ fontSize: 16, color: G.orange, flexShrink: 0, marginTop: 1 }}>◎</span>
+                    <p style={{ fontSize: 12, color: G.orangeText, lineHeight: 1.6, margin: 0 }}>{p.aiRiskReason}</p>
+                  </div>
+                )}
+
+                {/* ── Progress + meta stats ── */}
+                <div style={{ display: "flex", alignItems: "center", gap: 20, marginBottom: 14 }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
+                      <span style={{ fontSize: 11, color: G.muted }}>Progress</span>
+                      <span style={{ fontSize: 11, fontWeight: 700, color: G.sub }}>{p.progress}%</span>
+                    </div>
+                    <div style={{ height: 8, background: G.border, borderRadius: 99, overflow: "hidden" }}>
+                      <div style={{
+                        width: `${p.progress}%`, height: "100%", borderRadius: 99,
+                        background: isHigh ? G.orange : G.amber,
+                        transition: "width 0.3s",
+                      }} />
+                    </div>
+                  </div>
+
+                  <div style={{ display: "flex", alignItems: "center", gap: 20, flexShrink: 0 }}>
+                    {[
+                      { label: "Escrow", value: p.escrow > 0 ? `₹${(p.escrow / 1000).toFixed(0)}k` : "—", color: G.orangeText },
+                      { label: "Deadline", value: p.deadline, color: G.text },
+                      { label: "Scope Δ", value: p.scopeChanges, color: p.scopeChanges > 2 ? G.redText : G.sub },
+                    ].map(s => (
+                      <div key={s.label} style={{ textAlign: "center" }}>
+                        <p style={{ fontSize: 13, fontWeight: 800, color: s.color, margin: 0 }}>{s.value}</p>
+                        <p style={{ fontSize: 10, color: G.muted, marginTop: 2 }}>{s.label}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* ── Silence / frozen indicators ── */}
+                {(p.clientSilenceDays > 0 || p.talentSilenceDays > 0 || p.chatFrozen) && (
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 14 }}>
+                    {p.clientSilenceDays > 0 && (
+                      <span style={{
+                        display: "inline-flex", alignItems: "center", gap: 5,
+                        fontSize: 11, fontWeight: 700, padding: "4px 10px", borderRadius: 99,
+                        background: p.clientSilenceDays > 5 ? G.redBg : G.amberBg,
+                        color: p.clientSilenceDays > 5 ? G.redText : G.amberText,
+                        border: `1px solid ${p.clientSilenceDays > 5 ? G.redBorder : G.amberBorder}`,
+                      }}>
+                        ⏱ Client silent {p.clientSilenceDays}d
+                      </span>
+                    )}
+                    {p.talentSilenceDays > 0 && (
+                      <span style={{
+                        display: "inline-flex", alignItems: "center", gap: 5,
+                        fontSize: 11, fontWeight: 700, padding: "4px 10px", borderRadius: 99,
+                        background: p.talentSilenceDays > 2 ? G.redBg : G.amberBg,
+                        color: p.talentSilenceDays > 2 ? G.redText : G.amberText,
+                        border: `1px solid ${p.talentSilenceDays > 2 ? G.redBorder : G.amberBorder}`,
+                      }}>
+                        ⏱ Talent silent {p.talentSilenceDays}d
+                      </span>
+                    )}
+                    {p.chatFrozen && (
+                      <span style={{
+                        display: "inline-flex", alignItems: "center", gap: 5,
+                        fontSize: 11, fontWeight: 700, padding: "4px 10px", borderRadius: 99,
+                        background: G.redBg, color: G.redText, border: `1px solid ${G.redBorder}`,
+                      }}>
+                        🔒 Chat frozen
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                {/* ── Action buttons ── */}
+                <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                  <button style={btnNavy}
+                    onClick={e => { e.stopPropagation(); navigate(`/admin/projectstream/${p.id}`); }}>
+                    Monitor Chat
+                  </button>
+                  <button style={btnOutline}
+                    onClick={e => { e.stopPropagation(); navigate(`/admin/projects/${p.id}`); }}>
+                    View Project
+                  </button>
+                  <button style={btnWarn}
+                    onClick={e => e.stopPropagation()}>
+                    Send Warning
+                  </button>
+                  {p.health === "Disputed" && (
+                    <button style={btnDanger}
+                      onClick={e => { e.stopPropagation(); navigate("/admin/disputes"); }}>
+                      View Dispute
+                    </button>
+                  )}
+                  <button style={p.chatFrozen ? btnOutline : btnWarn}
+                    onClick={e => e.stopPropagation()}>
+                    {p.chatFrozen ? "Unfreeze Chat" : "Freeze Chat"}
+                  </button>
                 </div>
               </div>
-
-              {/* Silence indicators */}
-              <div className="flex items-center gap-3 mb-4 flex-wrap">
-                {p.clientSilenceDays > 0 && (
-                  <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold ${p.clientSilenceDays > 5 ? "bg-red-50 text-red-600 border border-red-200" : "bg-yellow-50 text-yellow-700 border border-yellow-200"}`}>
-                    <span>⏱</span> Client silent {p.clientSilenceDays} days
-                  </div>
-                )}
-                {p.talentSilenceDays > 0 && (
-                  <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold ${p.talentSilenceDays > 2 ? "bg-red-50 text-red-600 border border-red-200" : "bg-yellow-50 text-yellow-700 border border-yellow-200"}`}>
-                    <span>⏱</span> Talent silent {p.talentSilenceDays} days
-                  </div>
-                )}
-                {p.chatFrozen && (
-                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-red-50 text-red-600 border border-red-200 text-xs font-semibold">
-                    🔒 Chat frozen
-                  </div>
-                )}
-              </div>
-
-              {/* Quick Actions */}
-              <div className="flex items-center gap-2 flex-wrap">
-                <ActionBtn
-                  label="Monitor Chat"
-                  variant="primary"
-                  onClick={(e) => { e.stopPropagation(); navigate(`/admin/projectstream/${p.id}`); }}
-                />
-                <ActionBtn
-                  label="View Project"
-                  onClick={(e) => { e.stopPropagation(); navigate(`/admin/projects/${p.id}`); }}
-                />
-                <ActionBtn
-                  label="Send Warning"
-                  variant="warning"
-                  onClick={(e) => e.stopPropagation()}
-                />
-                {p.health === "Disputed" && (
-                  <ActionBtn
-                    label="View Dispute"
-                    variant="danger"
-                    onClick={(e) => { e.stopPropagation(); navigate("/admin/disputes"); }}
-                  />
-                )}
-                <ActionBtn
-                  label={p.chatFrozen ? "Unfreeze Chat" : "Freeze Chat"}
-                  variant={p.chatFrozen ? "default" : "warning"}
-                  onClick={(e) => e.stopPropagation()}
-                />
-              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
 
+        {/* ── Empty state ── */}
         {filtered.length === 0 && (
-          <div className="bg-white rounded-xl border border-gray-100 py-16 text-center">
-            <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center mx-auto mb-3">
-              <span className="text-green-500 text-xl">✓</span>
-            </div>
-            <p className="text-gray-500 text-sm font-semibold">No at-risk projects</p>
-            <p className="text-gray-400 text-xs mt-1">All projects are on track</p>
+          <div style={{
+            background: G.white, border: `1px solid ${G.greenBorder}`,
+            borderRadius: 16, padding: "56px 20px", textAlign: "center",
+            boxShadow: "0 2px 12px rgba(110,192,48,0.06)",
+          }}>
+            <div style={{
+              width: 52, height: 52, borderRadius: "50%",
+              background: G.greenBg, border: `1px solid ${G.greenBorder}`,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 22, margin: "0 auto 12px",
+            }}>✓</div>
+            <p style={{ fontSize: 14, fontWeight: 700, color: G.text, marginBottom: 4 }}>No at-risk projects</p>
+            <p style={{ fontSize: 12, color: G.muted }}>All projects are on track</p>
           </div>
         )}
       </div>
     </div>
   );
 }
+
+export default AdminAtRiskProjects;
+
 
 // ─── PAGE 2: /admin/projectstream/:id — MONITOR ANY CHAT ─────────────────────
 export function AdminProjectStreamMonitor() {
@@ -500,12 +680,12 @@ export function AdminProjectStreamMonitor() {
           <SectionCard title="Project Info">
             <div className="space-y-2">
               {[
-                { label: "Project",  value: p.title },
-                { label: "Health",   value: <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${healthStyle[p.health]}`}>{p.health}</span> },
+                { label: "Project", value: p.title },
+                { label: "Health", value: <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${healthStyle[p.health]}`}>{p.health}</span> },
                 { label: "Progress", value: `${p.progress}%` },
                 { label: "Deadline", value: p.deadline },
-                { label: "Budget",   value: `₹${(p.budget / 1000).toFixed(0)}k` },
-                { label: "Escrow",   value: p.escrow > 0 ? `₹${(p.escrow / 1000).toFixed(0)}k` : "Released" },
+                { label: "Budget", value: `₹${(p.budget / 1000).toFixed(0)}k` },
+                { label: "Escrow", value: p.escrow > 0 ? `₹${(p.escrow / 1000).toFixed(0)}k` : "Released" },
               ].map(item => (
                 <div key={item.label} className="flex items-center justify-between py-1.5 border-b border-gray-50 last:border-0">
                   <span className="text-xs text-gray-400">{item.label}</span>
@@ -519,9 +699,9 @@ export function AdminProjectStreamMonitor() {
           <SectionCard title="Participants">
             <div className="space-y-2.5">
               {[
-                { name: "Weblance Admin",  role: "Platform", color: "bg-red-500"   },
-                { name: p.client.name,     role: "Client",   color: "bg-green-500" },
-                { name: p.talent.name,     role: p.talent.type, color: "bg-blue-500" },
+                { name: "Weblance Admin", role: "Platform", color: "bg-red-500" },
+                { name: p.client.name, role: "Client", color: "bg-green-500" },
+                { name: p.talent.name, role: p.talent.type, color: "bg-blue-500" },
               ].map(pt => (
                 <div key={pt.name} className="flex items-center gap-2.5">
                   <div className={`w-7 h-7 rounded-full ${pt.color} flex items-center justify-center text-white text-[10px] font-bold shrink-0`}>
@@ -541,17 +721,16 @@ export function AdminProjectStreamMonitor() {
             <div className="space-y-2">
               {[
                 { label: currentProject.chatFrozen ? "Unfreeze Chat" : "Freeze Chat", variant: currentProject.chatFrozen ? "default" : "warning", action: currentProject.chatFrozen ? handleUnfreeze : handleFreeze },
-                { label: "Export Chat History",    variant: "default",  action: () => {} },
-                { label: "Flag Conversation",      variant: "danger",   action: () => {} },
-                { label: "View Project Detail",    variant: "default",  action: () => navigate(`/admin/projects/${p.id}`) },
-                { label: "Escalate to Dispute",    variant: "danger",   action: () => navigate("/admin/disputes") },
+                { label: "Export Chat History", variant: "default", action: () => { } },
+                { label: "Flag Conversation", variant: "danger", action: () => { } },
+                { label: "View Project Detail", variant: "default", action: () => navigate(`/admin/projects/${p.id}`) },
+                { label: "Escalate to Dispute", variant: "danger", action: () => navigate("/admin/disputes") },
               ].map(a => (
                 <button key={a.label} onClick={a.action}
-                  className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium border transition-colors ${
-                    a.variant === "warning" ? "border-yellow-200 text-yellow-700 bg-yellow-50 hover:bg-yellow-100" :
-                    a.variant === "danger"  ? "border-red-200 text-red-600 bg-red-50 hover:bg-red-100" :
-                    "border-gray-200 text-gray-700 hover:bg-gray-50"
-                  }`}>
+                  className={`w-full text-left px-3 py-2 rounded-lg text-sm font-medium border transition-colors ${a.variant === "warning" ? "border-yellow-200 text-yellow-700 bg-yellow-50 hover:bg-yellow-100" :
+                      a.variant === "danger" ? "border-red-200 text-red-600 bg-red-50 hover:bg-red-100" :
+                        "border-gray-200 text-gray-700 hover:bg-gray-50"
+                    }`}>
                   {a.label}
                 </button>
               ))}
@@ -621,19 +800,19 @@ export function AdminFrozenChats() {
         title="Frozen Chats"
         subtitle="All ProjectStream conversations currently frozen by admin"
         actions={
-          <div className="flex gap-2">
-            <ActionBtn label="← All Projects"   onClick={() => navigate("/admin/projects")} />
-            <ActionBtn label="At-Risk Projects" onClick={() => navigate("/admin/projects/at-risk")} />
+          <div style={{ display: "flex", gap: 8 }}>
+            <button style={btnOutline} onClick={() => navigate("/admin/projects")}>← All Projects</button>
+            <button style={btnNavy} onClick={() => navigate("/admin/projects/at-risk")}>At-Risk Projects</button>
           </div>
         }
       />
 
       {/* Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <StatCard label="Frozen Chats"   value={frozenProjects.length}           sub="Currently frozen"   color="red"    />
-        <StatCard label="Disputed"       value={frozenProjects.filter(p => p.health === "Disputed").length} color="orange" />
+        <StatCard label="Frozen Chats" value={frozenProjects.length} sub="Currently frozen" color="red" />
+        <StatCard label="Disputed" value={frozenProjects.filter(p => p.health === "Disputed").length} color="orange" />
         <StatCard label="Escrow at Stake" value={`₹${(frozenProjects.reduce((s, p) => s + p.escrow, 0) / 1000).toFixed(0)}k`} color="red" />
-        <StatCard label="Total Chats"    value={mockProjects.length}             sub="Platform-wide"      color="gray"   />
+        <StatCard label="Total Chats" value={mockProjects.length} sub="Platform-wide" color="gray" />
       </div>
 
       {frozenProjects.length === 0 ? (
@@ -653,9 +832,11 @@ export function AdminFrozenChats() {
             </h3>
             {frozenProjects.map(p => (
               <div
+
                 key={p.id}
                 onClick={() => setSelected(selected?.id === p.id ? null : p)}
-                className={`bg-white rounded-xl border shadow-sm cursor-pointer transition-all hover:shadow-md ${selected?.id === p.id ? "border-red-300 ring-1 ring-red-200" : "border-gray-100"}`}
+                className={`bg-white rounded-xl border shadow-md cursor-pointer transition-all hover:shadow-lg ${selected?.id === p.id ? "border-red-300 ring-1 ring-red-200" : "border-gray-100"}`
+                }
               >
                 <div className="p-4">
                   <div className="flex items-start justify-between mb-2">
@@ -676,22 +857,15 @@ export function AdminFrozenChats() {
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <ActionBtn
-                      label="Monitor Chat"
-                      variant="primary"
-                      size="sm"
-                      onClick={(e) => { e.stopPropagation(); navigate(`/admin/projectstream/${p.id}`); }}
-                    />
-                    <ActionBtn
-                      label="Unfreeze"
-                      size="sm"
-                      onClick={(e) => { e.stopPropagation(); unfreeze(p.id); }}
-                    />
-                    <ActionBtn
-                      label="View Project"
-                      size="sm"
-                      onClick={(e) => { e.stopPropagation(); navigate(`/admin/projects/${p.id}`); }}
-                    />
+                    <div style={{ display: "flex", gap: 8 }}>
+
+                      <button style={btnNavy} onClick={(e) => { e.stopPropagation(); navigate(`/admin/projectstream/${p.id}`); }}>Monitor Chat</button>
+                    </div>
+                    <button style={btnOutline} onClick={() => navigate("/admin/projects")}>Unfreeze</button>
+                    <button style={btnWarn}
+                     onClick={(e) => { e.stopPropagation(); unfreeze(p.id); }}>
+                    View Project
+                  </button>
                   </div>
                 </div>
               </div>
@@ -704,32 +878,30 @@ export function AdminFrozenChats() {
               <div className="sticky top-6">
                 <div className="mb-3 flex items-center justify-between">
                   <p className="text-sm font-semibold text-gray-700">Chat Preview — {selected.title}</p>
-                  <ActionBtn
-                    label="Open Full Monitor →"
-                    variant="primary"
+                  <button style={btnNavy}
                     onClick={() => navigate(`/admin/projectstream/${selected.id}`)}
-                  />
+                   >
+                  Open Full Monitor →
+                  </button>
                 </div>
                 <div className="h-[480px] flex flex-col">
                   <ChatView
                     project={selected}
-                    onFreeze={() => {}}
+                    onFreeze={() => { }}
                     onUnfreeze={() => unfreeze(selected.id)}
                     showSend={false}
                   />
                 </div>
                 <div className="mt-3 flex gap-2">
-                  <button
-                    onClick={() => unfreeze(selected.id)}
-                    className="flex-1 py-2 text-sm font-bold bg-white border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                  >
-                    Unfreeze This Chat
-                  </button>
-                  <button
-                    onClick={() => navigate(`/admin/projectstream/${selected.id}`)}
-                    className="flex-1 py-2 text-sm font-bold bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
-                  >
-                    Full Monitor View →
+                  <button style={btnOutline}
+                  
+                    >
+                                Unfreeze This Chat     </button>
+
+                 <button style={btnNavy}
+                  onClick={() => navigate(`/admin/projectstream/${selected.id}`)}
+                   >
+                   Full Monitor View →
                   </button>
                 </div>
               </div>
@@ -759,11 +931,8 @@ export function AdminFrozenChats() {
                 </div>
                 <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full shrink-0 ${healthStyle[p.health]}`}>{p.health}</span>
                 <span className="text-xs text-gray-400 shrink-0">{p.lastMessage?.time}</span>
-                <ActionBtn
-                  label="Monitor"
-                  size="sm"
-                  onClick={() => navigate(`/admin/projectstream/${p.id}`)}
-                />
+               <button style={btnNavy}  onClick={() => navigate(`/admin/projectstream/${p.id}`)}>Monitor Chat</button>
+    
               </div>
             ))}
           </div>

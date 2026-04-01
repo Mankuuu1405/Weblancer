@@ -4,32 +4,35 @@ import { useState, useMemo } from "react";
   if (document.getElementById("wl-fp-fonts")) return;
   const l = document.createElement("link");
   l.id = "wl-fp-fonts"; l.rel = "stylesheet";
-  l.href = "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap";
+  l.href = "https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap";
   document.head.appendChild(l);
 })();
 
 const G = {
-  green:       "#22c55e",
-  greenDark:   "#16a34a",
+  green:       "#6FDA44",
+  greenDark:   "#1A3D1F",
   greenBg:     "#f0fdf4",
-  greenBorder: "#bbf7d0",
-  text:        "#111827",
-  sub:         "#6b7280",
+  greenBorder: "#E4F0DC",
+  greenBorder2:"#E8F5E1",
+  navyFrom:    "#0D2855",
+  navyTo:      "#1B72C0",
+  text:        "#1C1C1C",
+  sub:         "#4b5563",
   muted:       "#9ca3af",
   border:      "#e5e7eb",
   bg:          "#f9fafb",
   white:       "#ffffff",
 };
-const FONT = "'Plus Jakarta Sans', sans-serif";
+const FONT = "'Poppins', sans-serif";
 
 const STAGE_STYLE = {
-  draft:        { bg:"#f3f4f6", text:"#6b7280", dot:"#9ca3af", label:"Draft"        },
-  sent:         { bg:"#eff6ff", text:"#1d4ed8", dot:"#3b82f6", label:"Sent"         },
-  under_review: { bg:"#fef3c7", text:"#92400e", dot:"#f59e0b", label:"Under Review" },
-  negotiation:  { bg:"#f5f3ff", text:"#6d28d9", dot:"#7c3aed", label:"Negotiation"  },
-  accepted:     { bg:G.greenBg, text:G.greenDark, dot:G.green, label:"Accepted"     },
-  rejected:     { bg:"#fef2f2", text:"#dc2626", dot:"#ef4444", label:"Rejected"     },
-  withdrawn:    { bg:"#f3f4f6", text:"#6b7280", dot:"#9ca3af", label:"Withdrawn"    },
+  draft:        { bg:"#f3f4f6",  text:"#6b7280",   dot:"#9ca3af",  label:"Draft"        },
+  sent:         { bg:"#eff6ff",  text:"#1d4ed8",   dot:"#3b82f6",  label:"Sent"         },
+  under_review: { bg:"#fef3c7",  text:"#92400e",   dot:"#f59e0b",  label:"Under Review" },
+  negotiation:  { bg:"#f5f3ff",  text:"#6d28d9",   dot:"#7c3aed",  label:"Negotiation"  },
+  accepted:     { bg:G.greenBg,  text:G.greenDark, dot:G.green,    label:"Accepted"     },
+  rejected:     { bg:"#fef2f2",  text:"#dc2626",   dot:"#ef4444",  label:"Rejected"     },
+  withdrawn:    { bg:"#f3f4f6",  text:"#6b7280",   dot:"#9ca3af",  label:"Withdrawn"    },
 };
 
 const PROPOSALS = [
@@ -131,6 +134,31 @@ const WIN_RATES = [
 
 const fmt = n => "₹" + Number(n).toLocaleString("en-IN");
 
+const btnPrimary = {
+  display:"inline-flex", alignItems:"center", gap:8,
+  fontSize:13, fontWeight:700, fontFamily:FONT,
+  background:`linear-gradient(135deg, #0D2855 0%, #1B72C0 100%)`,
+  color:G.white, border:"none", borderRadius:100,
+  padding:"10px 20px", cursor:"pointer",
+  boxShadow:"0 3px 16px rgba(13,40,85,0.28)",
+  transition:"all 0.2s", whiteSpace:"nowrap",
+  textDecoration:"none",
+};
+
+const btnGreen = {
+  fontSize:12, fontWeight:700, padding:"7px 14px",
+  borderRadius:100, cursor:"pointer", fontFamily:FONT,
+  background:G.green, color:G.white, border:"none",
+  boxShadow:"0 2px 8px rgba(111,218,68,0.22)",
+};
+
+const btnOutline = {
+  fontSize:12, fontWeight:700, padding:"7px 14px",
+  borderRadius:100, cursor:"pointer", fontFamily:FONT,
+  background:G.greenBg, color:G.greenDark,
+  border:`1px solid ${G.greenBorder}`,
+};
+
 export default function FreelancerProposals() {
   const [tab,       setTab]       = useState("all");
   const [proposals, setProposals] = useState(PROPOSALS);
@@ -147,13 +175,13 @@ export default function FreelancerProposals() {
   }), [proposals]);
 
   const TABS = [
-    { id:"all",           label:"All"          },
-    { id:"draft",         label:"Draft"        },
-    { id:"sent",          label:"Sent"         },
-    { id:"under_review",  label:"Under Review" },
-    { id:"negotiation",   label:"Negotiation"  },
-    { id:"accepted",      label:"Accepted"     },
-    { id:"rejected",      label:"Rejected"     },
+    { id:"all",          label:"All"          },
+    { id:"draft",        label:"Draft"        },
+    { id:"sent",         label:"Sent"         },
+    { id:"under_review", label:"Under Review" },
+    { id:"negotiation",  label:"Negotiation"  },
+    { id:"accepted",     label:"Accepted"     },
+    { id:"rejected",     label:"Rejected"     },
   ];
 
   const rows = useMemo(() => tab === "all" ? proposals : proposals.filter(p => p.stage === tab), [proposals, tab]);
@@ -165,35 +193,42 @@ export default function FreelancerProposals() {
 
   return (
     <div style={{ minHeight:"100vh", background:G.bg, fontFamily:FONT }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+        * { font-family: 'Poppins', sans-serif; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #6FDA44; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb:hover { background: #1A3D1F; }
+        * { scrollbar-width: thin; scrollbar-color: #6FDA44 #f1f1f1; }
+      `}</style>
+
       <Navbar />
 
-      <header style={{ background:G.white, borderBottom:`1px solid ${G.border}` }}>
+      <header style={{ background:G.white, borderBottom:`1px solid ${G.greenBorder}`, boxShadow:"0 2px 12px rgba(111,218,68,0.06)" }}>
         <div style={{ maxWidth:1160, margin:"0 auto", padding:"0 28px" }}>
           <div style={{ display:"flex", alignItems:"flex-end", justifyContent:"space-between", padding:"20px 0 0" }}>
             <div>
               <h1 style={{ fontSize:22, fontWeight:800, color:G.text, margin:0, letterSpacing:"-0.4px" }}>My Proposals</h1>
               <p style={{ fontSize:13, color:G.muted, marginTop:3 }}>Track and manage all your client proposals</p>
             </div>
-            <button onClick={() => setShowNew(true)}
-              style={{ display:"flex", alignItems:"center", gap:8, fontSize:13, fontWeight:700,
-                background:G.green, color:G.white, border:"none", borderRadius:10,
-                padding:"11px 20px", cursor:"pointer", marginBottom:4, fontFamily:FONT }}>
+            <button onClick={() => setShowNew(true)} style={{ ...btnPrimary, marginBottom:4 }}>
               ✏️ New Proposal
             </button>
           </div>
 
           {/* Stats strip */}
-          <div style={{ display:"flex", gap:0, marginTop:18, paddingTop:18, borderTop:"1px solid #f3f4f6" }}>
+          <div style={{ display:"flex", gap:0, marginTop:18, paddingTop:18, borderTop:`1px solid ${G.greenBorder}` }}>
             {[
-              { label:"Total Sent",       val:proposals.filter(p => p.stage !== "draft").length, accent:G.text             },
-              { label:"Acceptance Rate",  val:stats.rate + "%",                                  accent:G.greenDark, big:true },
-              { label:"Under Review",     val:stats.review,                                      accent:"#d97706"          },
-              { label:"Negotiations",     val:stats.negotiation,                                 accent:"#7c3aed"          },
-              { label:"Accepted",         val:stats.accepted,                                    accent:G.green            },
-              { label:"This Month",       val:proposals.filter(p => p.sentDate?.includes("Mar 2026")).length, accent:G.sub },
+              { label:"Total Sent",      val:proposals.filter(p => p.stage !== "draft").length, accent:G.text             },
+              { label:"Acceptance Rate", val:stats.rate + "%",                                  accent:G.greenDark, big:true },
+              { label:"Under Review",    val:stats.review,                                      accent:"#d97706"          },
+              { label:"Negotiations",    val:stats.negotiation,                                 accent:"#7c3aed"          },
+              { label:"Accepted",        val:stats.accepted,                                    accent:G.green            },
+              { label:"This Month",      val:proposals.filter(p => p.sentDate?.includes("Mar 2026")).length, accent:G.sub },
             ].map((s, i, arr) => (
               <div key={i} style={{ flex:s.big ? 1.2 : 1, paddingBottom:16,
-                borderRight:i < arr.length - 1 ? "1px solid #f3f4f6" : "none",
+                borderRight:i < arr.length - 1 ? `1px solid ${G.greenBorder}` : "none",
                 paddingLeft:i === 0 ? 0 : 20 }}>
                 <p style={{ fontSize:10, color:G.muted, fontWeight:700, marginBottom:4, textTransform:"uppercase", letterSpacing:"0.07em" }}>{s.label}</p>
                 <p style={{ fontSize:s.big ? 24 : 20, fontWeight:800, color:s.accent, margin:0 }}>{s.val}</p>
@@ -202,7 +237,7 @@ export default function FreelancerProposals() {
           </div>
 
           {/* Tabs */}
-          <div style={{ display:"flex", marginTop:4, borderTop:"1px solid #f3f4f6" }}>
+          <div style={{ display:"flex", marginTop:4, borderTop:`1px solid ${G.greenBorder}` }}>
             {TABS.map(t => {
               const cnt    = t.id === "all" ? proposals.length : proposals.filter(p => p.stage === t.id).length;
               const active = tab === t.id;
@@ -210,7 +245,7 @@ export default function FreelancerProposals() {
               return (
                 <button key={t.id} onClick={() => setTab(t.id)}
                   style={{ display:"flex", alignItems:"center", gap:6, padding:"10px 12px",
-                    fontSize:13, fontWeight:active ? 700 : 400,
+                    fontSize:13, fontWeight:active ? 700 : 500,
                     color:active ? G.greenDark : G.sub, background:"none", border:"none",
                     borderBottom:active ? `2px solid ${G.green}` : "2px solid transparent",
                     cursor:"pointer", marginBottom:-1, transition:"all 0.12s", fontFamily:FONT }}>
@@ -234,16 +269,16 @@ export default function FreelancerProposals() {
 
             {/* Under review checklist */}
             {tab === "under_review" && (
-              <div style={{ background:G.greenBg, border:`1px solid ${G.greenBorder}`, borderRadius:14, padding:"16px 20px", display:"flex", alignItems:"flex-start", gap:16 }}>
+              <div style={{ background:G.greenBg, border:`1px solid ${G.greenBorder}`, borderRadius:16, padding:"16px 20px", display:"flex", alignItems:"flex-start", gap:16, boxShadow:"0 2px 10px rgba(111,218,68,0.08)" }}>
                 <span style={{ fontSize:24 }}>💡</span>
                 <div style={{ flex:1 }}>
                   <p style={{ fontSize:13, fontWeight:700, color:G.greenDark, marginBottom:10 }}>While your proposals are under review…</p>
                   <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:6 }}>
                     {[
-                      { ok:true,  text:"Profile completion: 94%"           },
-                      { ok:true,  text:"Portfolio: 6 projects"              },
-                      { ok:false, text:"Response time: 2.4d (aim < 1d)"    },
-                      { ok:true,  text:"JSS Score: 96% ✨"                 },
+                      { ok:true,  text:"Profile completion: 94%"        },
+                      { ok:true,  text:"Portfolio: 6 projects"           },
+                      { ok:false, text:"Response time: 2.4d (aim < 1d)" },
+                      { ok:true,  text:"JSS Score: 96% ✨"              },
                     ].map((c, i) => (
                       <div key={i} style={{ display:"flex", alignItems:"center", gap:7 }}>
                         <span style={{ fontSize:13 }}>{c.ok ? "✅" : "⚠️"}</span>
@@ -264,11 +299,11 @@ export default function FreelancerProposals() {
             ))}
 
             {rows.length === 0 && (
-              <div style={{ background:G.white, border:`1px solid ${G.border}`, borderRadius:14, textAlign:"center", padding:"56px 20px" }}>
+              <div style={{ background:G.white, border:`1px solid ${G.greenBorder}`, borderRadius:16, textAlign:"center", padding:"56px 20px", boxShadow:"0 2px 10px rgba(111,218,68,0.06)" }}>
                 <p style={{ fontSize:36, marginBottom:8 }}>📨</p>
                 <p style={{ fontSize:15, fontWeight:700, color:G.text }}>No proposals here</p>
                 <p style={{ fontSize:13, color:G.muted, marginTop:4 }}>Start sending proposals to land projects</p>
-                <button onClick={() => setShowNew(true)} style={{ marginTop:14, fontSize:13, fontWeight:700, background:G.green, color:G.white, border:"none", borderRadius:9, padding:"9px 20px", cursor:"pointer", fontFamily:FONT }}>
+                <button onClick={() => setShowNew(true)} style={{ ...btnPrimary, marginTop:14 }}>
                   ✏️ Write a Proposal
                 </button>
               </div>
@@ -279,7 +314,7 @@ export default function FreelancerProposals() {
           <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
 
             {/* Win rate */}
-            <div style={{ background:G.white, border:`1px solid ${G.border}`, borderRadius:14, padding:"18px 20px" }}>
+            <div style={{ background:G.white, border:`1px solid ${G.greenBorder}`, borderRadius:16, padding:"18px 20px", boxShadow:"0 2px 10px rgba(111,218,68,0.06)" }}>
               <p style={{ fontSize:13, fontWeight:700, color:G.text, marginBottom:14 }}>Win Rate by Category</p>
               {WIN_RATES.map(w => (
                 <div key={w.cat} style={{ marginBottom:12 }}>
@@ -296,7 +331,7 @@ export default function FreelancerProposals() {
             </div>
 
             {/* Tips */}
-            <div style={{ background:G.white, border:`1px solid ${G.border}`, borderRadius:14, padding:"18px 20px" }}>
+            <div style={{ background:G.white, border:`1px solid ${G.greenBorder}`, borderRadius:16, padding:"18px 20px", boxShadow:"0 2px 10px rgba(111,218,68,0.06)" }}>
               <p style={{ fontSize:13, fontWeight:700, color:G.text, marginBottom:12 }}>💡 Proposal Tips</p>
               {[
                 "Mention client's specific requirements",
@@ -313,13 +348,13 @@ export default function FreelancerProposals() {
             </div>
 
             {/* Recent activity */}
-            <div style={{ background:G.white, border:`1px solid ${G.border}`, borderRadius:14, padding:"18px 20px" }}>
+            <div style={{ background:G.white, border:`1px solid ${G.greenBorder}`, borderRadius:16, padding:"18px 20px", boxShadow:"0 2px 10px rgba(111,218,68,0.06)" }}>
               <p style={{ fontSize:13, fontWeight:700, color:G.text, marginBottom:12 }}>Recent Activity</p>
               {[
-                { icon:"👁️", text:"FinSmart viewed your proposal",  time:"2 hrs ago" },
-                { icon:"🔔", text:"Counter-offer from TravelNest",  time:"3 hrs ago" },
-                { icon:"✅", text:"ShopEasy accepted PRO-001",       time:"Mar 15"    },
-                { icon:"📤", text:"PRO-005 sent to LogiTrack",       time:"Mar 1"     },
+                { icon:"👁️", text:"FinSmart viewed your proposal", time:"2 hrs ago" },
+                { icon:"🔔", text:"Counter-offer from TravelNest", time:"3 hrs ago" },
+                { icon:"✅", text:"ShopEasy accepted PRO-001",      time:"Mar 15"   },
+                { icon:"📤", text:"PRO-005 sent to LogiTrack",      time:"Mar 1"    },
               ].map((a, i) => (
                 <div key={i} style={{ display:"flex", gap:10, marginBottom:10, alignItems:"flex-start" }}>
                   <span style={{ fontSize:14 }}>{a.icon}</span>
@@ -348,16 +383,16 @@ function ProposalCard({ proposal:p, onOpen, onAcceptNeg }) {
 
   return (
     <div style={{ background:G.white,
-      border:`1.5px solid ${isNeg ? "#a78bfa" : hov ? G.greenBorder : G.border}`,
-      borderRadius:14, overflow:"hidden", transition:"all 0.15s",
-      boxShadow:hov ? "0 4px 20px rgba(34,197,94,0.08)" : "none" }}
+      border:`1.5px solid ${isNeg ? "#a78bfa" : hov ? G.green : G.greenBorder}`,
+      borderRadius:16, overflow:"hidden", transition:"all 0.15s",
+      boxShadow:hov ? "0 4px 20px rgba(111,218,68,0.12)" : "0 2px 8px rgba(111,218,68,0.04)" }}
       onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)}>
 
-      {/* Negotiation banner */}
+      {/* Negotiation banner — navy gradient */}
       {isNeg && (
-        <div style={{ background:"linear-gradient(90deg,#6d28d9,#7c3aed)", padding:"8px 20px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+        <div style={{ background:`linear-gradient(90deg, ${G.navyFrom}, ${G.navyTo})`, padding:"8px 20px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
           <p style={{ fontSize:12, fontWeight:700, color:G.white }}>🔔 Counter-offer received from {p.client} — Action needed</p>
-          <span style={{ fontSize:11, fontWeight:700, color:"#ddd6fe", background:"rgba(255,255,255,0.15)", padding:"2px 10px", borderRadius:99 }}>Respond within 24 hrs</span>
+          <span style={{ fontSize:11, fontWeight:700, color:"rgba(255,255,255,0.85)", background:"rgba(255,255,255,0.12)", padding:"2px 10px", borderRadius:99 }}>Respond within 24 hrs</span>
         </div>
       )}
 
@@ -381,33 +416,33 @@ function ProposalCard({ proposal:p, onOpen, onAcceptNeg }) {
 
         {/* Bid info pills */}
         <div style={{ display:"flex", gap:10, marginBottom:12, flexWrap:"wrap" }}>
-          <div style={{ background:G.bg, borderRadius:9, padding:"8px 14px" }}>
+          <div style={{ background:G.bg, borderRadius:12, padding:"8px 14px", border:`1px solid ${G.greenBorder}` }}>
             <p style={{ fontSize:10, color:G.muted, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:3 }}>Client Budget</p>
             <p style={{ fontSize:13, fontWeight:600, color:G.text }}>{p.clientBudget}</p>
           </div>
-          <div style={{ background:G.greenBg, border:`1px solid ${G.greenBorder}`, borderRadius:9, padding:"8px 14px" }}>
+          <div style={{ background:G.greenBg, border:`1px solid ${G.greenBorder}`, borderRadius:12, padding:"8px 14px" }}>
             <p style={{ fontSize:10, color:G.muted, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:3 }}>Your Bid</p>
             <p style={{ fontSize:14, fontWeight:700, color:G.greenDark }}>{fmt(p.myBid)}</p>
           </div>
-          <div style={{ background:G.bg, borderRadius:9, padding:"8px 14px" }}>
+          <div style={{ background:G.bg, borderRadius:12, padding:"8px 14px", border:`1px solid ${G.greenBorder}` }}>
             <p style={{ fontSize:10, color:G.muted, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:3 }}>Timeline</p>
             <p style={{ fontSize:13, fontWeight:600, color:G.text }}>{p.timeline} days</p>
           </div>
           {p.totalBids > 0 && (
-            <div style={{ background:G.bg, borderRadius:9, padding:"8px 14px" }}>
+            <div style={{ background:G.bg, borderRadius:12, padding:"8px 14px", border:`1px solid ${G.greenBorder}` }}>
               <p style={{ fontSize:10, color:G.muted, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:3 }}>Competition</p>
               <p style={{ fontSize:13, fontWeight:600, color:G.text }}>{p.totalBids} bids · Avg {fmt(p.avgBid)}</p>
             </div>
           )}
         </div>
 
-        <p style={{ fontSize:12, color:G.muted, marginBottom:isNeg && p.negotiation ? 14 : 14 }}>
+        <p style={{ fontSize:12, color:G.muted, marginBottom:14 }}>
           {p.stage === "negotiation" ? "🔔" : "👁️"} {p.clientActivity}
         </p>
 
         {/* Negotiation counter preview */}
         {isNeg && p.negotiation && (
-          <div style={{ background:"#f5f3ff", border:"1px solid #ddd6fe", borderRadius:10, padding:"12px 14px", marginBottom:14 }}>
+          <div style={{ background:"#f5f3ff", border:"1px solid #ddd6fe", borderRadius:12, padding:"12px 14px", marginBottom:14 }}>
             <p style={{ fontSize:12, fontWeight:700, color:"#6d28d9", marginBottom:6 }}>Client's Counter-offer</p>
             <div style={{ display:"flex", gap:12, marginBottom:8 }}>
               <span style={{ fontSize:12, color:G.sub }}>Revised budget: <strong style={{ color:"#6d28d9" }}>{fmt(p.negotiation.clientBid)}</strong></span>
@@ -420,35 +455,33 @@ function ProposalCard({ proposal:p, onOpen, onAcceptNeg }) {
         {/* Actions */}
         <div style={{ display:"flex", gap:8, flexWrap:"wrap" }}>
           {p.stage === "draft" && (
-            <button style={{ ...abtn, background:G.green, color:G.white, border:"none" }}>✏️ Edit & Send</button>
+            <button style={{ ...btnGreen }}>✏️ Edit & Send</button>
           )}
           {p.stage === "sent" && (
-            <button style={{ ...abtn, color:"#dc2626", background:"#fef2f2", border:"1px solid #fecaca" }}>Withdraw</button>
+            <button style={{ fontSize:12, fontWeight:700, padding:"7px 14px", borderRadius:100, cursor:"pointer", fontFamily:FONT, color:"#dc2626", background:"#fef2f2", border:"1px solid #fecaca" }}>Withdraw</button>
           )}
           {p.stage === "under_review" && (
-            <button style={{ ...abtn, color:G.greenDark, background:G.greenBg, border:`1px solid ${G.greenBorder}` }}>📤 Send Follow-up</button>
+            <button style={{ ...btnOutline }}>📤 Send Follow-up</button>
           )}
           {p.stage === "negotiation" && (
             <>
-              <button onClick={onAcceptNeg} style={{ ...abtn, background:G.green, color:G.white, border:"none" }}>✅ Accept Offer</button>
-              <button onClick={onOpen} style={{ ...abtn, color:"#6d28d9", background:"#f5f3ff", border:"1px solid #ddd6fe" }}>↩ Counter Again</button>
-              <button style={{ ...abtn, color:"#dc2626", background:"#fef2f2", border:"1px solid #fecaca" }}>Decline</button>
+              <button onClick={onAcceptNeg} style={{ ...btnGreen }}>✅ Accept Offer</button>
+              <button onClick={onOpen} style={{ fontSize:12, fontWeight:700, padding:"7px 14px", borderRadius:100, cursor:"pointer", fontFamily:FONT, color:"#6d28d9", background:"#f5f3ff", border:"1px solid #ddd6fe" }}>↩ Counter Again</button>
+              <button style={{ fontSize:12, fontWeight:700, padding:"7px 14px", borderRadius:100, cursor:"pointer", fontFamily:FONT, color:"#dc2626", background:"#fef2f2", border:"1px solid #fecaca" }}>Decline</button>
             </>
           )}
           {p.stage === "accepted" && (
-            <a href="/freelancer/contracts" style={{ ...abtn, background:G.green, color:G.white, border:"none", textDecoration:"none" }}>📋 View Contract →</a>
+            <a href="/freelancer/contracts" style={{ ...btnGreen, textDecoration:"none" }}>📋 View Contract →</a>
           )}
           {p.stage === "rejected" && (
-            <button onClick={onOpen} style={{ ...abtn, color:G.sub, background:"#f3f4f6", border:"none" }}>View Feedback</button>
+            <button onClick={onOpen} style={{ fontSize:12, fontWeight:700, padding:"7px 14px", borderRadius:100, cursor:"pointer", fontFamily:FONT, color:G.sub, background:"#f3f4f6", border:"none" }}>View Feedback</button>
           )}
-          <button onClick={onOpen} style={{ ...abtn, color:G.greenDark, background:G.greenBg, border:`1px solid ${G.greenBorder}` }}>View Details</button>
+          <button onClick={onOpen} style={{ ...btnOutline }}>View Details</button>
         </div>
       </div>
     </div>
   );
 }
-
-const abtn = { fontSize:12, fontWeight:700, padding:"7px 14px", borderRadius:8, cursor:"pointer", fontFamily:FONT };
 
 /* ── Detail Modal ───────────────────────────────────────────── */
 function DetailModal({ proposal:p, onClose, onAccept }) {
@@ -459,10 +492,10 @@ function DetailModal({ proposal:p, onClose, onAccept }) {
 
   return (
     <div onClick={onClose} style={{ position:"fixed", inset:0, zIndex:50, background:"rgba(17,24,39,0.45)", backdropFilter:"blur(4px)", display:"flex", alignItems:"center", justifyContent:"center", padding:20 }}>
-      <div onClick={e => e.stopPropagation()} style={{ width:"100%", maxWidth:700, maxHeight:"90vh", background:G.white, borderRadius:18, display:"flex", flexDirection:"column", overflow:"hidden", boxShadow:"0 32px 80px rgba(0,0,0,0.18)" }}>
+      <div onClick={e => e.stopPropagation()} style={{ width:"100%", maxWidth:700, maxHeight:"90vh", background:G.white, borderRadius:20, display:"flex", flexDirection:"column", overflow:"hidden", boxShadow:"0 32px 80px rgba(13,40,85,0.22)" }}>
 
-        {/* Dark green gradient header */}
-        <div style={{ background:"linear-gradient(135deg,#14532d,#166534)", padding:"20px 24px 0" }}>
+        {/* Navy gradient header */}
+        <div style={{ background:`linear-gradient(135deg, ${G.navyFrom} 0%, ${G.navyTo} 100%)`, padding:"20px 24px 0" }}>
           <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:14 }}>
             <div>
               <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:5 }}>
@@ -471,13 +504,13 @@ function DetailModal({ proposal:p, onClose, onAccept }) {
               </div>
               <p style={{ fontSize:12, color:"rgba(255,255,255,0.4)" }}>{p.client} · {p.company} · {p.id}</p>
             </div>
-            <button onClick={onClose} style={{ width:28, height:28, borderRadius:7, border:"1px solid rgba(255,255,255,0.15)", background:"rgba(255,255,255,0.08)", cursor:"pointer", color:"rgba(255,255,255,0.6)", display:"flex", alignItems:"center", justifyContent:"center" }}>
+            <button onClick={onClose} style={{ width:28, height:28, borderRadius:8, border:"1px solid rgba(255,255,255,0.15)", background:"rgba(255,255,255,0.08)", cursor:"pointer", color:"rgba(255,255,255,0.6)", display:"flex", alignItems:"center", justifyContent:"center" }}>
               <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
           </div>
           {/* Bid strip */}
           <div style={{ display:"flex", gap:16, paddingBottom:14 }}>
-            {[["Your Bid",fmt(p.myBid),"#86efac"],["Timeline",p.timeline+" days","rgba(255,255,255,0.7)"],["Client Budget",p.clientBudget,"rgba(255,255,255,0.5)"],["Match",p.matchScore+"%","#86efac"]].map(([k, v, c]) => (
+            {[["Your Bid",fmt(p.myBid),G.green],["Timeline",p.timeline+" days","rgba(255,255,255,0.75)"],["Client Budget",p.clientBudget,"rgba(255,255,255,0.5)"],["Match",p.matchScore+"%",G.green]].map(([k, v, c]) => (
               <div key={k}>
                 <p style={{ fontSize:10, color:"rgba(255,255,255,0.3)", fontWeight:700, textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:3 }}>{k}</p>
                 <p style={{ fontSize:14, fontWeight:700, color:c }}>{v}</p>
@@ -485,7 +518,7 @@ function DetailModal({ proposal:p, onClose, onAccept }) {
             ))}
           </div>
           {/* Tabs */}
-          <div style={{ display:"flex", gap:0 }}>
+          <div style={{ display:"flex" }}>
             {["overview","client","activity","messages"].map(t => (
               <button key={t} onClick={() => setTab(t)}
                 style={{ padding:"10px 14px", fontSize:13, fontWeight:tab === t ? 700 : 400,
@@ -512,12 +545,12 @@ function DetailModal({ proposal:p, onClose, onAccept }) {
                 <div>
                   <p style={{ fontSize:11, fontWeight:700, color:G.muted, textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:10 }}>Milestone Breakdown</p>
                   {p.milestones.map((m, i) => (
-                    <div key={i} style={{ display:"flex", justifyContent:"space-between", padding:"10px 14px", background:i % 2 === 0 ? G.bg : G.white, borderRadius:8, marginBottom:4 }}>
+                    <div key={i} style={{ display:"flex", justifyContent:"space-between", padding:"10px 14px", background:i % 2 === 0 ? G.bg : G.white, borderRadius:10, marginBottom:4 }}>
                       <span style={{ fontSize:13, color:G.text }}>M{i + 1} — {m.name}</span>
                       <span style={{ fontSize:13, fontWeight:700, color:G.greenDark }}>{fmt(m.amount)}</span>
                     </div>
                   ))}
-                  <div style={{ display:"flex", justifyContent:"space-between", padding:"10px 14px", background:G.greenBg, borderRadius:8, border:`1px solid ${G.greenBorder}`, marginTop:4 }}>
+                  <div style={{ display:"flex", justifyContent:"space-between", padding:"10px 14px", background:G.greenBg, borderRadius:10, border:`1px solid ${G.greenBorder}`, marginTop:4 }}>
                     <span style={{ fontSize:13, fontWeight:700, color:G.text }}>Total</span>
                     <span style={{ fontSize:14, fontWeight:800, color:G.greenDark }}>{fmt(p.milestones.reduce((s, m) => s + m.amount, 0))}</span>
                   </div>
@@ -525,23 +558,23 @@ function DetailModal({ proposal:p, onClose, onAccept }) {
               )}
               {/* Negotiation form */}
               {p.stage === "negotiation" && p.negotiation && (
-                <div style={{ background:"#f5f3ff", border:"1px solid #ddd6fe", borderRadius:12, padding:"16px" }}>
+                <div style={{ background:"#f5f3ff", border:"1px solid #ddd6fe", borderRadius:14, padding:"16px" }}>
                   <p style={{ fontSize:13, fontWeight:700, color:"#6d28d9", marginBottom:12 }}>↩ Counter-offer Response</p>
                   <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:12, marginBottom:12 }}>
                     <div>
                       <label style={{ fontSize:11, fontWeight:700, color:G.sub, display:"block", marginBottom:5 }}>Your Counter Amount (₹)</label>
-                      <input value={negAmt} onChange={e => setNegAmt(e.target.value)} placeholder={String(p.myBid)} style={{ width:"100%", fontSize:13, border:"1px solid #ddd6fe", borderRadius:8, padding:"9px 11px", outline:"none", fontFamily:FONT, boxSizing:"border-box" }} />
+                      <input value={negAmt} onChange={e => setNegAmt(e.target.value)} placeholder={String(p.myBid)} style={{ width:"100%", fontSize:13, border:"1px solid #ddd6fe", borderRadius:10, padding:"9px 11px", outline:"none", fontFamily:FONT, boxSizing:"border-box" }} />
                     </div>
                     <div>
                       <label style={{ fontSize:11, fontWeight:700, color:G.sub, display:"block", marginBottom:5 }}>Your Timeline (days)</label>
-                      <input defaultValue={p.timeline} style={{ width:"100%", fontSize:13, border:"1px solid #ddd6fe", borderRadius:8, padding:"9px 11px", outline:"none", fontFamily:FONT, boxSizing:"border-box" }} />
+                      <input defaultValue={p.timeline} style={{ width:"100%", fontSize:13, border:"1px solid #ddd6fe", borderRadius:10, padding:"9px 11px", outline:"none", fontFamily:FONT, boxSizing:"border-box" }} />
                     </div>
                   </div>
                   <textarea value={negMsg} onChange={e => setNegMsg(e.target.value)} placeholder="Your message to client…" rows={3}
-                    style={{ width:"100%", fontSize:13, border:"1px solid #ddd6fe", borderRadius:8, padding:"9px 11px", outline:"none", resize:"none", fontFamily:FONT, boxSizing:"border-box", marginBottom:10 }} />
+                    style={{ width:"100%", fontSize:13, border:"1px solid #ddd6fe", borderRadius:10, padding:"9px 11px", outline:"none", resize:"none", fontFamily:FONT, boxSizing:"border-box", marginBottom:10 }} />
                   <div style={{ display:"flex", gap:8 }}>
-                    <button onClick={onAccept} style={{ flex:1, padding:"9px", fontSize:13, fontWeight:700, background:G.green, color:G.white, border:"none", borderRadius:9, cursor:"pointer", fontFamily:FONT }}>✅ Accept Client's Offer</button>
-                    <button style={{ flex:1, padding:"9px", fontSize:13, fontWeight:700, background:"#7c3aed", color:G.white, border:"none", borderRadius:9, cursor:"pointer", fontFamily:FONT }}>↩ Send Counter</button>
+                    <button onClick={onAccept} style={{ flex:1, padding:"9px", fontSize:13, fontWeight:700, background:G.green, color:G.white, border:"none", borderRadius:100, cursor:"pointer", fontFamily:FONT, boxShadow:"0 2px 8px rgba(111,218,68,0.25)" }}>✅ Accept Client's Offer</button>
+                    <button style={{ flex:1, padding:"9px", fontSize:13, fontWeight:700, background:`linear-gradient(135deg, ${G.navyFrom} 0%, ${G.navyTo} 100%)`, color:G.white, border:"none", borderRadius:100, cursor:"pointer", fontFamily:FONT, boxShadow:"0 2px 8px rgba(13,40,85,0.22)" }}>↩ Send Counter</button>
                   </div>
                 </div>
               )}
@@ -550,10 +583,12 @@ function DetailModal({ proposal:p, onClose, onAccept }) {
 
           {tab === "client" && (
             <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
-              <div style={{ display:"flex", alignItems:"center", gap:14, padding:"16px", border:`1px solid ${G.border}`, borderRadius:12 }}>
-                <div style={{ width:48, height:48, borderRadius:14, background:G.greenBg, border:`1px solid ${G.greenBorder}`,
+              <div style={{ display:"flex", alignItems:"center", gap:14, padding:"16px", border:`1px solid ${G.greenBorder}`, borderRadius:14 }}>
+                <div style={{ width:48, height:48, borderRadius:14,
+                  background:`linear-gradient(135deg, ${G.navyFrom} 0%, ${G.navyTo} 100%)`,
                   display:"flex", alignItems:"center", justifyContent:"center",
-                  fontSize:16, fontWeight:700, color:G.greenDark, flexShrink:0 }}>
+                  fontSize:16, fontWeight:700, color:G.white, flexShrink:0,
+                  boxShadow:"0 2px 10px rgba(13,40,85,0.22)" }}>
                   {p.client.split(" ").map(n => n[0]).join("")}
                 </div>
                 <div>
@@ -571,7 +606,7 @@ function DetailModal({ proposal:p, onClose, onAccept }) {
                   ["Total Proposals",  p.totalBids + " submitted"],
                   ["Avg Bid",          p.avgBid > 0 ? fmt(p.avgBid) : "—"],
                 ].map(([k, v]) => (
-                  <div key={k} style={{ padding:"12px 14px", border:`1px solid ${G.border}`, borderRadius:10 }}>
+                  <div key={k} style={{ padding:"12px 14px", border:`1px solid ${G.greenBorder}`, borderRadius:12 }}>
                     <p style={{ fontSize:10, color:G.muted, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:4 }}>{k}</p>
                     <p style={{ fontSize:13, fontWeight:600, color:G.text }}>{v}</p>
                   </div>
@@ -582,7 +617,7 @@ function DetailModal({ proposal:p, onClose, onAccept }) {
 
           {tab === "activity" && (
             <div style={{ position:"relative", paddingLeft:20 }}>
-              <div style={{ position:"absolute", left:6, top:0, bottom:0, width:2, background:"#f3f4f6" }} />
+              <div style={{ position:"absolute", left:6, top:0, bottom:0, width:2, background:G.greenBorder }} />
               {(p.activity.length > 0 ? p.activity : ["No activity yet"]).map((a, i) => (
                 <div key={i} style={{ paddingBottom:18, position:"relative" }}>
                   <div style={{ width:10, height:10, borderRadius:"50%", background:G.green, border:"2px solid #fff", boxShadow:`0 0 0 2px ${G.green}`, position:"absolute", left:-16, top:3 }} />
@@ -598,8 +633,8 @@ function DetailModal({ proposal:p, onClose, onAccept }) {
               <p style={{ fontSize:14, fontWeight:600, color:G.text }}>Pre-Contract Messages</p>
               <p style={{ fontSize:13, color:G.muted, marginTop:4, marginBottom:16 }}>Message the client before signing a contract</p>
               <textarea placeholder="Type a message to the client…" rows={4}
-                style={{ width:"100%", fontSize:13, border:`1.5px solid ${G.border}`, borderRadius:10, padding:"10px 12px", outline:"none", resize:"none", fontFamily:FONT, boxSizing:"border-box", marginBottom:10 }} />
-              <button style={{ width:"100%", padding:"10px", fontSize:13, fontWeight:700, background:G.green, color:G.white, border:"none", borderRadius:9, cursor:"pointer", fontFamily:FONT }}>Send Message</button>
+                style={{ width:"100%", fontSize:13, border:`1.5px solid ${G.greenBorder}`, borderRadius:12, padding:"10px 12px", outline:"none", resize:"none", fontFamily:FONT, boxSizing:"border-box", marginBottom:10 }} />
+              <button style={{ ...btnPrimary, width:"100%", justifyContent:"center", borderRadius:100, padding:"11px" }}>Send Message</button>
             </div>
           )}
         </div>
@@ -628,13 +663,13 @@ function NewProposalModal({ onClose }) {
 
   return (
     <div onClick={onClose} style={{ position:"fixed", inset:0, zIndex:50, background:"rgba(17,24,39,0.45)", backdropFilter:"blur(4px)", display:"flex", alignItems:"center", justifyContent:"center", padding:20 }}>
-      <div onClick={e => e.stopPropagation()} style={{ width:"100%", maxWidth:620, maxHeight:"92vh", background:G.white, borderRadius:18, display:"flex", flexDirection:"column", overflow:"hidden", boxShadow:"0 32px 80px rgba(0,0,0,0.18)" }}>
+      <div onClick={e => e.stopPropagation()} style={{ width:"100%", maxWidth:620, maxHeight:"92vh", background:G.white, borderRadius:20, display:"flex", flexDirection:"column", overflow:"hidden", boxShadow:"0 32px 80px rgba(13,40,85,0.22)" }}>
 
-        {/* Dark green gradient header */}
-        <div style={{ background:"linear-gradient(135deg,#14532d,#166534)", padding:"18px 24px" }}>
+        {/* Navy gradient header */}
+        <div style={{ background:`linear-gradient(135deg, ${G.navyFrom} 0%, ${G.navyTo} 100%)`, padding:"18px 24px" }}>
           <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:14 }}>
             <p style={{ fontSize:17, fontWeight:800, color:G.white, margin:0, fontFamily:FONT }}>New Proposal — Step {step} of {STEPS.length}</p>
-            <button onClick={onClose} style={{ width:28, height:28, borderRadius:7, border:"1px solid rgba(255,255,255,0.15)", background:"rgba(255,255,255,0.08)", cursor:"pointer", color:"rgba(255,255,255,0.6)", display:"flex", alignItems:"center", justifyContent:"center" }}>✕</button>
+            <button onClick={onClose} style={{ width:28, height:28, borderRadius:8, border:"1px solid rgba(255,255,255,0.15)", background:"rgba(255,255,255,0.08)", cursor:"pointer", color:"rgba(255,255,255,0.6)", display:"flex", alignItems:"center", justifyContent:"center" }}>✕</button>
           </div>
           <div style={{ display:"flex", gap:4 }}>
             {STEPS.map((s, i) => (
@@ -643,7 +678,7 @@ function NewProposalModal({ onClose }) {
           </div>
           <div style={{ display:"flex", gap:0, marginTop:10 }}>
             {STEPS.map((s, i) => (
-              <p key={i} style={{ flex:1, fontSize:10, fontWeight:i + 1 === step ? 700 : 400, color:i + 1 === step ? "#86efac" : "rgba(255,255,255,0.25)", textAlign:"center" }}>{s}</p>
+              <p key={i} style={{ flex:1, fontSize:10, fontWeight:i + 1 === step ? 700 : 400, color:i + 1 === step ? G.green : "rgba(255,255,255,0.25)", textAlign:"center" }}>{s}</p>
             ))}
           </div>
         </div>
@@ -658,9 +693,9 @@ function NewProposalModal({ onClose }) {
                 { title:"HR Management Dashboard",      company:"PeopleFirst", budget:"₹80,000 – ₹1,20,000",   bids:11 },
                 { title:"Real Estate Listing Portal",   company:"HomeFinder",  budget:"₹1,50,000 – ₹2,50,000", bids:4  },
               ].map((proj, i) => (
-                <div key={i} style={{ border:`1.5px solid ${G.border}`, borderRadius:12, padding:"14px 16px", cursor:"pointer", transition:"all 0.12s" }}
+                <div key={i} style={{ border:`1.5px solid ${G.greenBorder}`, borderRadius:14, padding:"14px 16px", cursor:"pointer", transition:"all 0.12s" }}
                   onMouseEnter={e => { e.currentTarget.style.borderColor = G.green; e.currentTarget.style.background = G.greenBg; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = G.border; e.currentTarget.style.background = G.white; }}>
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = G.greenBorder; e.currentTarget.style.background = G.white; }}>
                   <p style={{ fontSize:14, fontWeight:700, color:G.text, marginBottom:3 }}>{proj.title}</p>
                   <p style={{ fontSize:12, color:G.sub, marginBottom:3 }}>{proj.company}</p>
                   <div style={{ display:"flex", gap:10 }}>
@@ -691,12 +726,11 @@ function NewProposalModal({ onClose }) {
                   <div key={i} style={{ display:"grid", gridTemplateColumns:"1fr 120px 32px", gap:8, marginBottom:8 }}>
                     <input value={m.name} onChange={e => setMilestones(prev => prev.map((x, j) => j === i ? { ...x, name:e.target.value } : x))} placeholder={`Milestone ${i + 1} name`} style={finp} />
                     <input value={m.amount} onChange={e => setMilestones(prev => prev.map((x, j) => j === i ? { ...x, amount:e.target.value } : x))} placeholder="₹ amount" style={finp} />
-                    {milestones.length > 1 && <button onClick={() => setMilestones(prev => prev.filter((_, j) => j !== i))} style={{ fontSize:16, background:"#fef2f2", border:"1px solid #fecaca", borderRadius:7, cursor:"pointer", color:"#dc2626" }}>✕</button>}
+                    {milestones.length > 1 && <button onClick={() => setMilestones(prev => prev.filter((_, j) => j !== i))} style={{ fontSize:16, background:"#fef2f2", border:"1px solid #fecaca", borderRadius:10, cursor:"pointer", color:"#dc2626" }}>✕</button>}
                   </div>
                 ))}
                 {milestones.length < 5 && (
-                  <button onClick={() => setMilestones(prev => [...prev, { name:"", amount:"" }])}
-                    style={{ fontSize:12, fontWeight:700, color:G.greenDark, background:G.greenBg, border:`1px solid ${G.greenBorder}`, borderRadius:8, padding:"6px 14px", cursor:"pointer", fontFamily:FONT }}>
+                  <button onClick={() => setMilestones(prev => [...prev, { name:"", amount:"" }])} style={{ ...btnOutline, fontSize:12 }}>
                     + Add Milestone
                   </button>
                 )}
@@ -709,19 +743,23 @@ function NewProposalModal({ onClose }) {
               <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
                 <p style={{ fontSize:14, fontWeight:700, color:G.text }}>Cover Letter</p>
                 <button onClick={simulateAI} disabled={aiLoading}
-                  style={{ display:"flex", alignItems:"center", gap:6, fontSize:12, fontWeight:700, color:"#7c3aed", background:"#f5f3ff", border:"1px solid #ddd6fe", borderRadius:8, padding:"6px 12px", cursor:"pointer", fontFamily:FONT }}>
+                  style={{ display:"flex", alignItems:"center", gap:6, fontSize:12, fontWeight:700,
+                    color:G.white,
+                    background:aiLoading ? G.muted : `linear-gradient(135deg, ${G.navyFrom} 0%, ${G.navyTo} 100%)`,
+                    border:"none", borderRadius:100, padding:"6px 14px", cursor:"pointer", fontFamily:FONT,
+                    boxShadow:"0 2px 8px rgba(13,40,85,0.22)" }}>
                   {aiLoading ? "⏳ Generating…" : "✨ AI Assist"}
                 </button>
               </div>
               <textarea value={letter} onChange={e => setLetter(e.target.value)}
                 placeholder="Write your cover letter here… Mention your relevant experience, approach, and why you're the best fit for this project." rows={10}
-                style={{ ...finp, resize:"none", width:"100%", lineHeight:1.75 }} />
+                style={{ ...finp, resize:"none", lineHeight:1.75 }} />
               <div style={{ display:"flex", justifyContent:"space-between" }}>
                 <span style={{ fontSize:11, color:letter.split(" ").filter(Boolean).length > 300 ? "#dc2626" : G.muted }}>{letter.split(" ").filter(Boolean).length}/300 words</span>
                 <div style={{ display:"flex", gap:6 }}>
                   {["Technical","Design","Long-term"].map(t => (
                     <button key={t} onClick={() => setLetter(`[${t} template] I bring specialized expertise in ${t.toLowerCase()} projects...`)}
-                      style={{ fontSize:11, color:G.sub, background:"#f3f4f6", border:"none", borderRadius:7, padding:"4px 8px", cursor:"pointer", fontFamily:FONT }}>{t}</button>
+                      style={{ fontSize:11, color:G.sub, background:"#f3f4f6", border:"none", borderRadius:100, padding:"4px 10px", cursor:"pointer", fontFamily:FONT }}>{t}</button>
                   ))}
                 </div>
               </div>
@@ -732,14 +770,14 @@ function NewProposalModal({ onClose }) {
             <div style={{ display:"flex", flexDirection:"column", gap:12 }}>
               <p style={{ fontSize:14, fontWeight:700, color:G.text }}>Attachments</p>
               <p style={{ fontSize:12, color:G.muted }}>Max 5 files · 10MB each</p>
-              <div style={{ border:`2px dashed ${G.greenBorder}`, borderRadius:12, padding:"28px", textAlign:"center", background:G.greenBg, cursor:"pointer" }}>
+              <div style={{ border:`2px dashed ${G.green}`, borderRadius:14, padding:"28px", textAlign:"center", background:G.greenBg, cursor:"pointer" }}>
                 <p style={{ fontSize:24, marginBottom:8 }}>📎</p>
                 <p style={{ fontSize:13, fontWeight:600, color:G.greenDark }}>Drop files or click to upload</p>
                 <p style={{ fontSize:12, color:G.muted, marginTop:3 }}>Portfolio samples, work examples, resume</p>
               </div>
               <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
                 {["ShopNow_case_study.pdf","ZapCart_screenshots.zip"].map((f, i) => (
-                  <div key={i} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", border:`1px solid ${G.border}`, borderRadius:9 }}>
+                  <div key={i} style={{ display:"flex", alignItems:"center", gap:10, padding:"10px 14px", border:`1px solid ${G.greenBorder}`, borderRadius:12 }}>
                     <span style={{ fontSize:18 }}>📄</span>
                     <span style={{ flex:1, fontSize:12, color:G.text }}>{f}</span>
                     <button style={{ fontSize:11, color:"#dc2626", background:"none", border:"none", cursor:"pointer" }}>✕</button>
@@ -752,10 +790,10 @@ function NewProposalModal({ onClose }) {
           {step === 5 && (
             <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
               <p style={{ fontSize:14, fontWeight:700, color:G.text }}>Review Your Proposal</p>
-              <div style={{ background:G.bg, borderRadius:12, padding:"16px" }}>
+              <div style={{ background:G.greenBg, border:`1px solid ${G.greenBorder}`, borderRadius:14, padding:"16px" }}>
                 <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:10, marginBottom:14 }}>
                   {[["Bid Amount",amount ? fmt(Number(amount)) : "—"],["Timeline",timeline ? timeline + " days" : "—"],["Milestones",milestones.filter(m => m.name).length],["Attachments","2 files"]].map(([k, v]) => (
-                    <div key={k} style={{ padding:"10px 12px", background:G.white, border:`1px solid ${G.border}`, borderRadius:9 }}>
+                    <div key={k} style={{ padding:"10px 12px", background:G.white, border:`1px solid ${G.greenBorder}`, borderRadius:10 }}>
                       <p style={{ fontSize:10, color:G.muted, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:3 }}>{k}</p>
                       <p style={{ fontSize:14, fontWeight:700, color:G.greenDark }}>{v}</p>
                     </div>
@@ -768,14 +806,14 @@ function NewProposalModal({ onClose }) {
         </div>
 
         {/* Footer */}
-        <div style={{ padding:"14px 24px", borderTop:"1px solid #f3f4f6", display:"flex", justifyContent:"space-between", alignItems:"center", background:G.bg }}>
+        <div style={{ padding:"14px 24px", borderTop:`1px solid ${G.greenBorder}`, display:"flex", justifyContent:"space-between", alignItems:"center", background:G.bg }}>
           <button onClick={() => step > 1 && setStep(s => s - 1)} disabled={step === 1}
-            style={{ fontSize:13, fontWeight:600, padding:"9px 18px", border:`1px solid ${G.border}`, background:G.white, color:step === 1 ? G.muted : G.text, borderRadius:9, cursor:step === 1 ? "not-allowed" : "pointer", fontFamily:FONT }}>← Back</button>
+            style={{ fontSize:13, fontWeight:600, padding:"9px 18px", border:`1px solid ${G.greenBorder}`, background:G.white, color:step === 1 ? G.muted : G.text, borderRadius:100, cursor:step === 1 ? "not-allowed" : "pointer", fontFamily:FONT }}>← Back</button>
           <div style={{ display:"flex", gap:8 }}>
-            <button style={{ fontSize:13, fontWeight:600, padding:"9px 18px", border:`1px solid ${G.border}`, background:G.white, color:G.sub, borderRadius:9, cursor:"pointer", fontFamily:FONT }}>Save Draft</button>
+            <button style={{ fontSize:13, fontWeight:600, padding:"9px 18px", border:`1px solid ${G.greenBorder}`, background:G.white, color:G.sub, borderRadius:100, cursor:"pointer", fontFamily:FONT }}>Save Draft</button>
             {step < STEPS.length
-              ? <button onClick={() => setStep(s => s + 1)} style={{ fontSize:13, fontWeight:700, padding:"9px 22px", border:"none", background:G.green, color:G.white, borderRadius:9, cursor:"pointer", fontFamily:FONT }}>Next →</button>
-              : <button style={{ fontSize:13, fontWeight:700, padding:"9px 22px", border:"none", background:G.green, color:G.white, borderRadius:9, cursor:"pointer", fontFamily:FONT }}>📤 Send Proposal</button>
+              ? <button onClick={() => setStep(s => s + 1)} style={{ ...btnPrimary }}>Next →</button>
+              : <button style={{ ...btnPrimary }}>📤 Send Proposal</button>
             }
           </div>
         </div>
@@ -784,17 +822,31 @@ function NewProposalModal({ onClose }) {
   );
 }
 
-const finp = { width:"100%", fontSize:13, border:`1.5px solid ${G.border}`, borderRadius:8, padding:"9px 11px", outline:"none", color:G.text, fontFamily:FONT, boxSizing:"border-box" };
+const finp = { width:"100%", fontSize:13, border:`1.5px solid ${G.greenBorder}`, borderRadius:10, padding:"9px 11px", outline:"none", color:G.text, fontFamily:FONT, boxSizing:"border-box" };
 
 function Navbar() {
   return (
-    <nav style={{ height:52, background:G.white, borderBottom:`1px solid ${G.border}`, display:"flex", alignItems:"center", padding:"0 28px", gap:12, position:"sticky", top:0, zIndex:40 }}>
-      <span style={{ fontWeight:800, fontSize:18, color:G.text, letterSpacing:"-0.5px", fontFamily:FONT }}>
-        <span style={{ color:G.green }}>web</span>lance
+    <nav style={{
+      height:56, background:G.white,
+      borderBottom:`1px solid ${G.greenBorder}`,
+      boxShadow:"0 2px 12px rgba(111,218,68,0.08)",
+      display:"flex", alignItems:"center",
+      padding:"0 28px", gap:12,
+      position:"sticky", top:0, zIndex:40,
+      overflow:"hidden"
+    }}>
+      <span style={{ fontWeight:800, fontSize:20, letterSpacing:"-0.5px", fontFamily:FONT }}>
+        <div className="flex-shrink-0 cursor-pointer" onClick={() => navigate("/")}>
+              <img
+                src="/weblance.jpeg"
+                alt="Weblance"
+                style={{ height: 65, width: 130, display: "block" }}
+              />
+            </div>
       </span>
-      <div style={{ width:1, height:20, background:G.border }} />
+      <div style={{ width:1, height:20, background:G.greenBorder }} />
       <span style={{ fontSize:12, color:G.muted, fontWeight:500 }}>Freelancer</span>
-      <span style={{ fontSize:12, color:G.border }}>/</span>
+      <span style={{ fontSize:12, color:G.greenBorder }}>/</span>
       <span style={{ fontSize:12, color:G.text, fontWeight:600 }}>Proposals</span>
       <div style={{ display:"flex", alignItems:"center", gap:5, background:G.greenBg, border:`1px solid ${G.greenBorder}`, borderRadius:99, padding:"3px 10px", marginLeft:4 }}>
         <span style={{ fontSize:10 }}>💼</span>
@@ -805,7 +857,14 @@ function Navbar() {
         <span style={{ fontSize:18 }}>🔔</span>
         <div style={{ position:"absolute", top:-1, right:-1, width:8, height:8, borderRadius:"50%", background:"#ef4444", border:`1.5px solid ${G.white}` }} />
       </div>
-      <div style={{ width:32, height:32, borderRadius:"50%", background:G.greenBg, border:`1.5px solid ${G.greenBorder}`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:12, fontWeight:700, color:G.greenDark, marginLeft:8, fontFamily:FONT }}>AJ</div>
+      <div style={{
+        width:34, height:34, borderRadius:"50%",
+        background:`linear-gradient(135deg, ${G.navyFrom} 0%, ${G.navyTo} 100%)`,
+        display:"flex", alignItems:"center", justifyContent:"center",
+        fontSize:12, fontWeight:700, color:G.white,
+        marginLeft:8, fontFamily:FONT,
+        boxShadow:"0 2px 8px rgba(13,40,85,0.28)",
+      }}>AJ</div>
     </nav>
   );
 }
