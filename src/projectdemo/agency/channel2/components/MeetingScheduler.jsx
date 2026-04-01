@@ -1,5 +1,29 @@
 import { useState } from "react";
 
+const G = {
+  green:       "#6EC030",
+  greenDeep:   "#2E7D1F",
+  greenBg:     "#f1fce8",
+  greenBorder: "#d4edbb",
+  gradNavy:    "linear-gradient(135deg, #4A6FA5 0%, #0F1A3B 100%)",
+  text:        "#1C1C1C",
+  sub:         "#4b5563",
+  muted:       "#9ca3af",
+  border:      "#e5e7eb",
+  bg:          "#f9fafb",
+  white:       "#ffffff",
+  amber:       "#f59e0b",
+  amberBg:     "#fffbeb",
+  amberBorder: "#fde68a",
+  red:         "#ef4444",
+  redBg:       "#fef2f2",
+  redBorder:   "#fecaca",
+  blue:        "#2563eb",
+  blueBg:      "#eff6ff",
+  blueBorder:  "#bfdbfe",
+};
+const FONT = "'Poppins', sans-serif";
+
 export default function MeetingScheduler({ onClose, onSchedule, participants }) {
   const [title, setTitle] = useState("");
   const [date, setDate] = useState("");
@@ -31,82 +55,94 @@ export default function MeetingScheduler({ onClose, onSchedule, participants }) 
 
   const today = new Date().toISOString().split("T")[0];
 
+  // Shared styles
+  const labelSty = { fontSize: 11, fontWeight: 700, color: G.muted, textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: 6 };
+  const inputSty = { width: "100%", border: `1.5px solid ${G.greenBorder}`, borderRadius: 10, padding: "9px 14px", fontSize: 13, fontFamily: FONT, color: G.text, background: G.white, outline: "none", boxSizing: "border-box" };
+  const btnSty = (primary = false, disabled = false) => ({
+    padding: "7px 16px", borderRadius: 100, fontSize: 12, fontWeight: 700, fontFamily: FONT, 
+    cursor: disabled ? "not-allowed" : "pointer", display: "inline-flex", alignItems: "center", justifyContent: "center",
+    transition: "all 0.2s ease",
+    ...(primary 
+      ? { 
+          background: disabled ? G.bg : G.gradNavy, 
+          color: disabled ? G.muted : G.white, 
+          border: disabled ? `1px solid ${G.border}` : "none", 
+          boxShadow: disabled ? "none" : "0 3px 12px rgba(15,26,59,0.25)" 
+        } 
+      : { 
+          background: G.white, color: G.sub, border: `1px solid ${G.greenBorder}` 
+        })
+  });
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4 overflow-hidden">
+    <div style={{ position: "fixed", inset: 0, zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(15,26,59,0.35)", padding: 16, fontFamily: FONT }}>
+      
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap'); *{font-family:'Poppins',sans-serif;} ::-webkit-scrollbar {width: 6px;} ::-webkit-scrollbar-thumb {background: #d4edbb; border-radius: 10px;}`}</style>
+
+      <div style={{ background: G.white, borderRadius: 20, width: "100%", maxWidth: 440, overflow: "hidden", boxShadow: "0 8px 40px rgba(15,26,59,0.18)", display: "flex", flexDirection: "column" }}>
 
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-green-50 rounded-lg flex items-center justify-center">
-              <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <p className="text-sm font-semibold text-gray-800">Schedule Meeting</p>
+        <div style={{ padding: "16px 20px", borderBottom: `1px solid ${G.greenBorder}`, background: G.greenBg, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <span style={{ fontSize: 18 }}>📅</span>
+            <span style={{ fontSize: 14, fontWeight: 800, color: G.greenDeep, display: "block" }}>Schedule Meeting</span>
           </div>
-          <button
-            onClick={onClose}
-            className="w-7 h-7 rounded-lg hover:bg-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+          <button onClick={onClose} style={{ background: "none", border: "none", fontSize: 18, color: G.muted, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            ✕
           </button>
         </div>
 
         {/* Form */}
-        <div className="px-5 py-4 space-y-4 max-h-96 overflow-y-auto">
+        <div style={{ padding: "20px", display: "flex", flexDirection: "column", gap: 16, maxHeight: "65vh", overflowY: "auto" }}>
 
           {/* Meeting title */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
-              Meeting Title <span className="text-red-400">*</span>
+            <label style={labelSty}>
+              Meeting Title <span style={{ color: G.red }}>*</span>
             </label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Sprint review, API progress check"
-              className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 placeholder-gray-300"
+              style={inputSty}
             />
           </div>
 
           {/* Date + Time */}
-          <div className="grid grid-cols-2 gap-3">
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">
-                Date <span className="text-red-400">*</span>
+              <label style={labelSty}>
+                Date <span style={{ color: G.red }}>*</span>
               </label>
               <input
                 type="date"
                 value={date}
                 min={today}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400"
+                style={inputSty}
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">
-                Time <span className="text-red-400">*</span>
+              <label style={labelSty}>
+                Time <span style={{ color: G.red }}>*</span>
               </label>
               <input
                 type="time"
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
-                className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400"
+                style={inputSty}
               />
             </div>
           </div>
 
           {/* Duration */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Duration</label>
+            <label style={labelSty}>Duration</label>
             <select
               value={duration}
               onChange={(e) => setDuration(e.target.value)}
-              className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 bg-white"
+              style={inputSty}
             >
               <option value="30">30 minutes</option>
               <option value="60">1 hour</option>
@@ -117,23 +153,30 @@ export default function MeetingScheduler({ onClose, onSchedule, participants }) 
 
           {/* Participants */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-2">
+            <label style={{ ...labelSty, marginBottom: 8 }}>
               Participants ({selectedParticipants.length} selected)
             </label>
-            <div className="space-y-1.5 max-h-32 overflow-y-auto">
+            <div style={{ display: "flex", flexDirection: "column", gap: 4, maxHeight: 130, overflowY: "auto", paddingRight: 4 }}>
               {participants.map((p) => (
                 <label
                   key={p.id}
-                  className="flex items-center gap-2.5 cursor-pointer hover:bg-gray-50 px-2 py-1.5 rounded-lg transition-colors"
+                  style={{ 
+                    display: "flex", alignItems: "center", gap: 10, cursor: "pointer", 
+                    padding: "6px 10px", borderRadius: 10, transition: "background 0.2s",
+                    background: selectedParticipants.includes(p.id) ? G.greenBg : "transparent",
+                    border: `1px solid ${selectedParticipants.includes(p.id) ? G.greenBorder : "transparent"}`
+                  }}
                 >
                   <input
                     type="checkbox"
                     checked={selectedParticipants.includes(p.id)}
                     onChange={() => toggleParticipant(p.id)}
-                    className="w-3.5 h-3.5 accent-green-600"
+                    style={{ width: 14, height: 14, accentColor: G.greenDeep, cursor: "pointer" }}
                   />
-                  <span className="text-sm text-gray-700">{p.name}</span>
-                  <span className="text-xs text-gray-400 capitalize">{p.role.replace("_", " ")}</span>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: G.text, flex: 1 }}>{p.name}</span>
+                  <span style={{ fontSize: 11, color: G.muted, textTransform: "capitalize", fontWeight: 500 }}>
+                    {p.role.replace("_", " ")}
+                  </span>
                 </label>
               ))}
             </div>
@@ -141,35 +184,28 @@ export default function MeetingScheduler({ onClose, onSchedule, participants }) 
 
           {/* Agenda */}
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">
-              Agenda <span className="text-gray-400 font-normal">(optional)</span>
+            <label style={labelSty}>
+              Agenda <span style={{ fontWeight: 500, textTransform: "none", color: G.muted }}>(optional)</span>
             </label>
             <textarea
               value={agenda}
               onChange={(e) => setAgenda(e.target.value)}
               placeholder="What will be discussed?"
               rows={2}
-              className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 placeholder-gray-300 resize-none"
+              style={{ ...inputSty, resize: "none" }}
             />
           </div>
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3 border-t border-gray-100 flex items-center justify-end gap-2">
-          <button
-            onClick={onClose}
-            className="text-sm px-4 py-2 rounded-lg border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
-          >
+        <div style={{ padding: "16px 20px", borderTop: `1px solid ${G.greenBorder}`, display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 10, background: G.bg }}>
+          <button onClick={onClose} style={btnSty()}>
             Cancel
           </button>
-          <button
-            onClick={handleSubmit}
-            disabled={!title || !date || !time}
-            className={`text-sm px-4 py-2 rounded-lg font-medium transition-colors ${
-              title && date && time
-                ? "bg-green-600 text-white hover:bg-green-700"
-                : "bg-gray-100 text-gray-400 cursor-not-allowed"
-            }`}
+          <button 
+            onClick={handleSubmit} 
+            disabled={!title || !date || !time} 
+            style={btnSty(true, !title || !date || !time)}
           >
             Schedule Meeting
           </button>

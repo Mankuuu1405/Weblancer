@@ -1,6 +1,6 @@
 import { roleColors, roleLabels } from "../data/dummyData";
 
-export default function MessageBubble({ message, currentUser, isSameSender }) {
+function MessageBubble({ message, currentUser, isSameSender }) {
   const colors = roleColors[message.sender_role] || roleColors["developer"];
 
   const formatTime = (timestamp) => {
@@ -99,3 +99,5 @@ function MentionText({ content }) {
     </>
   );
 }
+
+export default MessageBubble;

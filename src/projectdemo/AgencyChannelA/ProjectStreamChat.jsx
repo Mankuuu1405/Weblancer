@@ -6,19 +6,61 @@ import {
   INITIAL_MESSAGES,
 } from "./ProjectData";
 
-// ─── MENTION RULES (from document) ────────────────────────────────────────────
-// - Anyone can @mention client, agency admin, agency team members
-// - Mentioning Platform Admin requires: reason selection + confirmation dialog
-// - Admin mentions are rate-limited: max 3 per project per day
-// - Agency team members CANNOT mention admin (must go via Agency Admin)
+/* ── Freelancer Contracts theme tokens ── */
+const G = {
+  greenLight:  "#A8E063",
+  green:       "#6EC030",
+  greenDeep:   "#2E7D1F",
+  greenBg:     "#f1fce8",
+  greenBorder: "#d4edbb",
+  navyLight:   "#4A6FA5",
+  navy:        "#1A2B5E",
+  navyDeep:    "#0F1A3B",
+  navyBg:      "#e8edf7",
+  navyBorder:  "#b8c6e0",
+  gradGreen:   "linear-gradient(135deg, #A8E063 0%, #2E7D1F 100%)",
+  gradNavy:    "linear-gradient(135deg, #4A6FA5 0%, #0F1A3B 100%)",
+  text:        "#1C1C1C",
+  sub:         "#4b5563",
+  muted:       "#9ca3af",
+  border:      "#e5e7eb",
+  bg:          "#f9fafb",
+  white:       "#ffffff",
+  amber:       "#f59e0b",
+  amberBg:     "#fffbeb",
+  amberBorder: "#fde68a",
+  amberText:   "#92400e",
+  red:         "#ef4444",
+  redBg:       "#fef2f2",
+  redBorder:   "#fecaca",
+  redText:     "#dc2626",
+  purple:      "#8b5cf6",
+  purpleBg:    "#f5f3ff",
+  purpleBorder:"#ddd6fe",
+  purpleText:  "#6d28d9",
+  blue:        "#3b82f6",
+  blueBg:      "#eff6ff",
+  blueBorder:  "#bfdbfe",
+  blueText:    "#1d4ed8",
+};
+const FONT = "'Poppins', sans-serif";
 
-const MENTIONABLE_PARTICIPANTS = [
-  { name: "Alex R.", role: "client", tag: "@Alex R." },
-  { name: "TechCorp Agency", role: "agency_admin", tag: "@TechCorp Agency" },
-  { name: "Maya S.", role: "agency_team", tag: "@Maya S." },
-  { name: "Dev K.", role: "agency_team", tag: "@Dev K." },
-  { name: "Platform Admin", role: "admin", tag: "@Platform Admin", requiresReason: true },
-];
+/* ── Role → inline style map ── */
+const ROLE_INLINE = {
+  admin:        { border: G.red,    bg: G.redBg,    badgeBg: G.redBg,    badgeText: G.redText,   badgeBorder: G.redBorder,   label: "ADMIN",        avatarBg: G.red    },
+  agency_admin: { border: G.blue,   bg: G.blueBg,   badgeBg: G.blueBg,   badgeText: G.blueText,  badgeBorder: G.blueBorder,  label: "AGENCY ADMIN", avatarBg: G.blue   },
+  agency_team:  { border: G.amber,  bg: G.amberBg,  badgeBg: G.amberBg,  badgeText: G.amberText, badgeBorder: G.amberBorder, label: "AGENCY TEAM",  avatarBg: G.amber  },
+  client:       { border: G.green,  bg: G.greenBg,  badgeBg: G.greenBg,  badgeText: G.greenDeep, badgeBorder: G.greenBorder, label: "CLIENT",       avatarBg: G.green  },
+};
+
+/* ── Msg type → inline style ── */
+const TYPE_INLINE = {
+  APPROVAL:       { bg: G.greenBg,   text: G.greenDeep, border: G.greenBorder,  icon: "✅" },
+  DECISION:       { bg: G.amberBg,   text: G.amberText, border: G.amberBorder,  icon: "🔒" },
+  DELIVERY:       { bg: G.blueBg,    text: G.blueText,  border: G.blueBorder,   icon: "📦" },
+  "DISPUTE NOTE": { bg: G.redBg,     text: G.redText,   border: G.redBorder,    icon: "⚠️" },
+  CLARIFICATION:  { bg: G.purpleBg,  text: G.purpleText,border: G.purpleBorder, icon: "❓" },
+};
 
 const ADMIN_MENTION_REASONS = [
   "Payment or escrow concern",
@@ -28,112 +70,114 @@ const ADMIN_MENTION_REASONS = [
   "Urgent project risk",
 ];
 
-// ─── BADGE ─────────────────────────────────────────────────────────────────────
+const MENTIONABLE_PARTICIPANTS = [
+  { name: "Alex R.",         role: "client",       tag: "@Alex R."         },
+  { name: "TechCorp Agency", role: "agency_admin", tag: "@TechCorp Agency" },
+  { name: "Maya S.",         role: "agency_team",  tag: "@Maya S."         },
+  { name: "Dev K.",          role: "agency_team",  tag: "@Dev K."          },
+  { name: "Platform Admin",  role: "admin",        tag: "@Platform Admin", requiresReason: true },
+];
+
+/* ── Badge ── */
 function Badge({ role }) {
-  const r = ROLES[role];
+  const s = ROLE_INLINE[role] || { badgeBg: G.bg, badgeText: G.muted, badgeBorder: G.border, label: role };
   return (
-    <span className={`text-xs font-semibold px-2 py-0.5 rounded ${r.badgeClass}`}>
-      {r.label}
+    <span style={{ fontSize: 10, fontWeight: 700, background: s.badgeBg, color: s.badgeText, border: `1px solid ${s.badgeBorder}`, padding: "2px 8px", borderRadius: 6, fontFamily: FONT }}>
+      {s.label}
     </span>
   );
 }
 
-// ─── MSG TYPE BADGE ────────────────────────────────────────────────────────────
+/* ── MsgType Badge ── */
 function MsgTypeBadge({ type }) {
   if (!type || type === "Normal") return null;
-  const map = {
-    APPROVAL: "bg-green-100 text-green-700",
-    DECISION: "bg-orange-100 text-orange-700",
-    "DISPUTE NOTE": "bg-red-100 text-red-700",
-    CLARIFICATION: "bg-purple-100 text-purple-700",
-    DELIVERY: "bg-blue-100 text-blue-700",
-  };
-  const icons = { APPROVAL: "✅", DECISION: "🔒", DELIVERY: "📦", "DISPUTE NOTE": "⚠️", CLARIFICATION: "❓" };
+  const s = TYPE_INLINE[type];
+  if (!s) return null;
   return (
-    <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${map[type] || "bg-gray-100 text-gray-600"}`}>
-      {icons[type]} {type}
+    <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 10, fontWeight: 800, background: s.bg, color: s.text, border: `1px solid ${s.border}`, padding: "2px 9px", borderRadius: 99, fontFamily: FONT }}>
+      {s.icon} {type}
     </span>
   );
 }
 
-// ─── SYSTEM MESSAGE ────────────────────────────────────────────────────────────
+/* ── System Message ── */
 function SystemMessage({ msg }) {
   return (
-    <div className="flex justify-center my-3">
-      <div className="bg-amber-50 border border-amber-200 rounded-xl px-4 py-2.5 text-center max-w-xl">
-        <p className="text-sm text-amber-800">{msg.content}</p>
-        <p className="text-xs text-amber-500 mt-1">{msg.timestamp}</p>
+    <div style={{ display: "flex", justifyContent: "center", margin: "12px 0" }}>
+      <div style={{ background: G.amberBg, border: `1px solid ${G.amberBorder}`, borderRadius: 14, padding: "10px 20px", textAlign: "center", maxWidth: 560 }}>
+        <p style={{ fontSize: 13, color: G.amberText, margin: 0 }}>{msg.content}</p>
+        <p style={{ fontSize: 11, color: G.amber, marginTop: 4 }}>{msg.timestamp}</p>
       </div>
     </div>
   );
 }
 
-// ─── CHAT BUBBLE ───────────────────────────────────────────────────────────────
+/* ── Chat Bubble ── */
 function ChatBubble({ msg }) {
-  const r = ROLES[msg.role];
+  const s = ROLE_INLINE[msg.role] || ROLE_INLINE.client;
 
-  // Highlight @mentions in blue
   const renderContent = (text) => {
     const parts = text.split(/(@[\w][\w\s.]*)/g);
     return parts.map((part, i) =>
-      part.startsWith("@") ? (
-        <span key={i} className="bg-blue-100 text-blue-700 rounded px-1 font-medium">
-          {part}
-        </span>
-      ) : (
-        <span key={i}>{part}</span>
-      )
+      part.startsWith("@")
+        ? <span key={i} style={{ background: G.blueBg, color: G.blueText, borderRadius: 4, padding: "0 5px", fontWeight: 600 }}>{part}</span>
+        : <span key={i}>{part}</span>
     );
   };
 
   return (
-    <div className={`rounded-xl p-4 mb-1 ${r.bubbleClass}`}>
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-2 flex-wrap">
-          <div className={`w-8 h-8 rounded-full ${r.avatarBg} flex items-center justify-center text-white text-xs font-bold shrink-0`}>
+    <div style={{ borderRadius: 14, borderLeft: `4px solid ${s.border}`, padding: "12px 16px", marginBottom: 8, background: s.bg }}>
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10, flexWrap: "wrap", gap: 8 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+          <div style={{ width: 32, height: 32, borderRadius: "50%", background: s.avatarBg + "25", border: `2px solid ${s.avatarBg}44`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, color: s.avatarBg, flexShrink: 0 }}>
             {msg.avatar}
           </div>
-          <span className="font-semibold text-sm text-gray-800">{msg.sender}</span>
+          <span style={{ fontSize: 13, fontWeight: 700, color: G.text }}>{msg.sender}</span>
           <Badge role={msg.role} />
           <MsgTypeBadge type={msg.msgType} />
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <span className="text-xs text-gray-400">⏱ {msg.timestamp}</span>
-          <button className="text-gray-300 hover:text-gray-500 text-sm">⋮</button>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={{ fontSize: 11, color: G.muted }}>⏱ {msg.timestamp}</span>
+          <button style={{ background: "none", border: "none", cursor: "pointer", color: G.muted, fontSize: 16 }}>⋮</button>
         </div>
       </div>
 
+      {/* Locked label */}
       {msg.locked && msg.lockedLabel && (
-        <div className="flex items-center gap-1 text-xs text-orange-600 font-semibold mb-2">
+        <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: G.amberText, fontWeight: 700, marginBottom: 8 }}>
           🔒 <span>{msg.lockedLabel}</span>
         </div>
       )}
 
-      <p className="text-sm text-gray-700 leading-relaxed">{renderContent(msg.content)}</p>
+      <p style={{ fontSize: 13, color: G.text, lineHeight: 1.6, margin: 0 }}>{renderContent(msg.content)}</p>
 
+      {/* Commitment */}
       {msg.commitmentLogged && (
-        <div className="mt-2 flex items-center gap-1 text-xs text-red-500 font-medium">
+        <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: G.redText, fontWeight: 600 }}>
           🔴 Commitment logged by system
         </div>
       )}
 
+      {/* Files */}
       {msg.files && (
-        <div className="mt-3 space-y-2">
+        <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
           {msg.files.map((f, i) => (
-            <div key={i} className="flex items-center justify-between bg-white border border-gray-200 rounded-lg px-3 py-2">
-              <div className="flex items-center gap-2">
-                <span className="text-gray-400 text-sm">📄</span>
-                <span className="text-sm text-gray-700">{f.name}</span>
-                <span className="text-xs text-gray-400">{f.size}</span>
+            <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", background: G.white, border: `1px solid ${G.greenBorder}`, borderRadius: 10, padding: "8px 14px" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ fontSize: 14 }}>📄</span>
+                <span style={{ fontSize: 13, color: G.text }}>{f.name}</span>
+                <span style={{ fontSize: 11, color: G.muted }}>{f.size}</span>
               </div>
-              <button className="text-xs text-blue-600 font-medium hover:underline">Download</button>
+              <button style={{ fontSize: 11, fontWeight: 700, color: G.greenDeep, background: G.greenBg, border: `1px solid ${G.greenBorder}`, borderRadius: 8, padding: "4px 10px", cursor: "pointer", fontFamily: FONT }}>Download</button>
             </div>
           ))}
         </div>
       )}
 
+      {/* Seen by */}
       {msg.seenBy && (
-        <div className="mt-2 flex items-center gap-1 text-xs text-gray-400">
+        <div style={{ marginTop: 8, display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: G.muted }}>
           <span>✓✓</span>
           <span>Seen by: {msg.seenBy.join(" · ")}</span>
         </div>
@@ -142,168 +186,137 @@ function ChatBubble({ msg }) {
   );
 }
 
-// ─── ADMIN MENTION MODAL ───────────────────────────────────────────────────────
+/* ── Admin Mention Modal ── */
 function AdminMentionModal({ mentionsUsed, onConfirm, onCancel }) {
   const [reason, setReason] = useState("");
   const remaining = 3 - mentionsUsed;
 
   return (
-    <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6">
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-red-500 text-xl">🔴</span>
-          <h3 className="font-bold text-gray-800">Mention Platform Admin</h3>
-        </div>
-        <p className="text-xs text-gray-500 mb-4">
-          Admin mentions are rate-limited. You have{" "}
-          <span className={`font-bold ${remaining <= 1 ? "text-red-500" : "text-orange-500"}`}>
-            {remaining} mention{remaining !== 1 ? "s" : ""}
-          </span>{" "}
-          remaining today.
-        </p>
-
-        <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-3 mb-4">
-          <p className="text-xs text-yellow-700">
-            ⚠️ Mentioning admin creates an alert and requires a valid reason. Misuse reduces your trust score.
+    <div style={{ position: "fixed", inset: 0, background: "rgba(17,24,39,0.45)", backdropFilter: "blur(4px)", zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
+      <div style={{ background: G.white, borderRadius: 20, boxShadow: "0 32px 80px rgba(15,26,59,0.22)", width: "100%", maxWidth: 440, overflow: "hidden" }}>
+        {/* Header */}
+        <div style={{ background: G.gradNavy, padding: "18px 22px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <span style={{ fontSize: 20 }}>🔴</span>
+            <p style={{ fontSize: 16, fontWeight: 800, color: G.white, margin: 0, fontFamily: FONT }}>Mention Platform Admin</p>
+          </div>
+          <p style={{ fontSize: 12, color: "rgba(255,255,255,0.5)", marginTop: 6 }}>
+            Admin mentions are rate-limited. You have{" "}
+            <span style={{ fontWeight: 800, color: remaining <= 1 ? "#fca5a5" : G.greenLight }}>{remaining} mention{remaining !== 1 ? "s" : ""}</span> remaining today.
           </p>
         </div>
 
-        <label className="block text-sm font-medium text-gray-700 mb-2">Select a reason (required):</label>
-        <div className="space-y-2 mb-5">
-          {ADMIN_MENTION_REASONS.map((r) => (
-            <label
-              key={r}
-              className={`flex items-center gap-3 p-2.5 rounded-xl border cursor-pointer transition-colors ${
-                reason === r ? "border-red-400 bg-red-50" : "border-gray-200 hover:bg-gray-50"
-              }`}
-            >
-              <input
-                type="radio"
-                name="adminReason"
-                checked={reason === r}
-                onChange={() => setReason(r)}
-                className="accent-red-500"
-              />
-              <span className="text-sm text-gray-700">{r}</span>
-            </label>
-          ))}
-        </div>
+        <div style={{ padding: "20px 22px" }}>
+          <div style={{ background: G.amberBg, border: `1px solid ${G.amberBorder}`, borderRadius: 12, padding: "12px 14px", marginBottom: 16 }}>
+            <p style={{ fontSize: 12, color: G.amberText, margin: 0 }}>⚠️ Mentioning admin creates an alert and requires a valid reason. Misuse reduces your trust score.</p>
+          </div>
 
-        <div className="flex gap-3">
-          <button
-            onClick={onCancel}
-            className="flex-1 text-sm text-gray-500 border border-gray-200 rounded-xl py-2.5 hover:bg-gray-50"
-          >
-            Cancel
-          </button>
-          <button
-            disabled={!reason}
-            onClick={() => onConfirm(reason)}
-            className={`flex-1 text-sm font-semibold rounded-xl py-2.5 transition-colors ${
-              reason ? "bg-red-500 hover:bg-red-600 text-white" : "bg-gray-100 text-gray-400 cursor-not-allowed"
-            }`}
-          >
-            Confirm Mention
-          </button>
+          <label style={{ fontSize: 12, fontWeight: 700, color: G.sub, display: "block", marginBottom: 10, textTransform: "uppercase", letterSpacing: "0.06em" }}>Select a reason (required):</label>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 20 }}>
+            {ADMIN_MENTION_REASONS.map(r => (
+              <label key={r} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 12px", borderRadius: 10, border: `1.5px solid ${reason === r ? G.red : G.border}`, background: reason === r ? G.redBg : G.white, cursor: "pointer", transition: "all 0.12s" }}>
+                <input type="radio" name="adminReason" checked={reason === r} onChange={() => setReason(r)} style={{ accentColor: G.red }} />
+                <span style={{ fontSize: 13, color: G.text }}>{r}</span>
+              </label>
+            ))}
+          </div>
+
+          <div style={{ display: "flex", gap: 10 }}>
+            <button onClick={onCancel} style={{ flex: 1, fontSize: 13, fontWeight: 600, fontFamily: FONT, border: `1px solid ${G.greenBorder}`, background: G.white, color: G.sub, borderRadius: 100, padding: "10px", cursor: "pointer" }}>Cancel</button>
+            <button disabled={!reason} onClick={() => onConfirm(reason)}
+              style={{ flex: 1, fontSize: 13, fontWeight: 700, fontFamily: FONT, background: reason ? G.redText : G.border, color: G.white, border: "none", borderRadius: 100, padding: "10px", cursor: reason ? "pointer" : "not-allowed", boxShadow: reason ? "0 3px 12px rgba(220,38,38,0.25)" : "none" }}>
+              Confirm Mention
+            </button>
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-// ─── MENTION DROPDOWN ──────────────────────────────────────────────────────────
+/* ── Mention Dropdown ── */
 function MentionDropdown({ viewingAs, adminMentionsUsed, onSelect, onClose }) {
   const me = CURRENT_USERS[viewingAs];
-
-  const filtered = MENTIONABLE_PARTICIPANTS.filter((p) => {
-    if (p.name === me.name) return false; // don't show yourself
-    if (viewingAs === "agency_team" && p.role === "admin") return false; // team can't mention admin
+  const filtered = MENTIONABLE_PARTICIPANTS.filter(p => {
+    if (p.name === me.name) return false;
+    if (viewingAs === "agency_team" && p.role === "admin") return false;
     return true;
   });
 
   return (
-    <div className="absolute bottom-full mb-2 left-0 bg-white border border-gray-200 rounded-xl shadow-xl z-20 w-72 py-2">
-      <div className="px-3 py-1.5 border-b border-gray-100 mb-1">
-        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Mention a participant</p>
+    <div style={{ position: "absolute", bottom: "100%", marginBottom: 8, left: 0, background: G.white, border: `1px solid ${G.greenBorder}`, borderRadius: 14, boxShadow: "0 8px 32px rgba(15,26,59,0.12)", zIndex: 20, width: 280, paddingBottom: 8 }}>
+      <div style={{ padding: "10px 14px 8px", borderBottom: `1px solid ${G.greenBorder}`, marginBottom: 4 }}>
+        <p style={{ fontSize: 10, fontWeight: 700, color: G.muted, textTransform: "uppercase", letterSpacing: "0.08em", margin: 0 }}>Mention a participant</p>
       </div>
-
-      {filtered.map((p) => (
-        <button
-          key={p.name}
-          onClick={() => onSelect(p)}
-          disabled={p.requiresReason && adminMentionsUsed >= 3}
-          className={`w-full flex items-center justify-between px-3 py-2.5 transition-colors ${
-            p.requiresReason && adminMentionsUsed >= 3
-              ? "opacity-40 cursor-not-allowed bg-gray-50"
-              : "hover:bg-gray-50"
-          }`}
-        >
-          <div className="flex items-center gap-2">
-            <div className={`w-7 h-7 rounded-full ${ROLES[p.role].avatarBg} flex items-center justify-center text-white text-xs font-bold`}>
-              {p.name.charAt(0)}
+      {filtered.map(p => {
+        const s = ROLE_INLINE[p.role] || ROLE_INLINE.client;
+        const disabled = p.requiresReason && adminMentionsUsed >= 3;
+        return (
+          <button key={p.name} onClick={() => !disabled && onSelect(p)} disabled={disabled}
+            style={{ width: "100%", display: "flex", alignItems: "center", justifyContent: "space-between", padding: "9px 14px", background: "none", border: "none", cursor: disabled ? "not-allowed" : "pointer", opacity: disabled ? 0.4 : 1, transition: "background 0.1s" }}
+            onMouseEnter={e => { if (!disabled) e.currentTarget.style.background = G.greenBg; }}
+            onMouseLeave={e => { e.currentTarget.style.background = "none"; }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <div style={{ width: 28, height: 28, borderRadius: "50%", background: s.avatarBg + "20", border: `1.5px solid ${s.avatarBg}44`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 800, color: s.avatarBg }}>
+                {p.name.charAt(0)}
+              </div>
+              <span style={{ fontSize: 13, color: G.text, fontWeight: 500 }}>{p.name}</span>
             </div>
-            <span className="text-sm text-gray-700">{p.name}</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <Badge role={p.role} />
-            {p.requiresReason && adminMentionsUsed < 3 && (
-              <span className="text-xs text-orange-500 font-medium">needs reason</span>
-            )}
-            {p.requiresReason && adminMentionsUsed >= 3 && (
-              <span className="text-xs text-red-500 font-medium">🔒 limit reached</span>
-            )}
-          </div>
-        </button>
-      ))}
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <Badge role={p.role} />
+              {p.requiresReason && adminMentionsUsed < 3 && <span style={{ fontSize: 10, color: G.amberText, fontWeight: 600 }}>needs reason</span>}
+              {p.requiresReason && adminMentionsUsed >= 3 && <span style={{ fontSize: 10, color: G.redText, fontWeight: 600 }}>🔒 limit reached</span>}
+            </div>
+          </button>
+        );
+      })}
 
-      {/* Agency team restriction notice */}
       {viewingAs === "agency_team" && (
-        <div className="px-3 py-2 border-t border-gray-100 mt-1">
-          <p className="text-xs text-yellow-600 bg-yellow-50 rounded-lg p-2">
-            🔒 Agency team members cannot mention Admin directly. Contact your Agency Admin to escalate.
-          </p>
+        <div style={{ padding: "8px 14px", borderTop: `1px solid ${G.greenBorder}`, marginTop: 4 }}>
+          <p style={{ fontSize: 11, color: G.amberText, background: G.amberBg, borderRadius: 8, padding: "6px 10px", margin: 0 }}>🔒 Agency team members cannot mention Admin directly. Contact your Agency Admin to escalate.</p>
         </div>
       )}
 
-      {/* Rate limit indicator */}
       {viewingAs !== "agency_team" && (
-        <div className="px-3 py-2 border-t border-gray-100 mt-1">
-          <div className="flex items-center justify-between">
-            <p className="text-xs text-gray-400">Admin mentions today:</p>
-            <div className="flex gap-1">
-              {[0, 1, 2].map((i) => (
-                <div key={i} className={`w-2 h-2 rounded-full ${i < adminMentionsUsed ? "bg-orange-400" : "bg-gray-200"}`} />
+        <div style={{ padding: "8px 14px", borderTop: `1px solid ${G.greenBorder}`, marginTop: 4 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <span style={{ fontSize: 11, color: G.muted }}>Admin mentions today:</span>
+            <div style={{ display: "flex", gap: 4 }}>
+              {[0, 1, 2].map(i => (
+                <div key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: i < adminMentionsUsed ? G.amber : G.border }} />
               ))}
             </div>
-            <p className="text-xs text-gray-400">{3 - adminMentionsUsed}/3 left</p>
+            <span style={{ fontSize: 11, color: G.muted }}>{3 - adminMentionsUsed}/3 left</span>
           </div>
         </div>
       )}
 
-      <button onClick={onClose} className="w-full text-center text-xs text-gray-400 py-1.5 hover:text-gray-600 border-t border-gray-100 mt-1">
+      <button onClick={onClose} style={{ width: "100%", textAlign: "center", fontSize: 11, color: G.muted, padding: "8px", background: "none", border: "none", borderTop: `1px solid ${G.greenBorder}`, marginTop: 4, cursor: "pointer", fontFamily: FONT }}
+        onMouseEnter={e => e.currentTarget.style.color = G.text}
+        onMouseLeave={e => e.currentTarget.style.color = G.muted}>
         Close
       </button>
     </div>
   );
 }
 
-// ─── MAIN COMPONENT ────────────────────────────────────────────────────────────
+/* ── Main Component ── */
 export default function AgencyProjectStreamChat({ viewingAs }) {
-  const [messages, setMessages] = useState(INITIAL_MESSAGES);
-  const [input, setInput] = useState("");
-  const [msgType, setMsgType] = useState("Normal");
-  const [showTypeDropdown, setShowTypeDropdown] = useState(false);
-  const [showBanner, setShowBanner] = useState(true);
-  const [pinnedExpanded, setPinnedExpanded] = useState(false);
-  const [showMentionDropdown, setShowMentionDropdown] = useState(false);
-  const [showAdminModal, setShowAdminModal] = useState(false);
-  const [pendingMention, setPendingMention] = useState(null);
-  const [adminMentionsUsed, setAdminMentionsUsed] = useState(1); // 1 already used today as demo
-  const [attachedFiles, setAttachedFiles] = useState([]);
-  const bottomRef = useRef(null);
-  const textareaRef = useRef(null);
+  const [messages,            setMessages]            = useState(INITIAL_MESSAGES);
+  const [input,               setInput]               = useState("");
+  const [msgType,             setMsgType]             = useState("Normal");
+  const [showTypeDropdown,    setShowTypeDropdown]     = useState(false);
+  const [showBanner,          setShowBanner]           = useState(true);
+  const [pinnedExpanded,      setPinnedExpanded]       = useState(false);
+  const [showMentionDropdown, setShowMentionDropdown]  = useState(false);
+  const [showAdminModal,      setShowAdminModal]       = useState(false);
+  const [pendingMention,      setPendingMention]       = useState(null);
+  const [adminMentionsUsed,   setAdminMentionsUsed]    = useState(1);
+  const [attachedFiles,       setAttachedFiles]        = useState([]);
+  const bottomRef    = useRef(null);
+  const textareaRef  = useRef(null);
   const fileInputRef = useRef(null);
-  const imageInputRef = useRef(null);
+  const imageInputRef= useRef(null);
 
   const PINNED_MESSAGES = [
     { icon: "🏢", text: "ProjectStream (Channel A) for 'E-Commerce Platform' has been created...", time: "Mar 1, 10:00 AM" },
@@ -313,19 +326,9 @@ export default function AgencyProjectStreamChat({ viewingAs }) {
     { icon: "🔒", text: "Milestone 1 officially approved. Payment of $21,250 will release within 24h...", time: "Mar 22, 2:30 PM" },
   ];
 
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
   const currentUser = CURRENT_USERS[viewingAs];
-
-  // ── File attach handlers ─────────────────────────────────────────────────────
-  function handleFileChange(e) {
-    const files = Array.from(e.target.files);
-    const mapped = files.map((f) => ({ name: f.name, size: formatSize(f.size) }));
-    setAttachedFiles((prev) => [...prev, ...mapped]);
-    e.target.value = "";
-  }
 
   function formatSize(bytes) {
     if (bytes < 1024) return bytes + " B";
@@ -333,11 +336,14 @@ export default function AgencyProjectStreamChat({ viewingAs }) {
     return (bytes / (1024 * 1024)).toFixed(1) + " MB";
   }
 
-  function removeAttached(index) {
-    setAttachedFiles((prev) => prev.filter((_, i) => i !== index));
+  function handleFileChange(e) {
+    const files = Array.from(e.target.files);
+    setAttachedFiles(prev => [...prev, ...files.map(f => ({ name: f.name, size: formatSize(f.size) }))]);
+    e.target.value = "";
   }
 
-  // ── Mention select handler ───────────────────────────────────────────────────
+  function removeAttached(i) { setAttachedFiles(prev => prev.filter((_, j) => j !== i)); }
+
   function handleMentionSelect(participant) {
     setShowMentionDropdown(false);
     if (participant.requiresReason) {
@@ -350,7 +356,6 @@ export default function AgencyProjectStreamChat({ viewingAs }) {
   }
 
   function insertMention(tag) {
-    // Remove trailing @ if user typed it before clicking button
     const base = input.endsWith("@") ? input.slice(0, -1) : input;
     setInput(base + tag + " ");
     setTimeout(() => textareaRef.current?.focus(), 0);
@@ -358,85 +363,76 @@ export default function AgencyProjectStreamChat({ viewingAs }) {
 
   function handleAdminMentionConfirm(reason) {
     setShowAdminModal(false);
-    setAdminMentionsUsed((prev) => prev + 1);
+    setAdminMentionsUsed(prev => prev + 1);
     insertMention(pendingMention.tag);
-    // System message logged for the escalation
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: Date.now(),
-        type: "system",
-        content: `⚠️ Admin mentioned by ${currentUser.name} — Reason: "${reason}". Platform Admin has been notified and will respond shortly.`,
-        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-      },
-    ]);
+    setMessages(prev => [...prev, {
+      id: Date.now(), type: "system",
+      content: `⚠️ Admin mentioned by ${currentUser.name} — Reason: "${reason}". Platform Admin has been notified.`,
+      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    }]);
     setPendingMention(null);
   }
 
-  // ── Typing @ auto-opens mention dropdown ────────────────────────────────────
   function handleInputChange(e) {
     const val = e.target.value;
     setInput(val);
-    if (val.endsWith("@")) {
-      setShowMentionDropdown(true);
-    } else if (showMentionDropdown && !val.includes("@")) {
-      setShowMentionDropdown(false);
-    }
+    if (val.endsWith("@")) setShowMentionDropdown(true);
+    else if (showMentionDropdown && !val.includes("@")) setShowMentionDropdown(false);
   }
 
-  // ── Send ─────────────────────────────────────────────────────────────────────
   function sendMessage() {
     if (!input.trim() && attachedFiles.length === 0) return;
-    setMessages((prev) => [
-      ...prev,
-      {
-        id: Date.now(),
-        role: currentUser.role,
-        sender: currentUser.name,
-        avatar: currentUser.avatar,
-        msgType,
-        content: input.trim(),
-        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-        seenBy: [],
-        locked: msgType === "DECISION",
-        lockedLabel: msgType === "DECISION" ? "LOCKED DECISION — Cannot be edited or reversed" : null,
-        commitmentLogged: msgType === "DECISION" && (viewingAs === "agency_admin" || viewingAs === "admin"),
-        files: attachedFiles.length > 0 ? attachedFiles : undefined,
-      },
-    ]);
-    setInput("");
-    setMsgType("Normal");
-    setAttachedFiles([]);
-    setShowMentionDropdown(false);
+    setMessages(prev => [...prev, {
+      id: Date.now(),
+      role: currentUser.role,
+      sender: currentUser.name,
+      avatar: currentUser.avatar,
+      msgType,
+      content: input.trim(),
+      timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      seenBy: [],
+      locked: msgType === "DECISION",
+      lockedLabel: msgType === "DECISION" ? "LOCKED DECISION — Cannot be edited or reversed" : null,
+      commitmentLogged: msgType === "DECISION" && (viewingAs === "agency_admin" || viewingAs === "admin"),
+      files: attachedFiles.length > 0 ? attachedFiles : undefined,
+    }]);
+    setInput(""); setMsgType("Normal"); setAttachedFiles([]); setShowMentionDropdown(false);
   }
 
+  const iconBtn = (title, onClick, children, extra = {}) => (
+    <button title={title} onClick={onClick}
+      style={{ padding: 8, background: "none", border: "none", cursor: "pointer", color: G.muted, borderRadius: 8, display: "flex", alignItems: "center", transition: "all 0.12s", ...extra }}
+      onMouseEnter={e => { e.currentTarget.style.background = G.greenBg; e.currentTarget.style.color = G.greenDeep; }}
+      onMouseLeave={e => { e.currentTarget.style.background = "none"; e.currentTarget.style.color = G.muted; }}>
+      {children}
+    </button>
+  );
+
   return (
-    <div className="flex-1 flex flex-col min-w-0 h-full">
+    <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0, height: "100%", fontFamily: FONT }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap'); *{font-family:'Poppins',sans-serif;} input,select,textarea{outline:none;font-family:'Poppins',sans-serif;}`}</style>
 
       {/* ── Pinned bar ── */}
-      <div className="bg-white border-b border-gray-100 shrink-0">
-        <div className="px-4 py-2 flex items-center justify-between">
-          <div className="flex items-center gap-2 text-sm text-gray-600">
+      <div style={{ background: G.white, borderBottom: `1px solid ${G.greenBorder}`, flexShrink: 0 }}>
+        <div style={{ padding: "10px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13, color: G.sub }}>
             <span>📌</span>
-            <span className="font-medium text-orange-600">★ Pinned (5)</span>
+            <span style={{ fontWeight: 700, color: G.amber }}>★ Pinned (5)</span>
           </div>
-          <button
-            onClick={() => setPinnedExpanded(!pinnedExpanded)}
-            className="text-gray-300 hover:text-gray-500 text-lg leading-none transition-transform duration-200"
-            style={{ transform: pinnedExpanded ? "rotate(0deg)" : "rotate(180deg)" }}
-          >
-            ⌃
-          </button>
+          <button onClick={() => setPinnedExpanded(!pinnedExpanded)}
+            style={{ background: "none", border: "none", cursor: "pointer", color: G.muted, fontSize: 16, transform: pinnedExpanded ? "rotate(0deg)" : "rotate(180deg)", transition: "transform 0.2s" }}>⌃</button>
         </div>
         {pinnedExpanded && (
-          <div className="border-t border-gray-100">
+          <div style={{ borderTop: `1px solid ${G.greenBorder}` }}>
             {PINNED_MESSAGES.map((p, i) => (
-              <div key={i} className="flex items-center justify-between px-4 py-2 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-0">
-                <div className="flex items-center gap-2 min-w-0">
-                  <span className="text-sm shrink-0">{p.icon}</span>
-                  <span className="text-sm text-gray-600 truncate">{p.text}</span>
+              <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "9px 16px", borderBottom: i < PINNED_MESSAGES.length - 1 ? `1px solid ${G.border}` : "none", cursor: "pointer", transition: "background 0.1s" }}
+                onMouseEnter={e => e.currentTarget.style.background = G.greenBg}
+                onMouseLeave={e => e.currentTarget.style.background = "none"}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0, flex: 1 }}>
+                  <span style={{ fontSize: 14, flexShrink: 0 }}>{p.icon}</span>
+                  <span style={{ fontSize: 12, color: G.sub, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.text}</span>
                 </div>
-                <span className="text-xs text-gray-400 shrink-0 ml-4">{p.time}</span>
+                <span style={{ fontSize: 11, color: G.muted, flexShrink: 0, marginLeft: 12 }}>{p.time}</span>
               </div>
             ))}
           </div>
@@ -445,192 +441,125 @@ export default function AgencyProjectStreamChat({ viewingAs }) {
 
       {/* ── Channel A banner ── */}
       {showBanner && (
-        <div className="bg-blue-50 border-b border-blue-200 px-4 py-2 flex items-center justify-between shrink-0">
-          <div className="flex items-center gap-2 text-xs text-blue-700">
+        <div style={{ background: G.navyBg, borderBottom: `1px solid ${G.navyBorder}`, padding: "9px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 12, color: G.navy, flex: 1 }}>
             <span>📢</span>
-            <span>
-              <strong>Channel A — Official Project Channel.</strong> Requirements, deliverables, approvals and disputes
-              are governed here. Only <strong>Agency Admin</strong> can make binding commitments on behalf of the team.
-            </span>
+            <span><b>Channel A — Official Project Channel.</b> Requirements, deliverables, approvals and disputes are governed here. Only <b>Agency Admin</b> can make binding commitments on behalf of the team.</span>
           </div>
-          <button onClick={() => setShowBanner(false)} className="text-blue-400 hover:text-blue-600 ml-2 text-sm">✕</button>
+          <button onClick={() => setShowBanner(false)} style={{ background: "none", border: "none", cursor: "pointer", color: G.navyLight, marginLeft: 10, fontSize: 14 }}>✕</button>
         </div>
       )}
 
       {/* ── Messages ── */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-2">
-        {messages.map((msg) =>
-          msg.type === "system" ? <SystemMessage key={msg.id} msg={msg} /> : <ChatBubble key={msg.id} msg={msg} />
+      <div style={{ flex: 1, overflowY: "auto", padding: "16px", display: "flex", flexDirection: "column", gap: 4 }}>
+        {messages.map(msg =>
+          msg.type === "system"
+            ? <SystemMessage key={msg.id} msg={msg} />
+            : <ChatBubble key={msg.id} msg={msg} />
         )}
         <div ref={bottomRef} />
       </div>
 
       {/* ── Input area ── */}
-      <div className="bg-white border-t border-gray-200 px-4 py-3 shrink-0">
+      <div style={{ background: G.white, borderTop: `1px solid ${G.greenBorder}`, padding: "12px 16px", flexShrink: 0 }}>
 
-        {/* Message type selector */}
-        <div className="flex items-center gap-2 mb-2 relative">
-          <span className="text-sm text-gray-500">Type:</span>
-          <button
-            onClick={() => setShowTypeDropdown(!showTypeDropdown)}
-            className="flex items-center gap-1 border border-gray-200 rounded-lg px-3 py-1 text-sm bg-white hover:bg-gray-50"
-          >
-            {msgType} <span className="text-xs text-gray-400">▼</span>
+        {/* Type selector */}
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10, position: "relative" }}>
+          <span style={{ fontSize: 12, color: G.muted }}>Type:</span>
+          <button onClick={() => setShowTypeDropdown(!showTypeDropdown)}
+            style={{ display: "flex", alignItems: "center", gap: 6, border: `1.5px solid ${G.greenBorder}`, borderRadius: 100, padding: "5px 14px", fontSize: 12, fontWeight: 600, color: G.greenDeep, background: G.greenBg, cursor: "pointer", fontFamily: FONT }}>
+            {msgType} <span style={{ fontSize: 10, color: G.muted }}>▼</span>
           </button>
           {showTypeDropdown && (
-            <div className="absolute top-8 left-12 bg-white border border-gray-200 rounded-xl shadow-lg z-10 min-w-44 py-1">
-              {MESSAGE_TYPES.map((t) => (
-                <button
-                  key={t.label}
-                  onClick={() => { setMsgType(t.label); setShowTypeDropdown(false); }}
-                  className="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 flex items-center gap-2"
-                >
-                  <span className={t.color}>{t.icon}</span>
-                  {t.label}
+            <div style={{ position: "absolute", top: 36, left: 52, background: G.white, border: `1px solid ${G.greenBorder}`, borderRadius: 12, boxShadow: "0 8px 24px rgba(15,26,59,0.1)", zIndex: 10, minWidth: 180, padding: "6px 0" }}>
+              {MESSAGE_TYPES.map(t => (
+                <button key={t.label} onClick={() => { setMsgType(t.label); setShowTypeDropdown(false); }}
+                  style={{ width: "100%", display: "flex", alignItems: "center", gap: 8, padding: "9px 16px", background: "none", border: "none", cursor: "pointer", fontSize: 13, color: G.text, fontFamily: FONT, textAlign: "left" }}
+                  onMouseEnter={e => e.currentTarget.style.background = G.greenBg}
+                  onMouseLeave={e => e.currentTarget.style.background = "none"}>
+                  {t.icon} {t.label}
                 </button>
               ))}
             </div>
           )}
         </div>
 
-        {/* Textarea + Send button */}
-        <div className="flex items-end gap-3">
-          <textarea
-            ref={textareaRef}
-            value={input}
-            onChange={handleInputChange}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-              if (e.key === "Escape") setShowMentionDropdown(false);
-            }}
-            placeholder="Write your message... (Shift+Enter for new line)"
-            className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-sm resize-none focus:outline-none focus:border-green-400 min-h-[52px] max-h-32"
-            rows={2}
-          />
-          <button
-            onClick={sendMessage}
-            className="bg-green-500 hover:bg-green-600 text-white px-5 py-3 rounded-xl text-sm font-semibold flex items-center gap-1 transition-colors"
-          >
-            ✈ Send
-          </button>
-        </div>
-
         {/* Attached files preview */}
         {attachedFiles.length > 0 && (
-          <div className="flex flex-wrap gap-2 mb-2">
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 10 }}>
             {attachedFiles.map((f, i) => (
-              <div key={i} className="flex items-center gap-1.5 bg-gray-100 border border-gray-200 rounded-lg px-2 py-1">
-                <span className="text-xs text-gray-500">📄</span>
-                <span className="text-xs text-gray-700 max-w-32 truncate">{f.name}</span>
-                <span className="text-xs text-gray-400">{f.size}</span>
-                <button onClick={() => removeAttached(i)} className="text-gray-400 hover:text-red-500 ml-1 text-xs">✕</button>
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 6, background: G.greenBg, border: `1px solid ${G.greenBorder}`, borderRadius: 8, padding: "4px 10px" }}>
+                <span style={{ fontSize: 12 }}>📄</span>
+                <span style={{ fontSize: 11, color: G.text, maxWidth: 120, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{f.name}</span>
+                <span style={{ fontSize: 10, color: G.muted }}>{f.size}</span>
+                <button onClick={() => removeAttached(i)} style={{ background: "none", border: "none", cursor: "pointer", color: G.muted, fontSize: 12, marginLeft: 2 }}
+                  onMouseEnter={e => e.currentTarget.style.color = G.redText}
+                  onMouseLeave={e => e.currentTarget.style.color = G.muted}>✕</button>
               </div>
             ))}
           </div>
         )}
 
-        {/* Action buttons row */}
-        <div className="flex items-center gap-1 mt-2 relative">
-
-          {/* Hidden file inputs */}
-          <input
-            ref={fileInputRef}
-            type="file"
-            multiple
-            className="hidden"
-            onChange={handleFileChange}
+        {/* Textarea + Send */}
+        <div style={{ display: "flex", alignItems: "flex-end", gap: 10 }}>
+          <textarea ref={textareaRef} value={input} onChange={handleInputChange}
+            onKeyDown={e => {
+              if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+              if (e.key === "Escape") setShowMentionDropdown(false);
+            }}
+            placeholder="Write your message... (Shift+Enter for new line)"
+            rows={2}
+            style={{ flex: 1, border: `1.5px solid ${G.greenBorder}`, borderRadius: 14, padding: "10px 14px", fontSize: 13, resize: "none", color: G.text, background: G.white, fontFamily: FONT, minHeight: 52, maxHeight: 128 }}
+            onFocus={e => e.target.style.borderColor = G.green}
+            onBlur={e => e.target.style.borderColor = G.greenBorder}
           />
-          <input
-            ref={imageInputRef}
-            type="file"
-            multiple
-            accept="image/*"
-            className="hidden"
-            onChange={handleFileChange}
-          />
-
-          {/* 📎 Attach file */}
-          <button
-            title="Attach file"
-            onClick={() => fileInputRef.current?.click()}
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13" />
-            </svg>
+          <button onClick={sendMessage}
+            style={{ background: G.gradNavy, color: G.white, border: "none", borderRadius: 14, padding: "12px 22px", fontSize: 13, fontWeight: 700, fontFamily: FONT, cursor: "pointer", boxShadow: "0 3px 12px rgba(15,26,59,0.25)", whiteSpace: "nowrap" }}>
+            ✈ Send
           </button>
+        </div>
 
-          {/* 🖼 Attach image */}
-          <button
-            title="Attach image"
-            onClick={() => imageInputRef.current?.click()}
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-          >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-          </button>
+        {/* Action row */}
+        <div style={{ display: "flex", alignItems: "center", gap: 4, marginTop: 10, position: "relative" }}>
+          <input ref={fileInputRef}  type="file" multiple style={{ display: "none" }} onChange={handleFileChange} />
+          <input ref={imageInputRef} type="file" multiple accept="image/*" style={{ display: "none" }} onChange={handleFileChange} />
 
-          {/* @ Mention — with rate limit counter */}
-          <div className="relative">
-            <button
-              onClick={() => setShowMentionDropdown(!showMentionDropdown)}
-              title={
-                viewingAs === "agency_team"
-                  ? "Mention participant (Admin restricted for team members)"
-                  : `Mention participant — ${3 - adminMentionsUsed}/3 admin mentions left today`
-              }
-              className={`p-2 rounded-lg transition-colors flex items-center gap-0.5 ${
-                showMentionDropdown ? "text-blue-600 bg-blue-50" : "text-gray-400 hover:text-gray-600 hover:bg-gray-100"
-              }`}
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-              </svg>
-              {/* Rate limit dots — only show for non-team members */}
+          {iconBtn("Attach file",  () => fileInputRef.current?.click(),
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+          )}
+          {iconBtn("Attach image", () => imageInputRef.current?.click(),
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          )}
+
+          {/* @ mention button */}
+          <div style={{ position: "relative" }}>
+            <button onClick={() => setShowMentionDropdown(!showMentionDropdown)}
+              style={{ display: "flex", alignItems: "center", gap: 4, padding: "6px 10px", background: showMentionDropdown ? G.greenBg : "none", border: showMentionDropdown ? `1px solid ${G.greenBorder}` : "1px solid transparent", color: showMentionDropdown ? G.greenDeep : G.muted, borderRadius: 8, cursor: "pointer", fontFamily: FONT, fontSize: 12, fontWeight: 600 }}>
+              <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"/></svg>
               {viewingAs !== "agency_team" && (
-                <span className={`text-xs font-bold leading-none ${
-                  adminMentionsUsed >= 3 ? "text-red-500" : adminMentionsUsed === 2 ? "text-orange-500" : "text-gray-400"
-                }`}>
-                  {3 - adminMentionsUsed}
-                </span>
+                <span style={{ fontSize: 11, fontWeight: 800, color: adminMentionsUsed >= 3 ? G.redText : adminMentionsUsed === 2 ? G.amberText : G.muted }}>{3 - adminMentionsUsed}</span>
               )}
             </button>
-
             {showMentionDropdown && (
-              <MentionDropdown
-                viewingAs={viewingAs}
-                adminMentionsUsed={adminMentionsUsed}
-                onSelect={handleMentionSelect}
-                onClose={() => setShowMentionDropdown(false)}
-              />
+              <MentionDropdown viewingAs={viewingAs} adminMentionsUsed={adminMentionsUsed} onSelect={handleMentionSelect} onClose={() => setShowMentionDropdown(false)} />
             )}
           </div>
 
-          {/* 📅 Schedule meeting */}
-          <button title="Schedule meeting" className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-            </svg>
-          </button>
+          {iconBtn("Schedule meeting", () => {},
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+          )}
 
-          {/* Inline rate limit warning */}
           {adminMentionsUsed >= 3 && viewingAs !== "agency_team" && (
-            <span className="ml-1 text-xs text-red-500 font-medium">🔒 Admin mention limit reached</span>
+            <span style={{ fontSize: 11, color: G.redText, fontWeight: 600, marginLeft: 4 }}>🔒 Admin mention limit reached</span>
           )}
           {adminMentionsUsed === 2 && viewingAs !== "agency_team" && (
-            <span className="ml-1 text-xs text-orange-500">⚠ 1 admin mention left today</span>
+            <span style={{ fontSize: 11, color: G.amberText, marginLeft: 4 }}>⚠ 1 admin mention left today</span>
           )}
         </div>
       </div>
 
-      {/* ── Admin Mention Modal ── */}
       {showAdminModal && (
-        <AdminMentionModal
-          mentionsUsed={adminMentionsUsed}
-          onConfirm={handleAdminMentionConfirm}
-          onCancel={() => { setShowAdminModal(false); setPendingMention(null); }}
-        />
+        <AdminMentionModal mentionsUsed={adminMentionsUsed} onConfirm={handleAdminMentionConfirm} onCancel={() => { setShowAdminModal(false); setPendingMention(null); }} />
       )}
     </div>
   );

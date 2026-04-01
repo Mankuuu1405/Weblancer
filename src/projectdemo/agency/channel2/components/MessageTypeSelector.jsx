@@ -1,10 +1,46 @@
+// ── MessageTypeSelector.jsx ────────────────────────────
 import { useState, useRef, useEffect } from "react";
 import { messageTypes } from "../data/dummyData";
+
+const G = {
+  green:       "#6EC030",
+  greenDeep:   "#2E7D1F",
+  greenBg:     "#f1fce8",
+  greenBorder: "#d4edbb",
+  gradNavy:    "linear-gradient(135deg, #4A6FA5 0%, #0F1A3B 100%)",
+  text:        "#1C1C1C",
+  sub:         "#4b5563",
+  muted:       "#9ca3af",
+  border:      "#e5e7eb",
+  bg:          "#f9fafb",
+  white:       "#ffffff",
+  amber:       "#f59e0b",
+  amberBg:     "#fffbeb",
+  amberBorder: "#fde68a",
+  blue:        "#2563eb",
+  blueBg:      "#eff6ff",
+  blueBorder:  "#bfdbfe",
+};
+const FONT = "'Poppins', sans-serif";
+
+const TYPE_STYLE = {
+  normal:   { bg: G.bg,      border: G.border,       text: G.sub,       dot: G.muted    },
+  update:   { bg: G.blueBg,  border: G.blueBorder,   text: G.blue,      dot: G.blue     },
+  decision: { bg: G.greenBg, border: G.greenBorder,  text: G.greenDeep, dot: G.green    },
+  warning:  { bg: G.amberBg, border: G.amberBorder,  text: "#92400e",   dot: G.amber    },
+};
+
+const TYPE_DESC = {
+  normal:   "Regular message",
+  update:   "Progress or task update",
+  decision: "Final decision — locked",
+  warning:  "Urgent alert or risk",
+};
 
 export default function MessageTypeSelector({ selectedType, onSelect }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const current = messageTypes.find((t) => t.value === selectedType) || messageTypes[0];
+  const current = messageTypes.find(t => t.value === selectedType) || messageTypes[0];
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -14,50 +50,71 @@ export default function MessageTypeSelector({ selectedType, onSelect }) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const typeStyles = {
-    normal:   { pill: "bg-gray-100 text-gray-600 hover:bg-gray-200",   dot: "bg-gray-400"  },
-    update:   { pill: "bg-blue-50 text-blue-700 hover:bg-blue-100",    dot: "bg-blue-500"  },
-    decision: { pill: "bg-green-50 text-green-700 hover:bg-green-100", dot: "bg-green-500" },
-    warning:  { pill: "bg-amber-50 text-amber-700 hover:bg-amber-100", dot: "bg-amber-500" },
-  };
-
-  const descriptions = {
-    normal: "Regular message", update: "Progress or task update",
-    decision: "Final decision — locked", warning: "Urgent alert or risk",
-  };
+  const s = TYPE_STYLE[selectedType] || TYPE_STYLE.normal;
 
   return (
-    <div className="relative" ref={dropdownRef}>
-      <button
-        type="button"
-        onClick={() => setIsOpen((p) => !p)}
-        className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-colors ${typeStyles[selectedType]?.pill || typeStyles.normal.pill}`}
-      >
-        <span className={`w-2 h-2 rounded-full ${typeStyles[selectedType]?.dot || typeStyles.normal.dot}`} />
+    <div style={{ position: "relative", fontFamily: FONT }} ref={dropdownRef}>
+
+      {/* Trigger pill */}
+      <button type="button" onClick={() => setIsOpen(p => !p)} style={{
+        display: "flex", alignItems: "center", gap: 6,
+        padding: "5px 12px", borderRadius: 100, cursor: "pointer",
+        fontSize: 11, fontWeight: 700, fontFamily: FONT,
+        background: s.bg, color: s.text,
+        border: `1.5px solid ${s.border}`,
+        transition: "all 0.1s",
+      }}>
+        <span style={{ width: 7, height: 7, borderRadius: "50%", background: s.dot, flexShrink: 0 }} />
         {current.label}
-        <svg className={`w-3 h-3 transition-transform duration-150 ${isOpen ? "rotate-180" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg style={{ width: 11, height: 11, transition: "transform 0.15s", transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+          fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
         </svg>
       </button>
+
+      {/* Dropdown */}
       {isOpen && (
-        <div className="absolute bottom-full left-0 mb-2 w-52 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden z-50">
-          <div className="p-1">
-            {messageTypes.map((type) => {
-              const s = typeStyles[type.value];
+        <div style={{
+          position: "absolute", bottom: "calc(100% + 8px)", left: 0,
+          width: 220, background: G.white,
+          border: `1px solid ${G.greenBorder}`,
+          borderRadius: 12, boxShadow: "0 4px 20px rgba(110,192,48,0.12)",
+          overflow: "hidden", zIndex: 50,
+        }}>
+          {/* Dropdown header */}
+          <div style={{ padding: "8px 12px 6px", background: G.greenBg, borderBottom: `1px solid ${G.greenBorder}` }}>
+            <p style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", color: G.greenDeep, margin: 0 }}>
+              Message Type
+            </p>
+          </div>
+
+          <div style={{ padding: 6 }}>
+            {messageTypes.map(type => {
+              const ts = TYPE_STYLE[type.value] || TYPE_STYLE.normal;
               const isSelected = selectedType === type.value;
               return (
                 <button key={type.value} type="button"
                   onClick={() => { onSelect(type.value); setIsOpen(false); }}
-                  className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-lg transition-colors text-left hover:bg-gray-50 ${isSelected ? "bg-gray-50 ring-1 ring-inset ring-gray-200" : ""}`}
+                  style={{
+                    width: "100%", display: "flex", alignItems: "center", gap: 10,
+                    padding: "8px 10px", borderRadius: 8, cursor: "pointer",
+                    border: isSelected ? `1.5px solid ${ts.border}` : "1.5px solid transparent",
+                    background: isSelected ? ts.bg : "transparent",
+                    textAlign: "left", fontFamily: FONT, transition: "all 0.1s",
+                  }}
+                  onMouseEnter={e => { if (!isSelected) e.currentTarget.style.background = G.bg; }}
+                  onMouseLeave={e => { if (!isSelected) e.currentTarget.style.background = "transparent"; }}
                 >
-                  <span className={`w-2 h-2 rounded-full shrink-0 ${s.dot}`} />
-                  <div className="flex-1 min-w-0">
-                    <p className={`text-xs font-semibold ${s.pill.split(" ")[1]}`}>{type.label}</p>
-                    <p className="text-xs text-gray-400 truncate">{descriptions[type.value]}</p>
+                  <span style={{ width: 8, height: 8, borderRadius: "50%", background: ts.dot, flexShrink: 0 }} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: 12, fontWeight: 700, color: ts.text, margin: "0 0 1px" }}>{type.label}</p>
+                    <p style={{ fontSize: 10, color: G.muted, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {TYPE_DESC[type.value]}
+                    </p>
                   </div>
                   {isSelected && (
-                    <svg className="w-3.5 h-3.5 text-gray-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    <svg style={{ width: 13, height: 13, color: G.greenDeep, flexShrink: 0 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                     </svg>
                   )}
                 </button>
