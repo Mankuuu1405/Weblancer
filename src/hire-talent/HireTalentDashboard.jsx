@@ -1,627 +1,693 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  MessageSquare,
-  FileText,
-  Phone,
-  Star,
-  DollarSign,
-  CheckCircle,
-  AlertCircle,
-  Calendar,
-  Bell,
-  Settings,
-  ArrowRight,
-  ChevronDown,
-  Plus,
+  FolderOpen, DollarSign, Star, Flag, Shield, MessageSquare,
+  TrendingUp, AlertCircle, CheckCircle, ChevronRight, Plus,
+  ArrowRight, Zap, Send, X, CreditCard, Bell,
+  LayoutDashboard, FileText, Briefcase, Users,
+  Settings, LogOut, ChevronsLeft, ChevronsRight,
 } from 'lucide-react';
 
-const HireTalentDashboard = () => {
+const ACCENT_GRAD = 'linear-gradient(135deg, #22c55e, #0ea5e9)';
+const NAVY = '#1e3a5f';
+
+const ACTIVE_PROJECTS = [
+  { id: 1, title: 'Food Delivery Mobile App', talent: 'TechVision Agency', status: 'On Track', progress: 40, milestone: 'M2/4', escrow: 42000, deadline: 'Jul 25', action: 'Review Milestone' },
+];
+const RECENT_TRANSACTIONS = [
+  { label: 'Escrow funded — Food Delivery App', amount: '-$42,000', time: '3 days ago',    type: 'escrow' },
+  { label: 'Refund received — AI Chatbot',      amount: '+$1,500',  time: '3 months ago', type: 'refund' },
+  { label: 'Final payment — E-Commerce',        amount: '-$18,500', time: '3 months ago', type: 'released' },
+];
+const NOTIFICATIONS_DATA = [
+  { text: 'Wireframes_v1.pdf ready for review', time: '2h ago', unread: true },
+  { text: 'New message from Arjun Mehta',        time: '3h ago', unread: true },
+  { text: 'Admin: Project 3 days ahead',         time: '4h ago', unread: true },
+  { text: 'Escrow funded successfully',          time: '3d ago', unread: false },
+];
+const INVITE_TALENTS = [
+  { id: 1, name: 'TechVision Agency', type: 'Agency',     match: '98%', rating: 4.9, initials: 'TV', risk: 'LOW' },
+  { id: 2, name: 'John Smith',        type: 'Freelancer', match: '91%', rating: 4.8, initials: 'JS', risk: 'LOW' },
+];
+
+const NAV_SECTIONS = [
+  {
+    label: 'OVERVIEW',
+    items: [
+      { icon: LayoutDashboard, label: 'Dashboard',     route: '/hire-talent',               active: true,  badge: null },
+    ],
+  },
+  {
+    label: 'WORK',
+    items: [
+      { icon: Briefcase,       label: 'Projects',      route: '/hire-talent/projects',      active: false, badge: null },
+      { icon: Users,           label: 'Talent',        route: '/hire-talent/talent',        active: false, badge: null },
+      { icon: FileText,        label: 'Contracts',     route: '/hire-talent/contracts',     active: false, badge: null },
+      { icon: Star,            label: 'Reviews',       route: '/hire-talent/reviews',       active: false, badge: null },
+    ],
+  },
+  {
+    label: 'FINANCE',
+    items: [
+      { icon: Shield,          label: 'Escrow',        route: '/hire-talent/payments',      active: false, badge: null },
+      { icon: CreditCard,      label: 'Payments',      route: '/hire-talent/payments',      active: false, badge: null },
+      { icon: Flag,            label: 'Disputes',      route: '/hire-talent/disputes',      active: false, badge: '1' },
+    ],
+  },
+  {
+    label: 'ACCOUNT',
+    items: [
+      { icon: Settings,        label: 'Settings',      route: '/hire-talent/settings',      active: false, badge: '!' },
+      { icon: Bell,            label: 'Notifications', route: '/hire-talent/notifications', active: false, badge: '3' },
+    ],
+  },
+];
+
+const styles = `
+  *, *::before, *::after { box-sizing: border-box; }
+  .htd-root {
+    display: flex; height: 100vh; overflow: hidden;
+    background: #f4f7fb; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  /* ─── SIDEBAR ─── */
+  .htd-sidebar {
+    width: 220px; min-width: 220px; background: linear-gradient(160deg, #0e6ea8 0%, #0a5a9e 50%, #1e3a5f 100%);
+    display: flex; flex-direction: column;
+    transition: width .25s ease, min-width .25s ease;
+    overflow: hidden; flex-shrink: 0;
+    box-shadow: 3px 0 20px rgba(14,110,168,.35);
+  }
+  .htd-sidebar.col { width: 64px; min-width: 64px; }
+
+  .htd-sb-logo {
+    display: flex; align-items: center; gap: 10px;
+    padding: 20px 14px 16px;
+    border-bottom: 1px solid rgba(255,255,255,.1); flex-shrink: 0;
+  }
+  .htd-sb-logo-icon {
+    width: 36px; height: 36px; border-radius: 9px; flex-shrink: 0;
+    background: linear-gradient(135deg,#22c55e,#0ea5e9);
+    display: flex; align-items: center; justify-content: center;
+     font-weight: 800; font-size: 15px; color: #fff;
+  }
+  .htd-sb-logo-name {  font-weight:800; font-size:16px; color:#fff; white-space:nowrap; overflow:hidden; }
+  .htd-sb-logo-role { font-size:10px; color:rgba(255,255,255,.45); text-transform:uppercase; letter-spacing:.06em; white-space:nowrap; }
+
+  .htd-sb-nav { flex:1; overflow-y:auto; padding:8px 0; scrollbar-width:none; }
+  .htd-sb-nav::-webkit-scrollbar { display:none; }
+
+  .htd-sb-section-label {
+    font-size:9px; font-weight:700; color:rgba(255,255,255,.35);
+    letter-spacing:.1em; text-transform:uppercase;
+    padding:12px 16px 4px; white-space:nowrap; overflow:hidden;
+  }
+  .htd-sidebar.col .htd-sb-section-label { opacity:0; height:0; padding:0; }
+
+  .htd-sb-item {
+    display:flex; align-items:center; gap:10px;
+    padding:9px 12px; margin:1px 7px; border-radius:10px;
+    cursor:pointer; transition:background .15s;
+    border:none; background:transparent; width:calc(100% - 14px);
+    color:rgba(255,255,255,.65); position:relative; 
+  }
+  .htd-sb-item:hover { background:rgba(255,255,255,.1); color:#fff; }
+  .htd-sb-item.active { background:rgba(255,255,255,.15); color:#fff; }
+  .htd-sb-item.active::before {
+    content:''; position:absolute; left:-7px; top:50%; transform:translateY(-50%);
+    width:3px; height:18px; border-radius:0 3px 3px 0;
+    background:linear-gradient(180deg,#22c55e,#0ea5e9);
+  }
+  .htd-sb-label { font-size:13px; font-weight:500; white-space:nowrap; overflow:hidden; }
+  .htd-sb-badge {
+    margin-left:auto; min-width:17px; height:17px; border-radius:9px;
+    background:#ef4444; color:#fff; font-size:9px; font-weight:700;
+    display:flex; align-items:center; justify-content:center; padding:0 4px; flex-shrink:0;
+  }
+  .htd-sb-badge.warn { background:#f59e0b; }
+  .htd-sidebar.col .htd-sb-badge { position:absolute; top:4px; right:4px; min-width:8px; height:8px; border-radius:50%; padding:0; font-size:0; }
+
+  .htd-sb-collapse {
+    padding:10px 7px; border-top:1px solid rgba(255,255,255,.1); flex-shrink:0;
+  }
+  .htd-collapse-btn {
+    width:100%; display:flex; align-items:center; gap:8px; padding:8px 10px;
+    border-radius:9px; background:rgba(255,255,255,.07); border:none; cursor:pointer;
+    color:rgba(255,255,255,.55); font-size:12px; font-weight:500;
+     transition:background .15s,color .15s;
+    white-space:nowrap; overflow:hidden;
+  }
+  .htd-collapse-btn:hover { background:rgba(255,255,255,.12); color:#fff; }
+
+  .htd-sb-user {
+    display:flex; align-items:center; gap:10px;
+    padding:13px 14px; border-top:1px solid rgba(255,255,255,.1); flex-shrink:0;
+  }
+  .htd-sb-avatar {
+    width:33px; height:33px; border-radius:9px; flex-shrink:0;
+    background:linear-gradient(135deg,#22c55e,#0ea5e9);
+    display:flex; align-items:center; justify-content:center;
+    font-weight:700; font-size:12px; color:#fff;
+  }
+  .htd-sb-uname { font-size:12px; font-weight:600; color:#fff; white-space:nowrap; overflow:hidden; }
+  .htd-sb-urole { font-size:10px; color:rgba(255,255,255,.4); white-space:nowrap; }
+
+  /* ─── MAIN ─── */
+  .htd-main { flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0; }
+
+  .htd-topbar {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 22px; height:58px; background:#fff;
+    border-bottom:1px solid #e8eef5; flex-shrink:0;
+  }
+
+  .htd-content { flex:1; overflow-y:auto; padding:20px 22px; }
+
+  /* ─── COMPONENTS ─── */
+  .htd-stat-card {
+    position:relative; overflow:hidden; border-radius:14px;
+    background:#fff; border:1px solid #e8eef5; padding:16px; cursor:pointer;
+    transition:transform .2s,box-shadow .2s,border-color .2s;
+  }
+  .htd-stat-card:hover { transform:translateY(-2px); box-shadow:0 8px 22px rgba(30,58,95,.1); }
+  .htd-stat-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; opacity:0; transition:opacity .2s; }
+  .htd-stat-card:hover::before { opacity:1; }
+  .htd-stat-card.green::before  { background:linear-gradient(90deg,#22c55e,#0ea5e9); }
+  .htd-stat-card.blue::before   { background:linear-gradient(90deg,#0ea5e9,#1e3a5f); }
+  .htd-stat-card.navy::before   { background:linear-gradient(90deg,#1e3a5f,#0ea5e9); }
+  .htd-stat-card.red::before    { background:linear-gradient(90deg,#ef4444,#f97316); }
+  .htd-stat-card.purple::before { background:linear-gradient(90deg,#8b5cf6,#0ea5e9); }
+  .htd-stat-card.amber::before  { background:linear-gradient(90deg,#f59e0b,#22c55e); }
+
+  .htd-panel { background:#fff; border-radius:16px; border:1px solid #e8eef5; overflow:hidden; }
+  .htd-panel-head {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:13px 16px; border-bottom:1px solid #f0f4f8;
+  }
+  .htd-section-title {  font-size:13px; font-weight:700; color:#1e3a5f; }
+  .htd-section-bar { position:relative; padding-left:10px; }
+  .htd-section-bar::before {
+    content:''; position:absolute; left:0; top:0; bottom:0;
+    width:3px; border-radius:99px;
+    background:linear-gradient(180deg,#22c55e,#0ea5e9);
+  }
+
+  .htd-btn-primary {
+    display:inline-flex; align-items:center; gap:5px;
+    padding:7px 13px; border-radius:9px; border:none; cursor:pointer;
+    color:#fff; font-size:12px; font-weight:600; 
+    background:linear-gradient(135deg,#22c55e,#0ea5e9); transition:opacity .15s,transform .15s;
+  }
+  .htd-btn-primary:hover { opacity:.9; transform:scale(1.02); }
+  .htd-btn-primary:disabled { background:#cbd5e1!important; cursor:not-allowed; transform:none; opacity:1; }
+
+  .htd-view-link {
+    font-size:12px; font-weight:600; color:#0ea5e9; background:none; border:none;
+    cursor:pointer; display:flex; align-items:center; gap:3px; transition:color .15s;
+  }
+  .htd-view-link:hover { color:#0284c7; }
+
+  .htd-progress-bar { width:100%; height:7px; background:#e8eef5; border-radius:99px; overflow:hidden; }
+  .htd-progress-fill { height:100%; border-radius:99px; background:linear-gradient(90deg,#22c55e,#0ea5e9); transition:width .5s; }
+
+  .htd-avatar {
+    width:37px; height:37px; border-radius:9px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-weight:700; font-size:13px;
+    background:linear-gradient(135deg,#22c55e,#0ea5e9);
+  }
+
+  .htd-badge { font-size:10px; font-weight:700; padding:2px 7px; border-radius:99px; white-space:nowrap; }
+  .htd-badge.green  { background:#dcfce7; color:#16a34a; }
+  .htd-badge.blue   { background:#dbeafe; color:#1d4ed8; }
+
+  .htd-pulsedot { width:6px; height:6px; border-radius:50%; background:#22c55e; animation:htdp 2s infinite; }
+  @keyframes htdp { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
+
+  .htd-kyc {
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 14px; border-radius:12px;
+    background:linear-gradient(135deg,#fffbeb,#fefce8);
+    border:1px solid #fcd34d; margin-bottom:16px;
+  }
+
+  .htd-proj-card { padding:13px; background:#f8fafc; border-radius:12px; border:1px solid #e8eef5; }
+
+  .htd-post-btn {
+    width:100%; display:flex; align-items:center; justify-content:center; gap:7px;
+    padding:11px; border:2px dashed #cbd5e1; border-radius:11px;
+    background:none; cursor:pointer; font-size:13px; font-weight:500;
+    color:#94a3b8;  transition:all .2s;
+  }
+  .htd-post-btn:hover { border-color:#22c55e; color:#16a34a; background:#f0fdf4; }
+
+  .htd-talent-row { display:flex; align-items:center; gap:10px; padding:10px; background:#f8fafc; border-radius:11px; border:1px solid #e8eef5; }
+
+  .htd-insight-card {
+    border-radius:14px; padding:16px;
+    background:linear-gradient(135deg,#f0fdf4 0%,#eff6ff 60%,#f0f9ff 100%);
+    border:1px solid #bfdbfe;
+  }
+
+  .htd-qa-btn {
+    width:100%; display:flex; align-items:center; justify-content:space-between;
+    padding:8px 9px; border-radius:9px; background:transparent; border:none; cursor:pointer;
+     transition:background .15s;
+  }
+  .htd-qa-btn:hover { background:#f8fafc; }
+
+  .htd-tx-icon { width:32px; height:32px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+
+  .htd-modal-bg {
+    position:fixed; inset:0; background:rgba(15,23,42,.52);
+    display:flex; align-items:center; justify-content:center; z-index:50; padding:16px;
+    backdrop-filter:blur(4px);
+  }
+  .htd-modal { background:#fff; border-radius:20px; padding:24px; max-width:430px; width:100%; box-shadow:0 24px 60px rgba(15,23,42,.2); }
+
+  .htd-input {
+    width:100%; padding:9px 12px; border:1.5px solid #e2e8f0; border-radius:9px;
+    font-size:13px;  outline:none; transition:border-color .2s;
+  }
+  .htd-input:focus { border-color:#0ea5e9; }
+`;
+
+export default function HireTalentDashboard() {
   const navigate = useNavigate();
-
-  const [projects] = useState([
-    {
-      id: 1,
-      title: 'Food Delivery Mobile App',
-      status: 'Active',
-      client: 'TechVision Agency',
-      rating: 4.9,
-      milestone: 'Design & Planning',
-      progress: 40,
-      daysAhead: 3,
-      budget: 42000,
-      spent: 8400,
-      timeline: 90,
-      communication: 90,
-      quality: 100,
-    },
-  ]);
-
-  const [activeTab, setActiveTab] = useState('overview');
-  const [expandedMilestone, setExpandedMilestone] = useState(0);
-  const [showAIBreakdown, setShowAIBreakdown] = useState(false);
-  const [aiOverviewTab, setAIOverviewTab] = useState('overview');
-
-  const milestones = [
-    {
-      id: 1,
-      number: 1,
-      title: 'Design & Planning',
-      dueDate: 'Mar 11, 2026',
-      amount: '$8,400',
-      status: 'In Review',
-      statusColor: 'yellow',
-      deliverable: 'Deliverables ready for review',
-    },
-    {
-      id: 2,
-      number: 2,
-      title: 'Core Development',
-      dueDate: 'May 20, 2026',
-      amount: '$21,000',
-      status: 'Pending',
-      statusColor: 'gray',
-    },
-    {
-      id: 3,
-      number: 3,
-      title: 'Advanced Features',
-      dueDate: 'Jul 1, 2026',
-      amount: '$8,820',
-      status: 'Pending',
-      statusColor: 'gray',
-    },
-    {
-      id: 4,
-      number: 4,
-      title: 'Testing & Launch',
-      dueDate: 'Jul 25, 2026',
-      amount: '$3,780',
-      status: 'Pending',
-      statusColor: 'gray',
-    },
-  ];
-
-  const stats = [
-    { label: 'Active Projects', value: '1', icon: CheckCircle, color: 'blue' },
-    { label: 'In Escrow', value: '$42,000', icon: DollarSign, color: 'green' },
-    { label: 'Messages', value: '3', icon: MessageSquare, color: 'purple' },
-    { label: 'Trust Score', value: '75/100', icon: Star, color: 'yellow' },
-  ];
-
-  const upcomingDeadlines = [
-    { title: 'Review wireframes', date: 'Feb 14', highlight: true },
-    { title: 'Weekly check-in call', date: 'Feb 16', highlight: false },
-    { title: 'Milestone 1 delivery', date: 'Mar 11', highlight: false },
-  ];
-
-  const insights = [
-    { text: 'Your project is performing excellently', status: 'success' },
-    { text: 'TechVision Agency is highly responsive', status: 'success' },
-    { text: 'Timeline buffer exists for flexibility', status: 'success' },
-    { text: 'Consider scheduling next milestone review early', status: 'warning' },
-  ];
-
-  const quickActions = [
-    { title: 'Review Deliverables', icon: CheckCircle,  action: () => navigate('/hire-talent/projects/1') },
-    { title: 'Message Team',        icon: MessageSquare, action: () => navigate('/project-stream') },
-    { title: 'My Projects',         icon: FileText,      action: () => navigate('/hire-talent/projects') },
-    { title: 'My Reviews',          icon: Star,          action: () => navigate('/hire-talent/reviews') },
-    { title: 'Disputes',            icon: AlertCircle,   action: () => navigate('/hire-talent/disputes') },
-  ];
-
-  const getColorClasses = (color) => {
-    const colors = {
-      blue: 'bg-blue-100 text-blue-600',
-      green: 'bg-green-100 text-green-600',
-      purple: 'bg-purple-100 text-purple-600',
-      yellow: 'bg-yellow-100 text-yellow-600',
-    };
-    return colors[color];
-  };
-
-  const getStatusBadgeColor = (status) => {
-    switch (status) {
-      case 'In Review': return 'bg-yellow-100 text-yellow-700';
-      case 'Pending':   return 'bg-gray-100 text-gray-600';
-      default:          return 'bg-gray-100 text-gray-600';
-    }
-  };
+  const [collapsed, setCollapsed]     = useState(false);
+  const [inviteModal, setInviteModal] = useState(null);
+  const [inviteMsg, setInviteMsg]     = useState('');
+  const [inviteBudget, setInviteBudget] = useState('');
+  const [inviteSent, setInviteSent]   = useState(false);
+  const canSend = inviteMsg.trim() && inviteBudget;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <h1
-              className="text-2xl sm:text-3xl font-bold cursor-pointer select-none"
-              onClick={() => navigate('/hire-talent')}
-            >
-              <span className="text-green-500">Web</span>
-              <span className="text-[#1a3a5c]">Lance</span>
-            </h1>
-            <div className="flex items-center gap-2 sm:gap-4">
-              <button
-                onClick={() => navigate('/hire-talent/notifications')}
-                className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition hidden sm:block"
-              >
-                <Bell size={20} />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-              </button>
-              <button className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition hidden sm:block">
-                <Settings size={20} />
-              </button>
-              <span className="text-sm font-medium text-gray-700 hidden sm:inline">Client</span>
-            </div>
-          </div>
-        </div>
-      </header>
+    <>
+      <style>{styles}</style>
+      <div className="htd-root">
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-          {stats.map((stat, idx) => {
-            const Icon = stat.icon;
-            return (
-              <div key={idx} className="bg-white rounded-lg p-5 sm:p-6 shadow-sm border border-gray-200">
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="text-gray-600 text-sm font-medium">{stat.label}</p>
-                    <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">{stat.value}</p>
-                  </div>
-                  <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${getColorClasses(stat.color)}`}>
-                    <Icon size={24} />
-                  </div>
-                </div>
+        {/* ══ SIDEBAR ══ */}
+        <div className={`htd-sidebar${collapsed ? ' col' : ''}`}>
+
+          {/* Logo */}
+          <div className="htd-sb-logo">
+            <div className="htd-sb-logo-icon">W</div>
+            {!collapsed && (
+              <div style={{ overflow: 'hidden' }}>
+                <div className="htd-sb-logo-name">WebLance</div>
+                <div className="htd-sb-logo-role">Hire Talent</div>
               </div>
-            );
-          })}
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
-            {projects.map((project) => (
-              <div key={project.id} className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-                {/* Project Header */}
-                <div className="p-5 sm:p-6 border-b border-gray-200">
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2 flex-wrap">
-                        <h2 className="text-lg sm:text-xl font-bold text-gray-900">{project.title}</h2>
-                        <span className="inline-block bg-green-100 text-green-700 text-xs font-semibold px-3 py-1 rounded-full">
-                          {project.status}
-                        </span>
-                      </div>
-                      <p className="text-gray-600 text-sm">{project.client} • ⭐ {project.rating}</p>
-                    </div>
-                    <div className="flex items-center gap-2 flex-shrink-0">
-                      <button
-                        onClick={() => navigate('/project-stream')}
-                        className="flex items-center gap-2 px-3 py-2 text-gray-700 font-medium text-sm border border-gray-300 hover:bg-gray-50 rounded transition"
-                      >
-                        <MessageSquare size={16} />
-                        Message
-                      </button>
-                      <button
-                        onClick={() => navigate(`/hire-talent/projects/${project.id}`)}
-                        className="flex items-center gap-2 px-3 py-2 text-gray-700 font-medium text-sm border border-gray-300 hover:bg-gray-50 rounded transition"
-                      >
-                        <FileText size={16} />
-                        Files
-                      </button>
-                      <button className="flex items-center gap-2 px-3 py-2 text-gray-700 font-medium text-sm border border-gray-300 hover:bg-gray-50 rounded transition">
-                        <Phone size={16} />
-                        Call
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Milestone Progress */}
-                  <div className="mb-4">
-                    <p className="text-gray-900 font-semibold text-sm mb-2">
-                      Current: Milestone 1 — {project.milestone}
-                    </p>
-                    <div className="w-full bg-gray-200 rounded-full h-2.5">
-                      <div
-                        className="bg-blue-500 h-2.5 rounded-full transition-all duration-300"
-                        style={{ width: `${project.progress}%` }}
-                      ></div>
-                    </div>
-                    <p className="text-blue-600 text-xs font-medium mt-2">
-                      ✓ {project.daysAhead} days ahead of schedule
-                    </p>
-                  </div>
-
-                  {/* Budget Info */}
-                  <div className="flex justify-between items-center">
-                    <p className="text-gray-600 text-sm">
-                      ${project.spent.toLocaleString()} of ${project.budget.toLocaleString()} in progress
-                    </p>
-                    <span className="text-gray-900 font-semibold text-sm">{project.progress}% overall</span>
-                  </div>
-                </div>
-
-                {/* Tabs */}
-                <div className="px-5 sm:px-6 border-b border-gray-200 flex gap-8 overflow-x-auto">
-                  {['Overview', 'Milestones', 'Files', 'Transactions', 'AI Builder', 'Talent'].map((tab) => (
-                    <button
-                      key={tab}
-                      onClick={() => setActiveTab(tab.toLowerCase())}
-                      className={`py-4 font-medium text-sm border-b-2 transition whitespace-nowrap ${
-                        activeTab === tab.toLowerCase()
-                          ? 'border-blue-600 text-blue-600'
-                          : 'border-transparent text-gray-600 hover:text-gray-900'
-                      }`}
-                    >
-                      {tab}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Tab Content */}
-                {activeTab === 'overview' && (
-                  <div className="p-5 sm:p-6">
-                    <p className="text-gray-600 text-sm">Project overview content</p>
-                  </div>
-                )}
-
-                {activeTab === 'milestones' && (
-                  <div className="p-5 sm:p-6 space-y-4">
-                    {milestones.map((milestone, idx) => (
-                      <div key={milestone.id} className="border border-gray-200 rounded-lg overflow-hidden">
-                        <button
-                          onClick={() => setExpandedMilestone(expandedMilestone === idx ? -1 : idx)}
-                          className="w-full p-4 bg-gray-50 hover:bg-gray-100 transition flex items-center justify-between"
-                        >
-                          <div className="flex items-center gap-4 flex-1 text-left">
-                            <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 font-semibold flex items-center justify-center text-sm">
-                              {milestone.number}
-                            </div>
-                            <div className="flex-1">
-                              <p className="font-semibold text-gray-900">{milestone.title}</p>
-                              <p className="text-sm text-gray-600">Due: {milestone.dueDate}</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-4">
-                            <div className="text-right">
-                              <p className="font-semibold text-gray-900">{milestone.amount}</p>
-                              <span className={`text-xs font-semibold px-2 py-1 rounded ${getStatusBadgeColor(milestone.status)}`}>
-                                {milestone.status}
-                              </span>
-                            </div>
-                            <ChevronDown
-                              size={20}
-                              className={`text-gray-400 transition ${expandedMilestone === idx ? 'rotate-180' : ''}`}
-                            />
-                          </div>
-                        </button>
-                        {expandedMilestone === idx && milestone.deliverable && (
-                          <div className="p-4 bg-yellow-50 border-t border-gray-200">
-                            <p className="text-sm text-gray-700 mb-4">{milestone.deliverable}</p>
-                            <div className="flex gap-3">
-                              <button className="px-3 py-1.5 bg-blue-600 text-white font-medium text-sm rounded hover:bg-blue-700 transition">
-                                Review Now
-                              </button>
-                              <button className="px-3 py-1.5 bg-white border border-gray-300 text-gray-700 font-medium text-sm rounded hover:bg-gray-50 transition">
-                                View Files
-                              </button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {activeTab === 'files' && (
-                  <div className="p-5 sm:p-6 space-y-4">
-                    {[
-                      { name: 'Wireframes_v1.pdf', size: '2.4 MB', time: '2 hours ago', status: 'In Review', statusColor: 'bg-yellow-100 text-yellow-700' },
-                      { name: 'Requirements_Doc.docx', size: '1.1 MB', time: '3 days ago', status: 'Approved', statusColor: 'bg-green-100 text-green-700' },
-                      { name: 'Design_System.fig', size: '8.2 MB', time: '1 hour ago', status: 'New', statusColor: 'bg-blue-100 text-blue-700' },
-                    ].map((file, idx) => (
-                      <div key={idx} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
-                        <div className="flex items-center gap-4 flex-1">
-                          <FileText className="text-gray-400 flex-shrink-0" size={24} />
-                          <div className="flex-1 min-w-0">
-                            <p className="font-medium text-gray-900">{file.name}</p>
-                            <p className="text-sm text-gray-600">{file.size} • {file.time}</p>
-                          </div>
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <span className={`text-xs font-semibold px-3 py-1 rounded ${file.statusColor}`}>
-                            {file.status}
-                          </span>
-                          <button className="px-4 py-2 text-blue-600 font-medium text-sm hover:bg-blue-50 rounded-lg transition">
-                            Download
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {activeTab === 'transactions' && (
-                  <div className="p-5 sm:p-6 space-y-5">
-
-                    {/* Global summary cards */}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                      <div className="bg-gray-50 border border-gray-200 rounded-xl p-4">
-                        <p className="text-gray-500 text-xs font-medium mb-1">Total Spent (All Time)</p>
-                        <p className="text-2xl font-bold text-[#1a3a5c]">$1,24,500</p>
-                        <p className="text-xs text-gray-400 mt-1">Across 6 projects</p>
-                      </div>
-                      <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4">
-                        <p className="text-emerald-600 text-xs font-medium mb-1">Total In Escrow</p>
-                        <p className="text-2xl font-bold text-emerald-600">$42,000</p>
-                        <p className="text-xs text-gray-400 mt-1">Locked & safe</p>
-                      </div>
-                      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4">
-                        <p className="text-blue-600 text-xs font-medium mb-1">Released to Talent</p>
-                        <p className="text-2xl font-bold text-blue-600">$82,500</p>
-                        <p className="text-xs text-gray-400 mt-1">Across completed milestones</p>
-                      </div>
-                    </div>
-
-                    {/* Recent transactions list */}
-                    <div>
-                      <div className="flex items-center justify-between mb-3">
-                        <h3 className="text-sm font-bold text-[#1a3a5c]">Recent Transactions</h3>
-                        <button
-                          onClick={() => navigate('/hire-talent/payments')}
-                          className="text-xs text-blue-600 font-medium hover:underline"
-                        >
-                          View all →
-                        </button>
-                      </div>
-                      <div className="space-y-2">
-                        {[
-                          { label: 'Escrow funded — Food Delivery App',      amount: '+$42,000', date: 'Feb 11, 2026', type: 'escrow',   color: 'text-emerald-600' },
-                          { label: 'Final payment — E-Commerce Redesign',    amount: '-$18,500', date: 'Dec 20, 2025', type: 'released', color: 'text-blue-600' },
-                          { label: 'Final payment — CRM Dashboard',          amount: '-$31,000', date: 'Sep 28, 2025', type: 'released', color: 'text-blue-600' },
-                          { label: 'Final payment — Brand Identity Design',  amount: '-$8,500',  date: 'Jun 20, 2025', type: 'released', color: 'text-blue-600' },
-                          { label: 'Dispute refund — AI Chatbot',            amount: '+$1,500',  date: 'Dec 5, 2025',  type: 'refund',   color: 'text-amber-600' },
-                        ].map((tx, i) => (
-                          <div key={i} className="flex items-center justify-between p-3 bg-gray-50 border border-gray-100 rounded-xl hover:bg-gray-100 transition">
-                            <div className="flex items-center gap-3">
-                              <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
-                                tx.type === 'escrow'   ? 'bg-emerald-100' :
-                                tx.type === 'refund'   ? 'bg-amber-100' :
-                                'bg-blue-100'
-                              }`}>
-                                <DollarSign size={14} className={
-                                  tx.type === 'escrow'   ? 'text-emerald-600' :
-                                  tx.type === 'refund'   ? 'text-amber-600' :
-                                  'text-blue-600'
-                                } />
-                              </div>
-                              <div>
-                                <p className="text-sm font-medium text-gray-900">{tx.label}</p>
-                                <p className="text-xs text-gray-400">{tx.date}</p>
-                              </div>
-                            </div>
-                            <span className={`text-sm font-bold ${tx.color}`}>{tx.amount}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {activeTab === 'ai builder' && !showAIBreakdown && (
-                  <div className="p-5 sm:p-6 space-y-6">
-                    <div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="text-2xl">✨</span>
-                        <h3 className="text-xl font-bold text-gray-900">What do you want to build?</h3>
-                      </div>
-                      <p className="text-gray-600 text-sm mb-4">Describe your project in plain English</p>
-                      <textarea
-                        className="w-full p-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                        rows="5"
-                        placeholder="e.g., I want a food delivery app..."
-                      ></textarea>
-                    </div>
-                    <button
-                      onClick={() => setShowAIBreakdown(true)}
-                      className="flex items-center gap-2 px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition"
-                    >
-                      <ArrowRight size={18} />
-                      Analyze My Project
-                    </button>
-                  </div>
-                )}
-
-                {activeTab === 'talent' && (
-                  <div className="p-5 sm:p-6 space-y-4">
-                    <div className="mb-4">
-                      <h3 className="text-lg font-bold text-gray-900 mb-1">AI Found 4 Matches</h3>
-                      <p className="text-gray-600 text-sm">For your Food Delivery Platform project</p>
-                    </div>
-                    {[
-                      { number: 1, name: 'TechVision Agency', type: 'Agency', location: 'Mumbai, India', match: '98% Match', rating: '4.9 (47 projects)', risk: 'LOW' },
-                      { number: 2, name: 'John Smith', type: 'Freelancer', location: 'Bangalore', match: '91% Match', rating: '4.8 (23 projects)', risk: 'LOW' },
-                    ].map((talent) => (
-                      <div key={talent.number} className="bg-white border border-gray-200 rounded-lg p-4">
-                        <div className="flex items-start justify-between">
-                          <div className="flex items-start gap-3">
-                            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-sm font-bold">
-                              {talent.number}
-                            </div>
-                            <div>
-                              <h4 className="font-bold text-gray-900">#{talent.number} — {talent.name}</h4>
-                              <p className="text-gray-600 text-sm">{talent.type} • {talent.location}</p>
-                              <p className="text-gray-600 text-sm">⭐ {talent.rating} • {talent.match}</p>
-                            </div>
-                          </div>
-                          <span className={`text-xs font-bold px-2 py-1 rounded ${talent.risk === 'LOW' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                            {talent.risk}
-                          </span>
-                        </div>
-                        <div className="flex gap-2 mt-3">
-                          <button
-                            onClick={() => navigate(`/profile/${talent.number}`)}
-                            className="flex items-center gap-2 px-3 py-1.5 text-gray-600 border border-gray-300 rounded text-sm hover:bg-gray-50 transition"
-                          >
-                            👁️ View Profile
-                          </button>
-                          <button className="flex items-center gap-2 px-3 py-1.5 bg-blue-600 text-white font-medium rounded text-sm hover:bg-blue-700 transition">
-                            📧 Invite
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-
-            {/* Recent Activity */}
-            {activeTab === 'overview' && (
-              <>
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-4">Recent Activity</h3>
-                  <div className="space-y-4">
-                    {[
-                      { icon: FileText, text: 'Wireframes uploaded for review', time: '2 hours ago' },
-                      { icon: Phone,    text: 'Kickoff meeting completed',       time: 'Yesterday' },
-                      { icon: CheckCircle, text: 'Project started',              time: '2 days ago' },
-                      { icon: DollarSign,  text: 'Escrow funded: $44,100',       time: '3 days ago' },
-                    ].map((item, idx) => {
-                      const Icon = item.icon;
-                      return (
-                        <div key={idx} className="flex gap-3">
-                          <Icon className="text-gray-400 flex-shrink-0" size={20} />
-                          <div>
-                            <p className="font-medium text-gray-900 text-sm">{item.text}</p>
-                            <p className="text-gray-500 text-xs">{item.time}</p>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-4">Upcoming Deadlines</h3>
-                  <div className="space-y-3">
-                    {upcomingDeadlines.map((deadline, idx) => (
-                      <div
-                        key={idx}
-                        className={`flex items-center justify-between p-4 rounded-lg ${deadline.highlight ? 'bg-yellow-50 border border-yellow-200' : 'bg-gray-50 border border-gray-200'}`}
-                      >
-                        <div className="flex items-center gap-3">
-                          <Calendar className={deadline.highlight ? 'text-yellow-600' : 'text-gray-400'} size={20} />
-                          <p className="font-medium text-gray-900 text-sm">{deadline.title}</p>
-                        </div>
-                        <span className="text-gray-600 text-sm font-medium">{deadline.date}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-6">
-                  <h3 className="text-lg font-bold text-gray-900 mb-6">Project Health</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    {[
-                      { label: 'Timeline',      value: 90,  note: '3 days ahead', color: 'blue' },
-                      { label: 'Budget',        value: 20,  note: 'On track',     color: 'green' },
-                      { label: 'Communication', value: 90,  note: 'Excellent',    color: 'blue' },
-                      { label: 'Quality',       value: 100, note: 'No revisions', color: 'blue' },
-                    ].map((h, idx) => (
-                      <div key={idx}>
-                        <div className="flex items-center justify-between mb-2">
-                          <p className="text-gray-700 font-medium text-sm">{h.label}</p>
-                          <span className="text-gray-900 font-bold text-sm">{h.value}%</span>
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2">
-                          <div className={`${h.color === 'green' ? 'bg-green-500' : 'bg-blue-500'} h-2 rounded-full`} style={{ width: `${h.value}%` }}></div>
-                        </div>
-                        <p className={`${h.color === 'green' ? 'text-green-600' : 'text-blue-600'} text-xs font-medium mt-2`}>{h.note}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </>
             )}
           </div>
 
-          {/* Sidebar */}
-          <div className="space-y-6">
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-6">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-14 h-14 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
-                  <span className="text-white font-bold text-lg">SJ</span>
-                </div>
-                <div className="min-w-0">
-                  <h4 className="font-bold text-gray-900">Sarah Johnson</h4>
-                  <p className="text-gray-600 text-sm">Project Success Manager</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 mb-6 pb-6 border-b border-gray-200">
-                <div className="w-2 h-2 bg-green-500 rounded-full flex-shrink-0"></div>
-                <p className="text-gray-700 text-sm">Response time: &lt; 4 hours</p>
-              </div>
-              <button
-                onClick={() => navigate('/project-stream')}
-                className="w-full py-3 px-4 bg-blue-50 text-blue-600 font-semibold rounded-lg hover:bg-blue-100 transition text-sm mb-3 flex items-center justify-center gap-2"
-              >
-                💬 Live Chat
-              </button>
-              <button className="w-full py-3 px-4 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:bg-gray-50 transition text-sm">
-                📞 Schedule Call
-              </button>
-            </div>
-
-            {/* Quick Actions */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">Quick Actions</h3>
-              <div className="space-y-0">
-                {quickActions.map((action, idx) => {
-                  const Icon = action.icon;
+          {/* Navigation */}
+          <nav className="htd-sb-nav">
+            {NAV_SECTIONS.map(sec => (
+              <div key={sec.label}>
+                <div className="htd-sb-section-label">{sec.label}</div>
+                {sec.items.map(item => {
+                  const Icon = item.icon;
                   return (
-                    <button
-                      key={idx}
-                      onClick={action.action}
-                      className="w-full flex items-center justify-between p-3 hover:bg-gray-50 rounded-lg transition group border-b border-gray-100 last:border-b-0"
-                    >
-                      <div className="flex items-center gap-3 min-w-0">
-                        <Icon className="text-gray-400 group-hover:text-gray-600 flex-shrink-0" size={20} />
-                        <span className="text-gray-700 font-medium text-sm">{action.title}</span>
-                      </div>
-                      <ArrowRight className="text-gray-300 group-hover:text-gray-400 flex-shrink-0" size={18} />
+                    <button key={item.label}
+                      className={`htd-sb-item${item.active ? ' active' : ''}`}
+                      onClick={() => navigate(item.route)}
+                      title={collapsed ? item.label : undefined}>
+                      <Icon size={16} style={{ flexShrink: 0 }} />
+                      {!collapsed && <span className="htd-sb-label">{item.label}</span>}
+                      {item.badge && (
+                        <span className={`htd-sb-badge${item.badge === '!' ? ' warn' : ''}`}>
+                          {collapsed ? '' : item.badge}
+                        </span>
+                      )}
                     </button>
                   );
                 })}
               </div>
+            ))}
+            <button className="htd-sb-item" onClick={() => {}} title={collapsed ? 'Log Out' : undefined}>
+              <LogOut size={16} style={{ flexShrink: 0 }} />
+              {!collapsed && <span className="htd-sb-label">Log Out</span>}
+            </button>
+          </nav>
+
+          {/* Collapse button */}
+          <div className="htd-sb-collapse">
+            <button className="htd-collapse-btn" onClick={() => setCollapsed(c => !c)}>
+              {collapsed
+                ? <ChevronsRight size={15} style={{ flexShrink: 0 }} />
+                : <><ChevronsLeft size={15} style={{ flexShrink: 0 }} /><span>Collapse</span></>}
+            </button>
+          </div>
+
+          {/* User */}
+          <div className="htd-sb-user">
+            <div className="htd-sb-avatar">AK</div>
+            {!collapsed && (
+              <div style={{ overflow: 'hidden' }}>
+                <div className="htd-sb-uname">Arjun Kapoor</div>
+                <div className="htd-sb-urole">Trust: 75 · Good Standing</div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* ══ MAIN ══ */}
+        <div className="htd-main">
+
+          {/* Top bar */}
+          <div className="htd-topbar">
+            <div>
+              <h1 style={{ fontSize: 17, fontWeight: 800, color: NAVY, margin: 0,  }}>Dashboard</h1>
+              <p style={{ fontSize: 12, color: '#64748b', margin: 0 }}>Overview · March 2026</p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ position: 'relative', cursor: 'pointer' }} onClick={() => navigate('/hire-talent/notifications')}>
+                <div style={{ width: 34, height: 34, borderRadius: 9, background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Bell size={16} color={NAVY} />
+                </div>
+                <span style={{ position: 'absolute', top: -2, right: -2, width: 14, height: 14, background: '#ef4444', borderRadius: '50%', fontSize: 8, fontWeight: 700, color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid #fff' }}>3</span>
+              </div>
+              <div style={{ width: 34, height: 34, borderRadius: 9, background: 'linear-gradient(135deg,#22c55e,#0ea5e9)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontWeight: 700, fontSize: 12, cursor: 'pointer' }}>AK</div>
+            </div>
+          </div>
+
+          {/* Content */}
+          <div className="htd-content">
+
+            {/* KYC */}
+            <div className="htd-kyc">
+              <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+                <AlertCircle size={15} color="#d97706" />
+                <div>
+                  <p style={{ fontSize: 12, fontWeight: 700, color: '#92400e', margin: 0 }}>Payment verification pending — escrow locked</p>
+                  <p style={{ fontSize: 11, color: '#b45309', margin: '2px 0 0' }}>Complete billing setup to unlock full payment features</p>
+                </div>
+              </div>
+              <button onClick={() => navigate('/hire-talent/settings')}
+                style={{ fontSize: 11, fontWeight: 700, color: '#d97706', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 3, whiteSpace: 'nowrap', marginLeft: 10 }}>
+                Complete Setup <ArrowRight size={11} />
+              </button>
             </div>
 
-            {/* Insights */}
-            <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-5 sm:p-6">
-              <h3 className="text-lg font-bold text-gray-900 mb-4 flex items-center gap-2">
-                ✨ Insights
-              </h3>
-              <div className="space-y-3">
-                {insights.map((insight, idx) => (
-                  <div key={idx} className="flex items-start gap-3">
-                    <div className="flex-shrink-0 mt-0.5">
-                      {insight.status === 'success'
-                        ? <CheckCircle className="text-green-500" size={18} />
-                        : <AlertCircle className="text-yellow-500" size={18} />
-                      }
+            {/* Stat grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 11, marginBottom: 18 }}>
+              {[
+                { label: 'ACTIVE PROJECTS', value: '1',       sub: 'On track',       icon: FolderOpen,    color: 'green',  iconBg: '#dcfce7', iconClr: '#16a34a', route: '/hire-talent/projects', valClr: '#16a34a' },
+                { label: 'IN ESCROW',       value: '$42,000', sub: 'Protected funds', icon: Shield,        color: 'blue',   iconBg: '#dbeafe', iconClr: '#1d4ed8', route: '/hire-talent/payments', valClr: '#1d4ed8' },
+                { label: 'TRUST SCORE',     value: '75/100',  sub: 'Good standing',  icon: TrendingUp,    color: 'navy',   iconBg: '#e0f2fe', iconClr: NAVY,      route: null,                    valClr: NAVY },
+                { label: 'OPEN DISPUTES',   value: '1',       sub: 'Under review',   icon: Flag,          color: 'red',    iconBg: '#fee2e2', iconClr: '#dc2626', route: '/hire-talent/disputes', valClr: '#dc2626' },
+                { label: 'MESSAGES',        value: '3',       sub: '3 unread',       icon: MessageSquare, color: 'purple', iconBg: '#ede9fe', iconClr: '#7c3aed', route: '/project-stream',       valClr: '#7c3aed' },
+                { label: 'AVG RATING',      value: '4.8',     sub: 'Top Rated ⭐',   icon: Star,          color: 'amber',  iconBg: '#fef3c7', iconClr: '#d97706', route: '/hire-talent/reviews',  valClr: '#d97706' },
+              ].map((card, i) => {
+                const Icon = card.icon;
+                return (
+                  <div key={i} className={`htd-stat-card ${card.color}`} onClick={() => card.route && navigate(card.route)}>
+                    <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 10 }}>
+                      <p style={{ fontSize: 9, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '.08em', margin: 0 }}>{card.label}</p>
+                      <div style={{ width: 34, height: 34, borderRadius: 8, background: card.iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Icon size={15} color={card.iconClr} />
+                      </div>
                     </div>
-                    <p className="text-gray-700 text-sm">{insight.text}</p>
+                    <p style={{ fontSize: 22, fontWeight: 800, color: card.valClr, margin: 0,  }}>{card.value}</p>
+                    <p style={{ fontSize: 11, fontWeight: 500, color: card.valClr, opacity: .65, margin: '3px 0 0' }}>{card.sub}</p>
                   </div>
-                ))}
+                );
+              })}
+            </div>
+
+            {/* 3-column grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 278px', gap: 14 }}>
+
+              {/* ── Col 1 ── */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+
+                {/* Active Projects */}
+                <div className="htd-panel">
+                  <div className="htd-panel-head">
+                    <div className="htd-section-bar"><span className="htd-section-title">Active Projects</span></div>
+                    <button className="htd-view-link" onClick={() => navigate('/hire-talent/projects')}>View All <ArrowRight size={11} /></button>
+                  </div>
+                  <div style={{ padding: 12, display: 'flex', flexDirection: 'column', gap: 9 }}>
+                    {ACTIVE_PROJECTS.map(proj => (
+                      <div key={proj.id} className="htd-proj-card">
+                        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 9 }}>
+                          <div>
+                            <p style={{ fontSize: 13, fontWeight: 700, color: NAVY, margin: 0 }}>{proj.title}</p>
+                            <p style={{ fontSize: 11, color: '#94a3b8', margin: '2px 0 0' }}>{proj.talent}</p>
+                          </div>
+                          <div className="htd-badge green" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <div className="htd-pulsedot" />{proj.status}
+                          </div>
+                        </div>
+                        <div style={{ marginBottom: 9 }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                            <span style={{ fontSize: 11, color: '#64748b' }}>{proj.milestone} · Due {proj.deadline}</span>
+                            <span style={{ fontSize: 11, fontWeight: 700, color: NAVY }}>{proj.progress}%</span>
+                          </div>
+                          <div className="htd-progress-bar"><div className="htd-progress-fill" style={{ width: `${proj.progress}%` }} /></div>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                          <span style={{ fontSize: 11, fontWeight: 600, color: '#059669', display: 'flex', alignItems: 'center', gap: 4 }}>
+                            <Shield size={11} />${proj.escrow.toLocaleString()} in escrow
+                          </span>
+                          <button className="htd-btn-primary" onClick={() => navigate(`/hire-talent/projects/${proj.id}`)}>
+                            {proj.action} <ChevronRight size={11} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                    <button className="htd-post-btn" onClick={() => navigate('/hire-talent/post-project')}>
+                      <Plus size={14} /> Post New Project
+                    </button>
+                  </div>
+                </div>
+
+                {/* Recent Transactions */}
+                <div className="htd-panel">
+                  <div className="htd-panel-head">
+                    <div className="htd-section-bar"><span className="htd-section-title">Recent Transactions</span></div>
+                    <button className="htd-view-link" onClick={() => navigate('/hire-talent/payments')}>View All <ArrowRight size={11} /></button>
+                  </div>
+                  <div>
+                    {RECENT_TRANSACTIONS.map((tx, i) => (
+                      <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '11px 14px', borderBottom: i < RECENT_TRANSACTIONS.length - 1 ? '1px solid #f1f5f9' : 'none' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+                          <div className="htd-tx-icon" style={{ background: tx.type === 'escrow' ? '#dcfce7' : tx.type === 'refund' ? '#fef3c7' : '#dbeafe' }}>
+                            <DollarSign size={13} color={tx.type === 'escrow' ? '#16a34a' : tx.type === 'refund' ? '#d97706' : '#1d4ed8'} />
+                          </div>
+                          <div>
+                            <p style={{ fontSize: 12, fontWeight: 600, color: NAVY, margin: 0, maxWidth: 165, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{tx.label}</p>
+                            <p style={{ fontSize: 11, color: '#94a3b8', margin: '2px 0 0' }}>{tx.time}</p>
+                          </div>
+                        </div>
+                        <span style={{ fontSize: 13, fontWeight: 700, color: tx.amount.startsWith('+') ? '#d97706' : NAVY }}>{tx.amount}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* ── Col 2 ── */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+
+                {/* AI Matched Talent */}
+                <div className="htd-panel">
+                  <div className="htd-panel-head">
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+                      <div style={{ width: 22, height: 22, borderRadius: 6, background: 'linear-gradient(135deg,#dbeafe,#dcfce7)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Zap size={12} color="#0ea5e9" />
+                      </div>
+                      <div className="htd-section-bar"><span className="htd-section-title">AI Matched Talent</span></div>
+                    </div>
+                    <span style={{ fontSize: 11, color: '#94a3b8' }}>Food Delivery App</span>
+                  </div>
+                  <div style={{ padding: 11, display: 'flex', flexDirection: 'column', gap: 8 }}>
+                    {INVITE_TALENTS.map(talent => (
+                      <div key={talent.id} className="htd-talent-row">
+                        <div className="htd-avatar">{talent.initials}</div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                            <p style={{ fontSize: 13, fontWeight: 700, color: NAVY, margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{talent.name}</p>
+                            <span style={{ fontSize: 11, fontWeight: 700, color: '#16a34a', flexShrink: 0 }}>{talent.match}</span>
+                          </div>
+                          <p style={{ fontSize: 11, color: '#94a3b8', margin: '2px 0 0' }}>{talent.type} · ⭐ {talent.rating}</p>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+                          <span className="htd-badge green">{talent.risk}</span>
+                          <button className="htd-btn-primary" style={{ padding: '5px 9px' }}
+                            onClick={() => { setInviteModal(talent); setInviteMsg(''); setInviteBudget(''); setInviteSent(false); }}>
+                            <Send size={11} /> Invite
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* AI Insights */}
+                <div className="htd-insight-card">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
+                    <div style={{ width: 24, height: 24, borderRadius: 7, background: 'linear-gradient(135deg,#22c55e,#0ea5e9)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Zap size={13} color="#fff" />
+                    </div>
+                    <span className="htd-section-title">AI Insights</span>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+                    {[
+                      { text: 'Project performing excellently',       ok: true },
+                      { text: 'Agency is highly responsive',          ok: true },
+                      { text: 'Good timeline buffer available',       ok: true },
+                      { text: 'Review Milestone 1 deliverables soon', ok: false },
+                    ].map((ins, i) => (
+                      <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 7, background: 'rgba(255,255,255,.65)', padding: '7px 9px', borderRadius: 8 }}>
+                        {ins.ok ? <CheckCircle size={12} color="#16a34a" style={{ flexShrink: 0, marginTop: 1 }} /> : <AlertCircle size={12} color="#d97706" style={{ flexShrink: 0, marginTop: 1 }} />}
+                        <p style={{ fontSize: 12, color: '#374151', margin: 0 }}>{ins.text}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Trust Score */}
+                <div className="htd-panel" style={{ padding: 14 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 9 }}>
+                    <span className="htd-section-title">Trust Score</span>
+                    <span style={{ fontSize: 19, fontWeight: 800, color: NAVY,  }}>75<span style={{ fontSize: 12, color: '#94a3b8', fontWeight: 500 }}>/100</span></span>
+                  </div>
+                  <div style={{ height: 7, background: '#e8eef5', borderRadius: 99, overflow: 'hidden' }}>
+                    <div style={{ height: '100%', width: '75%', background: 'linear-gradient(90deg,#22c55e,#0ea5e9)', borderRadius: 99 }} />
+                  </div>
+                  <p style={{ fontSize: 11, color: '#64748b', margin: '6px 0 0' }}>Good standing · Complete milestones to improve</p>
+                </div>
+              </div>
+
+              {/* ── Col 3 (right sidebar) ── */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+
+                {/* Notifications */}
+                <div className="htd-panel">
+                  <div className="htd-panel-head">
+                    <div className="htd-section-bar"><span className="htd-section-title">Notifications</span></div>
+                    <button className="htd-view-link" onClick={() => navigate('/hire-talent/notifications')}>All <ArrowRight size={11} /></button>
+                  </div>
+                  <div>
+                    {NOTIFICATIONS_DATA.map((n, i) => (
+                      <div key={i} onClick={() => navigate('/hire-talent/notifications')}
+                        style={{ display: 'flex', alignItems: 'flex-start', gap: 9, padding: '10px 13px', borderBottom: i < NOTIFICATIONS_DATA.length - 1 ? '1px solid #f1f5f9' : 'none', cursor: 'pointer', background: n.unread ? 'rgba(14,165,233,.04)' : 'transparent' }}>
+                        <div style={{ width: 7, height: 7, borderRadius: '50%', background: n.unread ? '#0ea5e9' : '#cbd5e1', flexShrink: 0, marginTop: 5 }} />
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <p style={{ fontSize: 12, fontWeight: n.unread ? 600 : 400, color: n.unread ? NAVY : '#64748b', margin: 0, lineHeight: 1.4 }}>{n.text}</p>
+                          <p style={{ fontSize: 11, color: '#94a3b8', margin: '2px 0 0' }}>{n.time}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Quick Actions */}
+                <div className="htd-panel">
+                  <div className="htd-panel-head">
+                    <div className="htd-section-bar"><span className="htd-section-title">Quick Actions</span></div>
+                  </div>
+                  <div style={{ padding: '7px 7px', display: 'flex', flexDirection: 'column', gap: 1 }}>
+                    {[
+                      { label: 'Review Deliverables', icon: CheckCircle,   route: '/hire-talent/projects/1', iconBg: '#dcfce7', iconClr: '#16a34a' },
+                      { label: 'Message Team',         icon: MessageSquare, route: '/project-stream',        iconBg: '#dbeafe', iconClr: '#1d4ed8' },
+                      { label: 'My Projects',          icon: FolderOpen,    route: '/hire-talent/projects',  iconBg: '#ede9fe', iconClr: '#7c3aed' },
+                      { label: 'My Reviews',           icon: Star,          route: '/hire-talent/reviews',   iconBg: '#fef3c7', iconClr: '#d97706' },
+                      { label: 'Disputes',             icon: Flag,          route: '/hire-talent/disputes',  iconBg: '#fee2e2', iconClr: '#dc2626' },
+                      { label: 'Payments',             icon: CreditCard,    route: '/hire-talent/payments',  iconBg: '#dcfce7', iconClr: '#059669' },
+                    ].map((a, i) => {
+                      const Icon = a.icon;
+                      return (
+                        <button key={i} className="htd-qa-btn" onClick={() => navigate(a.route)}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+                            <div style={{ width: 27, height: 27, borderRadius: 7, background: a.iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                              <Icon size={13} color={a.iconClr} />
+                            </div>
+                            <span style={{ fontSize: 13, fontWeight: 500, color: '#374151' }}>{a.label}</span>
+                          </div>
+                          <ChevronRight size={13} color="#cbd5e1" />
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </main>
-    </div>
-  );
-};
+      </div>
 
-export default HireTalentDashboard;
+      {/* ══ INVITE MODAL ══ */}
+      {inviteModal && (
+        <div className="htd-modal-bg">
+          <div className="htd-modal">
+            {!inviteSent ? (
+              <>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+                  <h3 style={{ fontSize: 16, fontWeight: 800, color: NAVY, margin: 0,  }}>Send Invitation</h3>
+                  <button onClick={() => setInviteModal(null)}
+                    style={{ width: 28, height: 28, borderRadius: 7, background: '#f1f5f9', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <X size={14} color="#64748b" />
+                  </button>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: 10, background: '#f8fafc', borderRadius: 11, border: '1px solid #e8eef5', marginBottom: 13 }}>
+                  <div className="htd-avatar">{inviteModal.initials}</div>
+                  <div>
+                    <p style={{ fontSize: 13, fontWeight: 700, color: NAVY, margin: 0 }}>{inviteModal.name}</p>
+                    <p style={{ fontSize: 11, color: '#94a3b8', margin: '2px 0 0' }}>{inviteModal.type} · ⭐ {inviteModal.rating} · {inviteModal.match} match</p>
+                  </div>
+                </div>
+                <div style={{ marginBottom: 12 }}>
+                  <p style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 5 }}>Project</p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 7, padding: 10, background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: 9 }}>
+                    <FolderOpen size={13} color="#1d4ed8" />
+                    <p style={{ fontSize: 13, fontWeight: 600, color: '#1d4ed8', margin: 0 }}>Food Delivery Mobile App</p>
+                    <span className="htd-badge blue" style={{ marginLeft: 'auto' }}>Active</span>
+                  </div>
+                </div>
+                <div style={{ marginBottom: 12 }}>
+                  <p style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 5 }}>Proposed Budget</p>
+                  <div style={{ position: 'relative' }}>
+                    <span style={{ position: 'absolute', left: 10, top: '50%', transform: 'translateY(-50%)', color: '#94a3b8', fontSize: 13 }}>$</span>
+                    <input type="number" placeholder="e.g. 42000" value={inviteBudget}
+                      onChange={e => setInviteBudget(e.target.value)} className="htd-input" style={{ paddingLeft: 24 }} />
+                  </div>
+                  <p style={{ fontSize: 11, color: '#94a3b8', margin: '4px 0 0' }}>AI suggested: $28,000 – $45,000</p>
+                </div>
+                <div style={{ marginBottom: 16 }}>
+                  <p style={{ fontSize: 10, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '.06em', marginBottom: 5 }}>Message</p>
+                  <textarea rows={3} placeholder={`Hi ${inviteModal.name}, I'd love to discuss my project...`}
+                    value={inviteMsg} onChange={e => setInviteMsg(e.target.value)}
+                    className="htd-input" style={{ resize: 'none', lineHeight: 1.5 }} />
+                </div>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button onClick={() => setInviteModal(null)}
+                    style={{ flex: 1, padding: '10px 0', border: '1.5px solid #e2e8f0', borderRadius: 9, fontSize: 13, fontWeight: 600, color: '#64748b', background: '#fff', cursor: 'pointer' }}>
+                    Cancel
+                  </button>
+                  <button disabled={!canSend} onClick={() => setInviteSent(true)}
+                    className="htd-btn-primary" style={{ flex: 1, justifyContent: 'center', padding: '10px 0', borderRadius: 9, fontSize: 13 }}>
+                    <Send size={12} /> Send Invitation
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div style={{ textAlign: 'center', padding: '12px 0' }}>
+                <div style={{ width: 58, height: 58, borderRadius: '50%', background: '#dcfce7', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 13px' }}>
+                  <CheckCircle size={28} color="#16a34a" />
+                </div>
+                <h3 style={{ fontSize: 16, fontWeight: 800, color: NAVY, margin: '0 0 7px',  }}>Invitation Sent!</h3>
+                <p style={{ fontSize: 13, color: '#64748b', margin: '0 0 16px' }}><strong>{inviteModal.name}</strong> has 7 days to respond.</p>
+                <button className="htd-btn-primary" onClick={() => setInviteModal(null)}
+                  style={{ width: '100%', justifyContent: 'center', padding: '10px 0', borderRadius: 9, fontSize: 13 }}>
+                  Done
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </>
+  );
+}

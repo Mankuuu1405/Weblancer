@@ -2,13 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import StepProgress from "./StepProgress";
 import AIInsights   from "./AIInsights";
-import StepInvite   from "./StepInvite";
 import StepAccount  from "./StepAccount";
 import StepProfile  from "./StepProfile";
 import StepPerms    from "./StepPerms";
 import StepActive   from "./StepActive";
 
-const TOTAL_STEPS = 5;
+const TOTAL_STEPS = 4;
 
 export default function TeamOnboarding() {
   const [step, setStep] = useState(1);
@@ -22,24 +21,24 @@ export default function TeamOnboarding() {
 
   const stepContent = () => {
     switch (step) {
-      case 1: return <StepInvite />;
-      case 2: return <StepAccount onNext={next} />;
-      case 3: return <StepProfile />;
-      case 4: return <StepPerms />;
-      case 5: return <StepActive onGoToDashboard={() => navigate("/dashboard")} />;
+      case 1: return <StepAccount onNext={next} />;
+      case 2: return <StepProfile />;
+      case 3: return <StepPerms />;
+      case 4: return <StepActive onGoToDashboard={() => navigate("/dashboard")} />;
       default: return null;
     }
   };
 
   const nextLabel = () => {
     switch (step) {
-      case 1: return "Preview Member Setup →";
-      case 2: return "Continue to Profile →";
-      case 3: return "Continue →";
-      case 4: return "Complete Setup →";
+      case 1: return "Continue to Profile →";
+      case 2: return "Continue →";
+      case 3: return "Complete Setup →";
       default: return "Next →";
     }
   };
+
+  const STEP_LABELS = ["Account", "Profile", "Perms", "Active"];
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans">
@@ -117,8 +116,8 @@ export default function TeamOnboarding() {
             {/* Step quick-jump */}
             <div className="border border-gray-100 rounded-xl p-4 bg-white">
               <p className="text-xs font-semibold text-gray-400 uppercase mb-3">Jump to Step</p>
-              <div className="grid grid-cols-5 lg:grid-cols-1 gap-1.5">
-                {[1,2,3,4,5].map(s => (
+              <div className="grid grid-cols-4 lg:grid-cols-1 gap-1.5">
+                {[1, 2, 3, 4].map(s => (
                   <button
                     key={s}
                     onClick={() => setStep(s)}
@@ -127,7 +126,7 @@ export default function TeamOnboarding() {
                     }`}
                   >
                     <span className="lg:inline hidden">Step {s}: </span>
-                    {["Invite","Account","Profile","Perms","Active"][s-1]}
+                    {STEP_LABELS[s - 1]}
                   </button>
                 ))}
               </div>

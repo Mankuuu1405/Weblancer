@@ -1,9 +1,8 @@
 const STEPS = [
-  { label: "Invite"   },
-  { label: "Account"  },
-  { label: "Profile"  },
-  { label: "Perms"    },
-  { label: "Active"   },
+  { label: "Account" },
+  { label: "Profile" },
+  { label: "Perms"   },
+  { label: "Active"  },
 ];
 
 export default function StepProgress({ currentStep }) {
@@ -25,7 +24,7 @@ export default function StepProgress({ currentStep }) {
         />
       </div>
 
-      {/* Step circles — horizontally scrollable on tiny screens */}
+      {/* Step circles */}
       <div className="relative">
         <div className="absolute top-4 left-4 right-4 h-px bg-gray-200 z-0" />
         <div className="flex items-start justify-between overflow-x-auto pb-1 gap-1">
@@ -36,7 +35,7 @@ export default function StepProgress({ currentStep }) {
             return (
               <div key={i} className="flex flex-col items-center gap-1.5 z-10 min-w-[44px]">
                 <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-all flex-shrink-0 ${
-                  isDone   ? "bg-blue-500 border-blue-500 text-white"  :
+                  isDone   ? "bg-blue-500 border-blue-500 text-white"   :
                   isActive ? "bg-white   border-blue-500 text-blue-500" :
                              "bg-white   border-gray-200  text-gray-400"
                 }`}>
