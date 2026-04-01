@@ -1,164 +1,241 @@
+// ── RightSidebar.jsx ───────────────────────────────────
 import { roleColors, roleLabels } from "../data/dummyData";
 
-export default function RightSidebar({ participants, project, currentUser }) {
-  const agencyParticipants = participants.filter((p) => p.role === "agency_admin");
-  const teamParticipants = participants.filter((p) => p.role !== "platform_admin" && p.role !== "agency_admin");
-  const adminParticipants = participants.filter((p) => p.role === "platform_admin");
+const G = {
+  green:       "#6EC030",
+  greenDeep:   "#2E7D1F",
+  greenBg:     "#f1fce8",
+  greenBorder: "#d4edbb",
+  text:        "#1C1C1C",
+  sub:         "#4b5563",
+  muted:       "#9ca3af",
+  border:      "#e5e7eb",
+  bg:          "#f9fafb",
+  white:       "#ffffff",
+  amber:       "#f59e0b",
+  amberBg:     "#fffbeb",
+  amberBorder: "#fde68a",
+  red:         "#ef4444",
+  redBg:       "#fef2f2",
+  redBorder:   "#fecaca",
+  blue:        "#2563eb",
+  blueBg:      "#eff6ff",
+};
+const FONT = "'Poppins', sans-serif";
 
-  const nextMilestone = project.milestones.find(
-    (m) => m.status === "in_progress" || m.status === "pending"
+/* ── Section wrapper ── */
+function Section({ children, last = false }) {
+  return (
+    <div style={{ padding: "14px 16px", borderBottom: last ? "none" : `1px solid ${G.greenBorder}` }}>
+      {children}
+    </div>
   );
-  const completedCount = project.milestones.filter((m) => m.status === "completed").length;
+}
+
+/* ── Section label ── */
+function SLabel({ children }) {
+  return (
+    <p style={{
+      fontSize: 10, fontWeight: 800, textTransform: "uppercase",
+      letterSpacing: "0.08em", color: G.greenDeep,
+      margin: "0 0 10px", fontFamily: FONT,
+    }}>{children}</p>
+  );
+}
+
+/* ── Key-value row ── */
+function InfoRow({ label, value }) {
+  return (
+    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, padding: "3px 0" }}>
+      <span style={{ color: G.muted }}>{label}</span>
+      <span style={{ fontWeight: 700, color: G.text }}>{value}</span>
+    </div>
+  );
+}
+
+export default function RightSidebar({ participants, project, currentUser }) {
+  const agencyParticipants = participants.filter(p => p.role === "agency_admin");
+  const teamParticipants   = participants.filter(p => p.role !== "platform_admin" && p.role !== "agency_admin");
+  const adminParticipants  = participants.filter(p => p.role === "platform_admin");
+
+  const nextMilestone  = project.milestones.find(m => m.status === "in_progress" || m.status === "pending");
+  const completedCount = project.milestones.filter(m => m.status === "completed").length;
+
+  const MS_DOT = {
+    completed:   G.green,
+    in_progress: G.blue,
+    pending:     G.muted,
+  };
+  const MS_TEXT_COLOR = {
+    completed:   G.muted,
+    in_progress: G.text,
+    pending:     G.text,
+  };
+  const MS_STATUS_COLOR = {
+    completed:   G.greenDeep,
+    in_progress: G.blue,
+    pending:     G.muted,
+  };
 
   return (
-    <div className="flex flex-col h-full text-sm">
+    <div style={{ display: "flex", flexDirection: "column", height: "100%", fontSize: 13, fontFamily: FONT, background: G.white }}>
+
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap'); *{font-family:'Poppins',sans-serif;}`}</style>
 
       {/* Admin monitoring warning */}
-      <div className="mx-3 mt-3 p-2.5 bg-red-50 border border-red-200 rounded-xl flex items-start gap-2">
-        <svg className="w-3.5 h-3.5 text-red-500 shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+      <div style={{ margin: "12px 12px 0", padding: "8px 12px", background: G.redBg, border: `1px solid ${G.redBorder}`, borderRadius: 10, display: "flex", alignItems: "flex-start", gap: 8 }}>
+        <svg style={{ width: 14, height: 14, color: G.red, flexShrink: 0, marginTop: 1 }} fill="currentColor" viewBox="0 0 20 20">
           <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
         </svg>
-        <p className="text-xs text-red-600 font-medium leading-tight">Admin is monitoring this channel</p>
+        <p style={{ fontSize: 11, color: "#dc2626", fontWeight: 600, margin: 0, lineHeight: 1.4 }}>Admin is monitoring this channel</p>
       </div>
 
-      {/* Project Info — no budget */}
-      <div className="p-4 border-b border-gray-100">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Project Info</p>
-        <div className="space-y-2">
-          <div className="flex justify-between">
-            <span className="text-xs text-gray-500">Project</span>
-            <span className="text-xs font-medium text-gray-800">{project.name}</span>
+      {/* Project Info */}
+      <Section>
+        <SLabel>Project Info</SLabel>
+        <InfoRow label="Project"  value={project.name}     />
+        <InfoRow label="Client"   value={project.client}   />
+        <InfoRow label="Deadline" value={project.deadline} />
+        <div style={{ marginTop: 10 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, marginBottom: 5 }}>
+            <span style={{ color: G.muted }}>Progress</span>
+            <span style={{ fontWeight: 800, color: G.greenDeep }}>{project.progress}%</span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-xs text-gray-500">Client</span>
-            <span className="text-xs font-medium text-gray-800">{project.client}</span>
-          </div>
-          <div className="flex justify-between">
-            <span className="text-xs text-gray-500">Deadline</span>
-            <span className="text-xs font-medium text-gray-800">{project.deadline}</span>
+          <div style={{ height: 6, background: G.border, borderRadius: 99, overflow: "hidden" }}>
+            <div style={{ width: `${project.progress}%`, height: "100%", background: G.green, borderRadius: 99 }} />
           </div>
         </div>
-
-        {/* Progress */}
-        <div className="mt-3">
-          <div className="flex justify-between mb-1">
-            <span className="text-xs text-gray-500">Progress</span>
-            <span className="text-xs font-semibold text-green-700">{project.progress}%</span>
-          </div>
-          <div className="w-full bg-gray-100 rounded-full h-1.5">
-            <div className="bg-green-500 h-1.5 rounded-full" style={{ width: `${project.progress}%` }} />
-          </div>
-        </div>
-      </div>
+      </Section>
 
       {/* Next Deadline */}
       {nextMilestone && (
-        <div className="p-4 border-b border-gray-100">
-          <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Next Deadline</p>
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-3">
-            <p className="text-xs font-semibold text-amber-800">{project.deadline}</p>
-            <p className="text-xs text-amber-700 mt-0.5">
+        <Section>
+          <SLabel>Next Deadline</SLabel>
+          <div style={{ background: G.amberBg, border: `1px solid ${G.amberBorder}`, borderRadius: 10, padding: "10px 12px" }}>
+            <p style={{ fontSize: 12, fontWeight: 700, color: "#92400e", margin: "0 0 3px" }}>{project.deadline}</p>
+            <p style={{ fontSize: 11, color: "#b45309", margin: "0 0 6px" }}>
               Milestone {completedCount + 1} — {nextMilestone.title}
             </p>
-            <div className="flex items-center gap-1 mt-1.5">
-              <svg className="w-3 h-3 text-amber-500" fill="currentColor" viewBox="0 0 20 20">
+            <div style={{ display: "flex", alignItems: "center", gap: 5 }}>
+              <svg style={{ width: 12, height: 12, color: G.amber }} fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clipRule="evenodd" />
               </svg>
-              <span className="text-xs text-amber-600 font-medium">Approaching deadline</span>
+              <span style={{ fontSize: 11, color: "#b45309", fontWeight: 600 }}>Approaching deadline</span>
             </div>
           </div>
-        </div>
+        </Section>
       )}
 
       {/* Milestones */}
-      <div className="p-4 border-b border-gray-100">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-          Milestones ({completedCount}/{project.milestones.length})
-        </p>
-        <div className="space-y-2">
-          {project.milestones.map((m) => (
-            <div key={m.id} className="flex items-center gap-2">
-              <div className={`w-2 h-2 rounded-full shrink-0 ${
-                m.status === "completed" ? "bg-green-500" :
-                m.status === "in_progress" ? "bg-blue-500" : "bg-gray-300"
-              }`} />
-              <span className={`text-xs flex-1 truncate ${
-                m.status === "completed" ? "text-gray-400 line-through" : "text-gray-700"
-              }`}>
-                {m.title}
-              </span>
-              <span className={`text-xs font-medium capitalize ${
-                m.status === "completed" ? "text-green-600" :
-                m.status === "in_progress" ? "text-blue-600" : "text-gray-400"
-              }`}>
+      <Section>
+        <SLabel>Milestones ({completedCount}/{project.milestones.length})</SLabel>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {project.milestones.map(m => (
+            <div key={m.id} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ width: 8, height: 8, borderRadius: "50%", background: MS_DOT[m.status] || G.muted, flexShrink: 0 }} />
+              <span style={{
+                fontSize: 12, flex: 1,
+                color: MS_TEXT_COLOR[m.status] || G.text,
+                textDecoration: m.status === "completed" ? "line-through" : "none",
+                overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+              }}>{m.title}</span>
+              <span style={{ fontSize: 11, fontWeight: 600, color: MS_STATUS_COLOR[m.status] || G.muted, textTransform: "capitalize" }}>
                 {m.status.replace("_", " ")}
               </span>
             </div>
           ))}
         </div>
-      </div>
+      </Section>
 
       {/* Participants */}
-      <div className="p-4 flex-1 overflow-y-auto">
-        <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
-          Participants ({participants.length})
-        </p>
+      <Section last>
+        <SLabel>Participants ({participants.length})</SLabel>
 
         {adminParticipants.length > 0 && (
-          <div className="mb-4">
-            <p className="text-xs text-gray-400 mb-2">Platform</p>
-            {adminParticipants.map((p) => (
+          <div style={{ marginBottom: 14 }}>
+            <p style={{ fontSize: 10, color: G.muted, marginBottom: 8, fontWeight: 600 }}>Platform</p>
+            {adminParticipants.map(p => (
               <ParticipantRow key={p.id} participant={p} isCurrentUser={p.id === currentUser.id} />
             ))}
           </div>
         )}
 
         {agencyParticipants.length > 0 && (
-          <div className="mb-4">
-            <p className="text-xs text-gray-400 mb-2">Agency Admin</p>
-            {agencyParticipants.map((p) => (
+          <div style={{ marginBottom: 14 }}>
+            <p style={{ fontSize: 10, color: G.muted, marginBottom: 8, fontWeight: 600 }}>Agency Admin</p>
+            {agencyParticipants.map(p => (
               <ParticipantRow key={p.id} participant={p} isCurrentUser={p.id === currentUser.id} />
             ))}
           </div>
         )}
 
         {teamParticipants.length > 0 && (
-          <div className="mb-4">
-            <p className="text-xs text-gray-400 mb-2">Team Members</p>
-            {teamParticipants.map((p) => (
+          <div>
+            <p style={{ fontSize: 10, color: G.muted, marginBottom: 8, fontWeight: 600 }}>Team Members</p>
+            {teamParticipants.map(p => (
               <ParticipantRow key={p.id} participant={p} isCurrentUser={p.id === currentUser.id} />
             ))}
           </div>
         )}
-      </div>
+      </Section>
     </div>
   );
 }
 
+/* ── Participant row ── */
+const ROLE_BADGE = {
+  platform_admin: { bg: "#fef2f2", border: "#fecaca", text: "#dc2626" },
+  agency_admin:   { bg: "#eff6ff", border: "#bfdbfe", text: "#2563eb" },
+  developer:      { bg: "#f1fce8", border: "#d4edbb", text: "#2E7D1F" },
+  designer:       { bg: "#f5f3ff", border: "#ddd6fe", text: "#7c3aed" },
+  client:         { bg: "#f1fce8", border: "#d4edbb", text: "#2E7D1F" },
+};
+
 function ParticipantRow({ participant, isCurrentUser }) {
   const colors = roleColors[participant.role] || roleColors["developer"];
+  const badge  = ROLE_BADGE[participant.role] || { bg: "#f9fafb", border: "#e5e7eb", text: "#4b5563" };
+
+  const roleDisplay =
+    participant.role === "platform_admin" ? "Admin"  :
+    participant.role === "agency_admin"   ? "Agency" :
+    participant.role.charAt(0).toUpperCase() + participant.role.slice(1);
+
   return (
-    <div className="flex items-center gap-2 mb-2">
-      <div className={`relative w-7 h-7 rounded-full flex items-center justify-center text-xs font-semibold shrink-0 ${colors.avatar}`}>
+    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+      {/* Avatar */}
+      <div style={{
+        position: "relative", width: 28, height: 28, borderRadius: "50%",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        fontSize: 11, fontWeight: 700, flexShrink: 0,
+        background: colors.avatar?.split(" ")[0] || "#f1fce8",
+      }}>
         {participant.avatar}
-        <span className={`absolute bottom-0 right-0 w-2 h-2 rounded-full border border-white ${
-          participant.online ? "bg-green-500" : "bg-gray-300"
-        }`} />
+        <span style={{
+          position: "absolute", bottom: 0, right: 0,
+          width: 8, height: 8, borderRadius: "50%",
+          border: "1.5px solid #fff",
+          background: participant.online ? "#6EC030" : "#9ca3af",
+        }} />
       </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-xs font-medium text-gray-800 truncate">
+
+      {/* Name + role label */}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <p style={{ fontSize: 12, fontWeight: 600, color: "#1C1C1C", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
           {participant.name}
-          {isCurrentUser && <span className="text-gray-400 font-normal ml-1">(you)</span>}
+          {isCurrentUser && <span style={{ color: "#9ca3af", fontWeight: 400, marginLeft: 4 }}>(you)</span>}
         </p>
-        <p className="text-xs text-gray-400 truncate">
+        <p style={{ fontSize: 10, color: "#9ca3af", margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
           {roleLabels[participant.role] || participant.role}
         </p>
       </div>
-      <span className={`text-xs px-1.5 py-0.5 rounded-md font-medium shrink-0 ${colors.badge}`}>
-        {participant.role === "platform_admin" ? "Admin" :
-         participant.role === "agency_admin" ? "Agency" :
-         participant.role.charAt(0).toUpperCase() + participant.role.slice(1)}
-      </span>
+
+      {/* Role badge */}
+      <span style={{
+        fontSize: 10, fontWeight: 700, flexShrink: 0,
+        background: badge.bg, color: badge.text,
+        border: `1px solid ${badge.border}`,
+        padding: "2px 8px", borderRadius: 99,
+      }}>{roleDisplay}</span>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { roleColors, roleLabels } from "../data/dummyData";
 
-export default function MentionDropdown({ participants, query, onSelect, position }) {
+ function MentionDropdown({ participants, query, onSelect, position }) {
   const filtered = participants.filter((p) =>
     p.name.toLowerCase().includes(query.toLowerCase())
   );
@@ -76,3 +76,5 @@ export default function MentionDropdown({ participants, query, onSelect, positio
     </div>
   );
 }
+
+export default MentionDropdown;

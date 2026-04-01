@@ -4,6 +4,7 @@ import Hero from "./components/Hero";
 
 // Admin - Layout
 import AdminLayout from "./AdminPanel/AdminLayout";
+import FreelancerLayout from "./Freelancer/FreelancerLayout";
 
 // Admin - User Management
 import AdminUsers from "./AdminPanel/AdminUsers";

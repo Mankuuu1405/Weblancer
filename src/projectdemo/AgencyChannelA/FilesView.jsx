@@ -1,47 +1,84 @@
+// ── FilesView.jsx ──────────────────────────────────────
 import { FILES_DATA } from "./ProjectData";
 
-const STATUS_STYLES = {
-  APPROVED: "bg-green-100 text-green-700",
-  REPLACED: "bg-gray-100 text-gray-500",
-  PENDING:  "bg-yellow-100 text-yellow-700",
+const G = {
+  green:       "#6EC030",
+  greenDeep:   "#2E7D1F",
+  greenBg:     "#f1fce8",
+  greenBorder: "#d4edbb",
+  gradNavy:    "linear-gradient(135deg, #4A6FA5 0%, #0F1A3B 100%)",
+  text:        "#1C1C1C",
+  sub:         "#4b5563",
+  muted:       "#9ca3af",
+  border:      "#e5e7eb",
+  bg:          "#f9fafb",
+  white:       "#ffffff",
+  amber:       "#f59e0b",
+  amberBg:     "#fffbeb",
+  amberBorder: "#fde68a",
+  red:         "#ef4444",
+  redBg:       "#fef2f2",
+  redBorder:   "#fecaca",
+  blue:        "#2563eb",
+  blueBg:      "#eff6ff",
+  blueBorder:  "#bfdbfe",
 };
+const FONT = "'Poppins', sans-serif";
+
+const STATUS_STYLE = {
+  APPROVED: { bg: G.greenBg,  border: G.greenBorder, text: G.greenDeep },
+  REPLACED: { bg: G.bg,       border: G.border,       text: G.muted    },
+  PENDING:  { bg: G.amberBg,  border: G.amberBorder,  text: "#92400e"  },
+};
+
+const MS_STATUS_STYLE = {
+  "COMPLETED":   { bg: G.greenBg,  border: G.greenBorder, text: G.greenDeep },
+  "IN PROGRESS": { bg: G.blueBg,   border: G.blueBorder,  text: G.blue      },
+};
+
+function StatusChip({ status }) {
+  const s = STATUS_STYLE[status] || STATUS_STYLE.REPLACED;
+  return (
+    <span style={{ fontSize: 10, fontWeight: 700, background: s.bg, color: s.text, border: `1px solid ${s.border}`, padding: "2px 8px", borderRadius: 99, fontFamily: FONT }}>
+      {status === "APPROVED" ? "✅ " : ""}{status}
+    </span>
+  );
+}
+
+const pillBtn = (primary = false) => ({
+  display: "inline-flex", alignItems: "center", gap: 6,
+  fontSize: 12, fontWeight: 700, fontFamily: FONT,
+  padding: "7px 14px", borderRadius: 100, cursor: "pointer",
+  ...(primary
+    ? { background: G.gradNavy, color: G.white, border: "none", boxShadow: "0 3px 10px rgba(15,26,59,0.2)" }
+    : { background: G.white, color: G.sub, border: `1px solid ${G.greenBorder}` }),
+});
 
 function FileRow({ file }) {
   return (
-    <div className="border border-gray-100 rounded-xl p-4 bg-white shadow-sm">
-      {/* Top row: icon + name + size */}
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex items-start gap-3 min-w-0">
-          <span className="text-gray-400 text-xl mt-0.5 shrink-0">📄</span>
-          <div className="min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-medium text-sm text-gray-800 break-all">{file.name}</span>
-              {file.status && (
-                <span className={`text-xs font-semibold px-2 py-0.5 rounded-full shrink-0 ${STATUS_STYLES[file.status] || "bg-gray-100 text-gray-500"}`}>
-                  {file.status === "APPROVED" && "✅ "}{file.status}
-                </span>
-              )}
+    <div style={{ border: `1px solid ${G.greenBorder}`, borderRadius: 12, padding: "14px 16px", background: G.white, boxShadow: "0 2px 8px rgba(110,192,48,0.05)" }}>
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 10 }}>
+        <div style={{ display: "flex", alignItems: "flex-start", gap: 12, minWidth: 0 }}>
+          <span style={{ fontSize: 20, color: G.muted, flexShrink: 0, marginTop: 2 }}>📄</span>
+          <div style={{ minWidth: 0 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap", marginBottom: 4 }}>
+              <span style={{ fontSize: 13, fontWeight: 700, color: G.text, wordBreak: "break-all" }}>{file.name}</span>
+              {file.status && <StatusChip status={file.status} />}
             </div>
-            <p className="text-xs text-gray-400 mt-0.5 break-words">
-              Uploaded by: {file.uploader} · {file.date}
-            </p>
-            <p className="text-xs text-gray-400">{file.version}</p>
+            <p style={{ fontSize: 11, color: G.muted, margin: "0 0 2px" }}>Uploaded by: {file.uploader} · {file.date}</p>
+            <p style={{ fontSize: 11, color: G.muted, margin: 0 }}>{file.version}</p>
           </div>
         </div>
-        <span className="text-xs text-gray-400 shrink-0 ml-1">{file.size}</span>
+        <span style={{ fontSize: 11, color: G.muted, flexShrink: 0 }}>{file.size}</span>
       </div>
-
-      {/* Action buttons — wrap on small screens */}
-      <div className="flex flex-wrap items-center gap-2 mt-3">
-        <button className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700 border border-gray-200 rounded-lg px-3 py-1.5">
-          👁 Preview
-        </button>
-        <button className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 border border-blue-200 rounded-lg px-3 py-1.5">
-          ⬇ Download
-        </button>
-        <button className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700 border border-gray-200 rounded-lg px-3 py-1.5">
-          📋 View History
-        </button>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 12 }}>
+        {[
+          { label: "👁 Preview",      primary: false },
+          { label: "⬇ Download",      primary: true  },
+          { label: "📋 View History", primary: false },
+        ].map(({ label, primary }) => (
+          <button key={label} style={pillBtn(primary)}>{label}</button>
+        ))}
       </div>
     </div>
   );
@@ -49,61 +86,55 @@ function FileRow({ file }) {
 
 export default function FilesView() {
   return (
-    <div className="flex-1 overflow-y-auto p-4 md:p-6">
+    <div style={{ flex: 1, overflowY: "auto", padding: "24px", fontFamily: FONT, background: G.bg }}>
+      <style>{`@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap'); *{font-family:'Poppins',sans-serif;}`}</style>
+
       {/* Header */}
-      <div className="flex items-center justify-between gap-2 mb-6">
-        <h2 className="text-lg md:text-xl font-bold text-gray-800">📁 Project Files</h2>
-        <div className="flex items-center gap-2 shrink-0">
-          <button className="flex items-center gap-1.5 text-xs text-gray-600 border border-gray-200 rounded-lg px-3 py-2 hover:bg-gray-50 whitespace-nowrap">
-            ⬆ <span>Upload</span>
-          </button>
-          <button className="flex items-center gap-1.5 text-xs text-gray-600 border border-gray-200 rounded-lg px-3 py-2 hover:bg-gray-50 whitespace-nowrap">
-            📋 <span>Request</span>
-          </button>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 12, marginBottom: 24 }}>
+        <h2 style={{ fontSize: 18, fontWeight: 800, color: G.text, margin: 0 }}>📁 Project Files</h2>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
+          <button style={pillBtn()}>⬆ Upload</button>
+          <button style={pillBtn()}>📋 Request</button>
         </div>
       </div>
 
       {/* Milestone sections */}
       {FILES_DATA.milestones.map((ms, i) => (
-        <div key={i} className="mb-8">
-          <div className="flex items-center gap-2 flex-wrap mb-3">
-            <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">{ms.label}</span>
-            {ms.status && (
-              <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                ms.status === "COMPLETED"    ? "bg-green-100 text-green-700" :
-                ms.status === "IN PROGRESS" ? "bg-blue-100 text-blue-700"  :
-                "bg-gray-100 text-gray-500"
-              }`}>
-                {ms.status}
-              </span>
-            )}
+        <div key={i} style={{ marginBottom: 32 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 12 }}>
+            <span style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", color: G.greenDeep }}>{ms.label}</span>
+            {ms.status && (() => {
+              const s = MS_STATUS_STYLE[ms.status] || { bg: G.bg, border: G.border, text: G.muted };
+              return (
+                <span style={{ fontSize: 10, fontWeight: 700, background: s.bg, color: s.text, border: `1px solid ${s.border}`, padding: "2px 9px", borderRadius: 99, fontFamily: FONT }}>
+                  {ms.status}
+                </span>
+              );
+            })()}
           </div>
-
           {ms.files.length > 0 ? (
-            <div className="space-y-3">
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {ms.files.map((f, fi) => <FileRow key={fi} file={f} />)}
             </div>
           ) : (
-            <div className="bg-gray-50 border border-dashed border-gray-200 rounded-xl p-4 text-center">
-              <p className="text-sm text-gray-400">🟡 No files submitted yet for this milestone.</p>
+            <div style={{ background: G.bg, border: `1.5px dashed ${G.greenBorder}`, borderRadius: 12, padding: 16, textAlign: "center" }}>
+              <p style={{ fontSize: 13, color: G.muted, margin: 0 }}>🟡 No files submitted yet for this milestone.</p>
             </div>
           )}
         </div>
       ))}
 
       {/* Project Documents */}
-      <div className="mb-6">
-        <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">PROJECT DOCUMENTS</p>
-        <div className="space-y-2">
+      <div style={{ marginBottom: 24 }}>
+        <p style={{ fontSize: 10, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.08em", color: G.greenDeep, marginBottom: 12 }}>PROJECT DOCUMENTS</p>
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {FILES_DATA.documents.map((doc, i) => (
-            <div key={i} className="flex items-center justify-between gap-2 border border-gray-100 rounded-xl px-4 py-3 bg-white">
-              <div className="flex items-center gap-2 min-w-0">
-                <span className="text-gray-400 shrink-0">📄</span>
-                <span className="text-sm text-gray-700 truncate">{doc.name}</span>
+            <div key={i} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, border: `1px solid ${G.greenBorder}`, borderRadius: 10, padding: "10px 16px", background: G.white }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+                <span style={{ color: G.muted }}>📄</span>
+                <span style={{ fontSize: 13, color: G.text, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{doc.name}</span>
               </div>
-              <button className="text-sm text-gray-500 hover:text-gray-700 border border-gray-200 rounded-lg px-3 py-1 shrink-0">
-                View
-              </button>
+              <button style={pillBtn()}>View</button>
             </div>
           ))}
         </div>
