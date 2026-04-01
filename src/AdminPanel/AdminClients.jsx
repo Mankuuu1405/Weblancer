@@ -1,336 +1,1299 @@
+// import { useState } from "react";
+// import { useParams, useNavigate } from "react-router-dom";
+// import { mockClients } from "./mockData";
+
+// /* ── Freelancer Contracts theme tokens ───────────────────────
+//    GREEN:  #A8E063 (light) → #6EC030 (mid) → #2E7D1F (deep)
+//    NAVY:   #4A6FA5 (light) → #1A2B5E (mid) → #0F1A3B (deep)
+//    ──────────────────────────────────────────────────────────── */
+// const G = {
+//   greenLight:  "#A8E063",
+//   green:       "#6EC030",
+//   greenDeep:   "#2E7D1F",
+//   greenBg:     "#f1fce8",
+//   greenBorder: "#d4edbb",
+
+//   navyLight:   "#4A6FA5",
+//   navy:        "#1A2B5E",
+//   navyDeep:    "#0F1A3B",
+//   navyBg:      "#e8edf7",
+//   navyBorder:  "#b8c6e0",
+
+//   gradGreen: "linear-gradient(135deg, #A8E063 0%, #2E7D1F 100%)",
+//   gradNavy:  "linear-gradient(135deg, #4A6FA5 0%, #0F1A3B 100%)",
+
+//   text:        "#1C1C1C",
+//   sub:         "#4b5563",
+//   muted:       "#9ca3af",
+//   border:      "#e5e7eb",
+//   bg:          "#f9fafb",
+//   white:       "#ffffff",
+
+//   amber:       "#f59e0b",
+//   amberBg:     "#fffbeb",
+//   amberBorder: "#fde68a",
+//   amberText:   "#92400e",
+//   red:         "#ef4444",
+//   redBg:       "#fef2f2",
+//   redBorder:   "#fecaca",
+//   redText:     "#dc2626",
+//   blue:        "#3b82f6",
+//   blueBg:      "#eff6ff",
+//   blueBorder:  "#bfdbfe",
+//   blueText:    "#1d4ed8",
+// };
+// const FONT = "'Poppins', sans-serif";
+
+
+// /* ═══════════════════════════════════════════════
+//    SHARED MINI-COMPONENTS
+// ═══════════════════════════════════════════════ */
+// function Avatar({ name, size = "sm" }) {
+//   const palette = ["#3b82f6","#8b5cf6","#f59e0b","#ef4444","#6EC030","#1A2B5E","#0ea5e9","#ec4899"];
+//   const color   = palette[name.charCodeAt(0) % palette.length];
+//   const initials = name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase();
+//   const sz = size === "lg" ? 52 : size === "md" ? 40 : 32;
+//   return (
+//     <div style={{
+//       width: sz, height: sz, borderRadius: "50%",
+//       background: color + "20", border: `1.5px solid ${color}44`,
+//       display: "flex", alignItems: "center", justifyContent: "center",
+//       fontSize: size === "lg" ? 16 : size === "md" ? 13 : 11,
+//       fontWeight: 700, color, flexShrink: 0,
+//     }}>{initials}</div>
+//   );
+// }
+
+// function StatusBadge({ status }) {
+//   const map = {
+//     Active:      { bg: G.greenBg,  text: G.greenDeep, dot: G.green  },
+//     Pending:     { bg: G.amberBg,  text: G.amberText, dot: G.amber  },
+//     Suspended:   { bg: G.amberBg,  text: G.amberText, dot: G.amber  },
+//     Banned:      { bg: G.redBg,    text: G.redText,   dot: G.red    },
+//     Verified:    { bg: G.greenBg,  text: G.greenDeep, dot: G.green  },
+//     Unverified:  { bg: G.bg,       text: G.muted,     dot: G.muted  },
+//     Rejected:    { bg: G.redBg,    text: G.redText,   dot: G.red    },
+//     "In Progress":{ bg: G.amberBg, text: G.amberText, dot: G.amber  },
+//     Completed:   { bg: G.greenBg,  text: G.greenDeep, dot: G.green  },
+//   };
+//   const s = map[status] || { bg: G.bg, text: G.muted, dot: G.muted };
+//   return (
+//     <span style={{
+//       display: "inline-flex", alignItems: "center", gap: 5,
+//       fontSize: 11, fontWeight: 700,
+//       background: s.bg, color: s.text,
+//       padding: "3px 10px", borderRadius: 99,
+//     }}>
+//       <span style={{ width: 5, height: 5, borderRadius: "50%", background: s.dot, flexShrink: 0 }} />
+//       {status}
+//     </span>
+//   );
+// }
+
+// function TrustScore({ score }) {
+//   const color = score >= 75 ? G.greenDeep : score >= 50 ? "#b45309" : G.redText;
+//   const bg    = score >= 75 ? G.greenBg   : score >= 50 ? G.amberBg  : G.redBg;
+//   return (
+//     <div style={{ display: "flex", alignItems: "center", gap: 7 }}>
+//       <div style={{ width: 48, height: 5, background: G.border, borderRadius: 99, overflow: "hidden" }}>
+//         <div style={{ width: `${score}%`, height: "100%", background: color, borderRadius: 99 }} />
+//       </div>
+//       <span style={{ fontSize: 11, fontWeight: 700, color, background: bg, padding: "2px 7px", borderRadius: 99 }}>{score}</span>
+//     </div>
+//   );
+// }
+
+// function RiskFlag({ level }) {
+//   const map = {
+//     Low:    { bg: G.greenBg, text: G.greenDeep, dot: G.green },
+//     Medium: { bg: G.amberBg, text: G.amberText, dot: G.amber },
+//     High:   { bg: G.redBg,   text: G.redText,   dot: G.red   },
+//   };
+//   const s = map[level] || map.Low;
+//   return (
+//     <span style={{
+//       display: "inline-flex", alignItems: "center", gap: 5,
+//       fontSize: 11, fontWeight: 700,
+//       background: s.bg, color: s.text,
+//       padding: "3px 10px", borderRadius: 99,
+//     }}>
+//       <span style={{ width: 5, height: 5, borderRadius: "50%", background: s.dot }} />
+//       {level}
+//     </span>
+//   );
+// }
+
+// function StatCard({ label, value, sub, color = "gray" }) {
+//   const map = {
+//     gray:   { bg: G.bg,      border: G.border,       val: G.text,     lbl: G.muted      },
+//     green:  { bg: G.greenBg, border: G.greenBorder,  val: G.greenDeep,lbl: G.greenDeep  },
+//     orange: { bg: G.amberBg, border: G.amberBorder,  val: "#b45309",  lbl: "#b45309"    },
+//     red:    { bg: G.redBg,   border: G.redBorder,    val: G.redText,  lbl: G.redText    },
+//     blue:   { bg: G.blueBg,  border: G.blueBorder,   val: G.blueText, lbl: G.blueText   },
+//   };
+//   const c = map[color] || map.gray;
+//   return (
+//     <div style={{
+//       background: c.bg, border: `1px solid ${c.border}`,
+//       borderRadius: 14, padding: "16px 20px", flex: 1, minWidth: 0,
+//       boxShadow: "0 2px 8px rgba(110,192,48,0.05)",
+//     }}>
+//       <p style={{ fontSize: 10, fontWeight: 700, color: c.lbl, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>{label}</p>
+//       <p style={{ fontSize: 26, fontWeight: 800, color: c.val, margin: 0, lineHeight: 1 }}>{value}</p>
+//       {sub && <p style={{ fontSize: 11, color: G.muted, marginTop: 5 }}>{sub}</p>}
+//     </div>
+//   );
+// }
+
+// function SectionCard({ title, children }) {
+//   return (
+//     <div style={{
+//       background: G.white,
+//       border: `1px solid ${G.greenBorder}`,
+//       borderRadius: 16,
+//       overflow: "hidden",
+//       boxShadow: "0 2px 12px rgba(110,192,48,0.06)",
+//     }}>
+//       <div style={{
+//         padding: "14px 20px",
+//         borderBottom: `1px solid ${G.greenBorder}`,
+//         background: G.greenBg,
+//       }}>
+//         <p style={{ fontSize: 13, fontWeight: 700, color: G.text, margin: 0 }}>{title}</p>
+//       </div>
+//       <div style={{ padding: "16px 20px" }}>{children}</div>
+//     </div>
+//   );
+// }
+
+// function InfoRow({ label, value }) {
+//   return (
+//     <div style={{
+//       display: "flex", justifyContent: "space-between", alignItems: "center",
+//       padding: "9px 0",
+//       borderBottom: `1px solid ${G.border}`,
+//     }}>
+//       <span style={{ fontSize: 12, color: G.muted, fontWeight: 500 }}>{label}</span>
+//       <span style={{ fontSize: 12, fontWeight: 600, color: G.text }}>{value}</span>
+//     </div>
+//   );
+// }
+
+// const btnNavy = {
+//   display: "inline-flex", alignItems: "center", gap: 6,
+//   fontSize: 12, fontWeight: 700, fontFamily: FONT,
+//   background: G.gradNavy, color: G.white,
+//   border: "none", borderRadius: 100,
+//   padding: "8px 18px", cursor: "pointer",
+//   boxShadow: "0 3px 12px rgba(15,26,59,0.25)",
+//   whiteSpace: "nowrap",
+// };
+// const btnGreen = {
+//   display: "inline-flex", alignItems: "center", gap: 6,
+//   fontSize: 12, fontWeight: 700, fontFamily: FONT,
+//   background: G.gradGreen, color: G.white,
+//   border: "none", borderRadius: 100,
+//   padding: "8px 18px", cursor: "pointer",
+//   boxShadow: "0 2px 10px rgba(46,125,31,0.22)",
+//   whiteSpace: "nowrap",
+// };
+// const btnOutline = {
+//   display: "inline-flex", alignItems: "center", gap: 6,
+//   fontSize: 12, fontWeight: 700, fontFamily: FONT,
+//   background: G.greenBg, color: G.greenDeep,
+//   border: `1px solid ${G.greenBorder}`,
+//   borderRadius: 100, padding: "8px 18px", cursor: "pointer",
+//   whiteSpace: "nowrap",
+// };
+// const btnWarning = {
+//   ...btnOutline,
+//   background: G.amberBg, color: G.amberText, border: `1px solid ${G.amberBorder}`,
+// };
+// const btnDanger = {
+//   ...btnOutline,
+//   background: G.redBg, color: G.redText, border: `1px solid ${G.redBorder}`,
+// };
+
+// /* ═══════════════════════════════════════════════
+//    LIST PAGE
+// ═══════════════════════════════════════════════ */
+// export function AdminClients() {
+//   const navigate = useNavigate();
+//   const [search,     setSearch]     = useState("");
+//   const [typeFilter, setTypeFilter] = useState("");
+//   const [riskFilter, setRiskFilter] = useState("");
+//   const [verFilter,  setVerFilter]  = useState("");
+//   const [hovRow,     setHovRow]     = useState(null);
+
+//   const filtered = mockClients.filter((c) => {
+//     const q           = search.toLowerCase();
+//     const matchSearch = c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q) || (c.company || "").toLowerCase().includes(q);
+//     const matchType   = !typeFilter || c.clientType         === typeFilter;
+//     const matchRisk   = !riskFilter || c.riskLevel          === riskFilter;
+//     const matchVer    = !verFilter  || c.verificationStatus === verFilter;
+//     return matchSearch && matchType && matchRisk && matchVer;
+//   });
+
+//   const payColor  = { Excellent: G.greenDeep, Average: "#b45309",  Poor: G.redText,  Unknown: G.muted };
+//   const scopeColor= { Low: G.greenDeep,       Medium: "#b45309",   High: G.redText,  "N/A":   G.muted };
+
+//   const HEADERS = ["Client","Type","KYC","Trust","Projects","Spent","Active","Disputes","Pay Reliability","Scope Changes","Risk","Actions"];
+
+//   return (
+//     <div style={{ padding: "28px 28px 64px", fontFamily: FONT, background: G.bg, minHeight: "100%" }}>
+//       <style>{`
+//         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+//         * { font-family:'Poppins',sans-serif; }
+//         input[type=text], select, textarea { outline: none; font-family:'Poppins',sans-serif; }
+//       `}</style>
+
+//       {/* Header */}
+//       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 24 }}>
+//         <div>
+//           <h1 style={{ fontSize: 22, fontWeight: 800, color: G.text, margin: 0, letterSpacing: "-0.4px" }}>Clients</h1>
+//           <p style={{ fontSize: 13, color: G.muted, marginTop: 3 }}>Monitor the demand side — who is posting, paying &amp; behaving</p>
+//         </div>
+//         <button style={btnNavy}>⬇ Export</button>
+//       </div>
+
+//       {/* Stats */}
+//       <div style={{ display: "flex", gap: 14, marginBottom: 24 }}>
+//         <StatCard label="Total Clients" value={mockClients.length} color="gray" />
+//         <StatCard label="Verified"      value={mockClients.filter(c => c.verificationStatus === "Verified").length} color="green" />
+//         <StatCard label="AI Flagged"    value={mockClients.filter(c => c.aiFlag).length} sub="Needs review" color="orange" />
+//         <StatCard
+//           label="Total Spent (All)"
+//           value={`₹${(mockClients.reduce((s, c) => s + (c.totalSpent || 0), 0) / 100000).toFixed(1)}L`}
+//           color="blue"
+//         />
+//       </div>
+
+//       {/* Table card */}
+//       <div style={{
+//         background: G.white, border: `1px solid ${G.greenBorder}`,
+//         borderRadius: 16, overflow: "hidden",
+//         boxShadow: "0 2px 12px rgba(110,192,48,0.06)",
+//       }}>
+
+//         {/* Filter bar */}
+//         <div style={{
+//           padding: "14px 20px", background: G.greenBg,
+//           borderBottom: `1px solid ${G.greenBorder}`,
+//           display: "flex", flexWrap: "wrap", gap: 10,
+//           alignItems: "center", justifyContent: "space-between",
+//         }}>
+//           <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "center", flex: 1 }}>
+//             <div style={{ position: "relative", flex: "1 1 200px", maxWidth: 280 }}>
+//               <span style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)", fontSize: 13, color: G.muted }}>🔍</span>
+//               <input
+//                 value={search} onChange={e => setSearch(e.target.value)}
+//                 placeholder="Search name, company, email…"
+//                 style={{
+//                   width: "100%", fontSize: 12, fontWeight: 500,
+//                   border: `1.5px solid ${G.greenBorder}`, borderRadius: 100,
+//                   padding: "8px 12px 8px 32px", background: G.white, color: G.text,
+//                   boxSizing: "border-box",
+//                 }}
+//               />
+//             </div>
+//             {[
+//               { value: typeFilter, setter: setTypeFilter, label: "All Types", opts: ["Individual","Startup","Enterprise"] },
+//               { value: verFilter,  setter: setVerFilter,  label: "All KYC",   opts: ["Verified","Unverified","Rejected"]  },
+//               { value: riskFilter, setter: setRiskFilter, label: "All Risk",  opts: ["Low","Medium","High"]               },
+//             ].map(({ value, setter, label, opts }) => (
+//               <select key={label} value={value} onChange={e => setter(e.target.value)}
+//                 style={{
+//                   fontSize: 12, fontWeight: 600,
+//                   border: `1.5px solid ${value ? G.green : G.greenBorder}`,
+//                   borderRadius: 100, padding: "8px 14px",
+//                   background: value ? G.greenBg : G.white,
+//                   color: value ? G.greenDeep : G.sub, cursor: "pointer",
+//                 }}>
+//                 <option value="">{label}</option>
+//                 {opts.map(o => <option key={o} value={o}>{o}</option>)}
+//               </select>
+//             ))}
+//           </div>
+//           <span style={{ fontSize: 11, color: G.muted, fontWeight: 600 }}>{filtered.length} results</span>
+//         </div>
+
+//         {/* Table */}
+//         <div style={{ overflowX: "auto" }}>
+//           <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 1100 }}>
+//             <thead>
+//               <tr style={{ background: G.bg, borderBottom: `1px solid ${G.greenBorder}` }}>
+//                 {HEADERS.map(h => (
+//                   <th key={h} style={{
+//                     padding: "10px 14px", fontSize: 10, fontWeight: 700,
+//                     color: G.muted, textTransform: "uppercase",
+//                     letterSpacing: "0.07em", textAlign: "left", whiteSpace: "nowrap",
+//                   }}>{h}</th>
+//                 ))}
+//               </tr>
+//             </thead>
+//             <tbody>
+//               {filtered.map(c => (
+//                 <tr key={c.id}
+//                   style={{
+//                     borderBottom: `1px solid ${G.border}`,
+//                     background: hovRow === c.id ? G.greenBg : G.white,
+//                     cursor: "pointer", transition: "background 0.1s",
+//                   }}
+//                   onMouseEnter={() => setHovRow(c.id)}
+//                   onMouseLeave={() => setHovRow(null)}
+//                   onClick={() => navigate(`/admin/clients/${c.id}`)}
+//                 >
+//                   {/* Client */}
+//                   <td style={{ padding: "12px 14px" }}>
+//                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+//                       <Avatar name={c.name} size="sm" />
+//                       <div>
+//                         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+//                           <span style={{ fontSize: 13, fontWeight: 700, color: G.text }}>{c.name}</span>
+//                           {c.aiFlag && (
+//                             <span style={{ fontSize: 9, fontWeight: 700, background: G.redBg, color: G.red, border: `1px solid ${G.redBorder}`, padding: "1px 6px", borderRadius: 99 }}>AI⚑</span>
+//                           )}
+//                         </div>
+//                         {c.company && <span style={{ fontSize: 11, color: G.muted, display: "block" }}>{c.company}</span>}
+//                         <span style={{ fontSize: 11, color: G.muted, display: "block" }}>{c.email}</span>
+//                       </div>
+//                     </div>
+//                   </td>
+//                   <td style={{ padding: "12px 14px" }}>
+//                     <span style={{ fontSize: 12, fontWeight: 600, color: G.sub }}>{c.clientType}</span>
+//                   </td>
+//                   <td style={{ padding: "12px 14px" }}><StatusBadge status={c.verificationStatus} /></td>
+//                   <td style={{ padding: "12px 14px" }}><TrustScore score={c.trustScore} /></td>
+//                   <td style={{ padding: "12px 14px", textAlign: "center" }}>
+//                     <span style={{ fontSize: 13, fontWeight: 700, color: G.text }}>{c.totalProjects}</span>
+//                   </td>
+//                   <td style={{ padding: "12px 14px" }}>
+//                     <span style={{ fontSize: 13, fontWeight: 700, color: G.text }}>{c.totalSpent > 0 ? `₹${(c.totalSpent / 1000).toFixed(0)}k` : "—"}</span>
+//                   </td>
+//                   <td style={{ padding: "12px 14px", textAlign: "center" }}>
+//                     <span style={{ fontSize: 13, fontWeight: 700, color: G.text }}>{c.activeProjects}</span>
+//                   </td>
+//                   <td style={{ padding: "12px 14px" }}>
+//                     <span style={{ fontSize: 12, fontWeight: 700, color: c.disputeInitiationRate !== "N/A" && parseInt(c.disputeInitiationRate) > 20 ? G.redText : G.sub }}>
+//                       {c.disputeInitiationRate}
+//                     </span>
+//                   </td>
+//                   <td style={{ padding: "12px 14px" }}>
+//                     <span style={{ fontSize: 12, fontWeight: 700, color: payColor[c.paymentReliability] || G.muted }}>{c.paymentReliability}</span>
+//                   </td>
+//                   <td style={{ padding: "12px 14px" }}>
+//                     <span style={{ fontSize: 12, fontWeight: 700, color: scopeColor[c.scopeChangeFreq] || G.muted }}>{c.scopeChangeFreq}</span>
+//                   </td>
+//                   <td style={{ padding: "12px 14px" }}><RiskFlag level={c.riskLevel} /></td>
+//                   <td style={{ padding: "12px 14px" }} onClick={e => e.stopPropagation()}>
+//                     <div style={{ opacity: hovRow === c.id ? 1 : 0, transition: "opacity 0.15s" }}>
+//                       <button
+//                         onClick={e => { e.stopPropagation(); navigate(`/admin/clients/${c.id}`); }}
+//                         style={{
+//                           fontSize: 11, fontWeight: 700, fontFamily: FONT,
+//                           background: G.gradNavy, color: G.white,
+//                           border: "none", borderRadius: 100,
+//                           padding: "6px 14px", cursor: "pointer",
+//                           boxShadow: "0 2px 8px rgba(15,26,59,0.22)",
+//                         }}>View</button>
+//                     </div>
+//                   </td>
+//                 </tr>
+//               ))}
+//             </tbody>
+//           </table>
+//         </div>
+
+//         {/* Empty */}
+//         {filtered.length === 0 && (
+//           <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "56px 20px", textAlign: "center" }}>
+//             <div style={{ width: 52, height: 52, borderRadius: "50%", background: G.greenBg, border: `1px solid ${G.greenBorder}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, marginBottom: 12 }}>◎</div>
+//             <p style={{ fontSize: 14, fontWeight: 700, color: G.text }}>No clients match your filters</p>
+//           </div>
+//         )}
+
+//         {/* Footer */}
+//         <div style={{
+//           padding: "12px 20px", background: G.greenBg,
+//           borderTop: `1px solid ${G.greenBorder}`,
+//           display: "flex", alignItems: "center", justifyContent: "space-between",
+//         }}>
+//           <span style={{ fontSize: 11, color: G.muted, fontWeight: 600 }}>Showing {filtered.length} of {mockClients.length} clients</span>
+//           <div style={{ display: "flex", gap: 6 }}>
+//             {["← Prev","Next →"].map(label => (
+//               <button key={label} style={{
+//                 fontSize: 12, fontWeight: 600, fontFamily: FONT,
+//                 padding: "7px 14px", border: `1px solid ${G.greenBorder}`,
+//                 borderRadius: 100, background: G.white, color: G.greenDeep, cursor: "pointer",
+//               }}
+//                 onMouseEnter={e => { e.currentTarget.style.background = G.greenBg; e.currentTarget.style.borderColor = G.green; }}
+//                 onMouseLeave={e => { e.currentTarget.style.background = G.white;   e.currentTarget.style.borderColor = G.greenBorder; }}
+//               >{label}</button>
+//             ))}
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+// /* ═══════════════════════════════════════════════
+//    DETAIL PAGE
+// ═══════════════════════════════════════════════ */
+// export function AdminClientDetail() {
+//   const { id }      = useParams();
+//   const navigate    = useNavigate();
+//   const [activeTab, setActiveTab] = useState("overview");
+//   const [note,      setNote]      = useState("");
+//   const [notes,     setNotes]     = useState([]);
+
+//   const c = mockClients.find(x => x.id === id);
+
+//   if (!c) return (
+//     <div style={{ padding: 48, textAlign: "center", fontFamily: FONT }}>
+//       <p style={{ color: G.muted, marginBottom: 16 }}>Client not found</p>
+//       <button onClick={() => navigate("/admin/clients")} style={btnOutline}>← Back</button>
+//     </div>
+//   );
+
+//   const tabs      = ["overview","projects","financials","behavior","admin"];
+//   const payColor  = { Excellent: G.greenDeep, Average: "#b45309", Poor: G.redText, Unknown: G.muted };
+
+//   return (
+//     <div style={{ padding: "28px 28px 64px", fontFamily: FONT, background: G.bg, minHeight: "100%" }}>
+//       <style>{`* { font-family:'Poppins',sans-serif; } input,select,textarea { outline:none; font-family:'Poppins',sans-serif; }`}</style>
+
+//       {/* Back */}
+//       <button onClick={() => navigate("/admin/clients")}
+//         style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, fontWeight: 600, color: G.sub, background: "none", border: "none", cursor: "pointer", marginBottom: 18, padding: 0 }}
+//         onMouseEnter={e => e.currentTarget.style.color = G.text}
+//         onMouseLeave={e => e.currentTarget.style.color = G.sub}
+//       >← All Clients</button>
+
+//       {/* ── Profile header ── */}
+//       <div style={{
+//         background: G.white, border: `1px solid ${G.greenBorder}`,
+//         borderRadius: 16, padding: "22px 24px", marginBottom: 20,
+//         boxShadow: "0 2px 12px rgba(110,192,48,0.06)",
+//       }}>
+//         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
+//           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+//             <Avatar name={c.name} size="lg" />
+//             <div>
+//               <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap", marginBottom: 4 }}>
+//                 <h1 style={{ fontSize: 20, fontWeight: 800, color: G.text, margin: 0 }}>{c.name}</h1>
+//                 <StatusBadge status={c.verificationStatus} />
+//                 {c.aiFlag && (
+//                   <span style={{ fontSize: 10, fontWeight: 700, background: G.redBg, color: G.redText, border: `1px solid ${G.redBorder}`, padding: "2px 8px", borderRadius: 99 }}>⚑ AI Flagged</span>
+//                 )}
+//                 {c.warnings > 0 && (
+//                   <span style={{ fontSize: 10, fontWeight: 700, background: G.amberBg, color: G.amberText, border: `1px solid ${G.amberBorder}`, padding: "2px 8px", borderRadius: 99 }}>
+//                     ⚠ {c.warnings} Warning{c.warnings > 1 ? "s" : ""}
+//                   </span>
+//                 )}
+//               </div>
+//               <p style={{ fontSize: 12, color: G.muted, margin: "0 0 8px" }}>
+//                 {c.email} · {c.id} · {c.clientType}{c.company ? ` · ${c.company}` : ""}
+//               </p>
+//               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+//                 <TrustScore score={c.trustScore} />
+//                 <RiskFlag level={c.riskLevel} />
+//               </div>
+//             </div>
+//           </div>
+//           <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+//             <button style={btnWarning}>Send Warning</button>
+//             <button style={btnOutline}>Restrict Posting</button>
+//             <button style={btnDanger}>Suspend</button>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* ── Quick stats ── */}
+//       <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
+//         {[
+//           { label: "Total Projects",  value: c.totalProjects,                                                            color: "gray"   },
+//           { label: "Total Spent",     value: c.totalSpent > 0 ? `₹${(c.totalSpent / 1000).toFixed(0)}k` : "—",          color: "blue"   },
+//           { label: "Active Projects", value: c.activeProjects,                                                           color: "green"  },
+//           { label: "Escrow Locked",   value: c.escrowLocked > 0 ? `₹${(c.escrowLocked / 1000).toFixed(0)}k` : "—",     color: "orange" },
+//           { label: "Warnings Issued", value: c.warnings,                                                                 color: c.warnings > 0 ? "red" : "gray" },
+//         ].map(s => <StatCard key={s.label} {...s} />)}
+//       </div>
+
+//       {/* ── Tabs ── */}
+//       <div style={{
+//         display: "flex", borderBottom: `1px solid ${G.greenBorder}`,
+//         marginBottom: 22, background: G.white,
+//         borderRadius: "12px 12px 0 0",
+//         border: `1px solid ${G.greenBorder}`,
+//         overflow: "hidden",
+//       }}>
+//         {tabs.map(tab => {
+//           const active = activeTab === tab;
+//           return (
+//             <button key={tab} onClick={() => setActiveTab(tab)}
+//               style={{
+//                 padding: "12px 18px", fontSize: 13,
+//                 fontWeight: active ? 700 : 500,
+//                 color: active ? G.navy : G.muted,
+//                 background: active ? G.greenBg : "none",
+//                 border: "none",
+//                 borderBottom: active ? `2px solid ${G.green}` : "2px solid transparent",
+//                 cursor: "pointer", textTransform: "capitalize",
+//                 fontFamily: FONT, transition: "all 0.12s",
+//               }}
+//               onMouseEnter={e => { if (!active) e.currentTarget.style.color = G.text; }}
+//               onMouseLeave={e => { if (!active) e.currentTarget.style.color = G.muted; }}
+//             >{tab}</button>
+//           );
+//         })}
+//       </div>
+
+//       {/* ── Overview ── */}
+//       {activeTab === "overview" && (
+//         <div style={{ display: "grid", gridTemplateColumns: "1fr 320px", gap: 20 }}>
+//           <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+//             <SectionCard title="Client Identity">
+//               {[
+//                 ["Full Name",           c.name],
+//                 ["Email",               c.email],
+//                 ["Company",             c.company || "—"],
+//                 ["Client Type",         c.clientType],
+//                 ["Country",             c.country],
+//                 ["Preferred Currency",  c.preferredCurrency],
+//                 ["Billing Address",     c.billingAddress || "—"],
+//                 ["Joined",              c.joinDate],
+//               ].map(([label, value]) => <InfoRow key={label} label={label} value={value} />)}
+//             </SectionCard>
+
+//             <SectionCard title="Refund History">
+//               {c.refundHistory.length > 0 ? (
+//                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+//                   {c.refundHistory.map((r, i) => (
+//                     <div key={i} style={{
+//                       display: "flex", alignItems: "center", justifyContent: "space-between",
+//                       padding: "12px 14px", background: G.redBg,
+//                       border: `1px solid ${G.redBorder}`, borderRadius: 10,
+//                     }}>
+//                       <div>
+//                         <p style={{ fontSize: 13, fontWeight: 600, color: G.text, margin: 0 }}>{r.reason}</p>
+//                         <p style={{ fontSize: 11, color: G.muted, marginTop: 2 }}>{r.date}</p>
+//                       </div>
+//                       <span style={{ fontSize: 14, fontWeight: 800, color: G.redText }}>₹{r.amount.toLocaleString()}</span>
+//                     </div>
+//                   ))}
+//                 </div>
+//               ) : (
+//                 <p style={{ fontSize: 13, color: G.muted, textAlign: "center", padding: "16px 0" }}>No refunds issued</p>
+//               )}
+//             </SectionCard>
+//           </div>
+
+//           <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+//             <SectionCard title="Behavior Profile">
+//               {[
+//                 { label: "Payment Reliability", value: c.paymentReliability, color: payColor[c.paymentReliability] },
+//                 { label: "Scope Change Freq.",  value: c.scopeChangeFreq,    color: c.scopeChangeFreq === "High" ? G.redText : c.scopeChangeFreq === "Medium" ? "#b45309" : G.greenDeep },
+//                 { label: "Dispute Rate",        value: c.disputeInitiationRate, color: c.disputeInitiationRate !== "N/A" && parseInt(c.disputeInitiationRate) > 20 ? G.redText : G.text },
+//               ].map(item => (
+//                 <div key={item.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "9px 0", borderBottom: `1px solid ${G.border}` }}>
+//                   <span style={{ fontSize: 12, color: G.muted }}>{item.label}</span>
+//                   <span style={{ fontSize: 12, fontWeight: 700, color: item.color }}>{item.value}</span>
+//                 </div>
+//               ))}
+//               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "9px 0", borderBottom: `1px solid ${G.border}` }}>
+//                 <span style={{ fontSize: 12, color: G.muted }}>Risk Level</span>
+//                 <RiskFlag level={c.riskLevel} />
+//               </div>
+//               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "9px 0" }}>
+//                 <span style={{ fontSize: 12, color: G.muted }}>KYC Status</span>
+//                 <StatusBadge status={c.verificationStatus} />
+//               </div>
+//             </SectionCard>
+
+//             <SectionCard title="Admin Notes (Internal)">
+//               <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 12 }}>
+//                 {notes.length === 0 && (
+//                   <p style={{ fontSize: 12, color: G.muted, textAlign: "center", padding: "8px 0" }}>No notes yet</p>
+//                 )}
+//                 {notes.map((n, i) => (
+//                   <div key={i} style={{ padding: "10px 12px", background: G.bg, border: `1px solid ${G.border}`, borderRadius: 10 }}>
+//                     <p style={{ fontSize: 12, color: G.text, margin: 0 }}>{n.text}</p>
+//                     <p style={{ fontSize: 10, color: G.muted, marginTop: 4 }}>Super Admin · {n.date}</p>
+//                   </div>
+//                 ))}
+//               </div>
+//               <textarea
+//                 value={note} onChange={e => setNote(e.target.value)}
+//                 placeholder="Internal note (not visible to client)…"
+//                 rows={3}
+//                 style={{
+//                   width: "100%", fontSize: 12, fontWeight: 500,
+//                   border: `1.5px solid ${G.greenBorder}`, borderRadius: 10,
+//                   padding: "10px 12px", resize: "none",
+//                   background: G.white, color: G.text,
+//                   boxSizing: "border-box", marginBottom: 10,
+//                 }}
+//                 onFocus={e => e.target.style.borderColor = G.green}
+//                 onBlur={e  => e.target.style.borderColor = G.greenBorder}
+//               />
+//               <button style={btnGreen}
+//                 onClick={() => { if (note.trim()) { setNotes([{ text: note, date: "Mar 25, 2026" }, ...notes]); setNote(""); } }}>
+//                 Save Note
+//               </button>
+//             </SectionCard>
+//           </div>
+//         </div>
+//       )}
+
+//       {/* ── Projects ── */}
+//       {activeTab === "projects" && (
+//         <SectionCard title="Project History">
+//           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+//             {[
+//               { name: "Patient Appointment App", talent: "HealthFirst Dev Team", status: "In Progress", budget: "₹3,20,000" },
+//               { name: "Website Revamp",           talent: "Arjun Dev",           status: "Completed",   budget: "₹85,000"   },
+//             ].map((p, i) => (
+//               <div key={i} style={{
+//                 display: "flex", alignItems: "center", justifyContent: "space-between",
+//                 padding: "14px 16px", background: G.bg,
+//                 border: `1px solid ${G.greenBorder}`, borderRadius: 12,
+//               }}>
+//                 <div>
+//                   <p style={{ fontSize: 13, fontWeight: 700, color: G.text, margin: 0 }}>{p.name}</p>
+//                   <p style={{ fontSize: 12, color: G.muted, marginTop: 2 }}>{p.talent}</p>
+//                 </div>
+//                 <div style={{ textAlign: "right" }}>
+//                   <StatusBadge status={p.status} />
+//                   <p style={{ fontSize: 14, fontWeight: 800, color: G.text, marginTop: 6 }}>{p.budget}</p>
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
+//         </SectionCard>
+//       )}
+
+//       {/* ── Financials ── */}
+//       {activeTab === "financials" && (
+//         <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+//           {[
+//             { label: "Total Spent",   value: c.totalSpent   > 0 ? `₹${c.totalSpent.toLocaleString()}`   : "₹0", color: "blue"   },
+//             { label: "Escrow Locked", value: c.escrowLocked > 0 ? `₹${c.escrowLocked.toLocaleString()}` : "₹0", color: "orange" },
+//             { label: "Total Refunds", value: c.refundHistory.length > 0 ? `₹${c.refundHistory.reduce((s, r) => s + r.amount, 0).toLocaleString()}` : "₹0", color: "red" },
+//           ].map(s => (
+//             <div key={s.label} style={{ flex: 1, minWidth: 180 }}>
+//               <StatCard {...s} />
+//             </div>
+//           ))}
+//         </div>
+//       )}
+
+//       {/* ── Behavior ── */}
+//       {activeTab === "behavior" && (
+//         <SectionCard title="AI Behavior Analysis">
+//           <div style={{
+//             padding: "16px", borderRadius: 12, marginBottom: 16,
+//             background: c.riskLevel === "High" ? G.redBg : G.greenBg,
+//             border: `1px solid ${c.riskLevel === "High" ? G.redBorder : G.greenBorder}`,
+//           }}>
+//             <p style={{ fontSize: 13, fontWeight: 700, marginBottom: 6, color: c.riskLevel === "High" ? G.redText : G.greenDeep }}>AI Assessment</p>
+//             <p style={{ fontSize: 13, color: c.riskLevel === "High" ? "#b91c1c" : "#166534", lineHeight: 1.6, margin: 0 }}>
+//               {c.riskLevel === "High"
+//                 ? "This client shows patterns of dispute abuse, scope manipulation, and payment delays. Recommend enhanced monitoring and restrict high-value project posting."
+//                 : c.riskLevel === "Medium"
+//                 ? "This client shows moderate scope change frequency. AI recommends stricter milestone agreements for future projects."
+//                 : "This client demonstrates consistent, professional behavior with strong payment reliability and low dispute history."}
+//             </p>
+//           </div>
+//           <InfoRow label="Comm. Tone Trend"  value="Professional" />
+//           <InfoRow label="Scope Compliance"  value={c.scopeChangeFreq === "Low" ? "High" : "Low"} />
+//           <InfoRow label="Policy Violations" value={c.warnings > 0 ? `${c.warnings} recorded` : "None"} />
+//           <InfoRow label="Platform Policy"   value={c.warnings > 0 ? "Warning issued" : "Compliant"} />
+//         </SectionCard>
+//       )}
+
+//       {/* ── Admin ── */}
+//       {activeTab === "admin" && (
+//         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+//           <SectionCard title="Admin Control Panel">
+//             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+//               {[
+//                 { label: "Send Official Warning",      style: btnWarning  },
+//                 { label: "Force Escrow Pre-funding",   style: btnOutline  },
+//                 { label: "Restrict Project Posting",   style: btnOutline  },
+//                 { label: "Restrict Hiring",            style: btnOutline  },
+//                 { label: "Suspend Account",            style: btnDanger   },
+//               ].map(action => (
+//                 <button key={action.label} style={{ ...action.style, width: "100%", justifyContent: "flex-start", borderRadius: 10 }}>
+//                   {action.label}
+//                 </button>
+//               ))}
+//             </div>
+//           </SectionCard>
+
+//           <SectionCard title="Audit Log">
+//             {c.warnings > 0 ? (
+//               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+//                 {[...Array(c.warnings)].map((_, i) => (
+//                   <div key={i} style={{
+//                     display: "flex", alignItems: "flex-start", gap: 10,
+//                     padding: "10px 12px", background: G.amberBg,
+//                     border: `1px solid ${G.amberBorder}`, borderRadius: 10,
+//                   }}>
+//                     <div style={{ width: 7, height: 7, borderRadius: "50%", background: G.amber, marginTop: 4, flexShrink: 0 }} />
+//                     <div>
+//                       <p style={{ fontSize: 12, fontWeight: 600, color: G.text, margin: 0 }}>Warning issued — policy violation</p>
+//                       <p style={{ fontSize: 10, color: G.muted, marginTop: 3 }}>Platform Admin · Feb 2026</p>
+//                     </div>
+//                   </div>
+//                 ))}
+//               </div>
+//             ) : (
+//               <p style={{ fontSize: 13, color: G.muted, textAlign: "center", padding: "32px 0" }}>No admin actions recorded</p>
+//             )}
+//           </SectionCard>
+//         </div>
+//       )}
+//     </div>
+//   );
+// }
+
+
+
+
+
+
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { mockClients } from "./mockData";
-import {
-  StatusBadge, TrustScore, RiskFlag, StatCard, Avatar,
-  SearchBar, FilterSelect, ActionBtn, PageHeader, Table,
-  SectionCard, InfoRow
-} from "./AdminComponents";
 
-// ─── LIST PAGE ─────────────────────────────────────────────────────────────
+const G = {
+  greenLight:  "#A8E063",
+  green:       "#6EC030",
+  greenDeep:   "#2E7D1F",
+  greenBg:     "#f1fce8",
+  greenBorder: "#d4edbb",
+  navyLight:   "#4A6FA5",
+  navy:        "#1A2B5E",
+  navyDeep:    "#0F1A3B",
+  navyBg:      "#e8edf7",
+  navyBorder:  "#b8c6e0",
+  gradGreen:   "linear-gradient(135deg, #A8E063 0%, #2E7D1F 100%)",
+  gradNavy:    "linear-gradient(135deg, #4A6FA5 0%, #0F1A3B 100%)",
+  text:        "#1C1C1C",
+  sub:         "#4b5563",
+  muted:       "#9ca3af",
+  border:      "#e5e7eb",
+  bg:          "#f9fafb",
+  white:       "#ffffff",
+  amber:       "#f59e0b",
+  amberBg:     "#fffbeb",
+  amberBorder: "#fde68a",
+  amberText:   "#92400e",
+  red:         "#ef4444",
+  redBg:       "#fef2f2",
+  redBorder:   "#fecaca",
+  redText:     "#dc2626",
+  blue:        "#3b82f6",
+  blueBg:      "#eff6ff",
+  blueBorder:  "#bfdbfe",
+  blueText:    "#1d4ed8",
+};
+const FONT = "'Poppins', sans-serif";
+
+function Avatar({ name, size = "sm" }) {
+  const palette = ["#3b82f6","#8b5cf6","#f59e0b","#ef4444","#6EC030","#1A2B5E","#0ea5e9","#ec4899"];
+  const color   = palette[name.charCodeAt(0) % palette.length];
+  const initials = name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase();
+  const sz = size === "lg" ? 48 : size === "md" ? 36 : 28;
+  const fs = size === "lg" ? 15 : size === "md" ? 12 : 10;
+  return (
+    <div style={{
+      width:sz, height:sz, borderRadius:"50%",
+      background:color+"20", border:`1.5px solid ${color}44`,
+      display:"flex", alignItems:"center", justifyContent:"center",
+      fontSize:fs, fontWeight:700, color, flexShrink:0,
+    }}>{initials}</div>
+  );
+}
+
+function StatusBadge({ status }) {
+  const map = {
+    Active:       { bg:G.greenBg, text:G.greenDeep, dot:G.green  },
+    Pending:      { bg:G.amberBg, text:G.amberText, dot:G.amber  },
+    Suspended:    { bg:G.amberBg, text:G.amberText, dot:G.amber  },
+    Banned:       { bg:G.redBg,   text:G.redText,   dot:G.red    },
+    Verified:     { bg:G.greenBg, text:G.greenDeep, dot:G.green  },
+    Unverified:   { bg:G.bg,      text:G.muted,     dot:G.muted  },
+    Rejected:     { bg:G.redBg,   text:G.redText,   dot:G.red    },
+    "In Progress":{ bg:G.amberBg, text:G.amberText, dot:G.amber  },
+    Completed:    { bg:G.greenBg, text:G.greenDeep, dot:G.green  },
+  };
+  const s = map[status] || { bg:G.bg, text:G.muted, dot:G.muted };
+  return (
+    <span style={{ display:"inline-flex", alignItems:"center", gap:4, fontSize:10, fontWeight:700, background:s.bg, color:s.text, padding:"2px 8px", borderRadius:99, whiteSpace:"nowrap" }}>
+      <span style={{ width:4, height:4, borderRadius:"50%", background:s.dot, flexShrink:0 }} />
+      {status}
+    </span>
+  );
+}
+
+function TrustScore({ score }) {
+  const color = score>=75 ? G.greenDeep : score>=50 ? "#b45309" : G.redText;
+  const bg    = score>=75 ? G.greenBg   : score>=50 ? G.amberBg  : G.redBg;
+  return (
+    <div style={{ display:"flex", alignItems:"center", gap:6 }}>
+      <div style={{ width:40, height:4, background:G.border, borderRadius:99, overflow:"hidden" }}>
+        <div style={{ width:`${score}%`, height:"100%", background:color, borderRadius:99 }} />
+      </div>
+      <span style={{ fontSize:10, fontWeight:700, color, background:bg, padding:"1px 6px", borderRadius:99 }}>{score}</span>
+    </div>
+  );
+}
+
+function RiskFlag({ level }) {
+  const map = {
+    Low:    { bg:G.greenBg, text:G.greenDeep, dot:G.green },
+    Medium: { bg:G.amberBg, text:G.amberText, dot:G.amber },
+    High:   { bg:G.redBg,   text:G.redText,   dot:G.red   },
+  };
+  const s = map[level] || map.Low;
+  return (
+    <span style={{ display:"inline-flex", alignItems:"center", gap:4, fontSize:10, fontWeight:700, background:s.bg, color:s.text, padding:"2px 8px", borderRadius:99, whiteSpace:"nowrap" }}>
+      <span style={{ width:4, height:4, borderRadius:"50%", background:s.dot }} />
+      {level}
+    </span>
+  );
+}
+
+function StatCard({ label, value, sub, color="gray" }) {
+  const map = {
+    gray:   { bg:G.bg,      border:G.border,       val:G.text,      lbl:G.muted      },
+    green:  { bg:G.greenBg, border:G.greenBorder,  val:G.greenDeep, lbl:G.greenDeep  },
+    orange: { bg:G.amberBg, border:G.amberBorder,  val:"#b45309",   lbl:"#b45309"    },
+    red:    { bg:G.redBg,   border:G.redBorder,    val:G.redText,   lbl:G.redText    },
+    blue:   { bg:G.blueBg,  border:G.blueBorder,   val:G.blueText,  lbl:G.blueText   },
+  };
+  const c = map[color] || map.gray;
+  return (
+    <div style={{ background:c.bg, border:`1px solid ${c.border}`, borderRadius:14, padding:"12px 14px", flex:1, minWidth:0 }}>
+      <p style={{ fontSize:9, fontWeight:700, color:c.lbl, textTransform:"uppercase", letterSpacing:"0.07em", marginBottom:4, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{label}</p>
+      <p style={{ fontSize:20, fontWeight:800, color:c.val, margin:0, lineHeight:1 }}>{value}</p>
+      {sub && <p style={{ fontSize:10, color:G.muted, marginTop:4 }}>{sub}</p>}
+    </div>
+  );
+}
+
+function SectionCard({ title, children }) {
+  return (
+    <div style={{ background:G.white, border:`1px solid ${G.greenBorder}`, borderRadius:16, overflow:"hidden", boxShadow:"0 2px 12px rgba(110,192,48,0.06)" }}>
+      <div style={{ padding:"12px 16px", borderBottom:`1px solid ${G.greenBorder}`, background:G.greenBg }}>
+        <p style={{ fontSize:12, fontWeight:700, color:G.text, margin:0 }}>{title}</p>
+      </div>
+      <div style={{ padding:"14px 16px" }}>{children}</div>
+    </div>
+  );
+}
+
+function InfoRow({ label, value }) {
+  return (
+    <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start", padding:"8px 0", borderBottom:`1px solid ${G.border}`, gap:8 }}>
+      <span style={{ fontSize:11, color:G.muted, fontWeight:500, flexShrink:0 }}>{label}</span>
+      <span style={{ fontSize:11, fontWeight:600, color:G.text, textAlign:"right", wordBreak:"break-word", maxWidth:"60%" }}>{value}</span>
+    </div>
+  );
+}
+
+const btnNavy   = { display:"inline-flex", alignItems:"center", gap:6, fontSize:11, fontWeight:700, fontFamily:FONT, background:G.gradNavy, color:G.white, border:"none", borderRadius:100, padding:"7px 14px", cursor:"pointer", boxShadow:"0 3px 12px rgba(15,26,59,0.25)", whiteSpace:"nowrap" };
+const btnGreen  = { display:"inline-flex", alignItems:"center", gap:6, fontSize:11, fontWeight:700, fontFamily:FONT, background:G.gradGreen, color:G.white, border:"none", borderRadius:100, padding:"7px 14px", cursor:"pointer", whiteSpace:"nowrap" };
+const btnOutline= { display:"inline-flex", alignItems:"center", gap:6, fontSize:11, fontWeight:700, fontFamily:FONT, background:G.greenBg, color:G.greenDeep, border:`1px solid ${G.greenBorder}`, borderRadius:100, padding:"7px 14px", cursor:"pointer", whiteSpace:"nowrap" };
+const btnWarning= { ...btnOutline, background:G.amberBg, color:G.amberText, border:`1px solid ${G.amberBorder}` };
+const btnDanger = { ...btnOutline, background:G.redBg, color:G.redText, border:`1px solid ${G.redBorder}` };
+
+/* ═══════════════════════════════
+   LIST PAGE
+═══════════════════════════════ */
 export function AdminClients() {
   const navigate = useNavigate();
-  const [search, setSearch] = useState("");
+  const [search,     setSearch]     = useState("");
   const [typeFilter, setTypeFilter] = useState("");
   const [riskFilter, setRiskFilter] = useState("");
-  const [verFilter, setVerFilter] = useState("");
+  const [verFilter,  setVerFilter]  = useState("");
+  const [hovRow,     setHovRow]     = useState(null);
 
   const filtered = mockClients.filter((c) => {
-    const q = search.toLowerCase();
-    const matchSearch = c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q) || (c.company || "").toLowerCase().includes(q);
-    const matchType = !typeFilter || c.clientType === typeFilter;
-    const matchRisk = !riskFilter || c.riskLevel === riskFilter;
-    const matchVer = !verFilter || c.verificationStatus === verFilter;
+    const q           = search.toLowerCase();
+    const matchSearch = c.name.toLowerCase().includes(q) || c.email.toLowerCase().includes(q) || (c.company||"").toLowerCase().includes(q);
+    const matchType   = !typeFilter || c.clientType         === typeFilter;
+    const matchRisk   = !riskFilter || c.riskLevel          === riskFilter;
+    const matchVer    = !verFilter  || c.verificationStatus === verFilter;
     return matchSearch && matchType && matchRisk && matchVer;
   });
 
-  const payColor = { Excellent: "text-green-600", Average: "text-yellow-600", Poor: "text-red-500", Unknown: "text-gray-400" };
-  const scopeColor = { Low: "text-green-600", Medium: "text-yellow-600", High: "text-red-500", "N/A": "text-gray-400" };
+  const payColor  = { Excellent:G.greenDeep, Average:"#b45309", Poor:G.redText,  Unknown:G.muted };
+  const scopeColor= { Low:G.greenDeep,       Medium:"#b45309",  High:G.redText,  "N/A":G.muted   };
+
+  // Mobile card view for each client
+  const MobileClientCard = ({ c }) => (
+    <div
+      onClick={() => navigate(`/admin/clients/${c.id}`)}
+      style={{
+        background:G.white, border:`1px solid ${G.greenBorder}`,
+        borderRadius:14, padding:14, cursor:"pointer",
+        boxShadow:"0 2px 8px rgba(110,192,48,0.05)",
+      }}
+    >
+      <div style={{ display:"flex", alignItems:"flex-start", gap:10, marginBottom:10 }}>
+        <Avatar name={c.name} size="md" />
+        <div style={{ flex:1, minWidth:0 }}>
+          <div style={{ display:"flex", alignItems:"center", gap:6, flexWrap:"wrap", marginBottom:3 }}>
+            <span style={{ fontSize:13, fontWeight:700, color:G.text }}>{c.name}</span>
+            {c.aiFlag && (
+              <span style={{ fontSize:9, fontWeight:700, background:G.redBg, color:G.red, border:`1px solid ${G.redBorder}`, padding:"1px 5px", borderRadius:99 }}>AI⚑</span>
+            )}
+          </div>
+          {c.company && <span style={{ fontSize:11, color:G.muted, display:"block" }}>{c.company}</span>}
+          <span style={{ fontSize:11, color:G.muted, display:"block" }}>{c.email}</span>
+        </div>
+        <StatusBadge status={c.verificationStatus} />
+      </div>
+      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:8, paddingTop:10, borderTop:`1px solid ${G.greenBorder}` }}>
+        <div>
+          <p style={{ fontSize:9, color:G.muted, margin:"0 0 3px", textTransform:"uppercase", letterSpacing:"0.05em" }}>Trust</p>
+          <TrustScore score={c.trustScore} />
+        </div>
+        <div>
+          <p style={{ fontSize:9, color:G.muted, margin:"0 0 3px", textTransform:"uppercase", letterSpacing:"0.05em" }}>Spent</p>
+          <span style={{ fontSize:12, fontWeight:700, color:G.text }}>{c.totalSpent>0 ? `₹${(c.totalSpent/1000).toFixed(0)}k` : "—"}</span>
+        </div>
+        <div>
+          <p style={{ fontSize:9, color:G.muted, margin:"0 0 3px", textTransform:"uppercase", letterSpacing:"0.05em" }}>Risk</p>
+          <RiskFlag level={c.riskLevel} />
+        </div>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="p-6">
-      <PageHeader
-        title="Clients"
-        subtitle="Monitor the demand side — who is posting, paying & behaving"
-        actions={<ActionBtn label="⬇ Export" />}
-      />
+    <div style={{ padding:"12px 12px 64px", fontFamily:FONT, background:G.bg, minHeight:"100%" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+        * { font-family:'Poppins',sans-serif; box-sizing:border-box; }
+        input, select { outline:none; font-family:'Poppins',sans-serif; }
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <StatCard label="Total Clients" value={mockClients.length} color="gray" />
-        <StatCard label="Verified" value={mockClients.filter((c) => c.verificationStatus === "Verified").length} color="green" />
-        <StatCard label="AI Flagged" value={mockClients.filter((c) => c.aiFlag).length} sub="Needs review" color="orange" />
-        <StatCard
-          label="Total Spent (All)"
-          value={`₹${(mockClients.reduce((s, c) => s + (c.totalSpent || 0), 0) / 100000).toFixed(1)}L`}
-          color="blue"
-        />
+        @media (min-width: 640px) { .cl-page { padding: 20px 20px 64px !important; } }
+        @media (min-width: 1024px) { .cl-page { padding: 28px 28px 64px !important; } }
+
+        .cl-table-wrap { display: none; }
+        .cl-cards-wrap { display: flex; flex-direction: column; gap: 10px; }
+        @media (min-width: 768px) {
+          .cl-table-wrap { display: block; overflow-x: auto; }
+          .cl-cards-wrap { display: none; }
+        }
+      `}</style>
+
+      {/* Header */}
+      <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:14 }}>
+        <div>
+          <h1 style={{ fontSize:18, fontWeight:800, color:G.text, margin:0, letterSpacing:"-0.3px" }}>Clients</h1>
+          <p style={{ fontSize:11, color:G.muted, marginTop:2 }}>Monitor demand side — posting, paying &amp; behavior</p>
+        </div>
+        <button style={btnNavy}>⬇ Export</button>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-gray-50 flex flex-wrap gap-3 items-center justify-between">
-          <SearchBar value={search} onChange={setSearch} placeholder="Search name, company, email...">
-            <FilterSelect
-              value={typeFilter}
-              onChange={setTypeFilter}
-              label="All Types"
-              options={[{ value: "Individual", label: "Individual" }, { value: "Startup", label: "Startup" }, { value: "Enterprise", label: "Enterprise" }]}
-            />
-            <FilterSelect
-              value={verFilter}
-              onChange={setVerFilter}
-              label="All KYC"
-              options={[{ value: "Verified", label: "Verified" }, { value: "Unverified", label: "Unverified" }, { value: "Rejected", label: "Rejected" }]}
-            />
-            <FilterSelect
-              value={riskFilter}
-              onChange={setRiskFilter}
-              label="All Risk"
-              options={[{ value: "Low", label: "Low" }, { value: "Medium", label: "Medium" }, { value: "High", label: "High" }]}
-            />
-          </SearchBar>
-          <span className="text-xs text-gray-400">{filtered.length} results</span>
+      {/* Stats: 2-col mobile, 4-col tablet+ */}
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(2, 1fr)", gap:10, marginBottom:14 }}
+        className="sm:grid-cols-4">
+        <StatCard label="Total Clients" value={mockClients.length}                                                    color="gray"   />
+        <StatCard label="Verified"      value={mockClients.filter(c=>c.verificationStatus==="Verified").length}      color="green"  />
+        <StatCard label="AI Flagged"    value={mockClients.filter(c=>c.aiFlag).length} sub="Needs review"            color="orange" />
+        <StatCard label="Total Spent"   value={`₹${(mockClients.reduce((s,c)=>s+(c.totalSpent||0),0)/100000).toFixed(1)}L`} color="blue" />
+      </div>
+
+      {/* Table card */}
+      <div style={{ background:G.white, border:`1px solid ${G.greenBorder}`, borderRadius:16, overflow:"hidden", boxShadow:"0 2px 12px rgba(110,192,48,0.06)" }}>
+
+        {/* Filter bar */}
+        <div style={{ padding:"12px 14px", background:G.greenBg, borderBottom:`1px solid ${G.greenBorder}`, display:"flex", flexWrap:"wrap", gap:8, alignItems:"center", justifyContent:"space-between" }}>
+          <div style={{ display:"flex", gap:8, flexWrap:"wrap", alignItems:"center", flex:1 }}>
+            <div style={{ position:"relative", flex:"1 1 160px", maxWidth:260 }}>
+              <span style={{ position:"absolute", left:10, top:"50%", transform:"translateY(-50%)", fontSize:12, color:G.muted }}>🔍</span>
+              <input
+                value={search} onChange={e => setSearch(e.target.value)}
+                placeholder="Search name, company..."
+                style={{ width:"100%", fontSize:11, fontWeight:500, border:`1.5px solid ${G.greenBorder}`, borderRadius:100, padding:"7px 10px 7px 28px", background:G.white, color:G.text, boxSizing:"border-box" }}
+              />
+            </div>
+            {[
+              { value:typeFilter, setter:setTypeFilter, label:"Type",  opts:["Individual","Startup","Enterprise"] },
+              { value:verFilter,  setter:setVerFilter,  label:"KYC",   opts:["Verified","Unverified","Rejected"]  },
+              { value:riskFilter, setter:setRiskFilter, label:"Risk",  opts:["Low","Medium","High"]               },
+            ].map(({ value, setter, label, opts }) => (
+              <select key={label} value={value} onChange={e => setter(e.target.value)}
+                style={{ fontSize:11, fontWeight:600, border:`1.5px solid ${value?G.green:G.greenBorder}`, borderRadius:100, padding:"7px 10px", background:value?G.greenBg:G.white, color:value?G.greenDeep:G.sub, cursor:"pointer" }}>
+                <option value="">{label}</option>
+                {opts.map(o => <option key={o} value={o}>{o}</option>)}
+              </select>
+            ))}
+          </div>
+          <span style={{ fontSize:10, color:G.muted, fontWeight:600 }}>{filtered.length} results</span>
         </div>
 
-        <Table headers={["Client", "Type", "KYC", "Trust", "Projects", "Spent", "Active", "Disputes", "Pay Reliability", "Scope Changes", "Risk", "Actions"]}>
-          {filtered.map((c) => (
-            <tr
-              key={c.id}
-              className="border-b border-gray-50 hover:bg-gray-50/50 transition-colors cursor-pointer group"
-              onClick={() => navigate(`/admin/clients/${c.id}`)}
-            >
-              <td className="py-3 pr-4">
-                <div className="flex items-center gap-2.5">
-                  <Avatar name={c.name} size="sm" />
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      <p className="text-sm font-semibold text-gray-800">{c.name}</p>
-                      {c.aiFlag && (
-                        <span className="text-[10px] bg-red-50 text-red-500 border border-red-200 px-1.5 py-0.5 rounded-full font-semibold">AI⚑</span>
-                      )}
+        {/* Desktop Table */}
+        <div className="cl-table-wrap">
+          <table style={{ width:"100%", borderCollapse:"collapse", minWidth:1000 }}>
+            <thead>
+              <tr style={{ background:G.bg, borderBottom:`1px solid ${G.greenBorder}` }}>
+                {["Client","Type","KYC","Trust","Projects","Spent","Active","Disputes","Pay","Scope","Risk",""].map(h => (
+                  <th key={h} style={{ padding:"9px 12px", fontSize:9, fontWeight:700, color:G.muted, textTransform:"uppercase", letterSpacing:"0.07em", textAlign:"left", whiteSpace:"nowrap" }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map(c => (
+                <tr key={c.id}
+                  style={{ borderBottom:`1px solid ${G.border}`, background:hovRow===c.id?G.greenBg:G.white, cursor:"pointer", transition:"background 0.1s" }}
+                  onMouseEnter={() => setHovRow(c.id)}
+                  onMouseLeave={() => setHovRow(null)}
+                  onClick={() => navigate(`/admin/clients/${c.id}`)}
+                >
+                  <td style={{ padding:"10px 12px" }}>
+                    <div style={{ display:"flex", alignItems:"center", gap:8 }}>
+                      <Avatar name={c.name} size="sm" />
+                      <div>
+                        <div style={{ display:"flex", alignItems:"center", gap:5 }}>
+                          <span style={{ fontSize:12, fontWeight:700, color:G.text }}>{c.name}</span>
+                          {c.aiFlag && <span style={{ fontSize:8, fontWeight:700, background:G.redBg, color:G.red, border:`1px solid ${G.redBorder}`, padding:"1px 4px", borderRadius:99 }}>AI⚑</span>}
+                        </div>
+                        {c.company && <span style={{ fontSize:10, color:G.muted, display:"block" }}>{c.company}</span>}
+                      </div>
                     </div>
-                    {c.company && <p className="text-xs text-gray-400">{c.company}</p>}
-                    <p className="text-xs text-gray-400">{c.email}</p>
-                  </div>
-                </div>
-              </td>
-              <td className="py-3 pr-4">
-                <span className="text-xs text-gray-600 font-medium">{c.clientType}</span>
-              </td>
-              <td className="py-3 pr-4"><StatusBadge status={c.verificationStatus} /></td>
-              <td className="py-3 pr-4"><TrustScore score={c.trustScore} /></td>
-              <td className="py-3 pr-4 text-center">
-                <span className="text-sm font-semibold text-gray-700">{c.totalProjects}</span>
-              </td>
-              <td className="py-3 pr-4 text-sm font-semibold text-gray-700">
-                {c.totalSpent > 0 ? `₹${(c.totalSpent / 1000).toFixed(0)}k` : "—"}
-              </td>
-              <td className="py-3 pr-4 text-center">
-                <span className="text-sm font-semibold text-gray-700">{c.activeProjects}</span>
-              </td>
-              <td className="py-3 pr-4">
-                <span className={`text-xs font-semibold ${c.disputeInitiationRate !== "N/A" && parseInt(c.disputeInitiationRate) > 20 ? "text-red-500" : "text-gray-600"}`}>
-                  {c.disputeInitiationRate}
-                </span>
-              </td>
-              <td className="py-3 pr-4">
-                <span className={`text-xs font-semibold ${payColor[c.paymentReliability]}`}>
-                  {c.paymentReliability}
-                </span>
-              </td>
-              <td className="py-3 pr-4">
-                <span className={`text-xs font-semibold ${scopeColor[c.scopeChangeFreq]}`}>
-                  {c.scopeChangeFreq}
-                </span>
-              </td>
-              <td className="py-3 pr-4"><RiskFlag level={c.riskLevel} /></td>
-              <td className="py-3">
-                <div className="opacity-0 group-hover:opacity-100 transition-opacity">
-                  <ActionBtn label="View" variant="primary" onClick={(e) => { e.stopPropagation(); navigate(`/admin/clients/${c.id}`); }} />
-                </div>
-              </td>
-            </tr>
-          ))}
-        </Table>
+                  </td>
+                  <td style={{ padding:"10px 12px" }}><span style={{ fontSize:11, color:G.sub }}>{c.clientType}</span></td>
+                  <td style={{ padding:"10px 12px" }}><StatusBadge status={c.verificationStatus} /></td>
+                  <td style={{ padding:"10px 12px" }}><TrustScore score={c.trustScore} /></td>
+                  <td style={{ padding:"10px 12px", textAlign:"center" }}><span style={{ fontSize:12, fontWeight:700, color:G.text }}>{c.totalProjects}</span></td>
+                  <td style={{ padding:"10px 12px" }}><span style={{ fontSize:12, fontWeight:700, color:G.text }}>{c.totalSpent>0?`₹${(c.totalSpent/1000).toFixed(0)}k`:"—"}</span></td>
+                  <td style={{ padding:"10px 12px", textAlign:"center" }}><span style={{ fontSize:12, fontWeight:700, color:G.text }}>{c.activeProjects}</span></td>
+                  <td style={{ padding:"10px 12px" }}><span style={{ fontSize:11, fontWeight:700, color:c.disputeInitiationRate!=="N/A"&&parseInt(c.disputeInitiationRate)>20?G.redText:G.sub }}>{c.disputeInitiationRate}</span></td>
+                  <td style={{ padding:"10px 12px" }}><span style={{ fontSize:11, fontWeight:700, color:payColor[c.paymentReliability]||G.muted }}>{c.paymentReliability}</span></td>
+                  <td style={{ padding:"10px 12px" }}><span style={{ fontSize:11, fontWeight:700, color:scopeColor[c.scopeChangeFreq]||G.muted }}>{c.scopeChangeFreq}</span></td>
+                  <td style={{ padding:"10px 12px" }}><RiskFlag level={c.riskLevel} /></td>
+                  <td style={{ padding:"10px 12px" }} onClick={e=>e.stopPropagation()}>
+                    <div style={{ opacity:hovRow===c.id?1:0, transition:"opacity 0.15s" }}>
+                      <button onClick={e=>{e.stopPropagation();navigate(`/admin/clients/${c.id}`);}}
+                        style={{ fontSize:10, fontWeight:700, fontFamily:FONT, background:G.gradNavy, color:G.white, border:"none", borderRadius:100, padding:"5px 12px", cursor:"pointer" }}>View</button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Mobile Cards */}
+        <div className="cl-cards-wrap" style={{ padding:12 }}>
+          {filtered.map(c => <MobileClientCard key={c.id} c={c} />)}
+        </div>
 
         {filtered.length === 0 && (
-          <div className="py-16 text-center">
-            <p className="text-gray-400 text-sm">No clients match your filters</p>
+          <div style={{ display:"flex", flexDirection:"column", alignItems:"center", padding:"40px 20px", textAlign:"center" }}>
+            <div style={{ width:48, height:48, borderRadius:"50%", background:G.greenBg, border:`1px solid ${G.greenBorder}`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, marginBottom:10 }}>◎</div>
+            <p style={{ fontSize:13, fontWeight:700, color:G.text }}>No clients match your filters</p>
           </div>
         )}
 
-        <div className="px-4 py-3 border-t border-gray-100">
-          <span className="text-xs text-gray-400">Showing {filtered.length} of {mockClients.length} clients</span>
+        <div style={{ padding:"10px 14px", background:G.greenBg, borderTop:`1px solid ${G.greenBorder}`, display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:8 }}>
+          <span style={{ fontSize:10, color:G.muted, fontWeight:600 }}>Showing {filtered.length} of {mockClients.length} clients</span>
+          <div style={{ display:"flex", gap:6 }}>
+            {["← Prev","Next →"].map(label => (
+              <button key={label} style={{ fontSize:11, fontWeight:600, fontFamily:FONT, padding:"6px 12px", border:`1px solid ${G.greenBorder}`, borderRadius:100, background:G.white, color:G.greenDeep, cursor:"pointer" }}>{label}</button>
+            ))}
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-// ─── DETAIL PAGE ────────────────────────────────────────────────────────────
+/* ═══════════════════════════════
+   DETAIL PAGE
+═══════════════════════════════ */
 export function AdminClientDetail() {
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const { id }      = useParams();
+  const navigate    = useNavigate();
   const [activeTab, setActiveTab] = useState("overview");
-  const [note, setNote] = useState("");
-  const [notes, setNotes] = useState([]);
+  const [note,      setNote]      = useState("");
+  const [notes,     setNotes]     = useState([]);
 
-  const c = mockClients.find((x) => x.id === id);
+  const c = mockClients.find(x => x.id === id);
 
   if (!c) return (
-    <div className="p-6 text-center py-24">
-      <p className="text-gray-400">Client not found</p>
-      <ActionBtn label="← Back" onClick={() => navigate("/admin/clients")} />
+    <div style={{ padding:48, textAlign:"center", fontFamily:FONT }}>
+      <p style={{ color:G.muted, marginBottom:16 }}>Client not found</p>
+      <button onClick={() => navigate("/admin/clients")} style={btnOutline}>← Back</button>
     </div>
   );
 
-  const tabs = ["overview", "projects", "financials", "behavior", "admin"];
-  const payColor = { Excellent: "text-green-600", Average: "text-yellow-600", Poor: "text-red-500", Unknown: "text-gray-400" };
+  const tabs     = ["overview","projects","financials","behavior","admin"];
+  const payColor = { Excellent:G.greenDeep, Average:"#b45309", Poor:G.redText, Unknown:G.muted };
 
   return (
-    <div className="p-6">
-      <button onClick={() => navigate("/admin/clients")} className="flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-800 mb-4">
+    <div style={{ padding:"12px 12px 64px", fontFamily:FONT, background:G.bg, minHeight:"100%" }}>
+      <style>{`
+        * { font-family:'Poppins',sans-serif; box-sizing:border-box; }
+        input,select,textarea { outline:none; font-family:'Poppins',sans-serif; }
+        @media (min-width: 640px) { .cd-page { padding: 20px 20px 64px !important; } }
+        @media (min-width: 1024px) { .cd-page { padding: 28px 28px 64px !important; } }
+        .cd-overview-grid { display: flex; flex-direction: column; gap: 16px; }
+        @media (min-width: 1024px) { .cd-overview-grid { display: grid; grid-template-columns: 1fr 320px; gap: 20px; } }
+        .cd-admin-grid { display: flex; flex-direction: column; gap: 16px; }
+        @media (min-width: 768px) { .cd-admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; } }
+      `}</style>
+
+      {/* Back */}
+      <button onClick={() => navigate("/admin/clients")}
+        style={{ display:"inline-flex", alignItems:"center", gap:5, fontSize:12, fontWeight:600, color:G.sub, background:"none", border:"none", cursor:"pointer", marginBottom:14, padding:0 }}>
         ← All Clients
       </button>
 
-      {/* Header */}
-      <div className="flex items-start justify-between mb-6">
-        <div className="flex items-center gap-4">
-          <Avatar name={c.name} size="lg" />
-          <div>
-            <div className="flex items-center gap-2.5 flex-wrap">
-              <h1 className="text-xl font-bold text-gray-900">{c.name}</h1>
-              <StatusBadge status={c.verificationStatus} />
-              {c.aiFlag && (
-                <span className="text-[10px] bg-red-50 text-red-500 border border-red-200 px-2 py-0.5 rounded-full font-semibold">⚑ AI Flagged</span>
-              )}
-              {c.warnings > 0 && (
-                <span className="text-[10px] bg-yellow-50 text-yellow-600 border border-yellow-200 px-2 py-0.5 rounded-full font-semibold">
-                  ⚠ {c.warnings} Warning{c.warnings > 1 ? "s" : ""}
-                </span>
-              )}
-            </div>
-            <p className="text-sm text-gray-500 mt-0.5">
-              {c.email} · {c.id} · {c.clientType}{c.company ? ` · ${c.company}` : ""}
-            </p>
-            <div className="flex items-center gap-4 mt-2">
-              <TrustScore score={c.trustScore} />
-              <RiskFlag level={c.riskLevel} />
+      {/* Profile header */}
+      <div style={{ background:G.white, border:`1px solid ${G.greenBorder}`, borderRadius:16, padding:"16px 16px", marginBottom:14, boxShadow:"0 2px 12px rgba(110,192,48,0.06)" }}>
+        <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", flexWrap:"wrap", gap:12 }}>
+          <div style={{ display:"flex", alignItems:"flex-start", gap:12 }}>
+            <Avatar name={c.name} size="lg" />
+            <div>
+              <div style={{ display:"flex", alignItems:"center", gap:8, flexWrap:"wrap", marginBottom:4 }}>
+                <h1 style={{ fontSize:17, fontWeight:800, color:G.text, margin:0 }}>{c.name}</h1>
+                <StatusBadge status={c.verificationStatus} />
+                {c.aiFlag && <span style={{ fontSize:9, fontWeight:700, background:G.redBg, color:G.redText, border:`1px solid ${G.redBorder}`, padding:"2px 7px", borderRadius:99 }}>⚑ AI</span>}
+                {c.warnings>0 && <span style={{ fontSize:9, fontWeight:700, background:G.amberBg, color:G.amberText, border:`1px solid ${G.amberBorder}`, padding:"2px 7px", borderRadius:99 }}>⚠ {c.warnings}W</span>}
+              </div>
+              <p style={{ fontSize:11, color:G.muted, margin:"0 0 8px" }}>{c.email} · {c.id}</p>
+              <div style={{ display:"flex", alignItems:"center", gap:10 }}>
+                <TrustScore score={c.trustScore} />
+                <RiskFlag level={c.riskLevel} />
+              </div>
             </div>
           </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <ActionBtn label="Send Warning" variant="warning" size="md" />
-          <ActionBtn label="Restrict Posting" size="md" />
-          <ActionBtn label="Suspend" variant="danger" size="md" />
+          <div style={{ display:"flex", alignItems:"center", gap:6, flexWrap:"wrap" }}>
+            <button style={btnWarning}>⚠ Warn</button>
+            <button style={btnOutline}>Restrict</button>
+            <button style={btnDanger}>Suspend</button>
+          </div>
         </div>
       </div>
 
-      {/* Quick Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+      {/* Quick stats: 2-col mobile, 5-col desktop */}
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(2, 1fr)", gap:10, marginBottom:14 }}
+        className="sm:grid-cols-3 lg:grid-cols-5">
         {[
-          { label: "Total Projects", value: c.totalProjects, color: "text-gray-800" },
-          { label: "Total Spent", value: c.totalSpent > 0 ? `₹${(c.totalSpent / 1000).toFixed(0)}k` : "—", color: "text-blue-600" },
-          { label: "Active Projects", value: c.activeProjects, color: "text-green-600" },
-          { label: "Escrow Locked", value: c.escrowLocked > 0 ? `₹${(c.escrowLocked / 1000).toFixed(0)}k` : "—", color: "text-orange-500" },
-          { label: "Warnings Issued", value: c.warnings, color: c.warnings > 0 ? "text-red-500" : "text-gray-400" },
-        ].map((s) => (
-          <div key={s.label} className="bg-white rounded-xl border border-gray-100 p-3 shadow-sm text-center">
-            <p className="text-xs text-gray-400 mb-1">{s.label}</p>
-            <p className={`text-lg font-bold ${s.color}`}>{s.value}</p>
-          </div>
-        ))}
+          { label:"Total Projects",  value:c.totalProjects,                                                          color:"gray"   },
+          { label:"Total Spent",     value:c.totalSpent>0?`₹${(c.totalSpent/1000).toFixed(0)}k`:"—",               color:"blue"   },
+          { label:"Active Projects", value:c.activeProjects,                                                         color:"green"  },
+          { label:"Escrow Locked",   value:c.escrowLocked>0?`₹${(c.escrowLocked/1000).toFixed(0)}k`:"—",           color:"orange" },
+          { label:"Warnings",        value:c.warnings,                                                               color:c.warnings>0?"red":"gray" },
+        ].map(s => <StatCard key={s.label} {...s} />)}
       </div>
 
-      {/* Tabs */}
-      <div className="flex gap-1 border-b border-gray-100 mb-6">
-        {tabs.map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`px-4 py-2 text-sm font-medium capitalize transition-colors ${
-              activeTab === tab ? "text-green-600 border-b-2 border-green-500 -mb-px" : "text-gray-500 hover:text-gray-700"
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
+      {/* Tabs — scrollable on mobile */}
+      <div style={{ display:"flex", borderBottom:`1px solid ${G.greenBorder}`, marginBottom:16, background:G.white, borderRadius:"12px 12px 0 0", border:`1px solid ${G.greenBorder}`, overflow:"hidden", overflowX:"auto", WebkitOverflowScrolling:"touch" }}>
+        {tabs.map(tab => {
+          const active = activeTab === tab;
+          return (
+            <button key={tab} onClick={() => setActiveTab(tab)}
+              style={{ padding:"11px 14px", fontSize:12, fontWeight:active?700:500, color:active?G.navy:G.muted, background:active?G.greenBg:"none", border:"none", borderBottom:active?`2px solid ${G.green}`:"2px solid transparent", cursor:"pointer", textTransform:"capitalize", fontFamily:FONT, whiteSpace:"nowrap" }}>
+              {tab}
+            </button>
+          );
+        })}
       </div>
 
+      {/* ── Overview ── */}
       {activeTab === "overview" && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-          <div className="lg:col-span-2 space-y-5">
+        <div className="cd-overview-grid">
+          <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
             <SectionCard title="Client Identity">
-              <InfoRow label="Full Name" value={c.name} />
-              <InfoRow label="Email" value={c.email} />
-              <InfoRow label="Company" value={c.company || "—"} />
-              <InfoRow label="Client Type" value={c.clientType} />
-              <InfoRow label="Country" value={c.country} />
-              <InfoRow label="Preferred Currency" value={c.preferredCurrency} />
-              <InfoRow label="Billing Address" value={c.billingAddress || "—"} />
-              <InfoRow label="Joined" value={c.joinDate} />
+              {[
+                ["Full Name",c.name],["Email",c.email],["Company",c.company||"—"],
+                ["Client Type",c.clientType],["Country",c.country],
+                ["Currency",c.preferredCurrency],["Joined",c.joinDate],
+              ].map(([label,value]) => <InfoRow key={label} label={label} value={value} />)}
             </SectionCard>
-
             <SectionCard title="Refund History">
-              {c.refundHistory.length > 0 ? (
-                <div className="space-y-2">
-                  {c.refundHistory.map((r, i) => (
-                    <div key={i} className="flex items-center justify-between p-3 bg-red-50 rounded-lg border border-red-100">
+              {c.refundHistory.length>0 ? (
+                <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+                  {c.refundHistory.map((r,i) => (
+                    <div key={i} style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"10px 12px", background:G.redBg, border:`1px solid ${G.redBorder}`, borderRadius:10, gap:8 }}>
                       <div>
-                        <p className="text-sm font-medium text-gray-800">{r.reason}</p>
-                        <p className="text-xs text-gray-500">{r.date}</p>
+                        <p style={{ fontSize:12, fontWeight:600, color:G.text, margin:0 }}>{r.reason}</p>
+                        <p style={{ fontSize:10, color:G.muted, marginTop:2 }}>{r.date}</p>
                       </div>
-                      <span className="text-sm font-bold text-red-500">₹{r.amount.toLocaleString()}</span>
+                      <span style={{ fontSize:13, fontWeight:800, color:G.redText, flexShrink:0 }}>₹{r.amount.toLocaleString()}</span>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-sm text-gray-400 text-center py-4">No refunds issued</p>
+                <p style={{ fontSize:12, color:G.muted, textAlign:"center", padding:"14px 0" }}>No refunds issued</p>
               )}
             </SectionCard>
           </div>
-
-          <div className="space-y-5">
+          <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
             <SectionCard title="Behavior Profile">
-              <div className="space-y-3">
-                {[
-                  { label: "Payment Reliability", value: c.paymentReliability, color: payColor[c.paymentReliability] },
-                  { label: "Scope Change Freq.", value: c.scopeChangeFreq, color: c.scopeChangeFreq === "High" ? "text-red-500" : c.scopeChangeFreq === "Medium" ? "text-yellow-600" : "text-green-600" },
-                  { label: "Dispute Rate", value: c.disputeInitiationRate, color: c.disputeInitiationRate !== "N/A" && parseInt(c.disputeInitiationRate) > 20 ? "text-red-500" : "text-gray-700" },
-                  { label: "Risk Level", value: <RiskFlag level={c.riskLevel} /> },
-                  { label: "KYC Status", value: <StatusBadge status={c.verificationStatus} /> },
-                ].map((item) => (
-                  <div key={item.label} className="flex items-center justify-between py-1.5 border-b border-gray-50 last:border-0">
-                    <span className="text-xs text-gray-400">{item.label}</span>
-                    {typeof item.value === "string" ? (
-                      <span className={`text-xs font-semibold ${item.color}`}>{item.value}</span>
-                    ) : item.value}
-                  </div>
-                ))}
+              {[
+                { label:"Payment Reliability", value:c.paymentReliability, color:payColor[c.paymentReliability] },
+                { label:"Scope Changes",        value:c.scopeChangeFreq,    color:c.scopeChangeFreq==="High"?G.redText:c.scopeChangeFreq==="Medium"?"#b45309":G.greenDeep },
+                { label:"Dispute Rate",         value:c.disputeInitiationRate, color:c.disputeInitiationRate!=="N/A"&&parseInt(c.disputeInitiationRate)>20?G.redText:G.text },
+              ].map(item => (
+                <div key={item.label} style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"8px 0", borderBottom:`1px solid ${G.border}` }}>
+                  <span style={{ fontSize:11, color:G.muted }}>{item.label}</span>
+                  <span style={{ fontSize:11, fontWeight:700, color:item.color }}>{item.value}</span>
+                </div>
+              ))}
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"8px 0", borderBottom:`1px solid ${G.border}` }}>
+                <span style={{ fontSize:11, color:G.muted }}>Risk Level</span><RiskFlag level={c.riskLevel} />
+              </div>
+              <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", padding:"8px 0" }}>
+                <span style={{ fontSize:11, color:G.muted }}>KYC Status</span><StatusBadge status={c.verificationStatus} />
               </div>
             </SectionCard>
-
             <SectionCard title="Admin Notes (Internal)">
-              <div className="space-y-2 mb-3">
-                {notes.length === 0 && <p className="text-xs text-gray-400 text-center py-2">No notes yet</p>}
-                {notes.map((n, i) => (
-                  <div key={i} className="p-2.5 bg-gray-50 rounded-lg border border-gray-100">
-                    <p className="text-xs text-gray-700">{n.text}</p>
-                    <p className="text-[10px] text-gray-400 mt-0.5">Super Admin · {n.date}</p>
+              <div style={{ display:"flex", flexDirection:"column", gap:8, marginBottom:10 }}>
+                {notes.length===0 && <p style={{ fontSize:11, color:G.muted, textAlign:"center", padding:"8px 0" }}>No notes yet</p>}
+                {notes.map((n,i) => (
+                  <div key={i} style={{ padding:"10px 12px", background:G.bg, border:`1px solid ${G.border}`, borderRadius:10 }}>
+                    <p style={{ fontSize:12, color:G.text, margin:0 }}>{n.text}</p>
+                    <p style={{ fontSize:10, color:G.muted, marginTop:4 }}>Super Admin · {n.date}</p>
                   </div>
                 ))}
               </div>
               <textarea
-                value={note}
-                onChange={(e) => setNote(e.target.value)}
-                placeholder="Internal note (not visible to client)..."
-                className="w-full text-xs border border-gray-200 rounded-lg p-2.5 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none"
-                rows={3}
+                value={note} onChange={e => setNote(e.target.value)}
+                placeholder="Internal note (not visible to client)…" rows={3}
+                style={{ width:"100%", fontSize:12, border:`1.5px solid ${G.greenBorder}`, borderRadius:10, padding:"10px 12px", resize:"none", background:G.white, color:G.text, boxSizing:"border-box", marginBottom:10 }}
               />
-              <ActionBtn
-                label="Save Note"
-                variant="primary"
-                onClick={() => { if (note.trim()) { setNotes([{ text: note, date: "Mar 14, 2026" }, ...notes]); setNote(""); } }}
-              />
+              <button style={btnGreen} onClick={() => { if(note.trim()){setNotes([{text:note,date:"Mar 25, 2026"},...notes]);setNote("");} }}>Save Note</button>
             </SectionCard>
           </div>
         </div>
       )}
 
+      {/* ── Projects ── */}
       {activeTab === "projects" && (
         <SectionCard title="Project History">
-          <div className="space-y-2">
+          <div style={{ display:"flex", flexDirection:"column", gap:10 }}>
             {[
-              { name: "Patient Appointment App", talent: "HealthFirst Dev Team", status: "In Progress", budget: "₹3,20,000" },
-              { name: "Website Revamp", talent: "Arjun Dev", status: "Completed", budget: "₹85,000" },
-            ].map((p, i) => (
-              <div key={i} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-100">
+              { name:"Patient Appointment App", talent:"HealthFirst Dev Team", status:"In Progress", budget:"₹3,20,000" },
+              { name:"Website Revamp",           talent:"Arjun Dev",           status:"Completed",   budget:"₹85,000"   },
+            ].map((p,i) => (
+              <div key={i} style={{ display:"flex", alignItems:"center", justifyContent:"space-between", padding:"12px 14px", background:G.bg, border:`1px solid ${G.greenBorder}`, borderRadius:12, gap:10 }}>
                 <div>
-                  <p className="text-sm font-semibold text-gray-800">{p.name}</p>
-                  <p className="text-xs text-gray-500">{p.talent}</p>
+                  <p style={{ fontSize:13, fontWeight:700, color:G.text, margin:0 }}>{p.name}</p>
+                  <p style={{ fontSize:11, color:G.muted, marginTop:2 }}>{p.talent}</p>
                 </div>
-                <div className="text-right">
+                <div style={{ textAlign:"right", flexShrink:0 }}>
                   <StatusBadge status={p.status} />
-                  <p className="text-sm font-bold text-gray-700 mt-1">{p.budget}</p>
+                  <p style={{ fontSize:13, fontWeight:800, color:G.text, marginTop:5 }}>{p.budget}</p>
                 </div>
               </div>
             ))}
@@ -338,75 +1301,70 @@ export function AdminClientDetail() {
         </SectionCard>
       )}
 
+      {/* ── Financials ── */}
       {activeTab === "financials" && (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit, minmax(160px, 1fr))", gap:12 }}>
           {[
-            { label: "Total Spent", value: c.totalSpent > 0 ? `₹${c.totalSpent.toLocaleString()}` : "₹0", color: "text-blue-600" },
-            { label: "Escrow Locked", value: c.escrowLocked > 0 ? `₹${c.escrowLocked.toLocaleString()}` : "₹0", color: "text-orange-500" },
-            { label: "Total Refunds", value: c.refundHistory.length > 0 ? `₹${c.refundHistory.reduce((s, r) => s + r.amount, 0).toLocaleString()}` : "₹0", color: "text-red-500" },
-          ].map((s) => (
-            <div key={s.label} className="bg-white rounded-xl border border-gray-100 p-4">
-              <p className="text-xs text-gray-400 mb-1">{s.label}</p>
-              <p className={`text-2xl font-bold ${s.color}`}>{s.value}</p>
-            </div>
-          ))}
+            { label:"Total Spent",   value:c.totalSpent>0?`₹${c.totalSpent.toLocaleString()}`:"₹0",   color:"blue"   },
+            { label:"Escrow Locked", value:c.escrowLocked>0?`₹${c.escrowLocked.toLocaleString()}`:"₹0", color:"orange" },
+            { label:"Total Refunds", value:c.refundHistory.length>0?`₹${c.refundHistory.reduce((s,r)=>s+r.amount,0).toLocaleString()}`:"₹0", color:"red" },
+          ].map(s => <StatCard key={s.label} {...s} />)}
         </div>
       )}
 
+      {/* ── Behavior ── */}
       {activeTab === "behavior" && (
         <SectionCard title="AI Behavior Analysis">
-          <div className="p-4 rounded-xl mb-4 border" style={{ background: c.riskLevel === "High" ? "#fef2f2" : "#f0fdf4", borderColor: c.riskLevel === "High" ? "#fecaca" : "#bbf7d0" }}>
-            <p className="text-sm font-semibold mb-1" style={{ color: c.riskLevel === "High" ? "#dc2626" : "#15803d" }}>
-              AI Assessment
-            </p>
-            <p className="text-sm" style={{ color: c.riskLevel === "High" ? "#b91c1c" : "#166534" }}>
-              {c.riskLevel === "High"
-                ? "This client shows patterns of dispute abuse, scope manipulation, and payment delays. Recommend enhanced monitoring and restrict high-value project posting."
-                : c.riskLevel === "Medium"
-                ? "This client shows moderate scope change frequency. AI recommends stricter milestone agreements for future projects."
-                : "This client demonstrates consistent, professional behavior with strong payment reliability and low dispute history."}
+          <div style={{ padding:14, borderRadius:12, marginBottom:14, background:c.riskLevel==="High"?G.redBg:G.greenBg, border:`1px solid ${c.riskLevel==="High"?G.redBorder:G.greenBorder}` }}>
+            <p style={{ fontSize:12, fontWeight:700, marginBottom:6, color:c.riskLevel==="High"?G.redText:G.greenDeep }}>AI Assessment</p>
+            <p style={{ fontSize:12, color:c.riskLevel==="High"?"#b91c1c":"#166534", lineHeight:1.6, margin:0 }}>
+              {c.riskLevel==="High"
+                ?"This client shows patterns of dispute abuse, scope manipulation, and payment delays."
+                :c.riskLevel==="Medium"
+                ?"This client shows moderate scope change frequency. AI recommends stricter milestone agreements."
+                :"This client demonstrates consistent, professional behavior with strong payment reliability."}
             </p>
           </div>
-          <InfoRow label="Comm. Tone Trend" value="Professional" />
-          <InfoRow label="Scope Compliance" value={c.scopeChangeFreq === "Low" ? "High" : "Low"} />
-          <InfoRow label="Policy Violations" value={c.warnings > 0 ? `${c.warnings} recorded` : "None"} />
-          <InfoRow label="Platform Policy" value={c.warnings > 0 ? "Warning issued" : "Compliant"} />
+          <InfoRow label="Comm. Tone"         value="Professional" />
+          <InfoRow label="Scope Compliance"   value={c.scopeChangeFreq==="Low"?"High":"Low"} />
+          <InfoRow label="Policy Violations"  value={c.warnings>0?`${c.warnings} recorded`:"None"} />
+          <InfoRow label="Platform Policy"    value={c.warnings>0?"Warning issued":"Compliant"} />
         </SectionCard>
       )}
 
+      {/* ── Admin ── */}
       {activeTab === "admin" && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div className="cd-admin-grid">
           <SectionCard title="Admin Control Panel">
-            <div className="space-y-2">
+            <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
               {[
-                { label: "Send Official Warning", variant: "warning" },
-                { label: "Force Escrow Pre-funding", variant: "default" },
-                { label: "Restrict Project Posting", variant: "default" },
-                { label: "Restrict Hiring", variant: "default" },
-                { label: "Suspend Account", variant: "danger" },
-              ].map((action) => (
-                <button key={action.label} className={`w-full text-left px-3 py-2.5 rounded-lg text-sm font-medium border transition-colors ${action.variant === "danger" ? "border-red-200 text-red-600 bg-red-50 hover:bg-red-100" : action.variant === "warning" ? "border-yellow-200 text-yellow-700 bg-yellow-50 hover:bg-yellow-100" : "border-gray-200 text-gray-700 hover:bg-gray-50"}`}>
+                { label:"Send Official Warning",    style:btnWarning  },
+                { label:"Force Escrow Pre-funding", style:btnOutline  },
+                { label:"Restrict Project Posting", style:btnOutline  },
+                { label:"Restrict Hiring",          style:btnOutline  },
+                { label:"Suspend Account",          style:btnDanger   },
+              ].map(action => (
+                <button key={action.label} style={{ ...action.style, width:"100%", justifyContent:"flex-start", borderRadius:10 }}>
                   {action.label}
                 </button>
               ))}
             </div>
           </SectionCard>
-
           <SectionCard title="Audit Log">
-            {c.warnings > 0 ? (
-              <div className="space-y-2">
-                {[...Array(c.warnings)].map((_, i) => (
-                  <div key={i} className="flex items-start gap-3 p-2.5 bg-yellow-50 rounded-lg border border-yellow-100">
-                    <div className="w-1.5 h-1.5 rounded-full mt-1.5 bg-yellow-400 shrink-0" />
+            {c.warnings>0 ? (
+              <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
+                {[...Array(c.warnings)].map((_,i) => (
+                  <div key={i} style={{ display:"flex", alignItems:"flex-start", gap:10, padding:"10px 12px", background:G.amberBg, border:`1px solid ${G.amberBorder}`, borderRadius:10 }}>
+                    <div style={{ width:6, height:6, borderRadius:"50%", background:G.amber, marginTop:4, flexShrink:0 }} />
                     <div>
-                      <p className="text-xs font-medium text-gray-700">Warning issued — policy violation</p>
-                      <p className="text-[10px] text-gray-400 mt-0.5">Platform Admin · Feb 2026</p>
+                      <p style={{ fontSize:12, fontWeight:600, color:G.text, margin:0 }}>Warning issued — policy violation</p>
+                      <p style={{ fontSize:10, color:G.muted, marginTop:3 }}>Platform Admin · Feb 2026</p>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-gray-400 text-center py-8">No admin actions recorded</p>
+              <p style={{ fontSize:12, color:G.muted, textAlign:"center", padding:"28px 0" }}>No admin actions recorded</p>
             )}
           </SectionCard>
         </div>

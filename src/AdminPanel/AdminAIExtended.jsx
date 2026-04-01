@@ -1,438 +1,950 @@
+// import { useState } from "react";
+// import { useNavigate } from "react-router-dom";
+
+// /* ── Freelancer Contracts theme tokens ───────────────────────
+//    GREEN:  #A8E063 (light) → #6EC030 (mid) → #2E7D1F (deep)
+//    NAVY:   #4A6FA5 (light) → #1A2B5E (mid) → #0F1A3B (deep)
+//    ──────────────────────────────────────────────────────────── */
+// const G = {
+//   greenLight:  "#A8E063",
+//   green:       "#6EC030",
+//   greenDeep:   "#2E7D1F",
+//   greenBg:     "#f1fce8",
+//   greenBorder: "#d4edbb",
+
+//   navyLight:   "#4A6FA5",
+//   navy:        "#1A2B5E",
+//   navyDeep:    "#0F1A3B",
+//   navyBg:      "#e8edf7",
+//   navyBorder:  "#b8c6e0",
+
+//   gradGreen: "linear-gradient(135deg, #A8E063 0%, #2E7D1F 100%)",
+//   gradNavy:  "linear-gradient(135deg, #4A6FA5 0%, #0F1A3B 100%)",
+
+//   text:        "#1C1C1C",
+//   sub:         "#4b5563",
+//   muted:       "#9ca3af",
+//   border:      "#e5e7eb",
+//   bg:          "#f9fafb",
+//   white:       "#ffffff",
+
+//   amber:       "#f59e0b",
+//   amberBg:     "#fffbeb",
+//   amberBorder: "#fde68a",
+//   amberText:   "#92400e",
+//   red:         "#ef4444",
+//   redBg:       "#fef2f2",
+//   redBorder:   "#fecaca",
+//   redText:     "#dc2626",
+//   blue:        "#3b82f6",
+//   blueBg:      "#eff6ff",
+//   blueBorder:  "#bfdbfe",
+//   blueText:    "#1d4ed8",
+//   purple:      "#8b5cf6",
+//   purpleBg:    "#f5f3ff",
+// };
+// const FONT = "'Poppins', sans-serif";
+
+// /* ═══════════════════════════════════════════════
+//    SHARED MINI-COMPONENTS
+// ═══════════════════════════════════════════════ */
+// function StatCard({ label, value, sub, color = "gray" }) {
+//   const map = {
+//     gray:   { bg: G.bg,      border: G.border,      val: G.text,     lbl: G.muted     },
+//     green:  { bg: G.greenBg, border: G.greenBorder, val: G.greenDeep,lbl: G.greenDeep },
+//     orange: { bg: G.amberBg, border: G.amberBorder, val: "#b45309",  lbl: "#b45309"   },
+//     red:    { bg: G.redBg,   border: G.redBorder,   val: G.redText,  lbl: G.redText   },
+//     blue:   { bg: G.navyBg,  border: G.navyBorder,  val: G.navy,     lbl: G.navy      },
+//   };
+//   const c = map[color] || map.gray;
+//   return (
+//     <div style={{ background: c.bg, border: `1px solid ${c.border}`, borderRadius: 14, padding: "16px 20px", flex: 1, minWidth: 0, boxShadow: "0 2px 8px rgba(110,192,48,0.05)" }}>
+//       <p style={{ fontSize: 10, fontWeight: 700, color: c.lbl, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>{label}</p>
+//       <p style={{ fontSize: 26, fontWeight: 800, color: c.val, margin: 0, lineHeight: 1 }}>{value}</p>
+//       {sub && <p style={{ fontSize: 11, color: G.muted, marginTop: 5 }}>{sub}</p>}
+//     </div>
+//   );
+// }
+
+// const btnNavy = {
+//   display: "inline-flex", alignItems: "center", gap: 6,
+//   fontSize: 12, fontWeight: 700, fontFamily: FONT,
+//   background: G.gradNavy, color: G.white,
+//   border: "none", borderRadius: 100,
+//   padding: "8px 18px", cursor: "pointer",
+//   boxShadow: "0 3px 12px rgba(15,26,59,0.25)",
+//   whiteSpace: "nowrap",
+// };
+// const btnGreen = {
+//   display: "inline-flex", alignItems: "center", gap: 6,
+//   fontSize: 12, fontWeight: 700, fontFamily: FONT,
+//   background: G.gradGreen, color: G.white,
+//   border: "none", borderRadius: 100,
+//   padding: "8px 18px", cursor: "pointer",
+//   boxShadow: "0 2px 10px rgba(46,125,31,0.22)",
+//   whiteSpace: "nowrap",
+// };
+// const btnOutline = {
+//   display: "inline-flex", alignItems: "center", gap: 6,
+//   fontSize: 12, fontWeight: 700, fontFamily: FONT,
+//   background: G.greenBg, color: G.greenDeep,
+//   border: `1px solid ${G.greenBorder}`,
+//   borderRadius: 100, padding: "8px 18px", cursor: "pointer",
+//   whiteSpace: "nowrap",
+// };
+
+// /* ── Mock data ── */
+// const mockAILogs = [
+//   { id:"AIL-001", action:"Auto-suspended account",        target:"Priya Menon (FL-004)",   confidence:92, outcome:"Executed",       timestamp:"Mar 14, 2026 · 11:42 AM", category:"User",    reason:"Dispute rate 32% — crossed 30% threshold"          },
+//   { id:"AIL-002", action:"Auto-flagged suspicious signup", target:"FakeUser999 (CL-005)",   confidence:97, outcome:"Executed",       timestamp:"Mar 14, 2026 · 09:15 AM", category:"User",    reason:"Duplicate device + disposable email detected"       },
+//   { id:"AIL-004", action:"Dispute pre-analysis",          target:"DSP-001 — E-Commerce",   confidence:71, outcome:"Notified Admin", timestamp:"Mar 10, 2026 · 09:30 AM", category:"Dispute", reason:"Confidence 71% — below threshold"                  },
+//   { id:"AIL-006", action:"Auto-approved milestone",       target:"PRJ-004 — MS 5",         confidence:95, outcome:"Executed",       timestamp:"Feb 28, 2026 · 08:00 AM", category:"Project", reason:"Client silent 7 days auto-approval"                 },
+//   { id:"AIL-012", action:"Fraud pattern detected",        target:"FakeUser999 (CL-005)",   confidence:98, outcome:"Executed",       timestamp:"Feb 28, 2026 · 09:00 AM", category:"User",    reason:"3 failed KYC attempts"                              },
+// ];
+
+// const mockOverrides = [
+//   {
+//     id: "OVR-001",
+//     target: "Karan Malhotra (FL-003)",
+//     aiVerdict: "Suspend — high risk profile",
+//     adminDecision: "Reduced visibility only",
+//     adminBy: "Platform Admin",
+//     date: "Mar 12, 2026",
+//     confidence: 78,
+//     category: "User Behavior",
+//     impact: "High",
+//     reason: "Admin disagreed with the severity. The high-risk signals were triggered by a single dispute event rather than a sustained pattern of policy violations.",
+//   },
+//   {
+//     id: "OVR-002",
+//     target: "DSP-004 — Brand Identity",
+//     aiVerdict: "Full refund to client (95%)",
+//     adminDecision: "Partial refund (60% to client)",
+//     adminBy: "Super Admin",
+//     date: "Mar 5, 2026",
+//     confidence: 90,
+//     category: "Dispute",
+//     impact: "Medium",
+//     reason: "The project brief was genuinely vague. While the talent failed delivery, the client did not provide sufficient documentation, justifying a shared loss.",
+//   },
+// ];
+
+// /* ═══════════════════════════════════════════════
+//    PAGE 1 — AI LOGS
+// ═══════════════════════════════════════════════ */
+// export function AdminAILogs() {
+//   const navigate = useNavigate();
+//   const [search,         setSearch]   = useState("");
+//   const [categoryFilter, setCategory] = useState("");
+//   const [outcomeFilter,  setOutcome]  = useState("");
+//   const [expanded,       setExpanded] = useState(null);
+
+//   const filtered = mockAILogs.filter(l => {
+//     const q = search.toLowerCase();
+//     return (
+//       (l.action.toLowerCase().includes(q) || l.target.toLowerCase().includes(q)) &&
+//       (!categoryFilter || l.category === categoryFilter) &&
+//       (!outcomeFilter  || l.outcome  === outcomeFilter)
+//     );
+//   });
+
+//   const outcomeStyle = (out) => {
+//     if (out === "Executed")       return { bg: G.greenBg,  text: G.greenDeep, border: G.greenBorder };
+//     if (out === "Notified Admin") return { bg: G.amberBg,  text: G.amberText, border: G.amberBorder };
+//     return                               { bg: G.bg,       text: G.muted,     border: G.border      };
+//   };
+
+//   const selectStyle = (active) => ({
+//     fontSize: 12, fontWeight: 600, fontFamily: FONT,
+//     border: `1.5px solid ${active ? G.green : G.greenBorder}`,
+//     borderRadius: 100, padding: "8px 14px",
+//     background: active ? G.greenBg : G.white,
+//     color: active ? G.greenDeep : G.sub,
+//     cursor: "pointer", outline: "none",
+//   });
+
+//   return (
+//     <div style={{ padding: "28px 28px 64px", fontFamily: FONT, background: G.bg, minHeight: "100%" }}>
+//       <style>{`@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap'); *{font-family:'Poppins',sans-serif;} input,select{outline:none;font-family:'Poppins',sans-serif;}`}</style>
+
+//       {/* ── Header ── */}
+//       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 24 }}>
+//         <div>
+//           <h1 style={{ fontSize: 22, fontWeight: 800, color: G.text, margin: 0, letterSpacing: "-0.4px" }}>AI Decisions Log</h1>
+//           <p style={{ fontSize: 13, color: G.muted, marginTop: 3 }}>Immutable ledger of every autonomous platform action</p>
+//         </div>
+//         <div style={{ display: "flex", gap: 8 }}>
+//           <button style={btnOutline} onClick={() => navigate("/admin/ai-overrides")}>Admin Overrides →</button>
+//           <button style={btnNavy}>⬇ Export Logs</button>
+//         </div>
+//       </div>
+
+//       {/* ── Stats ── */}
+//       <div style={{ display: "flex", gap: 14, marginBottom: 24 }}>
+//         <StatCard label="Total AI Actions" value={mockAILogs.length} color="gray"   />
+//         <StatCard label="Auto-Executed"    value="84%"  sub="No intervention"   color="green"  />
+//         <StatCard label="Avg Confidence"   value="91.2%"                         color="blue"   />
+//         <StatCard label="Manual Overrides" value="3"    sub="Retraining queued" color="orange" />
+//       </div>
+
+//       {/* ── Policy banner ── */}
+//       <div style={{
+//         background: G.navyBg, border: `1px solid ${G.navyBorder}`,
+//         borderRadius: 14, padding: "16px 20px", marginBottom: 24,
+//         display: "flex", alignItems: "center", gap: 16,
+//         boxShadow: "0 2px 8px rgba(26,43,94,0.06)",
+//       }}>
+//         <div style={{ width: 40, height: 40, borderRadius: "50%", background: G.gradNavy, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>◎</div>
+//         <p style={{ fontSize: 12, color: G.navy, margin: 0, flex: 1, lineHeight: 1.6 }}>
+//           <b>Policy:</b> Confidence <b>≥ 90%</b> triggers auto-execution. <b>65–89%</b> notifies specialized admin. Below <b>65%</b> is ignored and logged for model drift analysis.
+//         </p>
+//         <button style={{ ...btnOutline, background: G.white }}>Edit Thresholds</button>
+//       </div>
+
+//       {/* ── Table card ── */}
+//       <div style={{ background: G.white, border: `1px solid ${G.greenBorder}`, borderRadius: 16, overflow: "hidden", boxShadow: "0 2px 12px rgba(110,192,48,0.06)" }}>
+
+//         {/* Filter bar */}
+//         <div style={{ padding: "14px 20px", background: G.greenBg, borderBottom: `1px solid ${G.greenBorder}`, display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+//           {/* Search */}
+//           <div style={{ position: "relative", flex: "1 1 200px", maxWidth: 300 }}>
+//             <span style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)", fontSize: 13, color: G.muted }}>🔍</span>
+//             <input
+//               placeholder="Search logs…" value={search} onChange={e => setSearch(e.target.value)}
+//               style={{ width: "100%", fontSize: 12, fontWeight: 500, border: `1.5px solid ${G.greenBorder}`, borderRadius: 100, padding: "8px 12px 8px 32px", background: G.white, color: G.text, boxSizing: "border-box" }}
+//             />
+//           </div>
+
+//           {/* Category filter — wired */}
+//           <select value={categoryFilter} onChange={e => setCategory(e.target.value)} style={selectStyle(!!categoryFilter)}>
+//             <option value="">All Categories</option>
+//             {["User","Dispute","Project"].map(o => <option key={o} value={o}>{o}</option>)}
+//           </select>
+
+//           {/* Outcome filter — wired */}
+//           <select value={outcomeFilter} onChange={e => setOutcome(e.target.value)} style={selectStyle(!!outcomeFilter)}>
+//             <option value="">All Outcomes</option>
+//             {["Executed","Notified Admin"].map(o => <option key={o} value={o}>{o}</option>)}
+//           </select>
+
+//           <span style={{ fontSize: 11, color: G.muted, fontWeight: 600, marginLeft: "auto" }}>{filtered.length} results</span>
+//         </div>
+
+//         {/* Log rows */}
+//         <div>
+//           {filtered.map(log => {
+//             const s     = outcomeStyle(log.outcome);
+//             const isExp = expanded === log.id;
+//             return (
+//               <div key={log.id} style={{ borderBottom: `1px solid ${G.border}` }}>
+//                 <div
+//                   onClick={() => setExpanded(isExp ? null : log.id)}
+//                   style={{ padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, cursor: "pointer", background: isExp ? G.greenBg : G.white, transition: "background 0.12s" }}
+//                   onMouseEnter={e => { if (!isExp) e.currentTarget.style.background = G.bg; }}
+//                   onMouseLeave={e => { if (!isExp) e.currentTarget.style.background = G.white; }}
+//                 >
+//                   {/* Confidence dot */}
+//                   <div style={{ width: 9, height: 9, borderRadius: "50%", background: log.confidence >= 90 ? G.green : G.amber, flexShrink: 0 }} />
+
+//                   {/* Action + target */}
+//                   <div style={{ flex: 1 }}>
+//                     <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4, flexWrap: "wrap" }}>
+//                       <span style={{ fontSize: 14, fontWeight: 700, color: G.text }}>{log.action}</span>
+//                       <span style={{ fontSize: 10, fontWeight: 800, padding: "2px 9px", borderRadius: 99, background: s.bg, color: s.text, border: `1px solid ${s.border}` }}>
+//                         {log.outcome.toUpperCase()}
+//                       </span>
+//                       <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 99, background: G.navyBg, color: G.navy, border: `1px solid ${G.navyBorder}` }}>
+//                         {log.category}
+//                       </span>
+//                     </div>
+//                     <span style={{ fontSize: 12, color: G.muted }}>Target: {log.target}</span>
+//                   </div>
+
+//                   {/* Confidence bar */}
+//                   <div style={{ textAlign: "right", marginRight: 16, flexShrink: 0 }}>
+//                     <div style={{ fontSize: 14, fontWeight: 800, color: G.navy, marginBottom: 5 }}>{log.confidence}%</div>
+//                     <div style={{ width: 64, height: 5, background: G.border, borderRadius: 99, overflow: "hidden" }}>
+//                       <div style={{ width: `${log.confidence}%`, height: "100%", background: log.confidence >= 90 ? G.green : G.amber, borderRadius: 99 }} />
+//                     </div>
+//                   </div>
+
+//                   {/* Timestamp + ID */}
+//                   <div style={{ fontSize: 11, color: G.muted, textAlign: "right", flexShrink: 0, minWidth: 110 }}>
+//                     {log.timestamp}
+//                     <div style={{ fontSize: 10, fontWeight: 700, color: G.navyLight, marginTop: 2 }}>{log.id}</div>
+//                   </div>
+
+//                   {/* Expand chevron */}
+//                   <span style={{ fontSize: 10, color: G.muted, transform: isExp ? "rotate(90deg)" : "none", transition: "transform 0.2s", flexShrink: 0 }}>▶</span>
+//                 </div>
+
+//                 {/* Expanded detail */}
+//                 {isExp && (
+//                   <div style={{ padding: "0 20px 18px 46px" }}>
+//                     <div style={{ background: G.bg, border: `1px solid ${G.border}`, borderRadius: 12, padding: "14px 16px" }}>
+//                       <p style={{ margin: "0 0 8px", fontSize: 12, color: G.sub }}><b>Reasoning:</b> {log.reason}</p>
+//                       <p style={{ margin: "0 0 12px", fontSize: 11, color: G.muted }}>Category: {log.category} · Retraining Status: Queued</p>
+//                       <button style={btnOutline}>Override Decision</button>
+//                     </div>
+//                   </div>
+//                 )}
+//               </div>
+//             );
+//           })}
+//         </div>
+
+//         {/* Empty */}
+//         {filtered.length === 0 && (
+//           <div style={{ padding: "56px 20px", textAlign: "center" }}>
+//             <div style={{ width: 52, height: 52, borderRadius: "50%", background: G.greenBg, border: `1px solid ${G.greenBorder}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, margin: "0 auto 12px" }}>◎</div>
+//             <p style={{ fontSize: 14, fontWeight: 700, color: G.text }}>No logs match your filters</p>
+//           </div>
+//         )}
+
+//         {/* Footer */}
+//         <div style={{ padding: "12px 20px", background: G.greenBg, borderTop: `1px solid ${G.greenBorder}`, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+//           <span style={{ fontSize: 11, color: G.muted, fontWeight: 600 }}>Showing {filtered.length} of {mockAILogs.length} logs</span>
+//           <div style={{ display: "flex", gap: 6 }}>
+//             {["← Prev","Next →"].map(label => (
+//               <button key={label} style={{ fontSize: 12, fontWeight: 600, fontFamily: FONT, padding: "7px 14px", border: `1px solid ${G.greenBorder}`, borderRadius: 100, background: G.white, color: G.greenDeep, cursor: "pointer" }}
+//                 onMouseEnter={e => { e.currentTarget.style.background = G.greenBg; e.currentTarget.style.borderColor = G.green; }}
+//                 onMouseLeave={e => { e.currentTarget.style.background = G.white;   e.currentTarget.style.borderColor = G.greenBorder; }}
+//               >{label}</button>
+//             ))}
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+// /* ═══════════════════════════════════════════════
+//    PAGE 2 — ADMIN OVERRIDES
+// ═══════════════════════════════════════════════ */
+// export function AdminAIOverrides() {
+//   const navigate = useNavigate();
+//   const [selected, setSelected] = useState(null);
+//   const [hovCard,  setHovCard]  = useState(null);
+
+//   return (
+//     <div style={{ padding: "28px 28px 64px", fontFamily: FONT, background: G.bg, minHeight: "100%" }}>
+//       <style>{`@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap'); *{font-family:'Poppins',sans-serif;} input,select,textarea{outline:none;font-family:'Poppins',sans-serif;}`}</style>
+
+//       {/* ── Header ── */}
+//       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 28 }}>
+//         <div>
+//           <button onClick={() => navigate("/admin/ai-logs")}
+//             style={{ border: "none", background: "none", color: G.navyLight, cursor: "pointer", fontSize: 13, fontWeight: 600, padding: 0, marginBottom: 10, display: "flex", alignItems: "center", gap: 5 }}
+//             onMouseEnter={e => e.currentTarget.style.color = G.navy}
+//             onMouseLeave={e => e.currentTarget.style.color = G.navyLight}
+//           >← Back to AI Logs</button>
+//           <h1 style={{ fontSize: 22, fontWeight: 800, color: G.text, margin: 0, letterSpacing: "-0.4px" }}>Admin Overrides</h1>
+//           <p style={{ fontSize: 13, color: G.muted, marginTop: 3 }}>Human intelligence refining platform automation</p>
+//         </div>
+//         <button style={btnNavy}>+ Create Manual Override</button>
+//       </div>
+
+//       <div style={{ display: "grid", gridTemplateColumns: "1fr 380px", gap: 24, alignItems: "start" }}>
+
+//         {/* ── Left: Override cards ── */}
+//         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+//           {mockOverrides.map(ovr => {
+//             const isActive = selected?.id === ovr.id;
+//             const isHov    = hovCard === ovr.id;
+//             return (
+//               <div
+//                 key={ovr.id}
+//                 onClick={() => setSelected(ovr)}
+//                 onMouseEnter={() => setHovCard(ovr.id)}
+//                 onMouseLeave={() => setHovCard(null)}
+//                 style={{
+//                   background: G.white,
+//                   border: `1.5px solid ${isActive ? G.green : isHov ? G.greenBorder : G.border}`,
+//                   borderRadius: 16,
+//                   padding: "20px 22px",
+//                   cursor: "pointer",
+//                   boxShadow: isActive ? "0 6px 24px rgba(110,192,48,0.13)" : isHov ? "0 4px 16px rgba(110,192,48,0.07)" : "0 2px 8px rgba(110,192,48,0.04)",
+//                   transform: isActive ? "translateY(-2px)" : "none",
+//                   transition: "border-color 0.15s, box-shadow 0.15s, transform 0.15s",
+//                 }}
+//               >
+//                 {/* Top meta row */}
+//                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+//                   <div style={{ display: "flex", gap: 8 }}>
+//                     <span style={{ fontSize: 10, fontWeight: 800, color: G.navy,     background: G.navyBg,  padding: "3px 10px", borderRadius: 99, border: `1px solid ${G.navyBorder}`  }}>{ovr.id}</span>
+//                     <span style={{ fontSize: 10, fontWeight: 800, color: G.amberText,background: G.amberBg, padding: "3px 10px", borderRadius: 99, border: `1px solid ${G.amberBorder}` }}>{ovr.impact} IMPACT</span>
+//                   </div>
+//                   <span style={{ fontSize: 11, fontWeight: 600, color: G.muted }}>{ovr.date}</span>
+//                 </div>
+
+//                 <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 700, color: G.text }}>{ovr.target}</h3>
+
+//                 {/* AI vs Admin verdict boxes */}
+//                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+//                   {/* AI verdict */}
+//                   <div style={{ background: G.navyBg, padding: "14px", borderRadius: 12, border: `1px solid ${G.navyBorder}` }}>
+//                     <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 6 }}>
+//                       <span style={{ fontSize: 12 }}>◎</span>
+//                       <p style={{ margin: 0, fontSize: 10, fontWeight: 800, color: G.navyLight, textTransform: "uppercase", letterSpacing: "0.06em" }}>AI Verdict</p>
+//                     </div>
+//                     <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: G.navy }}>{ovr.aiVerdict}</p>
+//                     <p style={{ margin: "4px 0 0", fontSize: 11, color: G.navyLight }}>Confidence: {ovr.confidence}%</p>
+//                   </div>
+
+//                   {/* Admin decision */}
+//                   <div style={{ background: G.greenBg, padding: "14px", borderRadius: 12, border: `1px solid ${G.greenBorder}` }}>
+//                     <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 6 }}>
+//                       <span style={{ fontSize: 12 }}>👤</span>
+//                       <p style={{ margin: 0, fontSize: 10, fontWeight: 800, color: G.greenDeep, textTransform: "uppercase", letterSpacing: "0.06em" }}>Admin Decision</p>
+//                     </div>
+//                     <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: G.greenDeep }}>{ovr.adminDecision}</p>
+//                     <p style={{ margin: "4px 0 0", fontSize: 11, color: G.greenDeep, opacity: 0.7 }}>By {ovr.adminBy}</p>
+//                   </div>
+//                 </div>
+//               </div>
+//             );
+//           })}
+//         </div>
+
+//         {/* ── Right: Detail panel ── */}
+//         <div style={{
+//           background: G.white,
+//           border: `1px solid ${G.greenBorder}`,
+//           borderRadius: 20,
+//           padding: 28,
+//           position: "sticky",
+//           top: 28,
+//           boxShadow: "0 4px 24px rgba(110,192,48,0.08)",
+//         }}>
+//           {selected ? (
+//             <>
+//               {/* Panel header */}
+//               <div style={{ textAlign: "center", marginBottom: 24 }}>
+//                 <div style={{ width: 52, height: 52, borderRadius: "50%", background: G.greenBg, border: `1px solid ${G.greenBorder}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, margin: "0 auto 12px" }}>🧠</div>
+//                 <h2 style={{ fontSize: 18, fontWeight: 800, color: G.navy, margin: "0 0 4px" }}>Logic Analysis</h2>
+//                 <p style={{ fontSize: 12, color: G.muted }}>Correction submitted by {selected.adminBy}</p>
+//               </div>
+
+//               {/* Justification */}
+//               <div style={{ marginBottom: 20 }}>
+//                 <label style={{ fontSize: 10, fontWeight: 800, color: G.muted, display: "block", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.07em" }}>Override Justification</label>
+//                 <div style={{ background: G.bg, padding: "16px", borderRadius: 14, fontSize: 13, lineHeight: 1.65, color: G.text, border: `1px solid ${G.border}`, fontStyle: "italic" }}>
+//                   "{selected.reason}"
+//                 </div>
+//               </div>
+
+//               {/* Retraining banner */}
+//               <div style={{ background: G.gradNavy, padding: "18px 20px", borderRadius: 14, marginBottom: 20, position: "relative", overflow: "hidden" }}>
+//                 <div style={{ position: "absolute", right: -10, bottom: -10, fontSize: 56, opacity: 0.08, pointerEvents: "none" }}>⚙️</div>
+//                 <label style={{ fontSize: 10, fontWeight: 800, color: "rgba(255,255,255,0.4)", display: "block", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.07em" }}>Model Retraining Status</label>
+//                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+//                   <div style={{ flex: 1 }}>
+//                     <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: G.white }}>Queued for Batch #42</p>
+//                     <p style={{ margin: "2px 0 0", fontSize: 11, color: "rgba(255,255,255,0.45)" }}>Priority: {selected.impact === "High" ? "Immediate" : "Standard"}</p>
+//                   </div>
+//                   <span style={{ padding: "4px 12px", borderRadius: 8, background: "rgba(255,255,255,0.1)", fontSize: 11, fontWeight: 700, color: G.greenLight, border: "1px solid rgba(255,255,255,0.15)" }}>PENDING</span>
+//                 </div>
+//               </div>
+
+//               {/* Actions */}
+//               <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+//                 <button style={{ ...btnNavy, width: "100%", justifyContent: "center" }}>Download Technical Audit</button>
+//                 <button style={{ ...btnOutline, width: "100%", justifyContent: "center" }}>View Original AI Log</button>
+//               </div>
+//             </>
+//           ) : (
+//             <div style={{ textAlign: "center", padding: "60px 0" }}>
+//               <div style={{ width: 64, height: 64, borderRadius: "50%", background: G.greenBg, border: `1px solid ${G.greenBorder}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, margin: "0 auto 20px" }}>🔍</div>
+//               <p style={{ fontSize: 15, fontWeight: 700, color: G.navy, margin: "0 0 8px" }}>No Selection</p>
+//               <p style={{ fontSize: 13, color: G.muted, lineHeight: 1.6 }}>Select an override case from the list to analyze the human-in-the-loop logic.</p>
+//             </div>
+//           )}
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+
+
+
+
+
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  StatCard, Avatar, SearchBar, FilterSelect,
-  ActionBtn, PageHeader, SectionCard
-} from "./AdminComponents";
 
-// ─── MOCK DATA ────────────────────────────────────────────────────────────────
+const G = {
+  greenLight:  "#A8E063",
+  green:       "#6EC030",
+  greenDeep:   "#2E7D1F",
+  greenBg:     "#f1fce8",
+  greenBorder: "#d4edbb",
+  navyLight:   "#4A6FA5",
+  navy:        "#1A2B5E",
+  navyDeep:    "#0F1A3B",
+  navyBg:      "#e8edf7",
+  navyBorder:  "#b8c6e0",
+  gradGreen: "linear-gradient(135deg, #A8E063 0%, #2E7D1F 100%)",
+  gradNavy:  "linear-gradient(135deg, #4A6FA5 0%, #0F1A3B 100%)",
+  text:        "#1C1C1C",
+  sub:         "#4b5563",
+  muted:       "#9ca3af",
+  border:      "#e5e7eb",
+  bg:          "#f9fafb",
+  white:       "#ffffff",
+  amber:       "#f59e0b",
+  amberBg:     "#fffbeb",
+  amberBorder: "#fde68a",
+  amberText:   "#92400e",
+  red:         "#ef4444",
+  redBg:       "#fef2f2",
+  redBorder:   "#fecaca",
+  redText:     "#dc2626",
+  blue:        "#3b82f6",
+  blueBg:      "#eff6ff",
+  blueBorder:  "#bfdbfe",
+  blueText:    "#1d4ed8",
+  purple:      "#8b5cf6",
+  purpleBg:    "#f5f3ff",
+};
+const FONT = "'Poppins', sans-serif";
+
+const RESPONSIVE_CSS = `
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+  * { font-family: 'Poppins', sans-serif; }
+  input, select { outline: none; font-family: 'Poppins', sans-serif; }
+
+  /* ── Stats row ── */
+  .ai-stats-row { display: flex; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
+  .ai-stats-row > * { flex: 1 1 130px; min-width: 0; }
+
+  /* ── Overrides 2-col ── */
+  .ai-overrides-grid {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* ── Override card verdict boxes ── */
+  .ai-verdict-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  /* ── Header rows ── */
+  .ai-header-row {
+    display: flex; justify-content: space-between;
+    align-items: flex-start; margin-bottom: 24px;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .ai-header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+
+  /* ── Policy banner ── */
+  .ai-policy-banner {
+    display: flex; align-items: center; gap: 16px;
+    background: ${G.navyBg}; border: 1px solid ${G.navyBorder};
+    border-radius: 14px; padding: 16px 20px;
+    margin-bottom: 24px;
+  }
+
+  /* ─────────────────────────────────
+     TABLET  ≤1024px
+  ───────────────────────────────── */
+  @media (max-width: 1024px) {
+    .ai-overrides-grid { grid-template-columns: 1fr 320px; }
+  }
+
+  /* ─────────────────────────────────
+     MOBILE  ≤768px
+  ───────────────────────────────── */
+  @media (max-width: 768px) {
+    .ai-overrides-grid { grid-template-columns: 1fr; }
+
+    /* Sticky detail panel becomes normal flow */
+    .ai-detail-panel { position: static !important; }
+
+    .ai-policy-banner { flex-direction: column; align-items: flex-start; gap: 12px; }
+  }
+
+  /* ─────────────────────────────────
+     SMALL PHONE  ≤480px
+  ───────────────────────────────── */
+  @media (max-width: 480px) {
+    .ai-padding { padding: 16px 14px 48px !important; }
+    .ai-stats-row > * { flex: 1 1 100%; }
+    .ai-verdict-grid  { grid-template-columns: 1fr; }
+
+    /* Log row: hide confidence bar + timestamp on tiny screens */
+    .ai-log-confidence { display: none; }
+    .ai-log-timestamp  { display: none; }
+  }
+`;
+
+/* ── Shared mini-components ── */
+function StatCard({ label, value, sub, color = "gray" }) {
+  const map = {
+    gray:   { bg: G.bg,      border: G.border,      val: G.text,      lbl: G.muted      },
+    green:  { bg: G.greenBg, border: G.greenBorder, val: G.greenDeep, lbl: G.greenDeep  },
+    orange: { bg: G.amberBg, border: G.amberBorder, val: "#b45309",   lbl: "#b45309"    },
+    red:    { bg: G.redBg,   border: G.redBorder,   val: G.redText,   lbl: G.redText    },
+    blue:   { bg: G.navyBg,  border: G.navyBorder,  val: G.navy,      lbl: G.navy       },
+  };
+  const c = map[color] || map.gray;
+  return (
+    <div style={{ background: c.bg, border: `1px solid ${c.border}`, borderRadius: 14, padding: "16px 20px", flex: 1, minWidth: 0, boxShadow: "0 2px 8px rgba(110,192,48,0.05)" }}>
+      <p style={{ fontSize: 10, fontWeight: 700, color: c.lbl, textTransform: "uppercase", letterSpacing: "0.07em", marginBottom: 6 }}>{label}</p>
+      <p style={{ fontSize: 26, fontWeight: 800, color: c.val, margin: 0, lineHeight: 1 }}>{value}</p>
+      {sub && <p style={{ fontSize: 11, color: G.muted, marginTop: 5 }}>{sub}</p>}
+    </div>
+  );
+}
+
+const btnNavy = {
+  display: "inline-flex", alignItems: "center", gap: 6,
+  fontSize: 12, fontWeight: 700, fontFamily: FONT,
+  background: G.gradNavy, color: G.white,
+  border: "none", borderRadius: 100, padding: "8px 18px", cursor: "pointer",
+  boxShadow: "0 3px 12px rgba(15,26,59,0.25)", whiteSpace: "nowrap",
+};
+const btnGreen = {
+  display: "inline-flex", alignItems: "center", gap: 6,
+  fontSize: 12, fontWeight: 700, fontFamily: FONT,
+  background: G.gradGreen, color: G.white,
+  border: "none", borderRadius: 100, padding: "8px 18px", cursor: "pointer",
+  boxShadow: "0 2px 10px rgba(46,125,31,0.22)", whiteSpace: "nowrap",
+};
+const btnOutline = {
+  display: "inline-flex", alignItems: "center", gap: 6,
+  fontSize: 12, fontWeight: 700, fontFamily: FONT,
+  background: G.greenBg, color: G.greenDeep,
+  border: `1px solid ${G.greenBorder}`,
+  borderRadius: 100, padding: "8px 18px", cursor: "pointer", whiteSpace: "nowrap",
+};
+
+/* ── Mock data ── */
 const mockAILogs = [
-  { id:"AIL-001", action:"Auto-suspended account",       target:"Priya Menon (FL-004)",            confidence:92, outcome:"Executed",    timestamp:"Mar 14, 2026 · 11:42 AM", category:"User",    reason:"Dispute rate 32% — crossed 30% threshold", overridden:false, overrideBy:null,      overrideReason:null },
-  { id:"AIL-002", action:"Auto-flagged suspicious signup",target:"FakeUser999 (CL-005)",            confidence:97, outcome:"Executed",    timestamp:"Mar 14, 2026 · 09:15 AM", category:"User",    reason:"Duplicate device + disposable email detected", overridden:false, overrideBy:null, overrideReason:null },
-  { id:"AIL-003", action:"Auto-reduced visibility",      target:"Priya Menon (FL-004)",            confidence:88, outcome:"Executed",    timestamp:"Mar 12, 2026 · 07:00 AM", category:"User",    reason:"Dispute rate crossed 30% visibility threshold", overridden:false, overrideBy:null, overrideReason:null },
-  { id:"AIL-004", action:"Dispute pre-analysis",         target:"DSP-001 — E-Commerce Revamp",     confidence:71, outcome:"Notified Admin", timestamp:"Mar 10, 2026 · 09:30 AM", category:"Dispute", reason:"Confidence 71% — below auto-action threshold (90%)", overridden:false, overrideBy:null, overrideReason:null },
-  { id:"AIL-005", action:"Dispute pre-analysis",         target:"DSP-002 — Mobile Banking App",    confidence:84, outcome:"Notified Admin", timestamp:"Mar 9, 2026 · 09:00 AM",  category:"Dispute", reason:"Confidence 84% — below auto-action threshold (90%)", overridden:false, overrideBy:null, overrideReason:null },
-  { id:"AIL-006", action:"Auto-approved milestone",      target:"PRJ-004 — Milestone 5",           confidence:95, outcome:"Executed",    timestamp:"Feb 28, 2026 · 08:00 AM", category:"Project", reason:"Client silent 7 days — auto-approval policy triggered", overridden:false, overrideBy:null, overrideReason:null },
-  { id:"AIL-007", action:"Agency overload detected",     target:"TechNova Solutions (AG-001)",     confidence:89, outcome:"Executed",    timestamp:"Mar 7, 2026 · 07:00 AM",  category:"User",    reason:"Team capacity 95% — project limit warning issued", overridden:false, overrideBy:null, overrideReason:null },
-  { id:"AIL-008", action:"Project health flagged",       target:"PRJ-003 — E-Commerce Revamp",     confidence:91, outcome:"Executed",    timestamp:"Mar 10, 2026 · 06:00 AM", category:"Project", reason:"Milestone 1 was 13 days late + 5 scope changes", overridden:false, overrideBy:null, overrideReason:null },
-  { id:"AIL-009", action:"Client silence reminder sent", target:"HealthFirst Clinic — PRJ-002",    confidence:99, outcome:"Executed",    timestamp:"Mar 10, 2026 · 09:00 AM", category:"Project", reason:"Client silent 72 hours — reminder policy triggered", overridden:false, overrideBy:null, overrideReason:null },
-  { id:"AIL-010", action:"Auto-boosted visibility",      target:"Arjun Dev (FL-002)",              confidence:94, outcome:"Executed",    timestamp:"Mar 5, 2026 · 08:00 AM",  category:"User",    reason:"Elite++ badge + 99% delivery + 0% dispute rate", overridden:false, overrideBy:null, overrideReason:null },
-  { id:"AIL-011", action:"Matching recommendation",      target:"PRJ-005 — Brand Identity Design", confidence:87, outcome:"Executed",    timestamp:"Mar 14, 2026 · 01:00 PM", category:"Matching",reason:"Neha Gupta matched 94% to project requirements", overridden:false, overrideBy:null, overrideReason:null },
-  { id:"AIL-012", action:"Fraud pattern detected",       target:"FakeUser999 (CL-005)",            confidence:98, outcome:"Executed",    timestamp:"Feb 28, 2026 · 09:00 AM", category:"User",    reason:"3 failed KYC attempts + mismatched identity signals", overridden:false, overrideBy:null, overrideReason:null },
+  { id:"AIL-001", action:"Auto-suspended account",         target:"Priya Menon (FL-004)",  confidence:92, outcome:"Executed",       timestamp:"Mar 14, 2026 · 11:42 AM", category:"User",    reason:"Dispute rate 32% — crossed 30% threshold"         },
+  { id:"AIL-002", action:"Auto-flagged suspicious signup", target:"FakeUser999 (CL-005)",  confidence:97, outcome:"Executed",       timestamp:"Mar 14, 2026 · 09:15 AM", category:"User",    reason:"Duplicate device + disposable email detected"      },
+  { id:"AIL-004", action:"Dispute pre-analysis",           target:"DSP-001 — E-Commerce",  confidence:71, outcome:"Notified Admin", timestamp:"Mar 10, 2026 · 09:30 AM", category:"Dispute", reason:"Confidence 71% — below threshold"                  },
+  { id:"AIL-006", action:"Auto-approved milestone",        target:"PRJ-004 — MS 5",        confidence:95, outcome:"Executed",       timestamp:"Feb 28, 2026 · 08:00 AM", category:"Project", reason:"Client silent 7 days auto-approval"                },
+  { id:"AIL-012", action:"Fraud pattern detected",         target:"FakeUser999 (CL-005)",  confidence:98, outcome:"Executed",       timestamp:"Feb 28, 2026 · 09:00 AM", category:"User",    reason:"3 failed KYC attempts"                             },
 ];
 
 const mockOverrides = [
-  { id:"OVR-001", aiAction:"Auto-suspend account",       aiVerdict:"Suspend — high risk",         adminDecision:"Reduced visibility only",       adminBy:"Platform Admin", date:"Mar 12, 2026", target:"Karan Malhotra (FL-003)", aiConfidence:78, category:"User",    reason:"Admin disagreed — single high-risk event, not pattern", impactScore:"Medium" },
-  { id:"OVR-002", aiAction:"Dispute auto-decision",      aiVerdict:"Full refund to client (95%)", adminDecision:"Partial refund — 60% to client", adminBy:"Super Admin",    date:"Mar 5, 2026",  target:"DSP-004 — Brand Identity",   aiConfidence:90, category:"Dispute", reason:"Brief was genuinely vague — not fully client's fault", impactScore:"High"   },
-  { id:"OVR-003", aiAction:"Block payout",               aiVerdict:"Hold payout — risk flag",     adminDecision:"Approve payout",                adminBy:"Finance Admin",   date:"Feb 22, 2026", target:"PO-006 — Karan Malhotra",     aiConfidence:72, category:"Payment", reason:"AI risk flag was based on outdated dispute data", impactScore:"Low"    },
-  { id:"OVR-004", aiAction:"Agency project limit",       aiVerdict:"Reduce limit to 3 projects",  adminDecision:"Keep limit at 6 projects",       adminBy:"Platform Admin", date:"Feb 10, 2026", target:"BuildRight Agency (AG-002)",  aiConfidence:81, category:"User",    reason:"Agency proved capacity with updated team documents", impactScore:"High"   },
-  { id:"OVR-005", aiAction:"Auto-flag account",          aiVerdict:"Flag as suspicious",          adminDecision:"No action — false positive",     adminBy:"Support Admin",   date:"Jan 25, 2026", target:"Sneha Kapoor (CL-001)",       aiConfidence:62, category:"User",    reason:"AI triggered on VPN usage — legitimate enterprise client", impactScore:"Low" },
+  {
+    id: "OVR-001",
+    target: "Karan Malhotra (FL-003)",
+    aiVerdict: "Suspend — high risk profile",
+    adminDecision: "Reduced visibility only",
+    adminBy: "Platform Admin",
+    date: "Mar 12, 2026",
+    confidence: 78,
+    category: "User Behavior",
+    impact: "High",
+    reason: "Admin disagreed with the severity. The high-risk signals were triggered by a single dispute event rather than a sustained pattern of policy violations.",
+  },
+  {
+    id: "OVR-002",
+    target: "DSP-004 — Brand Identity",
+    aiVerdict: "Full refund to client (95%)",
+    adminDecision: "Partial refund (60% to client)",
+    adminBy: "Super Admin",
+    date: "Mar 5, 2026",
+    confidence: 90,
+    category: "Dispute",
+    impact: "Medium",
+    reason: "The project brief was genuinely vague. While the talent failed delivery, the client did not provide sufficient documentation, justifying a shared loss.",
+  },
 ];
 
-const categoryColor = {
-  User:    "bg-green-100 text-green-700",
-  Dispute: "bg-red-100 text-red-700",
-  Project: "bg-purple-100 text-purple-700",
-  Payment: "bg-blue-100 text-blue-700",
-  Matching:"bg-orange-100 text-orange-700",
-};
-
-const outcomeStyle = {
-  "Executed":      "bg-green-50 text-green-700 border border-green-200",
-  "Notified Admin":"bg-yellow-50 text-yellow-700 border border-yellow-200",
-  "Blocked":       "bg-red-50 text-red-600 border border-red-200",
-  "Overridden":    "bg-orange-50 text-orange-700 border border-orange-200",
-};
-
-const impactStyle = {
-  High:   "bg-red-50 text-red-600 border border-red-200",
-  Medium: "bg-yellow-50 text-yellow-700 border border-yellow-200",
-  Low:    "bg-gray-50 text-gray-500 border border-gray-200",
-};
-
-// ─── PAGE 1: /admin/ai-logs ───────────────────────────────────────────────────
+/* ══ PAGE 1 — AI LOGS ═══════════════════════════════════════════════════════ */
 export function AdminAILogs() {
   const navigate = useNavigate();
-  const [search, setSearch] = useState("");
+  const [search,         setSearch]   = useState("");
   const [categoryFilter, setCategory] = useState("");
-  const [outcomeFilter, setOutcome] = useState("");
-  const [expanded, setExpanded] = useState(null);
+  const [outcomeFilter,  setOutcome]  = useState("");
+  const [expanded,       setExpanded] = useState(null);
 
   const filtered = mockAILogs.filter(l => {
     const q = search.toLowerCase();
     return (
-      (l.action.toLowerCase().includes(q) || l.target.toLowerCase().includes(q) || l.id.toLowerCase().includes(q)) &&
+      (l.action.toLowerCase().includes(q) || l.target.toLowerCase().includes(q)) &&
       (!categoryFilter || l.category === categoryFilter) &&
-      (!outcomeFilter  || l.outcome === outcomeFilter)
+      (!outcomeFilter  || l.outcome  === outcomeFilter)
     );
   });
 
-  const autoActed    = mockAILogs.filter(l => l.outcome === "Executed").length;
-  const notified     = mockAILogs.filter(l => l.outcome === "Notified Admin").length;
-  const overridden   = mockAILogs.filter(l => l.overridden).length;
-  const avgConfidence = Math.round(mockAILogs.reduce((s, l) => s + l.confidence, 0) / mockAILogs.length);
+  const outcomeStyle = (out) => {
+    if (out === "Executed")       return { bg: G.greenBg, text: G.greenDeep, border: G.greenBorder };
+    if (out === "Notified Admin") return { bg: G.amberBg, text: G.amberText, border: G.amberBorder };
+    return                               { bg: G.bg,      text: G.muted,     border: G.border      };
+  };
+
+  const selectStyle = (active) => ({
+    fontSize: 12, fontWeight: 600, fontFamily: FONT,
+    border: `1.5px solid ${active ? G.green : G.greenBorder}`,
+    borderRadius: 100, padding: "8px 14px",
+    background: active ? G.greenBg : G.white,
+    color: active ? G.greenDeep : G.sub,
+    cursor: "pointer", outline: "none",
+  });
 
   return (
-    <div className="p-6">
-      <PageHeader
-        title="AI Decisions Log"
-        subtitle="Every AI action — what it did, why, and how confident it was"
-        actions={
-          <div className="flex gap-2">
-            <ActionBtn label="AI Settings →" onClick={() => navigate("/admin/ai-settings")} />
-            <ActionBtn label="Admin Overrides →" onClick={() => navigate("/admin/ai-overrides")} />
-            <ActionBtn label="⬇ Export" />
-          </div>
-        }
-      />
+    <div className="ai-padding" style={{ padding: "28px 28px 64px", fontFamily: FONT, background: G.bg, minHeight: "100%" }}>
+      <style>{RESPONSIVE_CSS}</style>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <StatCard label="Total AI Actions" value={mockAILogs.length}   color="gray"   />
-        <StatCard label="Auto-Executed"    value={autoActed}            sub="No admin needed" color="green"  />
-        <StatCard label="Notified Admin"   value={notified}             sub="Needed review"   color="orange" />
-        <StatCard label="Avg Confidence"   value={`${avgConfidence}%`}  color="blue"   />
+      {/* Header */}
+      <div className="ai-header-row">
+        <div>
+          <h1 style={{ fontSize: 22, fontWeight: 800, color: G.text, margin: 0, letterSpacing: "-0.4px" }}>AI Decisions Log</h1>
+          <p style={{ fontSize: 13, color: G.muted, marginTop: 3 }}>Immutable ledger of every autonomous platform action</p>
+        </div>
+        <div className="ai-header-actions">
+          <button style={btnOutline} onClick={() => navigate("/admin/ai-overrides")}>Admin Overrides →</button>
+          <button style={btnNavy}>⬇ Export Logs</button>
+        </div>
       </div>
 
-      {/* Info Banner */}
-      <div className="bg-blue-50 border border-blue-100 rounded-xl p-3.5 mb-5 flex items-start gap-3">
-        <span className="text-blue-500 text-sm shrink-0 mt-0.5">◎</span>
-        <p className="text-xs text-blue-700 leading-relaxed">
-          AI acts automatically when confidence ≥ 90%. Between 65–90%, admin is notified. Below 65%, manual review only.
-          Every decision here is immutable and logged permanently.
+      {/* Stats */}
+      <div className="ai-stats-row">
+        <StatCard label="Total AI Actions" value={mockAILogs.length} color="gray"   />
+        <StatCard label="Auto-Executed"    value="84%"  sub="No intervention"   color="green"  />
+        <StatCard label="Avg Confidence"   value="91.2%"                         color="blue"   />
+        <StatCard label="Manual Overrides" value="3"    sub="Retraining queued" color="orange" />
+      </div>
+
+      {/* Policy banner */}
+      <div className="ai-policy-banner">
+        <div style={{ width: 40, height: 40, borderRadius: "50%", background: G.gradNavy, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>◎</div>
+        <p style={{ fontSize: 12, color: G.navy, margin: 0, flex: 1, lineHeight: 1.6 }}>
+          <b>Policy:</b> Confidence <b>≥ 90%</b> triggers auto-execution. <b>65–89%</b> notifies specialized admin. Below <b>65%</b> is ignored and logged for model drift analysis.
         </p>
-        <ActionBtn label="Change Thresholds" onClick={() => navigate("/admin/ai-settings")} />
+        <button style={{ ...btnOutline, background: G.white }}>Edit Thresholds</button>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-        <div className="p-4 border-b border-gray-50 flex flex-wrap gap-3 items-center justify-between">
-          <SearchBar value={search} onChange={setSearch} placeholder="Search action, target, log ID...">
-            <FilterSelect value={categoryFilter} onChange={setCategory} label="All Categories"
-              options={["User","Dispute","Project","Payment","Matching"].map(v => ({ value:v, label:v }))} />
-            <FilterSelect value={outcomeFilter} onChange={setOutcome} label="All Outcomes"
-              options={["Executed","Notified Admin","Overridden"].map(v => ({ value:v, label:v }))} />
-          </SearchBar>
-          <span className="text-xs text-gray-400">{filtered.length} of {mockAILogs.length} logs</span>
+      {/* Table card */}
+      <div style={{ background: G.white, border: `1px solid ${G.greenBorder}`, borderRadius: 16, overflow: "hidden", boxShadow: "0 2px 12px rgba(110,192,48,0.06)" }}>
+
+        {/* Filter bar */}
+        <div style={{ padding: "14px 20px", background: G.greenBg, borderBottom: `1px solid ${G.greenBorder}`, display: "flex", gap: 10, alignItems: "center", flexWrap: "wrap" }}>
+          <div style={{ position: "relative", flex: "1 1 180px", maxWidth: 300 }}>
+            <span style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)", fontSize: 13, color: G.muted }}>🔍</span>
+            <input placeholder="Search logs…" value={search} onChange={e => setSearch(e.target.value)}
+              style={{ width: "100%", fontSize: 12, fontWeight: 500, border: `1.5px solid ${G.greenBorder}`, borderRadius: 100, padding: "8px 12px 8px 32px", background: G.white, color: G.text, boxSizing: "border-box" }}
+            />
+          </div>
+          <select value={categoryFilter} onChange={e => setCategory(e.target.value)} style={selectStyle(!!categoryFilter)}>
+            <option value="">All Categories</option>
+            {["User","Dispute","Project"].map(o => <option key={o} value={o}>{o}</option>)}
+          </select>
+          <select value={outcomeFilter} onChange={e => setOutcome(e.target.value)} style={selectStyle(!!outcomeFilter)}>
+            <option value="">All Outcomes</option>
+            {["Executed","Notified Admin"].map(o => <option key={o} value={o}>{o}</option>)}
+          </select>
+          <span style={{ fontSize: 11, color: G.muted, fontWeight: 600, marginLeft: "auto" }}>{filtered.length} results</span>
         </div>
 
-        <div className="divide-y divide-gray-50">
-          {filtered.map(log => (
-            <div key={log.id} className="hover:bg-gray-50/50 transition-colors">
-              <div className="flex items-start gap-4 p-4 cursor-pointer"
-                onClick={() => setExpanded(expanded === log.id ? null : log.id)}>
+        {/* Log rows */}
+        <div>
+          {filtered.map(log => {
+            const s     = outcomeStyle(log.outcome);
+            const isExp = expanded === log.id;
+            return (
+              <div key={log.id} style={{ borderBottom: `1px solid ${G.border}` }}>
+                <div
+                  onClick={() => setExpanded(isExp ? null : log.id)}
+                  style={{ padding: "16px 20px", display: "flex", alignItems: "center", gap: 16, cursor: "pointer", background: isExp ? G.greenBg : G.white, transition: "background 0.12s" }}
+                  onMouseEnter={e => { if (!isExp) e.currentTarget.style.background = G.bg; }}
+                  onMouseLeave={e => { if (!isExp) e.currentTarget.style.background = G.white; }}
+                >
+                  <div style={{ width: 9, height: 9, borderRadius: "50%", background: log.confidence >= 90 ? G.green : G.amber, flexShrink: 0 }} />
 
-                {/* Category icon */}
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold shrink-0 mt-0.5 ${categoryColor[log.category] || "bg-gray-100 text-gray-500"}`}>
-                  ◎
-                </div>
-
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                    <span className="text-sm font-bold text-gray-800">{log.action}</span>
-                    <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${outcomeStyle[log.outcome]}`}>
-                      {log.outcome}
-                    </span>
-                    {log.overridden && (
-                      <span className="text-[11px] bg-orange-50 text-orange-600 border border-orange-200 px-2 py-0.5 rounded-full font-semibold">
-                        Overridden
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4, flexWrap: "wrap" }}>
+                      <span style={{ fontSize: 14, fontWeight: 700, color: G.text }}>{log.action}</span>
+                      <span style={{ fontSize: 10, fontWeight: 800, padding: "2px 9px", borderRadius: 99, background: s.bg, color: s.text, border: `1px solid ${s.border}` }}>
+                        {log.outcome.toUpperCase()}
                       </span>
-                    )}
+                      <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 99, background: G.navyBg, color: G.navy, border: `1px solid ${G.navyBorder}` }}>
+                        {log.category}
+                      </span>
+                    </div>
+                    <span style={{ fontSize: 12, color: G.muted }}>Target: {log.target}</span>
                   </div>
-                  <p className="text-xs text-gray-500 truncate">→ {log.target}</p>
-                </div>
 
-                {/* Confidence */}
-                <div className="flex items-center gap-2 shrink-0">
-                  <div className="w-16 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                    <div className={`h-full rounded-full ${log.confidence >= 90 ? "bg-green-500" : log.confidence >= 65 ? "bg-yellow-400" : "bg-red-400"}`}
-                      style={{ width: `${log.confidence}%` }} />
+                  <div className="ai-log-confidence" style={{ textAlign: "right", marginRight: 16, flexShrink: 0 }}>
+                    <div style={{ fontSize: 14, fontWeight: 800, color: G.navy, marginBottom: 5 }}>{log.confidence}%</div>
+                    <div style={{ width: 64, height: 5, background: G.border, borderRadius: 99, overflow: "hidden" }}>
+                      <div style={{ width: `${log.confidence}%`, height: "100%", background: log.confidence >= 90 ? G.green : G.amber, borderRadius: 99 }} />
+                    </div>
                   </div>
-                  <span className={`text-xs font-bold w-8 text-right ${log.confidence >= 90 ? "text-green-600" : log.confidence >= 65 ? "text-yellow-600" : "text-red-500"}`}>
-                    {log.confidence}%
-                  </span>
+
+                  <div className="ai-log-timestamp" style={{ fontSize: 11, color: G.muted, textAlign: "right", flexShrink: 0, minWidth: 110 }}>
+                    {log.timestamp}
+                    <div style={{ fontSize: 10, fontWeight: 700, color: G.navyLight, marginTop: 2 }}>{log.id}</div>
+                  </div>
+
+                  <span style={{ fontSize: 10, color: G.muted, transform: isExp ? "rotate(90deg)" : "none", transition: "transform 0.2s", flexShrink: 0 }}>▶</span>
                 </div>
 
-                <div className="text-right shrink-0 ml-2">
-                  <p className="text-xs text-gray-400">{log.timestamp}</p>
-                  <p className="text-[10px] text-gray-300">{log.id}</p>
-                </div>
-
-                <span className={`text-gray-400 text-xs mt-1.5 shrink-0 transition-transform ${expanded === log.id ? "rotate-90" : ""}`}>▶</span>
+                {isExp && (
+                  <div style={{ padding: "0 20px 18px 46px" }}>
+                    <div style={{ background: G.bg, border: `1px solid ${G.border}`, borderRadius: 12, padding: "14px 16px" }}>
+                      <p style={{ margin: "0 0 8px", fontSize: 12, color: G.sub }}><b>Reasoning:</b> {log.reason}</p>
+                      <p style={{ margin: "0 0 12px", fontSize: 11, color: G.muted }}>Category: {log.category} · Retraining Status: Queued</p>
+                      <button style={btnOutline}>Override Decision</button>
+                    </div>
+                  </div>
+                )}
               </div>
-
-              {expanded === log.id && (
-                <div className="px-4 pb-4 ml-12">
-                  <div className="bg-gray-50 rounded-xl border border-gray-100 p-4 space-y-2">
-                    {[
-                      { label:"Log ID",      value:log.id           },
-                      { label:"Action",      value:log.action       },
-                      { label:"Target",      value:log.target       },
-                      { label:"Category",    value:log.category     },
-                      { label:"Outcome",     value:log.outcome      },
-                      { label:"Confidence",  value:`${log.confidence}%` },
-                      { label:"Reason",      value:log.reason       },
-                      { label:"Timestamp",   value:log.timestamp    },
-                    ].map(item => (
-                      <div key={item.label} className="flex items-start gap-3">
-                        <span className="text-[10px] text-gray-400 font-semibold uppercase tracking-wide w-20 shrink-0 pt-0.5">{item.label}</span>
-                        <span className="text-xs text-gray-700 font-medium">{item.value}</span>
-                      </div>
-                    ))}
-                    {!log.overridden && log.outcome === "Executed" && (
-                      <div className="pt-2 border-t border-gray-200">
-                        <ActionBtn
-                          label="Override This Decision"
-                          variant="warning"
-                          onClick={() => navigate("/admin/ai-overrides")}
-                        />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {filtered.length === 0 && (
-          <div className="py-16 text-center"><p className="text-gray-400 text-sm">No AI logs match your filters</p></div>
+          <div style={{ padding: "56px 20px", textAlign: "center" }}>
+            <div style={{ width: 52, height: 52, borderRadius: "50%", background: G.greenBg, border: `1px solid ${G.greenBorder}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, margin: "0 auto 12px" }}>◎</div>
+            <p style={{ fontSize: 14, fontWeight: 700, color: G.text }}>No logs match your filters</p>
+          </div>
         )}
-        <div className="px-4 py-3 border-t border-gray-100 flex justify-between items-center">
-          <span className="text-xs text-gray-400">Showing {filtered.length} of {mockAILogs.length} AI actions</span>
-          <ActionBtn label="⬇ Export Logs" />
+
+        {/* Footer */}
+        <div style={{ padding: "12px 20px", background: G.greenBg, borderTop: `1px solid ${G.greenBorder}`, display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8 }}>
+          <span style={{ fontSize: 11, color: G.muted, fontWeight: 600 }}>Showing {filtered.length} of {mockAILogs.length} logs</span>
+          <div style={{ display: "flex", gap: 6 }}>
+            {["← Prev","Next →"].map(label => (
+              <button key={label} style={{ fontSize: 12, fontWeight: 600, fontFamily: FONT, padding: "7px 14px", border: `1px solid ${G.greenBorder}`, borderRadius: 100, background: G.white, color: G.greenDeep, cursor: "pointer" }}
+                onMouseEnter={e => { e.currentTarget.style.background = G.greenBg; e.currentTarget.style.borderColor = G.green; }}
+                onMouseLeave={e => { e.currentTarget.style.background = G.white;   e.currentTarget.style.borderColor = G.greenBorder; }}
+              >{label}</button>
+            ))}
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
-// ─── PAGE 2: /admin/ai-overrides ─────────────────────────────────────────────
+/* ══ PAGE 2 — ADMIN OVERRIDES ═══════════════════════════════════════════════ */
 export function AdminAIOverrides() {
   const navigate = useNavigate();
-  const [search, setSearch] = useState("");
-  const [categoryFilter, setCategory] = useState("");
-  const [impactFilter, setImpact] = useState("");
   const [selected, setSelected] = useState(null);
-  const [showAddOverride, setShowAddOverride] = useState(false);
-  const [newOverride, setNewOverride] = useState({ logId:"", reason:"" });
-
-  const filtered = mockOverrides.filter(o => {
-    const q = search.toLowerCase();
-    return (
-      (o.target.toLowerCase().includes(q) || o.adminBy.toLowerCase().includes(q) || o.id.toLowerCase().includes(q)) &&
-      (!categoryFilter || o.category === categoryFilter) &&
-      (!impactFilter   || o.impactScore === impactFilter)
-    );
-  });
+  const [hovCard,  setHovCard]  = useState(null);
 
   return (
-    <div className="p-6">
-      <PageHeader
-        title="Admin Overrides"
-        subtitle="Cases where admin overruled AI — used to improve the model"
-        actions={
-          <div className="flex gap-2">
-            <ActionBtn label="AI Logs →"      onClick={() => navigate("/admin/ai-logs")} />
-            <ActionBtn label="AI Settings →"  onClick={() => navigate("/admin/ai-settings")} />
-            <ActionBtn label="+ Add Override" variant="primary" size="md" onClick={() => setShowAddOverride(true)} />
-          </div>
-        }
-      />
+    <div className="ai-padding" style={{ padding: "28px 28px 64px", fontFamily: FONT, background: G.bg, minHeight: "100%" }}>
+      <style>{RESPONSIVE_CSS}</style>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-        <StatCard label="Total Overrides"   value={mockOverrides.length}                                             color="gray"   />
-        <StatCard label="High Impact"       value={mockOverrides.filter(o => o.impactScore === "High").length}       sub="Major AI correction"  color="red"    />
-        <StatCard label="False Positives"   value={mockOverrides.filter(o => o.aiConfidence < 80).length}            sub="AI was uncertain"     color="orange" />
-        <StatCard label="Avg AI Confidence" value={`${Math.round(mockOverrides.reduce((s,o)=>s+o.aiConfidence,0)/mockOverrides.length)}%`} sub="At time of override" color="blue" />
-      </div>
-
-      {/* Learning loop banner */}
-      <div className="bg-purple-50 border border-purple-100 rounded-xl p-4 mb-5 flex items-start gap-3">
-        <span className="text-purple-500 text-lg shrink-0">◎</span>
+      {/* Header */}
+      <div className="ai-header-row" style={{ marginBottom: 28 }}>
         <div>
-          <p className="text-sm font-bold text-purple-800">AI Learning Loop</p>
-          <p className="text-xs text-purple-600 mt-0.5">
-            Every admin override is fed back into the AI model during retraining. Overrides with clear reasons improve accuracy.
-            High-impact overrides are prioritized in the next training cycle.
-          </p>
+          <button onClick={() => navigate("/admin/ai-logs")}
+            style={{ border: "none", background: "none", color: G.navyLight, cursor: "pointer", fontSize: 13, fontWeight: 600, padding: 0, marginBottom: 10, display: "flex", alignItems: "center", gap: 5 }}>
+            ← Back to AI Logs
+          </button>
+          <h1 style={{ fontSize: 22, fontWeight: 800, color: G.text, margin: 0, letterSpacing: "-0.4px" }}>Admin Overrides</h1>
+          <p style={{ fontSize: 13, color: G.muted, marginTop: 3 }}>Human intelligence refining platform automation</p>
         </div>
-        <span className="text-[11px] bg-purple-100 text-purple-700 border border-purple-200 px-2 py-0.5 rounded-full font-semibold shrink-0">
-          {mockOverrides.length} overrides queued
-        </span>
+        <button style={btnNavy}>+ Create Manual Override</button>
       </div>
 
-      <div className="flex gap-5">
-        {/* List */}
-        <div className="flex-1 min-w-0">
-          <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-            <div className="p-4 border-b border-gray-50 flex flex-wrap gap-3 items-center justify-between">
-              <SearchBar value={search} onChange={setSearch} placeholder="Search target, admin, override ID...">
-                <FilterSelect value={categoryFilter} onChange={setCategory} label="All Categories"
-                  options={["User","Dispute","Project","Payment"].map(v=>({value:v,label:v}))} />
-                <FilterSelect value={impactFilter} onChange={setImpact} label="All Impact"
-                  options={["High","Medium","Low"].map(v=>({value:v,label:v}))} />
-              </SearchBar>
-              <span className="text-xs text-gray-400">{filtered.length} overrides</span>
-            </div>
+      <div className="ai-overrides-grid">
 
-            <div className="divide-y divide-gray-50">
-              {filtered.map(o => (
-                <div key={o.id}
-                  onClick={() => setSelected(selected?.id === o.id ? null : o)}
-                  className={`p-4 cursor-pointer hover:bg-gray-50/50 transition-colors ${selected?.id === o.id ? "bg-green-50/30" : ""}`}>
-
-                  <div className="flex items-start justify-between gap-3 mb-3">
-                    <div>
-                      <div className="flex items-center gap-2 flex-wrap mb-0.5">
-                        <span className="text-xs font-mono text-gray-400">{o.id}</span>
-                        <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${impactStyle[o.impactScore]}`}>
-                          {o.impactScore} Impact
-                        </span>
-                        <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${categoryColor[o.category] || "bg-gray-100 text-gray-500"}`}>
-                          {o.category}
-                        </span>
-                      </div>
-                      <p className="text-sm font-bold text-gray-800">{o.target}</p>
-                      <p className="text-xs text-gray-400 mt-0.5">{o.date} · by {o.adminBy}</p>
-                    </div>
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      <div className="w-12 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                        <div className={`h-full rounded-full ${o.aiConfidence >= 80 ? "bg-green-500" : o.aiConfidence >= 65 ? "bg-yellow-400" : "bg-red-400"}`}
-                          style={{ width: `${o.aiConfidence}%` }} />
-                      </div>
-                      <span className="text-xs font-bold text-gray-500">{o.aiConfidence}%</span>
-                    </div>
+        {/* Override cards */}
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          {mockOverrides.map(ovr => {
+            const isActive = selected?.id === ovr.id;
+            const isHov    = hovCard === ovr.id;
+            return (
+              <div key={ovr.id}
+                onClick={() => setSelected(ovr)}
+                onMouseEnter={() => setHovCard(ovr.id)}
+                onMouseLeave={() => setHovCard(null)}
+                style={{
+                  background: G.white,
+                  border: `1.5px solid ${isActive ? G.green : isHov ? G.greenBorder : G.border}`,
+                  borderRadius: 16, padding: "20px 22px", cursor: "pointer",
+                  boxShadow: isActive ? "0 6px 24px rgba(110,192,48,0.13)" : isHov ? "0 4px 16px rgba(110,192,48,0.07)" : "0 2px 8px rgba(110,192,48,0.04)",
+                  transform: isActive ? "translateY(-2px)" : "none",
+                  transition: "border-color 0.15s, box-shadow 0.15s, transform 0.15s",
+                }}
+              >
+                {/* Top meta */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14, flexWrap: "wrap", gap: 8 }}>
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                    <span style={{ fontSize: 10, fontWeight: 800, color: G.navy, background: G.navyBg, padding: "3px 10px", borderRadius: 99, border: `1px solid ${G.navyBorder}` }}>{ovr.id}</span>
+                    <span style={{ fontSize: 10, fontWeight: 800, color: G.amberText, background: G.amberBg, padding: "3px 10px", borderRadius: 99, border: `1px solid ${G.amberBorder}` }}>{ovr.impact} IMPACT</span>
                   </div>
+                  <span style={{ fontSize: 11, fontWeight: 600, color: G.muted }}>{ovr.date}</span>
+                </div>
 
-                  {/* AI vs Admin */}
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="p-2.5 bg-blue-50 rounded-lg border border-blue-100">
-                      <p className="text-[10px] text-blue-500 font-semibold mb-0.5">◎ AI SAID</p>
-                      <p className="text-xs text-blue-800 font-medium">{o.aiVerdict}</p>
+                <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 700, color: G.text }}>{ovr.target}</h3>
+
+                {/* AI vs Admin verdict */}
+                <div className="ai-verdict-grid">
+                  <div style={{ background: G.navyBg, padding: "14px", borderRadius: 12, border: `1px solid ${G.navyBorder}` }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 6 }}>
+                      <span style={{ fontSize: 12 }}>◎</span>
+                      <p style={{ margin: 0, fontSize: 10, fontWeight: 800, color: G.navyLight, textTransform: "uppercase", letterSpacing: "0.06em" }}>AI Verdict</p>
                     </div>
-                    <div className="p-2.5 bg-green-50 rounded-lg border border-green-100">
-                      <p className="text-[10px] text-green-500 font-semibold mb-0.5">👤 ADMIN DECIDED</p>
-                      <p className="text-xs text-green-800 font-medium">{o.adminDecision}</p>
+                    <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: G.navy }}>{ovr.aiVerdict}</p>
+                    <p style={{ margin: "4px 0 0", fontSize: 11, color: G.navyLight }}>Confidence: {ovr.confidence}%</p>
+                  </div>
+                  <div style={{ background: G.greenBg, padding: "14px", borderRadius: 12, border: `1px solid ${G.greenBorder}` }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 6 }}>
+                      <span style={{ fontSize: 12 }}>👤</span>
+                      <p style={{ margin: 0, fontSize: 10, fontWeight: 800, color: G.greenDeep, textTransform: "uppercase", letterSpacing: "0.06em" }}>Admin Decision</p>
                     </div>
+                    <p style={{ margin: 0, fontSize: 13, fontWeight: 600, color: G.greenDeep }}>{ovr.adminDecision}</p>
+                    <p style={{ margin: "4px 0 0", fontSize: 11, color: G.greenDeep, opacity: 0.7 }}>By {ovr.adminBy}</p>
                   </div>
                 </div>
-              ))}
-            </div>
-
-            {filtered.length === 0 && (
-              <div className="py-16 text-center"><p className="text-gray-400 text-sm">No overrides found</p></div>
-            )}
-            <div className="px-4 py-3 border-t border-gray-100">
-              <span className="text-xs text-gray-400">Showing {filtered.length} of {mockOverrides.length} overrides</span>
-            </div>
-          </div>
+              </div>
+            );
+          })}
         </div>
 
-        {/* Detail / Add Override Panel */}
-        <div className="w-72 shrink-0">
-          {showAddOverride ? (
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden sticky top-6">
-              <div className="px-5 py-3.5 border-b border-gray-100 flex items-center justify-between">
-                <h3 className="text-sm font-bold text-gray-800">Add Override</h3>
-                <button onClick={() => setShowAddOverride(false)} className="text-gray-400 hover:text-gray-600">✕</button>
+        {/* Detail panel */}
+        <div className="ai-detail-panel" style={{ background: G.white, border: `1px solid ${G.greenBorder}`, borderRadius: 20, padding: 28, position: "sticky", top: 28, boxShadow: "0 4px 24px rgba(110,192,48,0.08)" }}>
+          {selected ? (
+            <>
+              <div style={{ textAlign: "center", marginBottom: 24 }}>
+                <div style={{ width: 52, height: 52, borderRadius: "50%", background: G.greenBg, border: `1px solid ${G.greenBorder}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, margin: "0 auto 12px" }}>🧠</div>
+                <h2 style={{ fontSize: 18, fontWeight: 800, color: G.navy, margin: "0 0 4px" }}>Logic Analysis</h2>
+                <p style={{ fontSize: 12, color: G.muted }}>Correction submitted by {selected.adminBy}</p>
               </div>
-              <div className="p-5 space-y-4">
-                <div>
-                  <label className="text-xs font-semibold text-gray-500 block mb-1.5">AI Log ID *</label>
-                  <input value={newOverride.logId}
-                    onChange={e => setNewOverride({...newOverride, logId: e.target.value})}
-                    placeholder="e.g. AIL-001"
-                    className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 placeholder-gray-400" />
-                </div>
-                <div>
-                  <label className="text-xs font-semibold text-gray-500 block mb-1.5">Override Reason *</label>
-                  <textarea value={newOverride.reason}
-                    onChange={e => setNewOverride({...newOverride, reason: e.target.value})}
-                    placeholder="Why are you overriding this AI decision? Be specific — this improves the model."
-                    className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 resize-none placeholder-gray-400"
-                    rows={4} />
-                </div>
-                <div className="p-3 bg-yellow-50 rounded-lg border border-yellow-100">
-                  <p className="text-xs text-yellow-700">
-                    ⚠ Your override will be logged permanently and used to retrain the AI model.
-                  </p>
-                </div>
-                <div className="flex gap-2">
-                  <ActionBtn label="Cancel" onClick={() => setShowAddOverride(false)} />
-                  <button
-                    disabled={!newOverride.logId || !newOverride.reason}
-                    className="flex-1 py-2 text-sm font-bold bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
-                    onClick={() => setShowAddOverride(false)}>
-                    Submit Override
-                  </button>
+
+              <div style={{ marginBottom: 20 }}>
+                <label style={{ fontSize: 10, fontWeight: 800, color: G.muted, display: "block", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.07em" }}>Override Justification</label>
+                <div style={{ background: G.bg, padding: "16px", borderRadius: 14, fontSize: 13, lineHeight: 1.65, color: G.text, border: `1px solid ${G.border}`, fontStyle: "italic" }}>
+                  "{selected.reason}"
                 </div>
               </div>
-            </div>
-          ) : selected ? (
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden sticky top-6">
-              <div className="px-5 py-3.5 border-b border-gray-100 flex items-center justify-between">
-                <h3 className="text-sm font-bold text-gray-800">Override Detail</h3>
-                <button onClick={() => setSelected(null)} className="text-gray-400 hover:text-gray-600">✕</button>
-              </div>
-              <div className="p-5 space-y-4">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${impactStyle[selected.impactScore]}`}>
-                    {selected.impactScore} Impact
-                  </span>
-                  <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${categoryColor[selected.category]}`}>
-                    {selected.category}
-                  </span>
-                </div>
 
-                <div>
-                  <p className="text-xs text-gray-400 mb-0.5">Target</p>
-                  <p className="text-sm font-bold text-gray-800">{selected.target}</p>
-                </div>
-
-                <div className="p-3 bg-blue-50 rounded-xl border border-blue-100">
-                  <p className="text-[10px] text-blue-500 font-semibold mb-1">◎ AI DECISION ({selected.aiConfidence}% confidence)</p>
-                  <p className="text-sm text-blue-800 font-medium">{selected.aiVerdict}</p>
-                </div>
-
-                <div className="p-3 bg-green-50 rounded-xl border border-green-100">
-                  <p className="text-[10px] text-green-500 font-semibold mb-1">👤 ADMIN DECISION</p>
-                  <p className="text-sm text-green-800 font-medium">{selected.adminDecision}</p>
-                </div>
-
-                <div>
-                  <p className="text-xs text-gray-400 mb-1 font-semibold">Override Reason</p>
-                  <p className="text-xs text-gray-700 leading-relaxed bg-gray-50 rounded-lg p-2.5 border border-gray-100">
-                    {selected.reason}
-                  </p>
-                </div>
-
-                <div className="space-y-1.5 text-xs">
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Override ID</span>
-                    <span className="font-mono font-semibold text-gray-600">{selected.id}</span>
+              <div style={{ background: G.gradNavy, padding: "18px 20px", borderRadius: 14, marginBottom: 20, position: "relative", overflow: "hidden" }}>
+                <div style={{ position: "absolute", right: -10, bottom: -10, fontSize: 56, opacity: 0.08, pointerEvents: "none" }}>⚙️</div>
+                <label style={{ fontSize: 10, fontWeight: 800, color: "rgba(255,255,255,0.4)", display: "block", marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.07em" }}>Model Retraining Status</label>
+                <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
+                  <div style={{ flex: 1 }}>
+                    <p style={{ margin: 0, fontSize: 14, fontWeight: 700, color: G.white }}>Queued for Batch #42</p>
+                    <p style={{ margin: "2px 0 0", fontSize: 11, color: "rgba(255,255,255,0.45)" }}>Priority: {selected.impact === "High" ? "Immediate" : "Standard"}</p>
                   </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">By</span>
-                    <span className="font-semibold text-gray-700">{selected.adminBy}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Date</span>
-                    <span className="font-semibold text-gray-700">{selected.date}</span>
-                  </div>
-                </div>
-
-                <div className="p-3 bg-purple-50 rounded-lg border border-purple-100">
-                  <p className="text-[10px] text-purple-600 font-semibold">◎ AI LEARNING STATUS</p>
-                  <p className="text-xs text-purple-700 mt-0.5">Queued for next model retraining cycle</p>
+                  <span style={{ padding: "4px 12px", borderRadius: 8, background: "rgba(255,255,255,0.1)", fontSize: 11, fontWeight: 700, color: G.greenLight, border: "1px solid rgba(255,255,255,0.15)" }}>PENDING</span>
                 </div>
               </div>
-            </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                <button style={{ ...btnNavy, width: "100%", justifyContent: "center" }}>Download Technical Audit</button>
+                <button style={{ ...btnOutline, width: "100%", justifyContent: "center" }}>View Original AI Log</button>
+              </div>
+            </>
           ) : (
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-8 text-center sticky top-6">
-              <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center mx-auto mb-3">
-                <span className="text-purple-400 text-lg">◎</span>
-              </div>
-              <p className="text-sm text-gray-500 mb-3">Select an override to view details</p>
-              <ActionBtn label="+ Add Override" variant="primary" onClick={() => setShowAddOverride(true)} />
+            <div style={{ textAlign: "center", padding: "60px 0" }}>
+              <div style={{ width: 64, height: 64, borderRadius: "50%", background: G.greenBg, border: `1px solid ${G.greenBorder}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, margin: "0 auto 20px" }}>🔍</div>
+              <p style={{ fontSize: 15, fontWeight: 700, color: G.navy, margin: "0 0 8px" }}>No Selection</p>
+              <p style={{ fontSize: 13, color: G.muted, lineHeight: 1.6 }}>Select an override case from the list to analyze the human-in-the-loop logic.</p>
             </div>
           )}
         </div>
