@@ -37,7 +37,7 @@ const TYPE_DESC = {
   warning:  "Urgent alert or risk",
 };
 
-export default function MessageTypeSelector({ selectedType, onSelect }) {
+function MessageTypeSelector({ selectedType, onSelect }) {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const current = messageTypes.find(t => t.value === selectedType) || messageTypes[0];
@@ -126,3 +126,5 @@ export default function MessageTypeSelector({ selectedType, onSelect }) {
     </div>
   );
 }
+
+export default MessageTypeSelector;

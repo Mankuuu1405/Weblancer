@@ -7,7 +7,6 @@ import Signin from './components/Signin';
 
 // Admin - Layout
 import AdminLayout from "./AdminPanel/AdminLayout";
-import FreelancerLayout from "./Freelancer/FreelancerLayout";
 
 // Admin - User Management
 import AdminUsers from "./AdminPanel/AdminUsers";
