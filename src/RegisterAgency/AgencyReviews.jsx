@@ -92,6 +92,81 @@ const PENDING_REQUESTS = [
   { contract:"CON-2025-009", client:"GreenLeaf Organic", project:"Inventory Management System",  lastReminder:"Feb 28, 2026", daysAgo:13 },
 ];
 
+const RESPONSIVE_CSS = `
+  * { box-sizing: border-box; }
+
+  .rv-page { min-height: 100vh; background: ${G.bg}; font-family: ${FONT}; }
+
+  /* Layout */
+  .rv-header-inner { max-width: 1200px; margin: 0 auto; padding: 0 28px; }
+  .rv-main-inner   { max-width: 1200px; margin: 0 auto; padding: 24px 28px 64px; }
+
+  /* Body two-column */
+  .rv-body-grid {
+    display: grid;
+    grid-template-columns: 1fr 290px;
+    gap: 20px;
+    align-items: start;
+  }
+
+  /* Navbar */
+  .rv-nav {
+    height: 52px; background: ${G.white}; border-bottom: 1px solid ${G.border};
+    display: flex; align-items: center; padding: 0 28px; gap: 12px;
+    position: sticky; top: 0; z-index: 1;
+  }
+  .rv-nav-breadcrumb { display: flex; align-items: center; gap: 8px; }
+  .rv-nav-badge { display: flex; align-items: center; gap: 5px; background: ${G.greenBg}; border: 1px solid ${G.greenBorder}; border-radius: 99px; padding: 3px 10px; }
+
+  /* Stats strip */
+  .rv-stats-strip {
+    display: flex; gap: 0;
+    margin-top: 18px; padding-top: 16px;
+    border-top: 1px solid #f3f4f6;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .rv-stats-strip::-webkit-scrollbar { display: none; }
+  .rv-stat-item { flex: 1; min-width: 90px; }
+
+  /* Filter bar */
+  .rv-filter-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 0; padding-top: 2px; border-top: 1px solid #f3f4f6;
+    overflow-x: auto; -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .rv-filter-bar::-webkit-scrollbar { display: none; }
+
+  /* Category grid 4-col */
+  .rv-cat-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 14px; padding: 12px 14px; background: ${G.bg}; border-radius: 10px; }
+
+  /* Sidebar stacks below on tablet */
+  @media (max-width: 1024px) {
+    .rv-body-grid { grid-template-columns: 1fr; }
+    .rv-sidebar { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  }
+
+  @media (max-width: 768px) {
+    .rv-nav { padding: 0 16px; gap: 8px; }
+    .rv-nav-breadcrumb { display: none; }
+    .rv-nav-badge { display: none; }
+    .rv-header-inner { padding: 0 16px; }
+    .rv-main-inner   { padding: 16px 16px 48px; }
+    .rv-sidebar { grid-template-columns: 1fr; }
+    .rv-cat-grid { grid-template-columns: repeat(2, 1fr); }
+    .rv-filter-sort { display: none; }
+  }
+
+  @media (max-width: 480px) {
+    .rv-stats-strip { flex-wrap: wrap; }
+    .rv-stat-item { flex: 1 1 calc(50% - 1px) !important; border-right: none !important; padding-left: 0 !important; padding-right: 0 !important; padding-bottom: 12px; }
+    .rv-cat-grid { grid-template-columns: repeat(2, 1fr); }
+    .rv-filter-bar { gap: 0; }
+    .rv-filter-bar button { padding: 10px 8px !important; font-size: 12px !important; }
+  }
+`;
+
 const Stars = ({ rating, size = 14, color = "#f59e0b" }) => (
   <span style={{ display:"inline-flex", gap:2 }}>
     {[1,2,3,4,5].map(i => (
@@ -102,7 +177,6 @@ const Stars = ({ rating, size = 14, color = "#f59e0b" }) => (
   </span>
 );
 
-/* ════════════════════════════════════════════════════════════ */
 export default function AgencyReviews() {
   const [filter,    setFilter]    = useState("all");
   const [sort,      setSort]      = useState("newest");
@@ -138,14 +212,15 @@ export default function AgencyReviews() {
   };
 
   return (
-    <div style={{ minHeight:"100vh", background:G.bg, fontFamily:FONT }}>
+    <div className="rv-page">
+      <style>{RESPONSIVE_CSS}</style>
       <Navbar page="Reviews" />
 
       {/* Page header */}
       <header style={{ background:G.white, borderBottom:`1px solid ${G.border}` }}>
-        <div style={{ maxWidth:1200, margin:"0 auto", padding:"0 28px" }}>
+        <div className="rv-header-inner">
           <div style={{ padding:"20px 0 0" }}>
-            <div style={{ display:"flex", alignItems:"center", gap:12 }}>
+            <div style={{ display:"flex", alignItems:"center", gap:12, flexWrap:"wrap" }}>
               <h1 style={{ fontSize:22, fontWeight:800, color:G.text, margin:0, letterSpacing:"-0.4px" }}>Reviews</h1>
               {stats.avg >= 4.5 && (
                 <span style={{ display:"flex", alignItems:"center", gap:5, background:"linear-gradient(135deg,#fef3c7,#fde68a)", border:"1px solid #f59e0b", borderRadius:99, padding:"4px 12px", fontSize:12, fontWeight:700, color:"#92400e" }}>
@@ -157,7 +232,7 @@ export default function AgencyReviews() {
           </div>
 
           {/* Stats strip */}
-          <div style={{ display:"flex", gap:0, marginTop:18, paddingTop:16, borderTop:`1px solid #f3f4f6` }}>
+          <div className="rv-stats-strip">
             {[
               { label:"Overall Rating",  val:stats.avg.toFixed(1) + "★", color:"#f59e0b", big:true },
               { label:"Total Reviews",   val:stats.total,                 color:G.text              },
@@ -165,7 +240,7 @@ export default function AgencyReviews() {
               { label:"Replied",         val:stats.replied,               color:"#2563eb"           },
               { label:"Response Rate",   val:Math.round((stats.replied / stats.total) * 100) + "%", color:G.greenDark },
             ].map((s, i, arr) => (
-              <div key={i} style={{ flex:s.big ? 1.2 : 1, paddingBottom:16, borderRight:i < arr.length - 1 ? `1px solid #f3f4f6` : "none", paddingLeft:i === 0 ? 0 : 22, paddingRight:22 }}>
+              <div key={i} className="rv-stat-item" style={{ flex:s.big ? 1.2 : 1, paddingBottom:16, borderRight:i < arr.length - 1 ? `1px solid #f3f4f6` : "none", paddingLeft:i === 0 ? 0 : 20, paddingRight:20 }}>
                 <p style={{ fontSize:10, color:G.muted, fontWeight:700, marginBottom:5, textTransform:"uppercase", letterSpacing:"0.07em" }}>{s.label}</p>
                 <p style={{ fontSize:s.big ? 22 : 18, fontWeight:800, color:s.color, margin:0, letterSpacing:"-0.4px" }}>{s.val}</p>
               </div>
@@ -173,20 +248,20 @@ export default function AgencyReviews() {
           </div>
 
           {/* Filter + sort bar */}
-          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginTop:0, paddingTop:2, borderTop:`1px solid #f3f4f6` }}>
-            <div style={{ display:"flex", gap:0 }}>
+          <div className="rv-filter-bar">
+            <div style={{ display:"flex", gap:0, overflowX:"auto", scrollbarWidth:"none" }}>
               {[["all","All"],["5","5★"],["4","4★"],["3","3★"],["2","2★"],["1","1★"]].map(([id, label]) => {
                 const cnt    = id === "all" ? reviews.length : reviews.filter(r => r.rating === Number(id)).length;
                 const active = filter === id;
                 return (
-                  <button key={id} onClick={() => setFilter(id)} style={{ display:"flex", alignItems:"center", gap:5, padding:"10px 12px", fontSize:13, fontWeight:active ? 700 : 500, color:active ? G.greenDark : G.sub, background:"none", border:"none", borderBottom:active ? `2px solid ${G.green}` : "2px solid transparent", cursor:"pointer", marginBottom:-1, transition:"all 0.12s", fontFamily:FONT }}>
+                  <button key={id} onClick={() => setFilter(id)} style={{ display:"flex", alignItems:"center", gap:5, padding:"10px 12px", fontSize:13, fontWeight:active ? 700 : 500, color:active ? G.greenDark : G.sub, background:"none", border:"none", borderBottom:active ? `2px solid ${G.green}` : "2px solid transparent", cursor:"pointer", marginBottom:-1, transition:"all 0.12s", fontFamily:FONT, whiteSpace:"nowrap" }}>
                     {label}
                     <span style={{ fontSize:11, fontWeight:700, background:active ? G.green : "#f3f4f6", color:active ? G.white : G.muted, padding:"1px 7px", borderRadius:99, transition:"all 0.12s" }}>{cnt}</span>
                   </button>
                 );
               })}
             </div>
-            <div style={{ display:"flex", alignItems:"center", gap:8, paddingBottom:4 }}>
+            <div className="rv-filter-sort" style={{ display:"flex", alignItems:"center", gap:8, paddingBottom:4, flexShrink:0 }}>
               <span style={{ fontSize:12, color:G.muted }}>Sort:</span>
               <select value={sort} onChange={e => setSort(e.target.value)}
                 style={{ fontSize:12, fontWeight:600, border:`1.5px solid ${G.border}`, borderRadius:7, padding:"5px 10px", outline:"none", color:G.text, background:G.white, cursor:"pointer", fontFamily:FONT }}>
@@ -201,8 +276,8 @@ export default function AgencyReviews() {
       </header>
 
       {/* Main content */}
-      <main style={{ maxWidth:1200, margin:"0 auto", padding:"24px 28px 64px" }}>
-        <div style={{ display:"grid", gridTemplateColumns:"1fr 290px", gap:20 }}>
+      <main className="rv-main-inner">
+        <div className="rv-body-grid">
 
           {/* ── Reviews list ── */}
           <div style={{ display:"flex", flexDirection:"column", gap:14 }}>
@@ -214,7 +289,7 @@ export default function AgencyReviews() {
 
                 <div style={{ padding:"18px 20px" }}>
                   {/* Client row */}
-                  <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:12 }}>
+                  <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:12, gap:12 }}>
                     <div style={{ display:"flex", alignItems:"center", gap:12 }}>
                       <div style={{ width:42, height:42, borderRadius:12, background:rev.avatarColor + "18", border:`1px solid ${rev.avatarColor}30`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:14, fontWeight:700, color:rev.avatarColor, flexShrink:0 }}>
                         {rev.avatar}
@@ -224,14 +299,14 @@ export default function AgencyReviews() {
                         <p style={{ fontSize:12, color:G.sub }}>{rev.company}</p>
                       </div>
                     </div>
-                    <div style={{ textAlign:"right" }}>
+                    <div style={{ textAlign:"right", flexShrink:0 }}>
                       <Stars rating={rev.rating} size={15} />
                       <p style={{ fontSize:11, color:G.muted, marginTop:3 }}>{rev.date}</p>
                     </div>
                   </div>
 
                   {/* Project tag */}
-                  <div style={{ display:"flex", gap:6, marginBottom:12 }}>
+                  <div style={{ display:"flex", gap:6, marginBottom:12, flexWrap:"wrap" }}>
                     <span style={{ fontSize:11, fontWeight:600, background:G.greenBg, color:G.greenDark, border:`1px solid ${G.greenBorder}`, padding:"3px 10px", borderRadius:99 }}>📋 {rev.project}</span>
                     <span style={{ fontSize:11, color:G.muted, background:"#f3f4f6", padding:"3px 10px", borderRadius:99 }}>{rev.contractId}</span>
                   </div>
@@ -247,7 +322,7 @@ export default function AgencyReviews() {
                   </div>
 
                   {/* Category ratings */}
-                  <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:10, marginBottom:14, padding:"12px 14px", background:G.bg, borderRadius:10 }}>
+                  <div className="rv-cat-grid">
                     {Object.entries(rev.categories).map(([k, v]) => (
                       <div key={k} style={{ textAlign:"center" }}>
                         <p style={{ fontSize:10, color:G.muted, fontWeight:700, textTransform:"uppercase", letterSpacing:"0.06em", marginBottom:4 }}>{k}</p>
@@ -257,7 +332,7 @@ export default function AgencyReviews() {
                   </div>
 
                   {/* Helpful + reply btn */}
-                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+                  <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", flexWrap:"wrap", gap:8 }}>
                     <span style={{ fontSize:12, color:G.muted }}>👍 {rev.helpful} found this helpful</span>
                     {!rev.reply && (
                       <button onClick={() => setReplyOpen(replyOpen === rev.id ? null : rev.id)}
@@ -303,7 +378,7 @@ export default function AgencyReviews() {
           </div>
 
           {/* ── Right sidebar ── */}
-          <div style={{ display:"flex", flexDirection:"column", gap:16 }}>
+          <div className="rv-sidebar">
 
             {/* Rating breakdown */}
             <div style={{ background:G.white, border:`1px solid ${G.border}`, borderRadius:12, padding:"18px 20px" }}>
@@ -360,15 +435,17 @@ export default function AgencyReviews() {
 
 function Navbar({ page }) {
   return (
-    <nav style={{ height:52, background:G.white, borderBottom:`1px solid ${G.border}`, display:"flex", alignItems:"center", padding:"0 28px", gap:12, position:"sticky", top:0, zIndex:40 }}>
+    <nav className="rv-nav">
       <span style={{ fontWeight:800, fontSize:18, color:G.text, letterSpacing:"-0.5px", fontFamily:FONT }}>
         <span style={{ color:G.green }}>web</span>lance
       </span>
-      <div style={{ width:1, height:20, background:G.border, marginLeft:4 }} />
-      <span style={{ fontSize:12, color:G.muted, fontWeight:500 }}>Agency</span>
-      <span style={{ fontSize:12, color:G.border }}>/</span>
-      <span style={{ fontSize:12, color:G.text, fontWeight:600 }}>{page}</span>
-      <div style={{ display:"flex", alignItems:"center", gap:5, background:G.greenBg, border:`1px solid ${G.greenBorder}`, borderRadius:99, padding:"3px 10px", marginLeft:4 }}>
+      <div className="rv-nav-breadcrumb">
+        <div style={{ width:1, height:20, background:G.border, marginLeft:4 }} />
+        <span style={{ fontSize:12, color:G.muted, fontWeight:500 }}>Agency</span>
+        <span style={{ fontSize:12, color:G.border }}>/</span>
+        <span style={{ fontSize:12, color:G.text, fontWeight:600 }}>{page}</span>
+      </div>
+      <div className="rv-nav-badge">
         <svg width="10" height="10" fill={G.greenDark} viewBox="0 0 20 20">
           <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd"/>
         </svg>

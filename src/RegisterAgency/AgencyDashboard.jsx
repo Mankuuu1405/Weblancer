@@ -71,236 +71,301 @@ export default function AgencyDashboard() {
   const maxBar   = Math.max(...MONTHLY.map(m => m.val));
 
   return (
-    <div style={{ padding:"20px 24px 40px", fontFamily:FONT, background:G.bg, minHeight:"100%" }}>
+    <>
+      <style>{`
+        /* ══ DASHBOARD RESPONSIVE ══ */
 
-      {/* ── STAT CARDS ── */}
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:14, marginBottom:20 }}>
-        {STATS.map((s,i) => (
-          <div key={i} style={{ background:G.white, border:`1px solid ${G.border}`, borderRadius:14, padding:"16px 18px", display:"flex", alignItems:"center", gap:14, boxShadow:"0 1px 4px rgba(0,0,0,0.04)" }}>
-            <div style={{ width:44, height:44, borderRadius:12, background:s.bg, display:"flex", alignItems:"center", justifyContent:"center", fontSize:20, flexShrink:0 }}>{s.icon}</div>
-            <div>
-              <p style={{ fontSize:20, fontWeight:800, color:s.color, margin:0, letterSpacing:"-0.4px" }}>{s.value}</p>
-              <p style={{ fontSize:11, fontWeight:600, color:G.text, margin:"2px 0 1px" }}>{s.label}</p>
-              <p style={{ fontSize:10, color:G.muted, margin:0 }}>{s.sub}</p>
-            </div>
-          </div>
-        ))}
-      </div>
+        .dash-wrap {
+          padding: 20px 24px 40px;
+          font-family: ${FONT};
+          background: ${G.bg};
+          min-height: 100%;
+        }
 
-      {/* ── ROW 1: Projects + Revenue ── */}
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16, marginBottom:16 }}>
+        /* Stat cards: 4 col → 2 col → 1 col */
+        .dash-stats {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 14px;
+          margin-bottom: 20px;
+        }
 
-        {/* Active Projects */}
-        <div style={{ background:G.white, border:`1px solid ${G.border}`, borderRadius:14, overflow:"hidden" }}>
-          <div style={{ padding:"14px 18px 12px", borderBottom:`1px solid #f3f4f6`, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-            <div>
-              <p style={{ fontSize:14, fontWeight:700, color:G.text, margin:0 }}>Active Projects</p>
-              <p style={{ fontSize:11, color:G.muted, margin:"2px 0 0" }}>Click to open ProjectStream</p>
-            </div>
-            <span style={{ fontSize:11, fontWeight:700, background:G.greenBg, color:G.greenDark, border:`1px solid ${G.greenBorder}`, padding:"3px 10px", borderRadius:99 }}>2 Active</span>
-          </div>
-          {PROJECTS.map((p,i) => (
-            <div key={p.id} onClick={() => navigate(`/agency/project/${p.id}`)}
-              style={{ padding:"14px 18px", borderBottom:i<PROJECTS.length-1?`1px solid #f9fafb`:"none", cursor:"pointer", transition:"background 0.12s" }}
-              onMouseEnter={e=>e.currentTarget.style.background=G.bg}
-              onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
-              <div style={{ display:"flex", alignItems:"flex-start", justifyContent:"space-between", marginBottom:8 }}>
-                <div>
-                  <p style={{ fontSize:13, fontWeight:700, color:G.text, margin:0 }}>{p.name}</p>
-                  <p style={{ fontSize:11, color:G.muted, margin:"2px 0 0" }}>{p.client} · {p.budget}</p>
-                </div>
-                <span style={{ fontSize:10, fontWeight:700, background:p.riskBg, color:p.riskColor, border:`1px solid ${p.riskBorder}`, padding:"2px 8px", borderRadius:99, flexShrink:0 }}>{p.risk} RISK</span>
-              </div>
-              <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-                <div style={{ flex:1, background:"#f3f4f6", borderRadius:99, height:5, overflow:"hidden" }}>
-                  <div style={{ width:`${p.progress}%`, height:"100%", background:`linear-gradient(90deg,${G.green},#2563eb)`, borderRadius:99 }} />
-                </div>
-                <span style={{ fontSize:11, fontWeight:700, color:G.text, flexShrink:0 }}>{p.progress}%</span>
-              </div>
-              <p style={{ fontSize:10, color:G.muted, marginTop:5 }}>Due: {p.due}</p>
-            </div>
-          ))}
-          <div style={{ padding:"12px 18px", background:G.bg, display:"flex", gap:8 }}>
-            <button onClick={()=>navigate("/agency-channel-a")}
-              style={{ flex:1, fontSize:11, fontWeight:700, color:G.greenDark, background:G.greenBg, border:`1px solid ${G.greenBorder}`, borderRadius:7, padding:"7px", cursor:"pointer", fontFamily:FONT }}>
-              💬 Client Stream (Ch A)
-            </button>
-            <button onClick={()=>navigate("/agency/channel2/1")}
-              style={{ flex:1, fontSize:11, fontWeight:700, color:"#2563eb", background:G.blueBg, border:`1px solid #bfdbfe`, borderRadius:7, padding:"7px", cursor:"pointer", fontFamily:FONT }}>
-              👥 Team Channel (Ch B)
-            </button>
-          </div>
-        </div>
+        /* Row 1 & 2: two equal columns → stack */
+        .dash-row2 {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 16px;
+          margin-bottom: 16px;
+        }
 
-        {/* Revenue Chart */}
-        <div style={{ background:G.white, border:`1px solid ${G.border}`, borderRadius:14, padding:"16px 18px" }}>
-          <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:16 }}>
-            <div>
-              <p style={{ fontSize:14, fontWeight:700, color:G.text, margin:0 }}>Revenue Trend</p>
-              <p style={{ fontSize:11, color:G.muted, margin:"2px 0 0" }}>Last 6 months (gross)</p>
-            </div>
-            <button onClick={()=>navigate("/agency/earnings")}
-              style={{ fontSize:11, fontWeight:700, color:G.greenDark, background:G.greenBg, border:`1px solid ${G.greenBorder}`, borderRadius:7, padding:"5px 12px", cursor:"pointer", fontFamily:FONT }}>
-              Full Report →
-            </button>
-          </div>
-          <div style={{ display:"flex", alignItems:"flex-end", gap:8, height:110 }}>
-            {MONTHLY.map((m,i) => {
-              const h=Math.round((m.val/maxBar)*88), isMax=m.val===maxBar;
-              return (
-                <div key={i} style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", gap:4 }}>
-                  <p style={{ fontSize:9, fontWeight:700, color:isMax?G.greenDark:G.muted }}>₹{(m.val/1000).toFixed(0)}K</p>
-                  <div style={{ width:"100%", height:h, borderRadius:"5px 5px 0 0", background:isMax?`linear-gradient(180deg,${G.green},${G.greenDark})`:`linear-gradient(180deg,${G.greenBorder},#86efac)` }} />
-                  <p style={{ fontSize:9, color:G.sub, fontWeight:500 }}>{m.month}</p>
-                </div>
-              );
-            })}
-          </div>
-          <div style={{ marginTop:14, padding:"10px 12px", background:"linear-gradient(135deg,#14532d,#166534)", borderRadius:10, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-            <div>
-              <p style={{ fontSize:10, color:"rgba(255,255,255,0.5)", margin:0, textTransform:"uppercase", letterSpacing:"0.06em" }}>Available Balance</p>
-              <p style={{ fontSize:18, fontWeight:800, color:G.green, margin:"2px 0 0", letterSpacing:"-0.4px" }}>₹1,87,960</p>
-            </div>
-            <button onClick={()=>navigate("/agency/withdrawals")}
-              style={{ fontSize:11, fontWeight:700, background:G.green, color:G.white, border:"none", borderRadius:7, padding:"7px 14px", cursor:"pointer", fontFamily:FONT }}>
-              Withdraw →
-            </button>
-          </div>
-        </div>
-      </div>
+        /* Row 3: three columns → stack */
+        .dash-row3 {
+          display: grid;
+          grid-template-columns: 1fr 1fr 1fr;
+          gap: 16px;
+        }
 
-      {/* ── ROW 2: Proposals + Transactions ── */}
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16, marginBottom:16 }}>
+        /* Chart bars */
+        .dash-chart-bars {
+          display: flex;
+          align-items: flex-end;
+          gap: 8px;
+          height: 110px;
+        }
 
-        <div style={{ background:G.white, border:`1px solid ${G.border}`, borderRadius:14, overflow:"hidden" }}>
-          <div style={{ padding:"14px 18px 12px", borderBottom:`1px solid #f3f4f6`, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-            <p style={{ fontSize:14, fontWeight:700, color:G.text, margin:0 }}>Recent Proposals</p>
-            <button onClick={()=>navigate("/agency/proposals")} style={{ fontSize:11, fontWeight:700, color:G.greenDark, background:G.greenBg, border:`1px solid ${G.greenBorder}`, borderRadius:7, padding:"4px 10px", cursor:"pointer", fontFamily:FONT }}>View All</button>
-          </div>
-          {PROPOSALS.map((p,i) => (
-            <div key={p.id} style={{ padding:"12px 18px", borderBottom:i<PROPOSALS.length-1?`1px solid #f9fafb`:"none", display:"flex", alignItems:"center", gap:12 }}
-              onMouseEnter={e=>e.currentTarget.style.background=G.bg}
-              onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
-              <div style={{ flex:1, minWidth:0 }}>
-                <p style={{ fontSize:12, fontWeight:700, color:G.text, margin:0, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{p.title}</p>
-                <p style={{ fontSize:11, color:G.muted, margin:"2px 0 0" }}>{p.client}</p>
-              </div>
-              <div style={{ textAlign:"right", flexShrink:0 }}>
-                <p style={{ fontSize:12, fontWeight:700, color:G.text, margin:0 }}>{p.amount}</p>
-                <span style={{ fontSize:10, fontWeight:700, background:p.stageBg, color:p.stageColor, padding:"1px 7px", borderRadius:99, display:"inline-block", marginTop:3 }}>{p.stage.replace("_"," ")}</span>
+        @media (max-width: 1100px) {
+          .dash-stats { grid-template-columns: repeat(2, 1fr); }
+          .dash-row3  { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 768px) {
+          .dash-wrap  { padding: 14px 16px 40px; }
+          .dash-stats { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+          .dash-row2  { grid-template-columns: 1fr; gap: 12px; }
+          .dash-row3  { grid-template-columns: 1fr; gap: 12px; }
+        }
+
+        @media (max-width: 480px) {
+          .dash-wrap  { padding: 12px 12px 40px; }
+          .dash-stats { grid-template-columns: 1fr 1fr; gap: 8px; }
+          .dash-chart-bars { height: 80px; gap: 5px; }
+        }
+
+        @media (max-width: 360px) {
+          .dash-stats { grid-template-columns: 1fr; }
+        }
+      `}</style>
+
+      <div className="dash-wrap">
+
+        {/* ── STAT CARDS ── */}
+        <div className="dash-stats">
+          {STATS.map((s, i) => (
+            <div key={i} style={{ background: G.white, border: `1px solid ${G.border}`, borderRadius: 14, padding: "16px 18px", display: "flex", alignItems: "center", gap: 14, boxShadow: "0 1px 4px rgba(0,0,0,0.04)" }}>
+              <div style={{ width: 44, height: 44, borderRadius: 12, background: s.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, flexShrink: 0 }}>{s.icon}</div>
+              <div style={{ minWidth: 0 }}>
+                <p style={{ fontSize: 20, fontWeight: 800, color: s.color, margin: 0, letterSpacing: "-0.4px" }}>{s.value}</p>
+                <p style={{ fontSize: 11, fontWeight: 600, color: G.text, margin: "2px 0 1px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.label}</p>
+                <p style={{ fontSize: 10, color: G.muted, margin: 0 }}>{s.sub}</p>
               </div>
             </div>
           ))}
         </div>
 
-        <div style={{ background:G.white, border:`1px solid ${G.border}`, borderRadius:14, overflow:"hidden" }}>
-          <div style={{ padding:"14px 18px 12px", borderBottom:`1px solid #f3f4f6`, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-            <p style={{ fontSize:14, fontWeight:700, color:G.text, margin:0 }}>Recent Transactions</p>
-            <button onClick={()=>navigate("/agency/earnings")} style={{ fontSize:11, fontWeight:700, color:G.greenDark, background:G.greenBg, border:`1px solid ${G.greenBorder}`, borderRadius:7, padding:"4px 10px", cursor:"pointer", fontFamily:FONT }}>View All</button>
-          </div>
-          {TXN.map((t,i) => {
-            const ok=t.status==="released";
-            return (
-              <div key={t.id} style={{ padding:"12px 18px", borderBottom:i<TXN.length-1?`1px solid #f9fafb`:"none", display:"flex", alignItems:"center", gap:12 }}
-                onMouseEnter={e=>e.currentTarget.style.background=G.bg}
-                onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
-                <div style={{ width:32, height:32, borderRadius:9, background:ok?G.greenBg:G.yellowBg, display:"flex", alignItems:"center", justifyContent:"center", fontSize:14, flexShrink:0 }}>{ok?"✅":"⏳"}</div>
-                <div style={{ flex:1 }}>
-                  <p style={{ fontSize:12, fontWeight:600, color:G.text, margin:0 }}>{t.client}</p>
-                  <p style={{ fontSize:10, color:G.muted, margin:"1px 0 0" }}>{t.id} · {t.date}</p>
-                </div>
-                <div style={{ textAlign:"right" }}>
-                  <p style={{ fontSize:13, fontWeight:800, color:ok?G.greenDark:G.yellow, margin:0 }}>{t.amount}</p>
-                  <p style={{ fontSize:10, color:G.muted, margin:"1px 0 0" }}>{ok?"Released":"Pending"}</p>
-                </div>
+        {/* ── ROW 1: Projects + Revenue ── */}
+        <div className="dash-row2">
+
+          {/* Active Projects */}
+          <div style={{ background: G.white, border: `1px solid ${G.border}`, borderRadius: 14, overflow: "hidden" }}>
+            <div style={{ padding: "14px 18px 12px", borderBottom: "1px solid #f3f4f6", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+              <div>
+                <p style={{ fontSize: 14, fontWeight: 700, color: G.text, margin: 0 }}>Active Projects</p>
+                <p style={{ fontSize: 11, color: G.muted, margin: "2px 0 0" }}>Click to open ProjectStream</p>
               </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* ── ROW 3: Team + Reviews + KYC ── */}
-      <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:16 }}>
-
-        {/* Team */}
-        <div style={{ background:G.white, border:`1px solid ${G.border}`, borderRadius:14, overflow:"hidden" }}>
-          <div style={{ padding:"14px 18px 12px", borderBottom:`1px solid #f3f4f6`, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-            <p style={{ fontSize:14, fontWeight:700, color:G.text, margin:0 }}>Team ({TEAM.length})</p>
-            <button onClick={()=>navigate("/invite-team")} style={{ fontSize:11, fontWeight:700, color:"#2563eb", background:G.blueBg, border:`1px solid #bfdbfe`, borderRadius:7, padding:"4px 10px", cursor:"pointer", fontFamily:FONT }}>+ Invite</button>
-          </div>
-          <div style={{ padding:"8px 0" }}>
-            {TEAM.map((m,i) => (
-              <div key={i} style={{ display:"flex", alignItems:"center", gap:10, padding:"8px 18px" }}
-                onMouseEnter={e=>e.currentTarget.style.background=G.bg}
-                onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
-                <div style={{ width:30, height:30, borderRadius:"50%", background:m.bg, display:"flex", alignItems:"center", justifyContent:"center", fontSize:11, fontWeight:700, color:m.color, flexShrink:0 }}>{m.initial}</div>
-                <div style={{ flex:1 }}>
-                  <p style={{ fontSize:12, fontWeight:600, color:G.text, margin:0 }}>{m.name}</p>
-                  <p style={{ fontSize:10, color:G.muted, margin:0 }}>{m.role}</p>
-                </div>
-                <span style={{ width:7, height:7, borderRadius:"50%", background:m.status==="available"?G.green:G.blue, flexShrink:0 }} />
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Reviews */}
-        <div style={{ background:G.white, border:`1px solid ${G.border}`, borderRadius:14, overflow:"hidden" }}>
-          <div style={{ padding:"14px 18px 12px", borderBottom:`1px solid #f3f4f6`, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-            <div>
-              <p style={{ fontSize:14, fontWeight:700, color:G.text, margin:0 }}>Reviews</p>
-              <p style={{ fontSize:11, color:G.muted, margin:"1px 0 0" }}>4.7★ avg · 6 total</p>
+              <span style={{ fontSize: 11, fontWeight: 700, background: G.greenBg, color: G.greenDark, border: `1px solid ${G.greenBorder}`, padding: "3px 10px", borderRadius: 99, whiteSpace: "nowrap" }}>2 Active</span>
             </div>
-            <button onClick={()=>navigate("/agency/reviews")} style={{ fontSize:11, fontWeight:700, color:G.greenDark, background:G.greenBg, border:`1px solid ${G.greenBorder}`, borderRadius:7, padding:"4px 10px", cursor:"pointer", fontFamily:FONT }}>View All</button>
-          </div>
-          <div style={{ padding:"8px 0" }}>
-            {REVIEWS.map((r,i) => (
-              <div key={i} style={{ padding:"9px 18px", borderBottom:i<REVIEWS.length-1?`1px solid #f9fafb`:"none" }}>
-                <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:3 }}>
-                  <p style={{ fontSize:12, fontWeight:700, color:G.text, margin:0 }}>{r.client}</p>
-                  <span style={{ fontSize:11, color:G.yellow }}>{"★".repeat(r.rating)}</span>
-                </div>
-                <p style={{ fontSize:11, color:G.sub, margin:0, lineHeight:1.4 }}>{r.text}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* KYC */}
-        <div style={{ background:G.white, border:`1px solid ${G.border}`, borderRadius:14, overflow:"hidden" }}>
-          <div style={{ padding:"14px 18px 12px", borderBottom:`1px solid #f3f4f6`, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-            <div>
-              <p style={{ fontSize:14, fontWeight:700, color:G.text, margin:0 }}>KYC Verification</p>
-              <p style={{ fontSize:11, color:G.muted, margin:"1px 0 0" }}>4 of 5 steps done</p>
-            </div>
-            <button onClick={()=>navigate("/agency/kyc")} style={{ fontSize:11, fontWeight:700, color:"#92400e", background:G.yellowBg, border:`1px solid #fde68a`, borderRadius:7, padding:"4px 10px", cursor:"pointer", fontFamily:FONT }}>Continue →</button>
-          </div>
-          <div style={{ padding:"10px 18px" }}>
-            <div style={{ marginBottom:12 }}>
-              <div style={{ display:"flex", justifyContent:"space-between", marginBottom:4 }}>
-                <span style={{ fontSize:11, color:G.sub }}>Overall Progress</span>
-                <span style={{ fontSize:11, fontWeight:700, color:G.greenDark }}>75%</span>
-              </div>
-              <div style={{ background:"#f3f4f6", borderRadius:99, height:6, overflow:"hidden" }}>
-                <div style={{ width:"75%", height:"100%", background:`linear-gradient(90deg,${G.green},#86efac)`, borderRadius:99 }} />
-              </div>
-            </div>
-            {KYC_STEPS.map((step,i) => {
-              const v=step.status==="verified", r=step.status==="under_review";
-              return (
-                <div key={i} style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
-                  <div style={{ width:18, height:18, borderRadius:"50%", background:v?G.greenBg:r?G.yellowBg:"#f3f4f6", border:`1.5px solid ${v?G.green:r?G.yellow:G.border}`, display:"flex", alignItems:"center", justifyContent:"center", fontSize:9, fontWeight:700, color:v?G.greenDark:r?"#92400e":G.muted, flexShrink:0 }}>
-                    {v?"✓":r?"🔍":i+1}
+            {PROJECTS.map((p, i) => (
+              <div key={p.id} onClick={() => navigate(`/agency/project/${p.id}`)}
+                style={{ padding: "14px 18px", borderBottom: i < PROJECTS.length - 1 ? "1px solid #f9fafb" : "none", cursor: "pointer", transition: "background 0.12s" }}
+                onMouseEnter={e => e.currentTarget.style.background = G.bg}
+                onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 8, gap: 8 }}>
+                  <div style={{ minWidth: 0 }}>
+                    <p style={{ fontSize: 13, fontWeight: 700, color: G.text, margin: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.name}</p>
+                    <p style={{ fontSize: 11, color: G.muted, margin: "2px 0 0" }}>{p.client} · {p.budget}</p>
                   </div>
-                  <p style={{ fontSize:11, color:v?G.text:G.muted, fontWeight:v?600:400, margin:0, flex:1 }}>{step.label}</p>
-                  <span style={{ fontSize:9, fontWeight:700, color:v?G.greenDark:r?"#92400e":G.muted }}>{v?"✓":r?"Pending":"—"}</span>
+                  <span style={{ fontSize: 10, fontWeight: 700, background: p.riskBg, color: p.riskColor, border: `1px solid ${p.riskBorder}`, padding: "2px 8px", borderRadius: 99, flexShrink: 0 }}>{p.risk} RISK</span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  <div style={{ flex: 1, background: "#f3f4f6", borderRadius: 99, height: 5, overflow: "hidden" }}>
+                    <div style={{ width: `${p.progress}%`, height: "100%", background: `linear-gradient(90deg,${G.green},#2563eb)`, borderRadius: 99 }} />
+                  </div>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: G.text, flexShrink: 0 }}>{p.progress}%</span>
+                </div>
+                <p style={{ fontSize: 10, color: G.muted, marginTop: 5 }}>Due: {p.due}</p>
+              </div>
+            ))}
+            <div style={{ padding: "12px 18px", background: G.bg, display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <button onClick={() => navigate("/agency-channel-a")}
+                style={{ flex: 1, minWidth: 120, fontSize: 11, fontWeight: 700, color: G.greenDark, background: G.greenBg, border: `1px solid ${G.greenBorder}`, borderRadius: 7, padding: "7px", cursor: "pointer", fontFamily: FONT }}>
+                💬 Client Stream (Ch A)
+              </button>
+              <button onClick={() => navigate("/agency/channel2/1")}
+                style={{ flex: 1, minWidth: 120, fontSize: 11, fontWeight: 700, color: "#2563eb", background: G.blueBg, border: "1px solid #bfdbfe", borderRadius: 7, padding: "7px", cursor: "pointer", fontFamily: FONT }}>
+                👥 Team Channel (Ch B)
+              </button>
+            </div>
+          </div>
+
+          {/* Revenue Chart */}
+          <div style={{ background: G.white, border: `1px solid ${G.border}`, borderRadius: 14, padding: "16px 18px" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16, flexWrap: "wrap", gap: 8 }}>
+              <div>
+                <p style={{ fontSize: 14, fontWeight: 700, color: G.text, margin: 0 }}>Revenue Trend</p>
+                <p style={{ fontSize: 11, color: G.muted, margin: "2px 0 0" }}>Last 6 months (gross)</p>
+              </div>
+              <button onClick={() => navigate("/agency/earnings")}
+                style={{ fontSize: 11, fontWeight: 700, color: G.greenDark, background: G.greenBg, border: `1px solid ${G.greenBorder}`, borderRadius: 7, padding: "5px 12px", cursor: "pointer", fontFamily: FONT }}>
+                Full Report →
+              </button>
+            </div>
+            <div className="dash-chart-bars">
+              {MONTHLY.map((m, i) => {
+                const h = Math.round((m.val / maxBar) * 88), isMax = m.val === maxBar;
+                return (
+                  <div key={i} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+                    <p style={{ fontSize: 9, fontWeight: 700, color: isMax ? G.greenDark : G.muted }}>{(m.val / 1000).toFixed(0)}K</p>
+                    <div style={{ width: "100%", height: h, borderRadius: "5px 5px 0 0", background: isMax ? `linear-gradient(180deg,${G.green},${G.greenDark})` : `linear-gradient(180deg,${G.greenBorder},#86efac)` }} />
+                    <p style={{ fontSize: 9, color: G.sub, fontWeight: 500 }}>{m.month}</p>
+                  </div>
+                );
+              })}
+            </div>
+            <div style={{ marginTop: 14, padding: "10px 12px", background: "linear-gradient(135deg,#14532d,#166534)", borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+              <div>
+                <p style={{ fontSize: 10, color: "rgba(255,255,255,0.5)", margin: 0, textTransform: "uppercase", letterSpacing: "0.06em" }}>Available Balance</p>
+                <p style={{ fontSize: 18, fontWeight: 800, color: G.green, margin: "2px 0 0", letterSpacing: "-0.4px" }}>₹1,87,960</p>
+              </div>
+              <button onClick={() => navigate("/agency/withdrawals")}
+                style={{ fontSize: 11, fontWeight: 700, background: G.green, color: G.white, border: "none", borderRadius: 7, padding: "7px 14px", cursor: "pointer", fontFamily: FONT }}>
+                Withdraw →
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* ── ROW 2: Proposals + Transactions ── */}
+        <div className="dash-row2">
+
+          <div style={{ background: G.white, border: `1px solid ${G.border}`, borderRadius: 14, overflow: "hidden" }}>
+            <div style={{ padding: "14px 18px 12px", borderBottom: "1px solid #f3f4f6", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <p style={{ fontSize: 14, fontWeight: 700, color: G.text, margin: 0 }}>Recent Proposals</p>
+              <button onClick={() => navigate("/agency/proposals")} style={{ fontSize: 11, fontWeight: 700, color: G.greenDark, background: G.greenBg, border: `1px solid ${G.greenBorder}`, borderRadius: 7, padding: "4px 10px", cursor: "pointer", fontFamily: FONT }}>View All</button>
+            </div>
+            {PROPOSALS.map((p, i) => (
+              <div key={p.id} style={{ padding: "12px 18px", borderBottom: i < PROPOSALS.length - 1 ? "1px solid #f9fafb" : "none", display: "flex", alignItems: "center", gap: 12 }}
+                onMouseEnter={e => e.currentTarget.style.background = G.bg}
+                onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <p style={{ fontSize: 12, fontWeight: 700, color: G.text, margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{p.title}</p>
+                  <p style={{ fontSize: 11, color: G.muted, margin: "2px 0 0" }}>{p.client}</p>
+                </div>
+                <div style={{ textAlign: "right", flexShrink: 0 }}>
+                  <p style={{ fontSize: 12, fontWeight: 700, color: G.text, margin: 0 }}>{p.amount}</p>
+                  <span style={{ fontSize: 10, fontWeight: 700, background: p.stageBg, color: p.stageColor, padding: "1px 7px", borderRadius: 99, display: "inline-block", marginTop: 3 }}>{p.stage.replace("_", " ")}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ background: G.white, border: `1px solid ${G.border}`, borderRadius: 14, overflow: "hidden" }}>
+            <div style={{ padding: "14px 18px 12px", borderBottom: "1px solid #f3f4f6", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <p style={{ fontSize: 14, fontWeight: 700, color: G.text, margin: 0 }}>Recent Transactions</p>
+              <button onClick={() => navigate("/agency/earnings")} style={{ fontSize: 11, fontWeight: 700, color: G.greenDark, background: G.greenBg, border: `1px solid ${G.greenBorder}`, borderRadius: 7, padding: "4px 10px", cursor: "pointer", fontFamily: FONT }}>View All</button>
+            </div>
+            {TXN.map((t, i) => {
+              const ok = t.status === "released";
+              return (
+                <div key={t.id} style={{ padding: "12px 18px", borderBottom: i < TXN.length - 1 ? "1px solid #f9fafb" : "none", display: "flex", alignItems: "center", gap: 12 }}
+                  onMouseEnter={e => e.currentTarget.style.background = G.bg}
+                  onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                  <div style={{ width: 32, height: 32, borderRadius: 9, background: ok ? G.greenBg : G.yellowBg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, flexShrink: 0 }}>{ok ? "✅" : "⏳"}</div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: 12, fontWeight: 600, color: G.text, margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{t.client}</p>
+                    <p style={{ fontSize: 10, color: G.muted, margin: "1px 0 0" }}>{t.id} · {t.date}</p>
+                  </div>
+                  <div style={{ textAlign: "right", flexShrink: 0 }}>
+                    <p style={{ fontSize: 13, fontWeight: 800, color: ok ? G.greenDark : G.yellow, margin: 0 }}>{t.amount}</p>
+                    <p style={{ fontSize: 10, color: G.muted, margin: "1px 0 0" }}>{ok ? "Released" : "Pending"}</p>
+                  </div>
                 </div>
               );
             })}
           </div>
         </div>
 
+        {/* ── ROW 3: Team + Reviews + KYC ── */}
+        <div className="dash-row3">
+
+          {/* Team */}
+          <div style={{ background: G.white, border: `1px solid ${G.border}`, borderRadius: 14, overflow: "hidden" }}>
+            <div style={{ padding: "14px 18px 12px", borderBottom: "1px solid #f3f4f6", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <p style={{ fontSize: 14, fontWeight: 700, color: G.text, margin: 0 }}>Team ({TEAM.length})</p>
+              <button onClick={() => navigate("/invite-team")} style={{ fontSize: 11, fontWeight: 700, color: "#2563eb", background: G.blueBg, border: "1px solid #bfdbfe", borderRadius: 7, padding: "4px 10px", cursor: "pointer", fontFamily: FONT }}>+ Invite</button>
+            </div>
+            <div style={{ padding: "8px 0" }}>
+              {TEAM.map((m, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 18px" }}
+                  onMouseEnter={e => e.currentTarget.style.background = G.bg}
+                  onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                  <div style={{ width: 30, height: 30, borderRadius: "50%", background: m.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: m.color, flexShrink: 0 }}>{m.initial}</div>
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: 12, fontWeight: 600, color: G.text, margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{m.name}</p>
+                    <p style={{ fontSize: 10, color: G.muted, margin: 0 }}>{m.role}</p>
+                  </div>
+                  <span style={{ width: 7, height: 7, borderRadius: "50%", background: m.status === "available" ? G.green : G.blue, flexShrink: 0 }} />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Reviews */}
+          <div style={{ background: G.white, border: `1px solid ${G.border}`, borderRadius: 14, overflow: "hidden" }}>
+            <div style={{ padding: "14px 18px 12px", borderBottom: "1px solid #f3f4f6", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div>
+                <p style={{ fontSize: 14, fontWeight: 700, color: G.text, margin: 0 }}>Reviews</p>
+                <p style={{ fontSize: 11, color: G.muted, margin: "1px 0 0" }}>4.7★ avg · 6 total</p>
+              </div>
+              <button onClick={() => navigate("/agency/reviews")} style={{ fontSize: 11, fontWeight: 700, color: G.greenDark, background: G.greenBg, border: `1px solid ${G.greenBorder}`, borderRadius: 7, padding: "4px 10px", cursor: "pointer", fontFamily: FONT }}>View All</button>
+            </div>
+            <div style={{ padding: "8px 0" }}>
+              {REVIEWS.map((r, i) => (
+                <div key={i} style={{ padding: "9px 18px", borderBottom: i < REVIEWS.length - 1 ? "1px solid #f9fafb" : "none" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 3 }}>
+                    <p style={{ fontSize: 12, fontWeight: 700, color: G.text, margin: 0 }}>{r.client}</p>
+                    <span style={{ fontSize: 11, color: G.yellow }}>{"★".repeat(r.rating)}</span>
+                  </div>
+                  <p style={{ fontSize: 11, color: G.sub, margin: 0, lineHeight: 1.4 }}>{r.text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* KYC */}
+          <div style={{ background: G.white, border: `1px solid ${G.border}`, borderRadius: 14, overflow: "hidden" }}>
+            <div style={{ padding: "14px 18px 12px", borderBottom: "1px solid #f3f4f6", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div>
+                <p style={{ fontSize: 14, fontWeight: 700, color: G.text, margin: 0 }}>KYC Verification</p>
+                <p style={{ fontSize: 11, color: G.muted, margin: "1px 0 0" }}>4 of 5 steps done</p>
+              </div>
+              <button onClick={() => navigate("/agency/kyc")} style={{ fontSize: 11, fontWeight: 700, color: "#92400e", background: G.yellowBg, border: "1px solid #fde68a", borderRadius: 7, padding: "4px 10px", cursor: "pointer", fontFamily: FONT }}>Continue →</button>
+            </div>
+            <div style={{ padding: "10px 18px" }}>
+              <div style={{ marginBottom: 12 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 4 }}>
+                  <span style={{ fontSize: 11, color: G.sub }}>Overall Progress</span>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: G.greenDark }}>75%</span>
+                </div>
+                <div style={{ background: "#f3f4f6", borderRadius: 99, height: 6, overflow: "hidden" }}>
+                  <div style={{ width: "75%", height: "100%", background: `linear-gradient(90deg,${G.green},#86efac)`, borderRadius: 99 }} />
+                </div>
+              </div>
+              {KYC_STEPS.map((step, i) => {
+                const v = step.status === "verified", r = step.status === "under_review";
+                return (
+                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
+                    <div style={{ width: 18, height: 18, borderRadius: "50%", background: v ? G.greenBg : r ? G.yellowBg : "#f3f4f6", border: `1.5px solid ${v ? G.green : r ? G.yellow : G.border}`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, fontWeight: 700, color: v ? G.greenDark : r ? "#92400e" : G.muted, flexShrink: 0 }}>
+                      {v ? "✓" : r ? "🔍" : i + 1}
+                    </div>
+                    <p style={{ fontSize: 11, color: v ? G.text : G.muted, fontWeight: v ? 600 : 400, margin: 0, flex: 1 }}>{step.label}</p>
+                    <span style={{ fontSize: 9, fontWeight: 700, color: v ? G.greenDark : r ? "#92400e" : G.muted }}>{v ? "✓" : r ? "Pending" : "—"}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
