@@ -1,0 +1,236 @@
+// // AdminPanel.jsx
+// import React, { useState } from 'react';
+// import { useNavigate } from 'react-router-dom';
+
+// import Projects from './pages/Projects';
+// import Users from './pages/Users';
+// import Support from './pages/Support';
+// import Payments from './pages/Payments';
+// import Monitoring from './pages/Monitoring';
+// import BackgroundTasks from './pages/BackgroundTasks';
+// import Security from './pages/Security';
+// import LegalPages from './pages/LegalPages';
+
+// const tabs = [
+//   { id: 'projects', label: 'Projects', icon: '▦' },
+//   { id: 'users', label: 'Users', icon: '👤' },
+//   { id: 'support', label: 'Support', icon: '💬', badge: 2 },
+//   { id: 'payments', label: 'Payments', icon: '$' },
+//   { id: 'monitoring', label: 'Monitoring', icon: '📊' },
+//   { id: 'background', label: 'Background Tasks', icon: '⚙' },
+//   { id: 'security', label: 'Security', icon: '🔒' },
+//   { id: 'legal', label: 'Legal Pages', icon: '📄' },
+// ];
+
+// const AdminPanel = () => {
+//   const [activeTab, setActiveTab] = useState('projects');
+//   const navigate = useNavigate();
+
+//   const renderPage = () => {
+//     switch (activeTab) {
+//       case 'projects':   return <Projects />;
+//       case 'users':      return <Users />;
+//       case 'support':    return <Support />;
+//       case 'payments':   return <Payments />;
+//       case 'monitoring': return <Monitoring />;
+//       case 'background': return <BackgroundTasks />;
+//       case 'security':   return <Security />;
+//       case 'legal':      return <LegalPages />;
+//       default:           return <Projects />;
+//     }
+//   };
+
+//   return (
+//     <div className="min-h-screen bg-gray-50 font-sans">
+//       {/* Top Navbar */}
+//       <nav className="flex items-center justify-between px-8 sm:px-10 py-4 bg-white border-b border-gray-200">
+//         <div className="text-xl font-bold text-red-500">Admin Panel</div>
+
+//         <div className="flex items-center gap-4">
+//           <span className="px-3 py-1 text-xs font-bold tracking-wide text-red-600 bg-red-50 rounded-full uppercase">
+//             ADMIN
+//           </span>
+//           <button
+//             onClick={() => navigate('/')}
+//             className="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors"
+//           >
+//             Home
+//           </button>
+//         </div>
+//       </nav>
+
+//       {/* Header */}
+//       <header className="px-8 sm:px-10 pt-9 pb-2">
+//         <h1 className="text-3xl font-bold text-gray-900">System Administration</h1>
+//         <p className="mt-2 text-gray-600">
+//           Monitor projects, manage users, handle support, and configure security
+//         </p>
+//       </header>
+
+//       {/* Tabs */}
+//       <div className="px-8 sm:px-10 border-b border-gray-200">
+//         <div className="flex gap-1 overflow-x-auto pb-1 -mb-px">
+//           {tabs.map((tab) => (
+//             <button
+//               key={tab.id}
+//               onClick={() => setActiveTab(tab.id)}
+//               className={`
+//                 flex items-center gap-2 px-5 py-3 text-sm font-medium whitespace-nowrap
+//                 border-b-2 transition-colors
+//                 ${
+//                   activeTab === tab.id
+//                     ? 'border-gray-900 text-gray-900 font-semibold'
+//                     : 'border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-300'
+//                 }
+//               `}
+//             >
+//               <span>{tab.icon}</span>
+//               {tab.label}
+//               {tab.badge !== undefined && (
+//                 <span className="flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full">
+//                   {tab.badge}
+//                 </span>
+//               )}
+//             </button>
+//           ))}
+//         </div>
+//       </div>
+
+//       {/* Content */}
+//       <main className="px-8 sm:px-10 py-8 pb-16">{renderPage()}</main>
+//     </div>
+//   );
+// };
+
+// export default AdminPanel;
+
+
+
+
+// AdminPanel.jsx
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import Projects from './pages/Projects';
+import Users from './pages/Users';
+import Support from './pages/Support';
+import Payments from './pages/Payments';
+import Monitoring from './pages/Monitoring';
+import BackgroundTasks from './pages/BackgroundTasks';
+import Security from './pages/Security';
+import LegalPages from './pages/LegalPages';
+
+const WBL_CSS = `
+  .wbl-btn-theme {
+    background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%);
+    border: none; cursor: pointer;
+  }
+  .wbl-btn-theme:hover { opacity: 0.88; }
+  .wbl-chip-active {
+    background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%) !important;
+    color: #fff !important; border-color: transparent !important;
+  }
+  .wbl-badge { background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%); }
+  .wbl-tab-active { border-bottom-color: #1B72C0 !important; color: #0D2855 !important; }
+`;
+
+
+const tabs = [
+  { id: 'projects', label: 'Projects', icon: '▦' },
+  { id: 'users', label: 'Users', icon: '👤' },
+  { id: 'support', label: 'Support', icon: '💬', badge: 2 },
+  { id: 'payments', label: 'Payments', icon: '$' },
+  { id: 'monitoring', label: 'Monitoring', icon: '📊' },
+  { id: 'background', label: 'Background Tasks', icon: '⚙' },
+  { id: 'security', label: 'Security', icon: '🔒' },
+  { id: 'legal', label: 'Legal Pages', icon: '📄' },
+];
+
+const AdminPanel = () => {
+  const [activeTab, setActiveTab] = useState('projects');
+  const navigate = useNavigate();
+
+  const renderPage = () => {
+    switch (activeTab) {
+      case 'projects':   return <Projects />;
+      case 'users':      return <Users />;
+      case 'support':    return <Support />;
+      case 'payments':   return <Payments />;
+      case 'monitoring': return <Monitoring />;
+      case 'background': return <BackgroundTasks />;
+      case 'security':   return <Security />;
+      case 'legal':      return <LegalPages />;
+      default:           return <Projects />;
+    }
+  };
+
+  return (
+    <>
+      <style>{WBL_CSS}</style>
+    <div className="min-h-screen bg-gray-50 font-sans">
+      {/* Top Navbar */}
+      <nav className="flex items-center justify-between px-8 sm:px-10 py-4 bg-white border-b border-gray-200">
+        <img src="/weblance.jpeg" alt="Weblance" style={{ height: 55, width: 150 }} />
+{/* 
+        <div className="flex items-center gap-4">
+          <span className="px-3 py-1 text-xs font-bold tracking-wide text-red-600 bg-red-50 rounded-full uppercase">
+            ADMIN
+          </span> */}
+          <div className="flex items-center gap-4">
+          <span className="px-3 py-1 text-xs font-bold tracking-wide text-white rounded-full uppercase" style={{ background: "linear-gradient(135deg, #0D2855 0%, #1B72C0 100%)" }}>
+            ADMIN
+          </span>
+          <button
+            onClick={() => navigate('/')}
+            className="text-sm font-medium text-gray-700 hover:text-blue-700 transition-colors"
+          >
+            Home
+          </button>
+        </div>
+      </nav>
+
+      {/* Header */}
+      <header className="px-8 sm:px-10 pt-9 pb-2">
+        <h1 className="text-3xl font-bold text-gray-900">System Administration</h1>
+        <p className="mt-2 text-gray-600">
+          Monitor projects, manage users, handle support, and configure security
+        </p>
+      </header>
+
+      {/* Tabs */}
+      <div className="px-8 sm:px-10 border-b border-gray-200">
+        <div className="flex gap-1 overflow-x-auto pb-1 -mb-px">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`
+                flex items-center gap-2 px-5 py-3 text-sm font-medium whitespace-nowrap
+                border-b-2 transition-colors
+                ${
+                  activeTab === tab.id
+                    ? 'border-transparent wbl-tab-active font-semibold'
+                    : 'border-transparent text-gray-500 hover:text-gray-800 hover:border-gray-300'
+                }
+              `}
+            >
+              <span>{tab.icon}</span>
+              {tab.label}
+              {tab.badge !== undefined && (
+                <span className="flex items-center justify-center w-5 h-5 text-xs font-bold text-white rounded-full wbl-badge text-white">
+                  {tab.badge}
+                </span>
+              )}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Content */}
+      <main className="px-8 sm:px-10 py-8 pb-16">{renderPage()}</main>
+    </div>
+    </>
+  );
+};
+
+export default AdminPanel;
