@@ -1,15 +1,8 @@
-
-
-
-
-
-
-
 import { useState, useRef, useEffect } from "react";
 
 const stepLabels = [
   "Account", "Verify", "Type", "Profile", "Skills",
-  "Portfolio", "History", "Rates", "KYC", "Payment", "Trust", "Go Live"
+  "Portfolio", "History", "Rates", "KYC", "Plan", "Payment", "Trust", "Go Live"
 ];
 
 const currencies      = ["USD", "EUR", "GBP", "INR", "CAD", "AUD", "SGD"];
@@ -80,7 +73,7 @@ function Toggle({ value, onChange }) {
   );
 }
 
-export default function Step8_Rates({ onNext, onBack, currentStep = 8, totalSteps = 12 }) {
+export default function Step8_Rates({ onNext, onBack, currentStep = 8, totalSteps = 13 }) {
   const [currency, setCurrency]       = useState("USD");
   const [hourlyRate, setHourlyRate]   = useState(65);
   const [minBudget, setMinBudget]     = useState("");

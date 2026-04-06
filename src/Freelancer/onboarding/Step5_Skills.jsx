@@ -1,13 +1,8 @@
-
-
-
-
-
 import { useState } from "react";
 
 const stepLabels = [
   "Account", "Verify", "Type", "Profile", "Skills",
-  "Portfolio", "History", "Rates", "KYC", "Payment", "Trust", "Go Live"
+  "Portfolio", "History", "Rates", "KYC", "Plan", "Payment", "Trust", "Go Live"
 ];
 
 const skillTests = [
@@ -178,7 +173,7 @@ function SkillTestModal({ skillName, onClose, onComplete }) {
   );
 }
 
-export default function Step5_Skills({ onNext, onBack, currentStep = 5, totalSteps = 12 }) {
+export default function Step5_Skills({ onNext, onBack, currentStep = 5, totalSteps = 13 }) {
   const [testStatus, setTestStatus] = useState({});
   const [activeModal, setActiveModal] = useState(null);
 

@@ -1,129 +1,41 @@
-// import { useState } from "react";
-
-// // ── Import all steps ──
-// import Step1_Account   from "./Step1_Account";
-// import Step2_Verify    from "./Step2_Verify";
-// import Step3_Type      from "./Step3_Type";
-// import Step4_Profile   from "./Step4_Profile";
-// import Step5_Skills    from "./Step5_Skills";
-// import Step6_Portfolio from "./Step6_Portfolio";
-// import Step7_History   from "./Step7_History";
-// import Step8_Rates     from "./Step8_Rates";
-// import Step9_KYC       from "./Step9_KYC";
-// import Step10_Payment  from "./Step10_Payment";
-// import Step11_Trust    from "./Step11_Trust";
-// import Step12_GoLive   from "./Step12_GoLive";
-// import Dashboard       from "../Dashboard";
-
-// const TOTAL_STEPS = 12;
-
-// const STEP_COMPONENTS = [
-//   Step1_Account,
-//   Step2_Verify,
-//   Step3_Type,
-//   Step4_Profile,
-//   Step5_Skills,
-//   Step6_Portfolio,
-//   Step7_History,
-//   Step8_Rates,
-//   Step9_KYC,
-//   Step10_Payment,
-//   Step11_Trust,
-//   Step12_GoLive,
-// ];
-
-// export default function OnboardingFlow() {
-//   // currentStep: 1–12 = onboarding steps, "dashboard" = main dashboard
-//   const [currentStep, setCurrentStep] = useState(1);
-
-//   const goNext = () => {
-//     if (currentStep < TOTAL_STEPS) {
-//       setCurrentStep(s => s + 1);
-//       window.scrollTo({ top: 0, behavior: "smooth" });
-//     }
-//   };
-
-//   const goBack = () => {
-//     if (currentStep > 1) {
-//       setCurrentStep(s => s - 1);
-//       window.scrollTo({ top: 0, behavior: "smooth" });
-//     }
-//   };
-
-//   const goToDashboard = () => {
-//     setCurrentStep("dashboard");
-//     window.scrollTo({ top: 0, behavior: "smooth" });
-//   };
-
-//   // ── Render Dashboard ──
-//   if (currentStep === "dashboard") {
-//     return <Dashboard />;
-//   }
-
-//   // ── Render onboarding step ──
-//   const StepComponent = STEP_COMPONENTS[currentStep - 1];
-
-//   // Step 12 gets special props (no onNext, but onDashboard)
-//   if (currentStep === TOTAL_STEPS) {
-//     return (
-//       <Step12_GoLive
-//         onBack={goBack}
-//         onDashboard={goToDashboard}
-//         currentStep={currentStep}
-//         totalSteps={TOTAL_STEPS}
-//       />
-//     );
-//   }
-
-//   return (
-//     <StepComponent
-//       onNext={goNext}
-//       onBack={goBack}
-//       currentStep={currentStep}
-//       totalSteps={TOTAL_STEPS}
-//     />
-//   );
-// }
-
-
-
-
 import { useState } from "react";
 
 // ── Import all steps ──
-import Step1_Account   from "./Step1_Account";
-import Step2_Verify    from "./Step2_Verify";
-import Step3_Type      from "./Step3_Type";
-import Step4_Profile   from "./Step4_Profile";
-import Step5_Skills    from "./Step5_Skills";
-import Step6_Portfolio from "./Step6_Portfolio";
-import Step7_History   from "./Step7_History";
-import Step8_Rates     from "./Step8_Rates";
-import Step9_KYC       from "./Step9_KYC";
-import Step10_Payment  from "./Step10_Payment";
-import Step11_Trust    from "./Step11_Trust";
-import Step12_GoLive   from "./Step12_GoLive";
-import Dashboard       from "../Dashboard";
+import Step1_Account    from "./Step1_Account";
+import Step2_Verify     from "./Step2_Verify";
+import Step3_Type       from "./Step3_Type";
+import Step4_Profile    from "./Step4_Profile";
+import Step5_Skills     from "./Step5_Skills";
+import Step6_Portfolio  from "./Step6_Portfolio";
+import Step7_History    from "./Step7_History";
+import Step8_Rates      from "./Step8_Rates";
+import Step9_KYC        from "./Step9_KYC";
+import Step10_PlanSelect from "./Step10_PlanSelect";
+import Step11_Payment   from "./Step11_Payment";
+import Step12_Trust     from "./Step12_Trust";
+import Step13_GoLive    from "./Step13_GoLive";
+import Dashboard        from "../Dashboard";
 
-const TOTAL_STEPS = 12;
+const TOTAL_STEPS = 13;
 
 const STEP_COMPONENTS = [
-  Step1_Account,
-  Step2_Verify,
-  Step3_Type,
-  Step4_Profile,
-  Step5_Skills,
-  Step6_Portfolio,
-  Step7_History,
-  Step8_Rates,
-  Step9_KYC,
-  Step10_Payment,
-  Step11_Trust,
-  Step12_GoLive,
+  Step1_Account,    // Step 1
+  Step2_Verify,     // Step 2
+  Step3_Type,       // Step 3
+  Step4_Profile,    // Step 4
+  Step5_Skills,     // Step 5
+  Step6_Portfolio,  // Step 6
+  Step7_History,    // Step 7
+  Step8_Rates,      // Step 8
+  Step9_KYC,        // Step 9
+  Step10_PlanSelect, // Step 10
+  Step11_Payment,   // Step 11
+  Step12_Trust,     // Step 12
+  Step13_GoLive,    // Step 13
 ];
 
 export default function OnboardingFlow() {
-  // currentStep: 1–12 = onboarding steps, "dashboard" = main dashboard
+  // currentStep: 1–13 = onboarding steps, "dashboard" = main dashboard
   const [currentStep, setCurrentStep] = useState(1);
 
   const goNext = () => {
@@ -153,7 +65,7 @@ export default function OnboardingFlow() {
   // ── Render onboarding step ──
   const StepComponent = STEP_COMPONENTS[currentStep - 1];
 
-  // Step 12 gets special props (no onNext, but onDashboard)
+  // Step 13 gets special props (no onNext, but onDashboard)
   if (currentStep === TOTAL_STEPS) {
     return (
     <>
@@ -178,7 +90,7 @@ export default function OnboardingFlow() {
 
         
 `}</style>
-      <Step12_GoLive
+      <Step13_GoLive
         onBack={goBack}
         onDashboard={goToDashboard}
         currentStep={currentStep}

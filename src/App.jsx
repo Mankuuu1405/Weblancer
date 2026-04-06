@@ -82,6 +82,7 @@ import FreelancerNotifications from "./Freelancer/FreelancerNotifications";
 import FreelancerKYC           from "./Freelancer/FreelancerKYC";
 import FreelancerEarnings      from "./Freelancer/FreelancerEarnings";
 import FreelancerWithdrawals   from "./Freelancer/FreelancerWithdrawals";
+import FreelancerPlan from "./Freelancer/FreelancerPlan";
 
 // Hire Talent
 import HireTalentLanding from "./hire-talent/LandingPage";
@@ -280,6 +281,7 @@ export default function App() {
           <Route path="/freelancer/kyc"               element={<FreelancerKYC />} />
           <Route path="/freelancer/earnings"          element={<FreelancerEarnings />} />
           <Route path="/freelancer/withdrawals"       element={<FreelancerWithdrawals />} />
+          <Route path="/freelancer/plan" element={<FreelancerPlan />} />
         </Route>
 
         {/* ─── Hire Talent ─────────────────────────────────────────────────── */}

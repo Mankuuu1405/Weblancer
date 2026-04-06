@@ -1,6 +1,3 @@
-
-
-
 //  import React, { useEffect, useRef } from "react";
 // import { useNavigate } from "react-router-dom";
 // import { FaUser } from "react-icons/fa";
@@ -697,4 +694,3 @@ const Hero = () => {
 };
 
 export default Hero;
-

@@ -54,7 +54,7 @@ const paymentMethods = [
 
 const frequencyOptions = ["On request", "Weekly", "Bi-weekly", "Monthly"];
 
-export default function Step10_Payment({ onNext, onBack, currentStep = 10, totalSteps = 13 }) {
+export default function Step11_Payment({ onNext, onBack, currentStep = 11, totalSteps = 13 }) {
   const [selectedMethod, setSelectedMethod] = useState("bank");
   const [bankSaved, setBankSaved]           = useState(false);
   const [savingBank, setSavingBank]         = useState(false);

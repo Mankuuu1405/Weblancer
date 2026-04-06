@@ -42,6 +42,7 @@ const NAV = [
   {
     section: "ACCOUNT",
     items: [
+      { label: "My Plan",       icon: "💳", path: "/freelancer/plan"                                           },
       { label: "KYC",           icon: "🪪", path: "/freelancer/kyc",         badge: "!", badgeColor: "#f59e0b" },
       { label: "Notifications", icon: "🔔", path: "/freelancer/notifications",badge: 6             },
     ]
@@ -56,6 +57,7 @@ const PAGE_TITLES = {
   "/freelancer/reviews":           { title: "My Reviews",    sub: "Client feedback and your reputation"      },
   "/freelancer/earnings":          { title: "Earnings",      sub: "Your wallet and transaction history"      },
   "/freelancer/withdrawals":       { title: "Withdrawals",   sub: "Request payouts to your bank or UPI"      },
+  "/freelancer/plan":            { title: "My Plan",       sub: "Manage your subscription and add-ons"         },
   "/freelancer/kyc":               { title: "KYC Verification", sub: "Complete identity verification"        },
   "/freelancer/notifications":     { title: "Notifications", sub: "Stay on top of proposals and payments"    },
 };

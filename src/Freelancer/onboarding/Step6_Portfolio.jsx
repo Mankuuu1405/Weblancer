@@ -1,16 +1,11 @@
-
-
-
-
-
 import { useState, useRef } from "react";
 
 const stepLabels = [
   "Account", "Verify", "Type", "Profile", "Skills",
-  "Portfolio", "History", "Rates", "KYC", "Payment", "Trust", "Go Live"
+  "Portfolio", "History", "Rates", "KYC", "Plan", "Payment", "Trust", "Go Live"
 ];
 
-export default function Step6_Portfolio({ onNext, onBack, currentStep = 6, totalSteps = 12 }) {
+export default function Step6_Portfolio({ onNext, onBack, currentStep = 6, totalSteps = 13 }) {
   const [githubUrl, setGithubUrl]             = useState("");
   const [githubAnalyzed, setGithubAnalyzed]   = useState(false);
   const [githubAnalyzing, setGithubAnalyzing] = useState(false);

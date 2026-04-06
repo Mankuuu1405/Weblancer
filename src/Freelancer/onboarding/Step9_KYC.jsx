@@ -1,13 +1,8 @@
-
-
-
-
-
 import { useState, useRef } from "react";
 
 const stepLabels = [
   "Account", "Verify", "Type", "Profile", "Skills",
-  "Portfolio", "History", "Rates", "KYC", "Payment", "Trust", "Go Live"
+  "Portfolio", "History", "Rates", "KYC", "Plan", "Payment", "Trust", "Go Live"
 ];
 
 const idTypes  = ["Passport", "National ID Card", "Driver's License"];
@@ -64,7 +59,7 @@ function UploadSlot({ label, onUpload, uploaded }) {
   );
 }
 
-export default function Step9_KYC({ onNext, onBack, currentStep = 9, totalSteps = 12 }) {
+export default function Step9_KYC({ onNext, onBack, currentStep = 9, totalSteps = 13 }) {
   const [idType, setIdType]                   = useState("");
   const [idOpen, setIdOpen]                   = useState(false);
   const [uploads, setUploads]                 = useState({ front:false, back:false });

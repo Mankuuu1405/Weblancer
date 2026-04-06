@@ -1,11 +1,3 @@
-
-
-
-
-
-
-
-
 import { useEffect, useState } from "react";
 
 const completedItems = [
@@ -86,7 +78,7 @@ function Confetti({ show }) {
   );
 }
 
-export default function Step12_GoLive({ onBack, onDashboard }) {
+export default function Step13_GoLive({ onBack, onDashboard }) {
   const [showConfetti, setShowConfetti] = useState(false);
   const [checkAnim, setCheckAnim]       = useState(false);
   const [itemsAnim, setItemsAnim]       = useState(false);

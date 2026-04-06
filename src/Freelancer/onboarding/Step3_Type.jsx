@@ -1,12 +1,8 @@
-
-
-
-
 import { useState } from "react";
 
 const stepLabels = [
   "Account", "Verify", "Type", "Profile", "Skills",
-  "Portfolio", "History", "Rates", "KYC", "Payment", "Trust", "Go Live"
+  "Portfolio", "History", "Rates", "KYC", "Plan", "Payment", "Trust", "Go Live"
 ];
 
 const categories = [
@@ -46,7 +42,7 @@ const categories = [
   }
 ];
 
-export default function Step3_Type({ onNext, onBack, currentStep = 3, totalSteps = 12 }) {
+export default function Step3_Type({ onNext, onBack, currentStep = 3, totalSteps = 13 }) {
   const [selected, setSelected] = useState([]);
 
   const percentComplete = Math.round(((currentStep - 1) / totalSteps) * 100);

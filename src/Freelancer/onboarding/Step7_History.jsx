@@ -1,14 +1,8 @@
-
-
-
-
-
-
 import { useState, useRef, useEffect } from "react";
 
 const stepLabels = [
   "Account", "Verify", "Type", "Profile", "Skills",
-  "Portfolio", "History", "Rates", "KYC", "Payment", "Trust", "Go Live"
+  "Portfolio", "History", "Rates", "KYC", "Plan", "Payment", "Trust", "Go Live"
 ];
 
 const spinKeyframes = `@keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }`;
@@ -243,7 +237,7 @@ Rules:
   );
 }
 
-export default function Step7_History({ onNext, onBack, currentStep = 7, totalSteps = 12 }) {
+export default function Step7_History({ onNext, onBack, currentStep = 7, totalSteps = 13 }) {
   const [selectedMode, setSelectedMode]   = useState("text");
   const [showModal, setShowModal]         = useState(false);
   const [interviewDone, setInterviewDone] = useState(false);

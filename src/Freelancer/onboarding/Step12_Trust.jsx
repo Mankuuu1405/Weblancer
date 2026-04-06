@@ -1,11 +1,8 @@
-
-
-
 import { useEffect, useState } from "react";
 
 const stepLabels = [
   "Account", "Verify", "Type", "Profile", "Skills",
-  "Portfolio", "History", "Rates", "KYC", "Payment", "Trust", "Go Live"
+  "Portfolio", "History", "Rates", "KYC", "Plan", "Payment", "Trust", "Go Live"
 ];
 
 const SCORE = 78;
@@ -97,7 +94,7 @@ function ScoreGauge({ score, animated }) {
   );
 }
 
-export default function Step11_Trust({ onNext, onBack, currentStep = 11, totalSteps = 12 }) {
+export default function Step12_Trust({ onNext, onBack, currentStep = 12, totalSteps = 13 }) {
   const [animated, setAnimated] = useState(false);
 
   useEffect(() => {

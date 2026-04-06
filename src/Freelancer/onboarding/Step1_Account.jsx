@@ -3,7 +3,7 @@ import { ChevronDown, Eye, EyeOff, Github, Linkedin, Mail } from "lucide-react";
 
 const stepLabels = [
   "Account", "Verify", "Type", "Profile", "Skills",
-  "Portfolio", "History", "Rates", "KYC", "Payment", "Trust", "Go Live"
+  "Portfolio", "History", "Rates", "KYC", "Plan", "Payment", "Trust", "Go Live"
 ];
 
 const countries = [
@@ -20,7 +20,7 @@ const countries = [
   "United States", "Venezuela", "Vietnam", "Zimbabwe"
 ];
 
-export default function Step1_Account({ onNext, onBack, currentStep = 1, totalSteps = 12 }) {
+export default function Step1_Account({ onNext, onBack, currentStep = 1, totalSteps = 13 }) {
   const [fullName, setFullName]               = useState("");
   const [email, setEmail]                     = useState("");
   const [country, setCountry]                 = useState("");

@@ -1,14 +1,11 @@
-
-
-
 import { useState } from "react";
 
 const stepLabels = [
   "Account", "Verify", "Type", "Profile", "Skills",
-  "Portfolio", "History", "Rates", "KYC", "Payment", "Trust", "Go Live"
+  "Portfolio", "History", "Rates", "KYC", "Plan", "Payment", "Trust", "Go Live"
 ];
 
-export default function Step2_Verify({ onNext, onBack, currentStep = 2, totalSteps = 12 }) {
+export default function Step2_Verify({ onNext, onBack, currentStep = 2, totalSteps = 13 }) {
   const [emailVerified, setEmailVerified] = useState(false);
   const [phone, setPhone]                 = useState("");
   const [codeSent, setCodeSent]           = useState(false);

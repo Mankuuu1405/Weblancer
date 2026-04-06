@@ -1,12 +1,8 @@
-
-
-
-
 import { useState, useRef } from "react";
 
 const stepLabels = [
   "Account", "Verify", "Type", "Profile", "Skills",
-  "Portfolio", "History", "Rates", "KYC", "Payment", "Trust", "Go Live"
+  "Portfolio", "History", "Rates", "KYC", "Plan", "Payment", "Trust", "Go Live"
 ];
 
 const timezones = [
@@ -20,7 +16,7 @@ const timezones = [
 
 const experienceOptions = ["Less than 1 year", "1-2 years", "3-5 years", "6-10 years", "10+ years"];
 
-export default function Step4_Profile({ onNext, onBack, currentStep = 4, totalSteps = 12 }) {
+export default function Step4_Profile({ onNext, onBack, currentStep = 4, totalSteps = 13 }) {
   const [photo, setPhoto]               = useState(null);
   const [headline, setHeadline]         = useState("");
   const [bio, setBio]                   = useState("");
