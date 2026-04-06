@@ -1,10 +1,4 @@
 
-
-
-
-
-
-
 import { useState, useRef, useEffect } from "react";
 
 const stepLabels = [
@@ -117,7 +111,7 @@ export default function Step8_Rates({ onNext, onBack, currentStep = 8, totalStep
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        * { font-family: 'Plus Jakarta Sans', sans-serif; }
+        * { font-family: 'Plus Jakarta Sans', sans-serif; box-sizing:border-box; }
         .wbl-gradient { background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%); }
         .wbl-text-blue { color: #1B72C0; }
         .wbl-btn-primary {
@@ -165,22 +159,54 @@ export default function Step8_Rates({ onNext, onBack, currentStep = 8, totalStep
           background:linear-gradient(135deg,#0D2855,#1B72C0); border:2px solid white;
           box-shadow:0 2px 8px rgba(13,40,85,0.3); cursor:pointer;
         }
+
+        /* Responsive */
+        .main-layout { display:flex; gap:24px; align-items:flex-start; }
+        .main-col { flex:1; min-width:0; }
+        .sidebar-col { width:280px; flex-shrink:0; }
+
+        @media (max-width: 900px) {
+          .main-layout { flex-direction:column; }
+          .sidebar-col { width:100%; }
+          .sidebar-inner { position:static !important; }
+        }
+
+        @media (max-width: 640px) {
+          .main-card { padding:20px !important; }
+          .wbl-btn-primary { padding:11px 18px; font-size:13px; }
+          .wbl-btn-secondary { padding:11px 16px; font-size:13px; }
+          .page-title { font-size:20px !important; }
+          .step-label-text { display:none !important; }
+          .nav-row { gap:10px; }
+          .rate-display { font-size:40px !important; letter-spacing:-1px !important; }
+          .two-col-grid { grid-template-columns:1fr !important; }
+          .market-grid { grid-template-columns:1fr 1fr !important; }
+        }
+
+        @media (max-width: 480px) {
+          .page-wrapper { padding:0 14px !important; }
+          .progress-wrapper { padding:0 14px !important; margin-top:20px !important; }
+          .header-inner { padding:10px 14px !important; }
+          .rate-section { padding:16px !important; }
+          .market-grid { grid-template-columns:1fr 1fr 1fr !important; }
+        }
       `}</style>
 
       <div className="min-h-screen pb-20" style={{ background:"#F4F9FF" }}>
 
         {/* Navbar */}
-<header style={{ background:"white", borderBottom:"1px solid #f0f0f0", padding:"12px 24px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-  <img src="/weblance.jpeg" alt="Weblance" style={{ height:44, width:"auto" }} />
-  <button className="wbl-btn-secondary" style={{ padding:"8px 18px", fontSize:13 }}>
-    <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
-    </svg>
-    Save &amp; Exit
-  </button>
-</header>
+        <header className="header-inner" style={{ background:"white", borderBottom:"1px solid #f0f0f0", padding:"12px 24px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+          <img src="/weblance.jpeg" alt="Weblance" style={{height: 54, width: 155, display: "block" }} />
+          <button className="wbl-btn-secondary" style={{ padding:"8px 18px", fontSize:13 }}>
+            <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+            </svg>
+            Save &amp; Exit
+          </button>
+        </header>
+
         {/* Step Progress */}
-        <div style={{ maxWidth:1100, margin:"32px auto 24px", padding:"0 24px" }}>
+        <div className="progress-wrapper" style={{ maxWidth:1100, margin:"32px auto 24px", padding:"0 24px" }}>
           <div style={{ display:"flex", justifyContent:"space-between", marginBottom:12, fontSize:13 }}>
             <span style={{ fontWeight:600, color:"#374151" }}>Step {currentStep} of {totalSteps}</span>
             <span className="wbl-text-blue" style={{ fontWeight:700 }}>{percentComplete}% Complete</span>
@@ -197,7 +223,7 @@ export default function Step8_Rates({ onNext, onBack, currentStep = 8, totalStep
                     style={{ width:28, height:28, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", border:"2px solid", fontSize:11, fontWeight:700, transition:"all .2s" }}>
                     {isDone ? <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/></svg> : i+1}
                   </div>
-                  <span style={{ fontSize:10, marginTop:5, fontWeight:600, color: isActive ? "#1B72C0" : "#9ca3af" }}>{label}</span>
+                  <span className="step-label-text" style={{ fontSize:10, marginTop:5, fontWeight:600, color: isActive ? "#1B72C0" : "#9ca3af" }}>{label}</span>
                 </div>
               );
             })}
@@ -205,18 +231,18 @@ export default function Step8_Rates({ onNext, onBack, currentStep = 8, totalStep
         </div>
 
         {/* Layout */}
-        <div style={{ maxWidth:1100, margin:"0 auto", padding:"0 24px", display:"flex", gap:24, alignItems:"flex-start", flexWrap:"wrap" }}>
+        <div className="main-layout page-wrapper" style={{ maxWidth:1100, margin:"0 auto", padding:"0 24px" }}>
 
           {/* Main Card */}
-          <div style={{ flex:1, minWidth:0 }}>
-            <div style={{ background:"white", borderRadius:20, border:"1px solid #f0f0f0", boxShadow:"0 2px 20px rgba(0,0,0,0.06)", padding:32 }}>
+          <div className="main-col">
+            <div className="main-card" style={{ background:"white", borderRadius:20, border:"1px solid #f0f0f0", boxShadow:"0 2px 20px rgba(0,0,0,0.06)", padding:32 }}>
 
               <div style={{ marginBottom:16 }}>
                 <span style={{ fontSize:11, fontWeight:800, border:"1.5px solid #1B72C0", color:"#1B72C0", padding:"4px 12px", borderRadius:100, textTransform:"uppercase", letterSpacing:"0.05em" }}>
                   Pricing
                 </span>
               </div>
-              <h1 style={{ fontSize:24, fontWeight:800, color:"#0f172a", marginBottom:4 }}>Set Your Rates</h1>
+              <h1 className="page-title" style={{ fontSize:24, fontWeight:800, color:"#0f172a", marginBottom:4 }}>Set Your Rates</h1>
               <p style={{ fontSize:13, color:"#94a3b8", marginBottom:24 }}>Clear pricing helps you get hired faster</p>
 
               {/* Info banner */}
@@ -228,7 +254,7 @@ export default function Step8_Rates({ onNext, onBack, currentStep = 8, totalStep
               </div>
 
               {/* Hourly Rate */}
-              <div style={{ border:"1.5px solid #e5e7eb", borderRadius:16, padding:20, marginBottom:16 }}>
+              <div className="rate-section" style={{ border:"1.5px solid #e5e7eb", borderRadius:16, padding:20, marginBottom:16 }}>
 
                 <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:20 }}>
                   <span style={{ fontSize:14, fontWeight:700, color:"#1f2937" }}>Hourly Rate</span>
@@ -237,7 +263,7 @@ export default function Step8_Rates({ onNext, onBack, currentStep = 8, totalStep
 
                 {/* Big rate */}
                 <div style={{ textAlign:"center", marginBottom:20 }}>
-                  <span style={{ fontSize:52, fontWeight:900, color:"#0f172a", letterSpacing:"-2px" }}>{sym}{hourlyRate}</span>
+                  <span className="rate-display" style={{ fontSize:52, fontWeight:900, color:"#0f172a", letterSpacing:"-2px" }}>{sym}{hourlyRate}</span>
                   <span style={{ fontSize:20, color:"#9ca3af", fontWeight:500 }}>/hr</span>
                 </div>
 
@@ -259,7 +285,7 @@ export default function Step8_Rates({ onNext, onBack, currentStep = 8, totalStep
                     <span style={{ fontSize:16 }}>📊</span>
                     <span style={{ fontSize:13, fontWeight:700, color:"#374151" }}>Market Rates for {ROLE}</span>
                   </div>
-                  <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:10, marginBottom:12 }}>
+                  <div className="market-grid" style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:10, marginBottom:12 }}>
                     {[
                       { label:"Low",     val:market.low,  active: hourlyRate <= market.low },
                       { label:"Average", val:market.avg,  active: Math.abs(hourlyRate - market.avg) <= 10 },
@@ -287,7 +313,7 @@ export default function Step8_Rates({ onNext, onBack, currentStep = 8, totalStep
               </div>
 
               {/* Min budget + duration */}
-              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16, marginBottom:20 }}>
+              <div className="two-col-grid" style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16, marginBottom:20 }}>
                 <div>
                   <label style={{ display:"block", fontSize:13, fontWeight:700, color:"#374151", marginBottom:6 }}>Minimum Project Budget</label>
                   <input className="field-input" type="number" value={minBudget}
@@ -329,7 +355,7 @@ export default function Step8_Rates({ onNext, onBack, currentStep = 8, totalStep
             </div>
 
             {/* Navigation */}
-            <div style={{ display:"flex", justifyContent:"space-between", marginTop:20 }}>
+            <div className="nav-row" style={{ display:"flex", justifyContent:"space-between", marginTop:20 }}>
               <button className="wbl-btn-secondary" onClick={onBack}>← Back</button>
               <button className="wbl-btn-primary" onClick={onNext}>
                 Continue to Verification
@@ -341,8 +367,8 @@ export default function Step8_Rates({ onNext, onBack, currentStep = 8, totalStep
           </div>
 
           {/* Sidebar */}
-          <div style={{ width:280, flexShrink:0 }}>
-            <div style={{ background:"white", borderRadius:20, border:"1px solid #f0f0f0", boxShadow:"0 2px 20px rgba(0,0,0,0.06)", padding:20, position:"sticky", top:24 }}>
+          <div className="sidebar-col">
+            <div className="sidebar-inner" style={{ background:"white", borderRadius:20, border:"1px solid #f0f0f0", boxShadow:"0 2px 20px rgba(0,0,0,0.06)", padding:20, position:"sticky", top:24 }}>
 
               <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:16 }}>
                 <div style={{ width:34, height:34, borderRadius:10, background:"#f3e8ff", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>

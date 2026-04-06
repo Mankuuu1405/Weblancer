@@ -1,6 +1,3 @@
-
-
-
 import { useState } from "react";
 
 const stepLabels = [
@@ -49,6 +46,7 @@ export default function Step2_Verify({ onNext, onBack, currentStep = 2, totalSte
         * { font-family: 'Plus Jakarta Sans', sans-serif; }
         .wbl-gradient { background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%); }
         .wbl-text-blue { color: #1B72C0; }
+
         .wbl-btn-primary {
           display:inline-flex; align-items:center; justify-content:center; gap:8px;
           background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%);
@@ -57,6 +55,7 @@ export default function Step2_Verify({ onNext, onBack, currentStep = 2, totalSte
           box-shadow:0 4px 20px rgba(13,40,85,0.3); transition:all .2s;
         }
         .wbl-btn-primary:hover { opacity:0.92; transform:translateY(-1px); }
+
         .wbl-btn-secondary {
           display:inline-flex; align-items:center; justify-content:center; gap:8px;
           background:white; color:#374151; border:1.5px solid #e5e7eb; cursor:pointer;
@@ -64,6 +63,7 @@ export default function Step2_Verify({ onNext, onBack, currentStep = 2, totalSte
           transition:all .2s;
         }
         .wbl-btn-secondary:hover { background:#f9fafb; border-color:#d1d5db; }
+
         .wbl-btn-small {
           display:inline-flex; align-items:center; justify-content:center; gap:6px;
           background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%);
@@ -73,13 +73,17 @@ export default function Step2_Verify({ onNext, onBack, currentStep = 2, totalSte
         }
         .wbl-btn-small:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
         .wbl-btn-small:not(:disabled):hover { opacity:0.9; }
-        .step-done { background:linear-gradient(135deg,#6FDA44,#1B72C0); border-color:transparent; color:white; }
+
+        .step-done   { background:linear-gradient(135deg,#6FDA44,#1B72C0); border-color:transparent; color:white; }
         .step-active { border-color:#1B72C0; color:#1B72C0; background:white; box-shadow:0 0 0 3px rgba(27,114,192,0.15); }
         .step-inactive { border-color:#e5e7eb; color:#9ca3af; background:white; }
+
         .verify-card { background:white; border:1.5px solid #e5e7eb; border-radius:16px; padding:20px; transition:border-color .2s; }
         .verify-card.verified { border-color:#22c55e; background:#f0fdf4; }
+
         .insight-good { background:#f0fdf4; border:1px solid #bbf7d0; color:#166534; }
         .insight-warn { background:#fffbeb; border:1px solid #fde68a; color:#92400e; }
+
         .code-input {
           width:100%; border:2px solid #60a5fa; border-radius:12px;
           padding:10px; font-size:20px; text-align:center; letter-spacing:0.6em;
@@ -87,42 +91,116 @@ export default function Step2_Verify({ onNext, onBack, currentStep = 2, totalSte
           transition:border-color .2s;
         }
         .code-input:focus { border-color:#1B72C0; background:#dbeafe; }
+
+        /* ── Step progress ── */
+        .step-progress-wrap {
+          position:relative; display:flex; align-items:flex-start;
+          justify-content:space-between; overflow-x:auto;
+          padding-bottom:4px;
+        }
+        .step-dot-wrap {
+          display:flex; flex-direction:column; align-items:center;
+          z-index:10; position:relative; flex-shrink:0;
+        }
+        .step-label {
+          font-size:10px; margin-top:5px; font-weight:600;
+        }
+
+        /* ── Layout ── */
+        .wbl-layout {
+          max-width:1100px; margin:0 auto; padding:0 24px;
+          display:flex; gap:24px; align-items:flex-start; flex-wrap:wrap;
+        }
+        .wbl-main  { flex:1; min-width:0; }
+        .wbl-sidebar { width:280px; flex-shrink:0; }
+
+        /* ── Verify cards grid ── */
+        .verify-grid {
+          display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;
+        }
+
+        /* ── Nav row ── */
+        .nav-row {
+          display:flex; justify-content:space-between; margin-top:20px;
+        }
+
+        /* ────────────────────────────
+           RESPONSIVE
+        ──────────────────────────── */
+        @media (max-width: 900px) {
+          .wbl-sidebar { width:100%; }
+        }
+
+        @media (max-width: 640px) {
+          /* Header */
+          .wbl-header-img { height:36px !important; }
+          .wbl-header-btn { padding:6px 12px !important; font-size:12px !important; }
+
+          /* Progress section */
+          .wbl-progress-section { padding:0 16px !important; margin-top:20px !important; }
+          .step-dot-wrap .step-label { display:none; }
+          .step-progress-wrap { gap:0; }
+
+          /* Layout */
+          .wbl-layout { padding:0 16px; gap:16px; }
+
+          /* Main card */
+          .wbl-main-card { padding:20px !important; }
+
+          /* Verify grid → 1 col */
+          .verify-grid { grid-template-columns:1fr; }
+
+          /* Nav buttons → full width */
+          .nav-row { flex-direction:column-reverse; gap:10px; }
+          .nav-row .wbl-btn-primary,
+          .nav-row .wbl-btn-secondary { width:100%; justify-content:center; }
+
+          /* Typography */
+          .wbl-main-card h1 { font-size:20px !important; }
+        }
+
+        @media (max-width: 400px) {
+          .step-dot-wrap { min-width:18px; }
+          .step-done, .step-active, .step-inactive {
+            width:22px !important; height:22px !important; font-size:9px !important;
+          }
+        }
       `}</style>
 
       <div className="min-h-screen pb-20" style={{ background: "#F4F9FF" }}>
 
-      {/* Navbar */}
-<header style={{ background:"white", borderBottom:"1px solid #f0f0f0", padding:"12px 24px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-  <img src="/weblance.jpeg" alt="Weblance" style={{ height:44, width:"auto" }} />
-  <button className="wbl-btn-secondary" style={{ padding:"8px 18px", fontSize:13 }}>
-    <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
-    </svg>
-    Save &amp; Exit
-  </button>
-</header>
+        {/* Navbar */}
+        <header style={{ background:"white", borderBottom:"1px solid #f0f0f0", padding:"12px 24px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+          <img className="wbl-header-img" src="/weblance.jpeg" alt="Weblance" style={{ height: 54, width: 155, display: "block" }} />
+          <button className="wbl-btn-secondary wbl-header-btn" style={{ padding:"8px 18px", fontSize:13 }}>
+            <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+            </svg>
+            Save &amp; Exit
+          </button>
+        </header>
 
         {/* Step Progress */}
-        <div style={{ maxWidth:1100, margin:"32px auto 24px", padding:"0 24px" }}>
+        <div className="wbl-progress-section" style={{ maxWidth:1100, margin:"32px auto 24px", padding:"0 24px" }}>
           <div style={{ display:"flex", justifyContent:"space-between", marginBottom:12, fontSize:13 }}>
             <span style={{ fontWeight:600, color:"#374151" }}>Step {currentStep} of {totalSteps}</span>
             <span className="wbl-text-blue" style={{ fontWeight:700 }}>{percentComplete}% Complete</span>
           </div>
-          <div style={{ position:"relative", display:"flex", alignItems:"flex-start", justifyContent:"space-between" }}>
+          <div className="step-progress-wrap">
             <div style={{ position:"absolute", top:14, left:0, width:"100%", height:2, background:"#e5e7eb", zIndex:0, borderRadius:99 }}></div>
             <div className="wbl-gradient" style={{ position:"absolute", top:14, left:0, width:progressWidth, height:2, zIndex:1, borderRadius:99, transition:"width .5s ease" }}></div>
             {stepLabels.map((label, i) => {
               const isActive = i + 1 === currentStep;
               const isDone   = i + 1 < currentStep;
               return (
-                <div key={i} style={{ display:"flex", flexDirection:"column", alignItems:"center", zIndex:10, position:"relative" }}>
+                <div key={i} className="step-dot-wrap">
                   <div className={isDone ? "step-done" : isActive ? "step-active" : "step-inactive"}
                     style={{ width:28, height:28, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", border:"2px solid", fontSize:11, fontWeight:700, transition:"all .2s" }}>
                     {isDone
                       ? <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/></svg>
                       : i + 1}
                   </div>
-                  <span style={{ fontSize:10, marginTop:5, fontWeight:600, color: isActive ? "#1B72C0" : "#9ca3af" }}>{label}</span>
+                  <span className="step-label" style={{ color: isActive ? "#1B72C0" : "#9ca3af" }}>{label}</span>
                 </div>
               );
             })}
@@ -130,17 +208,17 @@ export default function Step2_Verify({ onNext, onBack, currentStep = 2, totalSte
         </div>
 
         {/* Layout */}
-        <div style={{ maxWidth:1100, margin:"0 auto", padding:"0 24px", display:"flex", gap:24, alignItems:"flex-start", flexWrap:"wrap" }}>
+        <div className="wbl-layout">
 
           {/* Main Card */}
-          <div style={{ flex:1, minWidth:0 }}>
-            <div style={{ background:"white", borderRadius:20, border:"1px solid #f0f0f0", boxShadow:"0 2px 20px rgba(0,0,0,0.06)", padding:32 }}>
+          <div className="wbl-main">
+            <div className="wbl-main-card" style={{ background:"white", borderRadius:20, border:"1px solid #f0f0f0", boxShadow:"0 2px 20px rgba(0,0,0,0.06)", padding:32 }}>
 
               <h1 style={{ fontSize:24, fontWeight:800, color:"#0f172a", marginBottom:4 }}>Verify Your Identity</h1>
               <p style={{ fontSize:13, color:"#94a3b8", marginBottom:28 }}>Email &amp; phone verification builds trust with clients</p>
 
               {/* Verification Cards */}
-              <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:16, marginBottom:24 }}>
+              <div className="verify-grid">
 
                 {/* Email Card */}
                 <div className={`verify-card ${emailVerified ? "verified" : ""}`}>
@@ -258,10 +336,8 @@ export default function Step2_Verify({ onNext, onBack, currentStep = 2, totalSte
             </div>
 
             {/* Navigation */}
-            <div style={{ display:"flex", justifyContent:"space-between", marginTop:20 }}>
-              <button className="wbl-btn-secondary" onClick={onBack}>
-                ← Back
-              </button>
+            <div className="nav-row">
+              <button className="wbl-btn-secondary" onClick={onBack}>← Back</button>
               <button className="wbl-btn-primary" onClick={onNext}>
                 Continue to Profile Setup
                 <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -272,7 +348,7 @@ export default function Step2_Verify({ onNext, onBack, currentStep = 2, totalSte
           </div>
 
           {/* AI Insights Sidebar */}
-          <div style={{ width:280, flexShrink:0 }}>
+          <div className="wbl-sidebar">
             <div style={{ background:"white", borderRadius:20, border:"1px solid #f0f0f0", boxShadow:"0 2px 20px rgba(0,0,0,0.06)", padding:20, position:"sticky", top:24 }}>
 
               <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:16 }}>

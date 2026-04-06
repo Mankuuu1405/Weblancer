@@ -1,8 +1,3 @@
-
-
-
-
-
 import { useState } from "react";
 
 const stepLabels = [
@@ -25,7 +20,6 @@ const badgeLevels = [
   { label: "Unverified (<60)", bg: "#d1d5db", type: "box"    }
 ];
 
-// Quiz questions per skill
 const quizData = {
   "React.js": [
     { q: "What hook is used for side effects in React?", options: ["useState", "useEffect", "useRef", "useMemo"], answer: 1 },
@@ -56,24 +50,15 @@ const quizData = {
 
 function SkillTestModal({ skillName, onClose, onComplete }) {
   const questions = quizData[skillName] || [];
-  const [current, setCurrent]   = useState(0);
-  const [answers, setAnswers]   = useState({});
+  const [current, setCurrent]     = useState(0);
+  const [answers, setAnswers]     = useState({});
   const [submitted, setSubmitted] = useState(false);
 
-  const handleAnswer = (idx) => {
-    if (submitted) return;
-    setAnswers(prev => ({ ...prev, [current]: idx }));
-  };
-
-  const handleNext = () => {
-    if (current < questions.length - 1) setCurrent(c => c + 1);
-  };
-
+  const handleAnswer = (idx) => { if (submitted) return; setAnswers(prev => ({ ...prev, [current]: idx })); };
+  const handleNext   = () => { if (current < questions.length - 1) setCurrent(c => c + 1); };
   const handleSubmit = () => setSubmitted(true);
 
-  const score = submitted
-    ? questions.filter((q, i) => answers[i] === q.answer).length
-    : 0;
+  const score   = submitted ? questions.filter((q, i) => answers[i] === q.answer).length : 0;
   const percent = submitted ? Math.round((score / questions.length) * 100) : 0;
   const passed  = percent >= 60;
 
@@ -81,7 +66,6 @@ function SkillTestModal({ skillName, onClose, onComplete }) {
     <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.55)", zIndex:1000, display:"flex", alignItems:"center", justifyContent:"center", padding:16 }}>
       <div style={{ background:"white", borderRadius:20, width:"100%", maxWidth:480, boxShadow:"0 20px 60px rgba(0,0,0,0.2)", overflow:"hidden" }}>
 
-        {/* Header */}
         <div style={{ background:"linear-gradient(135deg,#0D2855,#1B72C0)", padding:"20px 24px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
           <div>
             <p style={{ color:"rgba(255,255,255,0.7)", fontSize:12, marginBottom:2 }}>Skill Test</p>
@@ -93,7 +77,6 @@ function SkillTestModal({ skillName, onClose, onComplete }) {
         <div style={{ padding:24 }}>
           {!submitted ? (
             <>
-              {/* Progress */}
               <div style={{ display:"flex", justifyContent:"space-between", fontSize:12, color:"#6b7280", marginBottom:8 }}>
                 <span>Question {current + 1} of {questions.length}</span>
                 <span style={{ fontWeight:700, color:"#1B72C0" }}>{Object.keys(answers).length} answered</span>
@@ -146,12 +129,9 @@ function SkillTestModal({ skillName, onClose, onComplete }) {
                 You scored <strong>{score}/{questions.length}</strong> ({percent}%)
                 {passed ? " — Badge earned!" : " — 60% required to pass"}
               </p>
-
-              {/* Score bar */}
               <div style={{ background:"#f3f4f6", borderRadius:99, height:8, marginBottom:20, overflow:"hidden" }}>
                 <div style={{ background: passed ? "#22c55e" : "#ef4444", height:"100%", borderRadius:99, width:`${percent}%`, transition:"width 1s ease" }} />
               </div>
-
               {passed && (
                 <div style={{ background:"linear-gradient(135deg,#f0fdf4,#dcfce7)", border:"1px solid #bbf7d0", borderRadius:12, padding:"12px 16px", marginBottom:20 }}>
                   <p style={{ fontSize:12, fontWeight:800, color:"#166534" }}>🏅 Badge Earned</p>
@@ -160,7 +140,6 @@ function SkillTestModal({ skillName, onClose, onComplete }) {
                   </p>
                 </div>
               )}
-
               <div style={{ display:"flex", gap:8 }}>
                 <button onClick={onClose} style={{ flex:1, padding:"12px", borderRadius:12, border:"1.5px solid #e5e7eb", background:"white", fontWeight:600, fontSize:13, cursor:"pointer", color:"#374151" }}>
                   Close
@@ -214,6 +193,7 @@ export default function Step5_Skills({ onNext, onBack, currentStep = 5, totalSte
         * { font-family: 'Plus Jakarta Sans', sans-serif; }
         .wbl-gradient { background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%); }
         .wbl-text-blue { color: #1B72C0; }
+
         .wbl-btn-primary {
           display:inline-flex; align-items:center; justify-content:center; gap:8px;
           background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%);
@@ -222,23 +202,88 @@ export default function Step5_Skills({ onNext, onBack, currentStep = 5, totalSte
           box-shadow:0 4px 20px rgba(13,40,85,0.3); transition:all .2s;
         }
         .wbl-btn-primary:hover { opacity:0.92; transform:translateY(-1px); }
+
         .wbl-btn-secondary {
           display:inline-flex; align-items:center; justify-content:center; gap:8px;
           background:white; color:#374151; border:1.5px solid #e5e7eb; cursor:pointer;
           font-weight:600; border-radius:12px; padding:12px 24px; font-size:14px; transition:all .2s;
         }
         .wbl-btn-secondary:hover { background:#f9fafb; border-color:#d1d5db; }
-        .step-done { background:linear-gradient(135deg,#6FDA44,#1B72C0); border-color:transparent; color:white; }
-        .step-active { border-color:#1B72C0; color:#1B72C0; background:white; box-shadow:0 0 0 3px rgba(27,114,192,0.15); }
+
+        .step-done    { background:linear-gradient(135deg,#6FDA44,#1B72C0); border-color:transparent; color:white; }
+        .step-active  { border-color:#1B72C0; color:#1B72C0; background:white; box-shadow:0 0 0 3px rgba(27,114,192,0.15); }
         .step-inactive { border-color:#e5e7eb; color:#9ca3af; background:white; }
+
         .skill-row { display:flex; align-items:center; gap:14px; padding:14px 16px; border-radius:14px; border:1.5px solid #e5e7eb; background:white; transition:all .18s; }
-        .skill-row:hover { border-color:#93c5fd; background:#f0f9ff; }
+        .skill-row:hover  { border-color:#93c5fd; background:#f0f9ff; }
         .skill-row.passed { border-color:#86efac; background:#f0fdf4; }
         .skill-row.failed { border-color:#fca5a5; background:#fef2f2; }
+
         .test-btn { padding:8px 16px; border-radius:10px; font-size:12px; font-weight:700; border:1.5px solid; cursor:pointer; flex-shrink:0; transition:all .15s; }
+
         .insight-good { background:#f0fdf4; border:1px solid #bbf7d0; color:#166534; }
         .insight-warn { background:#fffbeb; border:1px solid #fde68a; color:#92400e; }
         .insight-tip  { background:#f5f3ff; border:1px solid #ddd6fe; color:#6b21a8; }
+
+        /* ── Step progress ── */
+        .step-progress-wrap {
+          position:relative; display:flex; align-items:flex-start;
+          justify-content:space-between; overflow-x:auto; padding-bottom:4px;
+        }
+        .step-dot-wrap { display:flex; flex-direction:column; align-items:center; z-index:10; position:relative; flex-shrink:0; }
+        .step-label { font-size:10px; margin-top:5px; font-weight:600; }
+
+        /* ── Layout ── */
+        .wbl-layout  { max-width:1100px; margin:0 auto; padding:0 24px; display:flex; gap:24px; align-items:flex-start; flex-wrap:wrap; }
+        .wbl-main    { flex:1; min-width:0; }
+        .wbl-sidebar { width:280px; flex-shrink:0; }
+
+        /* ── Badge levels grid ── */
+        .badge-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+
+        /* ── Skill row info ── */
+        .skill-info-text { font-size:11px; color:#6b7280; margin:0; }
+
+        /* ── Nav ── */
+        .nav-row { display:flex; justify-content:space-between; margin-top:20px; }
+
+        /* ────────────────────────────
+           RESPONSIVE
+        ──────────────────────────── */
+        @media (max-width: 900px) {
+          .wbl-sidebar { width:100%; }
+        }
+
+        @media (max-width: 640px) {
+          .wbl-header-img { height:36px !important; }
+          .wbl-header-btn { padding:6px 12px !important; font-size:12px !important; }
+
+          .wbl-progress-section { padding:0 16px !important; margin-top:20px !important; }
+          .step-dot-wrap .step-label { display:none; }
+
+          .wbl-layout    { padding:0 16px; gap:16px; }
+          .wbl-main-card { padding:20px !important; }
+          .wbl-main-card h1 { font-size:20px !important; }
+
+          /* Skill row: tighter on mobile */
+          .skill-row { gap:10px; padding:12px; }
+          .skill-row-icon { width:34px !important; height:34px !important; }
+          .skill-info-text { display:none; }
+
+          /* Badge grid → 1 col on small */
+          .badge-grid { grid-template-columns:1fr; }
+
+          .nav-row { flex-direction:column-reverse; gap:10px; }
+          .nav-row .wbl-btn-primary,
+          .nav-row .wbl-btn-secondary { width:100%; justify-content:center; }
+        }
+
+        @media (max-width: 400px) {
+          .step-done, .step-active, .step-inactive {
+            width:22px !important; height:22px !important; font-size:9px !important;
+          }
+          .test-btn { padding:7px 10px; font-size:11px; }
+        }
       `}</style>
 
       <div className="min-h-screen pb-20" style={{ background:"#F4F9FF" }}>
@@ -253,15 +298,8 @@ export default function Step5_Skills({ onNext, onBack, currentStep = 5, totalSte
 
         {/* Navbar */}
         <header style={{ background:"white", borderBottom:"1px solid #f0f0f0", padding:"12px 24px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-          <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-            <div className="wbl-gradient" style={{ width:32, height:32, borderRadius:8, display:"flex", alignItems:"center", justifyContent:"center" }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
-              </svg>
-            </div>
-            <span style={{ fontWeight:800, fontSize:18, background:"linear-gradient(135deg,#0D2855,#1B72C0)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent" }}>Weblance</span>
-          </div>
-          <button className="wbl-btn-secondary" style={{ padding:"8px 18px", fontSize:13 }}>
+          <img className="wbl-header-img" src="/weblance.jpeg" alt="Weblance" style={{ height: 54, width: 155, display: "block" }} />
+          <button className="wbl-btn-secondary wbl-header-btn" style={{ padding:"8px 18px", fontSize:13 }}>
             <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
             </svg>
@@ -270,24 +308,24 @@ export default function Step5_Skills({ onNext, onBack, currentStep = 5, totalSte
         </header>
 
         {/* Step Progress */}
-        <div style={{ maxWidth:1100, margin:"32px auto 24px", padding:"0 24px" }}>
+        <div className="wbl-progress-section" style={{ maxWidth:1100, margin:"32px auto 24px", padding:"0 24px" }}>
           <div style={{ display:"flex", justifyContent:"space-between", marginBottom:12, fontSize:13 }}>
             <span style={{ fontWeight:600, color:"#374151" }}>Step {currentStep} of {totalSteps}</span>
             <span className="wbl-text-blue" style={{ fontWeight:700 }}>{percentComplete}% Complete</span>
           </div>
-          <div style={{ position:"relative", display:"flex", alignItems:"flex-start", justifyContent:"space-between" }}>
+          <div className="step-progress-wrap">
             <div style={{ position:"absolute", top:14, left:0, width:"100%", height:2, background:"#e5e7eb", zIndex:0, borderRadius:99 }}></div>
             <div className="wbl-gradient" style={{ position:"absolute", top:14, left:0, width:progressWidth, height:2, zIndex:1, borderRadius:99, transition:"width .5s ease" }}></div>
             {stepLabels.map((label, i) => {
               const isActive = i + 1 === currentStep;
               const isDone   = i + 1 < currentStep;
               return (
-                <div key={i} style={{ display:"flex", flexDirection:"column", alignItems:"center", zIndex:10, position:"relative" }}>
+                <div key={i} className="step-dot-wrap">
                   <div className={isDone ? "step-done" : isActive ? "step-active" : "step-inactive"}
                     style={{ width:28, height:28, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", border:"2px solid", fontSize:11, fontWeight:700, transition:"all .2s" }}>
                     {isDone ? <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/></svg> : i+1}
                   </div>
-                  <span style={{ fontSize:10, marginTop:5, fontWeight:600, color: isActive ? "#1B72C0" : "#9ca3af" }}>{label}</span>
+                  <span className="step-label" style={{ color: isActive ? "#1B72C0" : "#9ca3af" }}>{label}</span>
                 </div>
               );
             })}
@@ -295,11 +333,11 @@ export default function Step5_Skills({ onNext, onBack, currentStep = 5, totalSte
         </div>
 
         {/* Layout */}
-        <div style={{ maxWidth:1100, margin:"0 auto", padding:"0 24px", display:"flex", gap:24, alignItems:"flex-start", flexWrap:"wrap" }}>
+        <div className="wbl-layout">
 
           {/* Main Card */}
-          <div style={{ flex:1, minWidth:0 }}>
-            <div style={{ background:"white", borderRadius:20, border:"1px solid #f0f0f0", boxShadow:"0 2px 20px rgba(0,0,0,0.06)", padding:32 }}>
+          <div className="wbl-main">
+            <div className="wbl-main-card" style={{ background:"white", borderRadius:20, border:"1px solid #f0f0f0", boxShadow:"0 2px 20px rgba(0,0,0,0.06)", padding:32 }}>
 
               <div style={{ marginBottom:16 }}>
                 <span style={{ fontSize:11, fontWeight:800, border:"1.5px solid #22c55e", color:"#16a34a", padding:"4px 12px", borderRadius:100, textTransform:"uppercase", letterSpacing:"0.05em" }}>
@@ -325,7 +363,7 @@ export default function Step5_Skills({ onNext, onBack, currentStep = 5, totalSte
                   return (
                     <div key={skill.name} className={`skill-row ${status || ""}`}>
                       {/* Icon */}
-                      <div style={{ width:40, height:40, borderRadius:12, background:skill.iconBg, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
+                      <div className="skill-row-icon" style={{ width:40, height:40, borderRadius:12, background:skill.iconBg, display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
                         {skill.icon === "code" ? (
                           <svg width="18" height="18" fill="none" stroke={skill.iconColor} viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
@@ -345,7 +383,7 @@ export default function Step5_Skills({ onNext, onBack, currentStep = 5, totalSte
                           {status === "passed" && <span style={{ fontSize:10, fontWeight:800, background:"#dcfce7", color:"#16a34a", padding:"2px 8px", borderRadius:100 }}>✓ Passed</span>}
                           {status === "failed" && <span style={{ fontSize:10, fontWeight:800, background:"#fee2e2", color:"#dc2626", padding:"2px 8px", borderRadius:100 }}>✗ Failed</span>}
                         </div>
-                        <p style={{ fontSize:11, color:"#6b7280", margin:0 }}>
+                        <p className="skill-info-text">
                           {status === "passed" ? `Badge: ${skill.badge}`
                             : status === "failed" ? `Retry available · ~${skill.time} min`
                             : `~${skill.time} min · Badge on pass: ${skill.badge}`}
@@ -369,7 +407,7 @@ export default function Step5_Skills({ onNext, onBack, currentStep = 5, totalSte
               {/* Badge Levels */}
               <div style={{ background:"#f8fafc", border:"1px solid #e2e8f0", borderRadius:14, padding:"16px 18px" }}>
                 <p style={{ fontSize:13, fontWeight:700, color:"#374151", marginBottom:12 }}>Badge Levels:</p>
-                <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr", gap:8 }}>
+                <div className="badge-grid">
                   {badgeLevels.map((b) => (
                     <div key={b.label} style={{ display:"flex", alignItems:"center", gap:8 }}>
                       {b.type === "box" ? (
@@ -389,7 +427,7 @@ export default function Step5_Skills({ onNext, onBack, currentStep = 5, totalSte
             </div>
 
             {/* Navigation */}
-            <div style={{ display:"flex", justifyContent:"space-between", marginTop:20 }}>
+            <div className="nav-row">
               <button className="wbl-btn-secondary" onClick={onBack}>← Back</button>
               <button className="wbl-btn-primary" onClick={onNext}>
                 Continue to Portfolio
@@ -401,7 +439,7 @@ export default function Step5_Skills({ onNext, onBack, currentStep = 5, totalSte
           </div>
 
           {/* Sidebar */}
-          <div style={{ width:280, flexShrink:0 }}>
+          <div className="wbl-sidebar">
             <div style={{ background:"white", borderRadius:20, border:"1px solid #f0f0f0", boxShadow:"0 2px 20px rgba(0,0,0,0.06)", padding:20, position:"sticky", top:24 }}>
 
               <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:16 }}>
