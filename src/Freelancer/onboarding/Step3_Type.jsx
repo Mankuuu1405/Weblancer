@@ -2,7 +2,7 @@ import { useState } from "react";
 
 const stepLabels = [
   "Account", "Verify", "Type", "Profile", "Skills",
-  "Portfolio", "History", "Rates", "KYC", "Plan", "Payment", "Trust", "Go Live"
+  "Portfolio", "History", "Rates", "KYC", "Payment", "Trust", "Go Live"
 ];
 
 const categories = [
@@ -42,7 +42,7 @@ const categories = [
   }
 ];
 
-export default function Step3_Type({ onNext, onBack, currentStep = 3, totalSteps = 13 }) {
+export default function Step3_Type({ onNext, onBack, currentStep = 3, totalSteps = 12 }) {
   const [selected, setSelected] = useState([]);
 
   const percentComplete = Math.round(((currentStep - 1) / totalSteps) * 100);
@@ -80,6 +80,7 @@ export default function Step3_Type({ onNext, onBack, currentStep = 3, totalSteps
         * { font-family: 'Plus Jakarta Sans', sans-serif; }
         .wbl-gradient { background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%); }
         .wbl-text-blue { color: #1B72C0; }
+
         .wbl-btn-primary {
           display:inline-flex; align-items:center; justify-content:center; gap:8px;
           background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%);
@@ -89,6 +90,7 @@ export default function Step3_Type({ onNext, onBack, currentStep = 3, totalSteps
         }
         .wbl-btn-primary:hover { opacity:0.92; transform:translateY(-1px); }
         .wbl-btn-primary:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:none; }
+
         .wbl-btn-secondary {
           display:inline-flex; align-items:center; justify-content:center; gap:8px;
           background:white; color:#374151; border:1.5px solid #e5e7eb; cursor:pointer;
@@ -96,6 +98,7 @@ export default function Step3_Type({ onNext, onBack, currentStep = 3, totalSteps
           transition:all .2s;
         }
         .wbl-btn-secondary:hover { background:#f9fafb; border-color:#d1d5db; }
+
         .role-btn {
           position:relative; text-align:left; padding:10px 12px; border-radius:12px;
           border:1.5px solid #e5e7eb; font-size:13px; font-weight:600;
@@ -103,52 +106,111 @@ export default function Step3_Type({ onNext, onBack, currentStep = 3, totalSteps
           line-height:1.3;
         }
         .role-btn:hover { border-color:#93c5fd; background:#f0f9ff; }
-        .role-btn.primary { background:linear-gradient(135deg,#0D2855,#1B72C0); border-color:transparent; color:white; box-shadow:0 3px 12px rgba(13,40,85,0.25); }
+        .role-btn.primary   { background:linear-gradient(135deg,#0D2855,#1B72C0); border-color:transparent; color:white; box-shadow:0 3px 12px rgba(13,40,85,0.25); }
         .role-btn.secondary { background:#eff6ff; border-color:#93c5fd; color:#1d4ed8; }
-        .role-btn.maxed { opacity:0.35; cursor:not-allowed; background:#f9fafb; }
-        .badge-primary { position:absolute; top:5px; right:5px; font-size:9px; font-weight:800; background:rgba(255,255,255,0.25); color:white; padding:2px 5px; border-radius:5px; letter-spacing:0.03em; }
+        .role-btn.maxed     { opacity:0.35; cursor:not-allowed; background:#f9fafb; }
+
+        .badge-primary   { position:absolute; top:5px; right:5px; font-size:9px; font-weight:800; background:rgba(255,255,255,0.25); color:white; padding:2px 5px; border-radius:5px; letter-spacing:0.03em; }
         .badge-secondary { position:absolute; top:5px; right:5px; font-size:9px; font-weight:800; background:#bfdbfe; color:#1d4ed8; padding:2px 5px; border-radius:5px; }
+
         .insight-good { background:#f0fdf4; border:1px solid #bbf7d0; color:#166534; }
         .insight-warn { background:#fffbeb; border:1px solid #fde68a; color:#92400e; }
-        .step-done { background:linear-gradient(135deg,#6FDA44,#1B72C0); border-color:transparent; color:white; }
-        .step-active { border-color:#1B72C0; color:#1B72C0; background:white; box-shadow:0 0 0 3px rgba(27,114,192,0.15); }
+
+        .step-done    { background:linear-gradient(135deg,#6FDA44,#1B72C0); border-color:transparent; color:white; }
+        .step-active  { border-color:#1B72C0; color:#1B72C0; background:white; box-shadow:0 0 0 3px rgba(27,114,192,0.15); }
         .step-inactive { border-color:#e5e7eb; color:#9ca3af; background:white; }
+
+        /* ── Step progress ── */
+        .step-progress-wrap {
+          position:relative; display:flex; align-items:flex-start;
+          justify-content:space-between; overflow-x:auto; padding-bottom:4px;
+        }
+        .step-dot-wrap {
+          display:flex; flex-direction:column; align-items:center;
+          z-index:10; position:relative; flex-shrink:0;
+        }
+        .step-label { font-size:10px; margin-top:5px; font-weight:600; }
+
+        /* ── Layout ── */
+        .wbl-layout  { max-width:1100px; margin:0 auto; padding:0 24px; display:flex; gap:24px; align-items:flex-start; flex-wrap:wrap; }
+        .wbl-main    { flex:1; min-width:0; }
+        .wbl-sidebar { width:280px; flex-shrink:0; }
+
+        /* ── Roles grid ── */
+        .roles-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+
+        /* ── Nav ── */
+        .nav-row { display:flex; justify-content:space-between; margin-top:20px; }
+
+        /* ────────────────────────────
+           RESPONSIVE
+        ──────────────────────────── */
+        @media (max-width: 900px) {
+          .wbl-sidebar { width:100%; }
+        }
+
+        @media (max-width: 640px) {
+          .wbl-header-img { height:36px !important; }
+          .wbl-header-btn { padding:6px 12px !important; font-size:12px !important; }
+
+          .wbl-progress-section { padding:0 16px !important; margin-top:20px !important; }
+          .step-dot-wrap .step-label { display:none; }
+
+          .wbl-layout    { padding:0 16px; gap:16px; }
+          .wbl-main-card { padding:20px !important; }
+          .wbl-main-card h1 { font-size:20px !important; }
+
+          /* Roles grid → 2 columns */
+          .roles-grid { grid-template-columns:repeat(2,1fr); }
+
+          .nav-row { flex-direction:column-reverse; gap:10px; }
+          .nav-row .wbl-btn-primary,
+          .nav-row .wbl-btn-secondary { width:100%; justify-content:center; }
+        }
+
+        @media (max-width: 400px) {
+          /* Roles grid → 1 column on very small */
+          .roles-grid { grid-template-columns:1fr; }
+          .step-done, .step-active, .step-inactive {
+            width:22px !important; height:22px !important; font-size:9px !important;
+          }
+        }
       `}</style>
 
       <div className="min-h-screen pb-20" style={{ background: "#F4F9FF" }}>
 
         {/* Navbar */}
-<header style={{ background:"white", borderBottom:"1px solid #f0f0f0", padding:"12px 24px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-  <img src="/weblance.jpeg" alt="Weblance" style={{ height:44, width:"auto" }} />
-  <button className="wbl-btn-secondary" style={{ padding:"8px 18px", fontSize:13 }}>
-    <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
-    </svg>
-    Save &amp; Exit
-  </button>
-</header>
+        <header style={{ background:"white", borderBottom:"1px solid #f0f0f0", padding:"12px 24px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+          <img className="wbl-header-img" src="/weblance.jpeg" alt="Weblance" style={{height: 54, width: 155, display: "block"}} />
+          <button className="wbl-btn-secondary wbl-header-btn" style={{ padding:"8px 18px", fontSize:13 }}>
+            <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+            </svg>
+            Save &amp; Exit
+          </button>
+        </header>
 
         {/* Step Progress */}
-        <div style={{ maxWidth:1100, margin:"32px auto 24px", padding:"0 24px" }}>
+        <div className="wbl-progress-section" style={{ maxWidth:1100, margin:"32px auto 24px", padding:"0 24px" }}>
           <div style={{ display:"flex", justifyContent:"space-between", marginBottom:12, fontSize:13 }}>
             <span style={{ fontWeight:600, color:"#374151" }}>Step {currentStep} of {totalSteps}</span>
             <span className="wbl-text-blue" style={{ fontWeight:700 }}>{percentComplete}% Complete</span>
           </div>
-          <div style={{ position:"relative", display:"flex", alignItems:"flex-start", justifyContent:"space-between" }}>
+          <div className="step-progress-wrap">
             <div style={{ position:"absolute", top:14, left:0, width:"100%", height:2, background:"#e5e7eb", zIndex:0, borderRadius:99 }}></div>
             <div className="wbl-gradient" style={{ position:"absolute", top:14, left:0, width:progressWidth, height:2, zIndex:1, borderRadius:99, transition:"width .5s ease" }}></div>
             {stepLabels.map((label, i) => {
               const isActive = i + 1 === currentStep;
               const isDone   = i + 1 < currentStep;
               return (
-                <div key={i} style={{ display:"flex", flexDirection:"column", alignItems:"center", zIndex:10, position:"relative" }}>
+                <div key={i} className="step-dot-wrap">
                   <div className={isDone ? "step-done" : isActive ? "step-active" : "step-inactive"}
                     style={{ width:28, height:28, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", border:"2px solid", fontSize:11, fontWeight:700, transition:"all .2s" }}>
                     {isDone
                       ? <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/></svg>
                       : i + 1}
                   </div>
-                  <span style={{ fontSize:10, marginTop:5, fontWeight:600, color: isActive ? "#1B72C0" : "#9ca3af" }}>{label}</span>
+                  <span className="step-label" style={{ color: isActive ? "#1B72C0" : "#9ca3af" }}>{label}</span>
                 </div>
               );
             })}
@@ -156,11 +218,11 @@ export default function Step3_Type({ onNext, onBack, currentStep = 3, totalSteps
         </div>
 
         {/* Layout */}
-        <div style={{ maxWidth:1100, margin:"0 auto", padding:"0 24px", display:"flex", gap:24, alignItems:"flex-start", flexWrap:"wrap" }}>
+        <div className="wbl-layout">
 
           {/* Main Card */}
-          <div style={{ flex:1, minWidth:0 }}>
-            <div style={{ background:"white", borderRadius:20, border:"1px solid #f0f0f0", boxShadow:"0 2px 20px rgba(0,0,0,0.06)", padding:32 }}>
+          <div className="wbl-main">
+            <div className="wbl-main-card" style={{ background:"white", borderRadius:20, border:"1px solid #f0f0f0", boxShadow:"0 2px 20px rgba(0,0,0,0.06)", padding:32 }}>
 
               <div style={{ marginBottom:16 }}>
                 <span style={{ fontSize:11, fontWeight:800, border:"1.5px solid #22c55e", color:"#16a34a", padding:"4px 12px", borderRadius:100, textTransform:"uppercase", letterSpacing:"0.05em" }}>
@@ -184,7 +246,7 @@ export default function Step3_Type({ onNext, onBack, currentStep = 3, totalSteps
                       <span style={{ fontSize:13, fontWeight:800, color:"#1f2937" }}>{cat.name}</span>
                     </div>
 
-                    <div style={{ display:"grid", gridTemplateColumns:"repeat(3, 1fr)", gap:8 }}>
+                    <div className="roles-grid">
                       {cat.roles.map((role) => {
                         const primary   = isPrimary(role);
                         const secondary = isSecondary(role);
@@ -214,7 +276,7 @@ export default function Step3_Type({ onNext, onBack, currentStep = 3, totalSteps
             </div>
 
             {/* Navigation */}
-            <div style={{ display:"flex", justifyContent:"space-between", marginTop:20 }}>
+            <div className="nav-row">
               <button className="wbl-btn-secondary" onClick={onBack}>← Back</button>
               <button className="wbl-btn-primary" onClick={onNext} disabled={!canContinue}>
                 Continue
@@ -226,7 +288,7 @@ export default function Step3_Type({ onNext, onBack, currentStep = 3, totalSteps
           </div>
 
           {/* Sidebar */}
-          <div style={{ width:280, flexShrink:0 }}>
+          <div className="wbl-sidebar">
             <div style={{ background:"white", borderRadius:20, border:"1px solid #f0f0f0", boxShadow:"0 2px 20px rgba(0,0,0,0.06)", padding:20, position:"sticky", top:24 }}>
 
               <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:16 }}>

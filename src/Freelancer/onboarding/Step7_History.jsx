@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 
 const stepLabels = [
   "Account", "Verify", "Type", "Profile", "Skills",
-  "Portfolio", "History", "Rates", "KYC", "Plan", "Payment", "Trust", "Go Live"
+  "Portfolio", "History", "Rates", "KYC", "Payment", "Trust", "Go Live"
 ];
 
 const spinKeyframes = `@keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }`;
@@ -115,6 +115,12 @@ Rules:
         .send-btn { width:40px; height:40px; border-radius:10px; background:linear-gradient(135deg,#0D2855,#1B72C0); border:none; cursor:pointer; display:flex; align-items:center; justify-content:center; flex-shrink:0; align-self:flex-end; transition:opacity .2s; }
         .send-btn:disabled { opacity:0.4; cursor:not-allowed; }
         .wbl-gradient { background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%); }
+
+        @media (max-width: 480px) {
+          .modal-box { border-radius:16px; height:95vh; }
+          .msg-area { padding:14px; }
+          .msg-bubble-ai, .msg-bubble-user { max-width:90%; font-size:12px; }
+        }
       `}</style>
 
       <div className="modal-overlay">
@@ -237,7 +243,7 @@ Rules:
   );
 }
 
-export default function Step7_History({ onNext, onBack, currentStep = 7, totalSteps = 13 }) {
+export default function Step7_History({ onNext, onBack, currentStep = 7, totalSteps = 12 }) {
   const [selectedMode, setSelectedMode]   = useState("text");
   const [showModal, setShowModal]         = useState(false);
   const [interviewDone, setInterviewDone] = useState(false);
@@ -273,7 +279,7 @@ export default function Step7_History({ onNext, onBack, currentStep = 7, totalSt
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        * { font-family: 'Plus Jakarta Sans', sans-serif; }
+        * { font-family: 'Plus Jakarta Sans', sans-serif; box-sizing:border-box; }
         .wbl-gradient { background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%); }
         .wbl-text-blue { color: #1B72C0; }
         .wbl-btn-primary {
@@ -299,6 +305,36 @@ export default function Step7_History({ onNext, onBack, currentStep = 7, totalSt
         .mode-btn:not(.text-active):not(.voice-active):hover { border-color:#93c5fd; }
         .insight-good { background:#f0fdf4; border:1px solid #bbf7d0; color:#166534; }
         .insight-tip  { background:#f5f3ff; border:1px solid #ddd6fe; color:#6b21a8; }
+
+        /* Responsive */
+        .main-layout { display:flex; gap:24px; align-items:flex-start; }
+        .main-col { flex:1; min-width:0; }
+        .sidebar-col { width:280px; flex-shrink:0; }
+
+        @media (max-width: 900px) {
+          .main-layout { flex-direction:column; }
+          .sidebar-col { width:100%; }
+          .sidebar-inner { position:static !important; }
+        }
+
+        @media (max-width: 640px) {
+          .main-card { padding:20px !important; }
+          .wbl-btn-primary { padding:11px 18px; font-size:13px; }
+          .wbl-btn-secondary { padding:11px 16px; font-size:13px; }
+          .page-title { font-size:20px !important; }
+          .mode-row { gap:8px; }
+          .mode-btn { padding:9px 14px; font-size:12px; }
+          .step-label-text { display:none !important; }
+          .nav-row { gap:10px; }
+        }
+
+        @media (max-width: 480px) {
+          .page-wrapper { padding:0 14px !important; }
+          .progress-wrapper { padding:0 14px !important; margin-top:20px !important; }
+          .header-inner { padding:10px 14px !important; }
+          .center-card { padding:24px 16px !important; }
+          .mode-row { flex-wrap:wrap; justify-content:center; }
+        }
       `}</style>
 
       <div className="min-h-screen pb-20" style={{ background:"#F4F9FF" }}>
@@ -306,18 +342,20 @@ export default function Step7_History({ onNext, onBack, currentStep = 7, totalSt
         {showModal && (
           <InterviewModal mode={selectedMode} onClose={() => setShowModal(false)} onComplete={handleInterviewComplete} />
         )}
- {/* Navbar */}
-<header style={{ background:"white", borderBottom:"1px solid #f0f0f0", padding:"12px 24px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-  <img src="/weblance.jpeg" alt="Weblance" style={{ height:44, width:"auto" }} />
-  <button className="wbl-btn-secondary" style={{ padding:"8px 18px", fontSize:13 }}>
-    <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
-    </svg>
-    Save &amp; Exit
-  </button>
-</header>
+
+        {/* Navbar */}
+        <header className="header-inner" style={{ background:"white", borderBottom:"1px solid #f0f0f0", padding:"12px 24px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+          <img src="/weblance.jpeg" alt="Weblance" style={{ height: 54, width: 155, display: "block" }} />
+          <button className="wbl-btn-secondary" style={{ padding:"8px 18px", fontSize:13 }}>
+            <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+            </svg>
+            Save &amp; Exit
+          </button>
+        </header>
+
         {/* Step Progress */}
-        <div style={{ maxWidth:1100, margin:"32px auto 24px", padding:"0 24px" }}>
+        <div className="progress-wrapper" style={{ maxWidth:1100, margin:"32px auto 24px", padding:"0 24px" }}>
           <div style={{ display:"flex", justifyContent:"space-between", marginBottom:12, fontSize:13 }}>
             <span style={{ fontWeight:600, color:"#374151" }}>Step {currentStep} of {totalSteps}</span>
             <span className="wbl-text-blue" style={{ fontWeight:700 }}>{percentComplete}% Complete</span>
@@ -334,7 +372,7 @@ export default function Step7_History({ onNext, onBack, currentStep = 7, totalSt
                     style={{ width:28, height:28, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", border:"2px solid", fontSize:11, fontWeight:700, transition:"all .2s" }}>
                     {isDone ? <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/></svg> : i+1}
                   </div>
-                  <span style={{ fontSize:10, marginTop:5, fontWeight:600, color: isActive ? "#1B72C0" : "#9ca3af" }}>{label}</span>
+                  <span className="step-label-text" style={{ fontSize:10, marginTop:5, fontWeight:600, color: isActive ? "#1B72C0" : "#9ca3af" }}>{label}</span>
                 </div>
               );
             })}
@@ -342,18 +380,18 @@ export default function Step7_History({ onNext, onBack, currentStep = 7, totalSt
         </div>
 
         {/* Layout */}
-        <div style={{ maxWidth:1100, margin:"0 auto", padding:"0 24px", display:"flex", gap:24, alignItems:"flex-start", flexWrap:"wrap" }}>
+        <div className="main-layout page-wrapper" style={{ maxWidth:1100, margin:"0 auto", padding:"0 24px" }}>
 
           {/* Main Card */}
-          <div style={{ flex:1, minWidth:0 }}>
-            <div style={{ background:"white", borderRadius:20, border:"1px solid #f0f0f0", boxShadow:"0 2px 20px rgba(0,0,0,0.06)", padding:32 }}>
+          <div className="main-col">
+            <div className="main-card" style={{ background:"white", borderRadius:20, border:"1px solid #f0f0f0", boxShadow:"0 2px 20px rgba(0,0,0,0.06)", padding:32 }}>
 
               <div style={{ marginBottom:16 }}>
                 <span style={{ fontSize:11, fontWeight:800, border:"1.5px solid #a855f7", color:"#9333ea", padding:"4px 12px", borderRadius:100, textTransform:"uppercase", letterSpacing:"0.05em" }}>
                   AI Interview
                 </span>
               </div>
-              <h1 style={{ fontSize:24, fontWeight:800, color:"#0f172a", marginBottom:4 }}>Talk to Our AI Interviewer</h1>
+              <h1 className="page-title" style={{ fontSize:24, fontWeight:800, color:"#0f172a", marginBottom:4 }}>Talk to Our AI Interviewer</h1>
               <p style={{ fontSize:13, color:"#94a3b8", marginBottom:24 }}>5-minute adaptive conversation about your expertise</p>
 
               {/* Completed banner */}
@@ -371,7 +409,7 @@ export default function Step7_History({ onNext, onBack, currentStep = 7, totalSt
               )}
 
               {/* Centre card */}
-              <div style={{ border:"1px solid #f0f0f0", borderRadius:16, background:"#f8fafc", padding:"40px 24px", display:"flex", flexDirection:"column", alignItems:"center", textAlign:"center" }}>
+              <div className="center-card" style={{ border:"1px solid #f0f0f0", borderRadius:16, background:"#f8fafc", padding:"40px 24px", display:"flex", flexDirection:"column", alignItems:"center", textAlign:"center" }}>
                 <div style={{ width:80, height:80, borderRadius:"50%", background:"#f3e8ff", display:"flex", alignItems:"center", justifyContent:"center", marginBottom:20 }}>
                   <svg width="40" height="40" fill="none" stroke="#a855f7" viewBox="0 0 24 24" strokeWidth="1.5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h14a2 2 0 012 2v10a2 2 0 01-2 2h-2"/>
@@ -384,7 +422,7 @@ export default function Step7_History({ onNext, onBack, currentStep = 7, totalSt
                 </p>
 
                 {/* Mode toggles */}
-                <div style={{ display:"flex", gap:12, marginBottom:20 }}>
+                <div className="mode-row" style={{ display:"flex", gap:12, marginBottom:20 }}>
                   <button className={`mode-btn ${selectedMode === "text" ? "text-active" : ""}`} onClick={() => setSelectedMode("text")}>
                     <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
@@ -417,7 +455,7 @@ export default function Step7_History({ onNext, onBack, currentStep = 7, totalSt
             </div>
 
             {/* Navigation */}
-            <div style={{ display:"flex", justifyContent:"space-between", marginTop:20 }}>
+            <div className="nav-row" style={{ display:"flex", justifyContent:"space-between", marginTop:20 }}>
               <button className="wbl-btn-secondary" onClick={onBack}>← Back</button>
               <button className="wbl-btn-primary" onClick={onNext}>
                 {interviewDone ? "Continue to Rates" : "Skip Interview"}
@@ -429,8 +467,8 @@ export default function Step7_History({ onNext, onBack, currentStep = 7, totalSt
           </div>
 
           {/* Sidebar */}
-          <div style={{ width:280, flexShrink:0 }}>
-            <div style={{ background:"white", borderRadius:20, border:"1px solid #f0f0f0", boxShadow:"0 2px 20px rgba(0,0,0,0.06)", padding:20, position:"sticky", top:24 }}>
+          <div className="sidebar-col">
+            <div className="sidebar-inner" style={{ background:"white", borderRadius:20, border:"1px solid #f0f0f0", boxShadow:"0 2px 20px rgba(0,0,0,0.06)", padding:20, position:"sticky", top:24 }}>
 
               <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:16 }}>
                 <div style={{ width:34, height:34, borderRadius:10, background:"#f3e8ff", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>

@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 
-const stepLabels = [
+const stepLabels =[
   "Account", "Verify", "Type", "Profile", "Skills",
-  "Portfolio", "History", "Rates", "KYC", "Plan", "Payment", "Trust", "Go Live"
+  "Portfolio", "History", "Rates", "KYC", "Payment", "Trust", "Go Live"
 ];
 
 const SCORE = 78;
 
-const scoreCategories = [
+const scoreCategories =[
   { label: "Profile Completeness",  score: 18, max: 20, color: "bg-green-500" },
   { label: "Identity Verification", score: 20, max: 20, color: "bg-green-500" },
   { label: "Skills & Portfolio",    score: 16, max: 20, color: "bg-green-400" },
@@ -15,7 +15,7 @@ const scoreCategories = [
   { label: "Social Proof",          score:  4, max: 20, color: "bg-green-400" },
 ];
 
-const tiers = [
+const tiers =[
   { label: "New",       range: "0-40"  },
   { label: "Basic",     range: "41-60" },
   { label: "Rising",    range: "61-80" },
@@ -23,34 +23,33 @@ const tiers = [
   { label: "Expert",    range: "91-100"},
 ];
 
-const canDo = [
+const canDo =[
   "Apply to projects up to $10,000",
   "Receive up to 5 invitations/week",
   "Withdraw earnings (after KYC)",
   "Use all messaging features",
 ];
 
-const limitations = [
+const limitations =[
   "Projects over $10K require 1 completed project",
   "Featured in search: Standard position",
   '"Top Rated" badge: Need 3+ reviews',
 ];
 
-const topRatedBenefits = [
+const topRatedBenefits =[
   "Featured in AI matching first",
   "Access enterprise projects",
   "Reduced platform fee (8%)",
   "Dedicated account manager",
 ];
 
-const quickWins = [
+const quickWins =[
   { label: "Add portfolio website", pts: 10 },
   { label: "Connect LinkedIn",      pts: 15 },
   { label: "Add live demo link",    pts:  4 },
   { label: "Complete first project",pts: 15 },
 ];
 
-/* ── Circular gauge SVG ── */
 function ScoreGauge({ score, animated }) {
   const size    = 160;
   const cx      = size / 2;
@@ -58,7 +57,6 @@ function ScoreGauge({ score, animated }) {
   const r       = 62;
   const circum  = 2 * Math.PI * r;
   const pct     = animated ? score / 100 : 0;
-  // Start from top (−90°) — use stroke-dashoffset
   const offset  = circum * (1 - pct);
 
   const getColor = (s) => {
@@ -73,9 +71,7 @@ function ScoreGauge({ score, animated }) {
   return (
     <div className="relative inline-flex items-center justify-center" style={{ width: size, height: size }}>
       <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
-        {/* Track */}
         <circle cx={cx} cy={cy} r={r} fill="none" stroke="#e5e7eb" strokeWidth={10}/>
-        {/* Progress */}
         <circle
           cx={cx} cy={cy} r={r}
           fill="none"
@@ -94,13 +90,13 @@ function ScoreGauge({ score, animated }) {
   );
 }
 
-export default function Step12_Trust({ onNext, onBack, currentStep = 12, totalSteps = 13 }) {
+export default function Step11_Trust({ onNext, onBack, currentStep = 11, totalSteps = 12 }) {
   const [animated, setAnimated] = useState(false);
 
   useEffect(() => {
     const t = setTimeout(() => setAnimated(true), 200);
     return () => clearTimeout(t);
-  }, []);
+  },[]);
 
   const percentComplete = Math.round(((currentStep - 1) / totalSteps) * 100);
   const progressWidth   = `${((currentStep - 1) / (totalSteps - 1)) * 100}%`;
@@ -114,7 +110,7 @@ export default function Step12_Trust({ onNext, onBack, currentStep = 12, totalSt
   };
   const tierLabel = getTierLabel(SCORE);
 
-  const insights = [
+  const insights =[
     { status: "good", msg: `Trust score: ${SCORE}/100 — ${tierLabel}` },
     { status: "tip",  msg: "Complete your first project to boost your score by +15." },
     { status: "tip",  msg: "Reach 81+ to unlock Top Rated benefits and lower fees." },
@@ -130,12 +126,15 @@ export default function Step12_Trust({ onNext, onBack, currentStep = 12, totalSt
         .wbl-step-active { border-color:#1B72C0 !important; color:#1B72C0 !important; }
         .wbl-step-done { background:linear-gradient(135deg,#6FDA44,#1B72C0) !important; border-color:transparent !important; }
         .wbl-text-active, .wbl-text-blue { color:#1B72C0 !important; }
+        /* Hide scrollbar for progress bar on mobile */
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
-    <div className="min-h-screen text-gray-900 pb-20" style={{ background:"#F6FEF0" }}>
+    <div className="min-h-screen text-gray-900 pb-20" style={{ background:"#F4F9FF" }}>
 
       {/* ── Navbar ── */}
       <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-3 flex items-center justify-between">
-        <img src="/weblance.jpeg" alt="Weblance" style={{ height: 44, width: "auto" }} />
+        <img src="/weblance.jpeg" alt="Weblance" style={{ height: 54, width: 155, display: "block" }} />
         <div className="flex items-center gap-2 sm:gap-3">
           <button type="button" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-600 border border-gray-300 rounded-lg px-2 sm:px-4 py-2 hover:bg-gray-50 transition">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -143,7 +142,6 @@ export default function Step12_Trust({ onNext, onBack, currentStep = 12, totalSt
             </svg>
             <span className="hidden sm:inline">Save &amp; Exit</span>
           </button>
-          
         </div>
       </header>
 
@@ -153,32 +151,36 @@ export default function Step12_Trust({ onNext, onBack, currentStep = 12, totalSt
           <span className="font-medium text-gray-700">Step {currentStep} of {totalSteps}</span>
           <span className="wbl-text-blue font-semibold">{percentComplete}% Complete</span>
         </div>
-        <div className="relative flex items-start justify-between">
-          <div className="absolute top-3.5 sm:top-4 left-0 w-full h-1 bg-gray-200 z-0 rounded-full"/>
-          <div className="absolute top-3.5 sm:top-4 left-0 h-1 wbl-bg z-0 rounded-full transition-all duration-500"
-            style={{ width: progressWidth }}/>
-          {stepLabels.map((label, index) => {
-            const isActive = index + 1 === currentStep;
-            const isDone   = index + 1 < currentStep;
-            return (
-              <div key={index} className="flex flex-col items-center z-10 relative">
-                <div className={`w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center border-2 text-xs font-bold transition-all
-                  ${isActive ? "bg-white wbl-step-active shadow-md"
-                    : isDone  ? "wbl-bg border-green-400 text-white"
-                    :           "bg-white border-gray-300 text-gray-400"}`}>
-                  {isDone
-                    ? <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/>
-                      </svg>
-                    : <span className="text-[10px] sm:text-xs">{index + 1}</span>}
+        
+        {/* Responsive Progress Bar Wrapper */}
+        <div className="overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 scrollbar-hide">
+          <div className="relative flex items-start justify-between min-w-[500px] sm:min-w-0">
+            <div className="absolute top-3.5 sm:top-4 left-0 w-full h-1 bg-gray-200 z-0 rounded-full"/>
+            <div className="absolute top-3.5 sm:top-4 left-0 h-1 wbl-bg z-0 rounded-full transition-all duration-500"
+              style={{ width: progressWidth }}/>
+            {stepLabels.map((label, index) => {
+              const isActive = index + 1 === currentStep;
+              const isDone   = index + 1 < currentStep;
+              return (
+                <div key={index} className="flex flex-col items-center z-10 relative">
+                  <div className={`w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center border-2 text-xs font-bold transition-all
+                    ${isActive ? "bg-white wbl-step-active shadow-md"
+                      : isDone  ? "wbl-bg border-green-400 text-white"
+                      :           "bg-white border-gray-300 text-gray-400"}`}>
+                    {isDone
+                      ? <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/>
+                        </svg>
+                      : <span className="text-[10px] sm:text-xs">{index + 1}</span>}
+                  </div>
+                  <span className={`text-[9px] sm:text-xs mt-1 font-medium hidden sm:block
+                    ${isActive ? "wbl-text-active" : "text-gray-400"}`}>
+                    {label}
+                  </span>
                 </div>
-                <span className={`text-[9px] sm:text-xs mt-1 font-medium hidden sm:block
-                  ${isActive ? "wbl-text-active" : "text-gray-400"}`}>
-                  {label}
-                </span>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
 
@@ -188,7 +190,7 @@ export default function Step12_Trust({ onNext, onBack, currentStep = 12, totalSt
 
           {/* ── Main Card ── */}
           <div className="w-full lg:flex-1 min-w-0">
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 sm:p-8">
 
               <h1 className="text-xl sm:text-2xl font-bold mb-1">Your Freelancer Trust Score</h1>
               <p className="text-sm text-gray-500 mb-5">This determines which projects you're shown and how clients find you</p>
@@ -199,12 +201,10 @@ export default function Step12_Trust({ onNext, onBack, currentStep = 12, totalSt
                 </span>
               </div>
 
-              {/* ── Gauge + Tier row ── */}
               <div className="flex flex-col items-center py-4 mb-6">
                 <ScoreGauge score={SCORE} animated={animated}/>
-                <p className="text-xl font-bold text-gray-800 mt-3">{tierLabel}</p>
+                <p className="text-xl font-bold text-gray-800 mt-3 text-center">{tierLabel}</p>
 
-                {/* Tier scale */}
                 <div className="flex items-center gap-2 sm:gap-4 mt-4 flex-wrap justify-center">
                   {tiers.map((t) => {
                     const active = tierLabel.toLowerCase().includes(t.label.toLowerCase()) ||
@@ -222,7 +222,6 @@ export default function Step12_Trust({ onNext, onBack, currentStep = 12, totalSt
                 </div>
               </div>
 
-              {/* ── Score Breakdown ── */}
               <div className="space-y-4 mb-7">
                 {scoreCategories.map((cat) => {
                   const pct = (cat.score / cat.max) * 100;
@@ -238,8 +237,8 @@ export default function Step12_Trust({ onNext, onBack, currentStep = 12, totalSt
                             </svg>
                           )}
                         </div>
-                        <span className="text-sm font-semibold text-gray-700 flex-1">{cat.label}</span>
-                        <span className="text-sm font-bold text-gray-700">{cat.score}/{cat.max}</span>
+                        <span className="text-xs sm:text-sm font-semibold text-gray-700 flex-1">{cat.label}</span>
+                        <span className="text-xs sm:text-sm font-bold text-gray-700">{cat.score}/{cat.max}</span>
                       </div>
                       <div className="w-full bg-gray-100 rounded-full h-2 ml-7">
                         <div
@@ -252,9 +251,8 @@ export default function Step12_Trust({ onNext, onBack, currentStep = 12, totalSt
                 })}
               </div>
 
-              {/* ── Can Do / Limitations ── */}
+              {/* Status Grid (Responsive) */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-5">
-                {/* What You Can Do */}
                 <div className="border border-gray-200 rounded-xl p-4">
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-base">👁</span>
@@ -272,7 +270,6 @@ export default function Step12_Trust({ onNext, onBack, currentStep = 12, totalSt
                   </ul>
                 </div>
 
-                {/* Current Limitations */}
                 <div className="border border-gray-200 rounded-xl p-4">
                   <div className="flex items-center gap-2 mb-3">
                     <span className="text-base">🔒</span>
@@ -289,20 +286,19 @@ export default function Step12_Trust({ onNext, onBack, currentStep = 12, totalSt
                 </div>
               </div>
 
-              {/* ── Top Rated Benefits ── */}
+              {/* Top Rated Benefits (Responsive Grid) */}
               <div className="border border-yellow-200 bg-yellow-50 rounded-xl p-4 mb-5">
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-base">⭐</span>
                   <span className="text-sm font-bold text-gray-800">Top Rated Benefits (Unlock at 81+)</span>
                 </div>
-                <div className="grid grid-cols-2 gap-x-6 gap-y-1.5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2">
                   {topRatedBenefits.map((b) => (
                     <p key={b} className="text-xs text-gray-600">• {b}</p>
                   ))}
                 </div>
               </div>
 
-              {/* ── Quick Wins ── */}
               <div className="border border-gray-200 rounded-xl p-4">
                 <div className="flex items-center gap-2 mb-3">
                   <span className="text-base">📈</span>
@@ -313,7 +309,7 @@ export default function Step12_Trust({ onNext, onBack, currentStep = 12, totalSt
                     <div key={w.label} className="flex items-center gap-2.5">
                       <div className="w-4 h-4 rounded border-2 border-gray-300 flex-shrink-0"/>
                       <span className="text-xs text-gray-600 flex-1">{w.label}</span>
-                      <span className="text-xs font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded-full">
+                      <span className="text-xs font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded-full whitespace-nowrap">
                         +{w.pts} pts
                       </span>
                     </div>
@@ -323,14 +319,14 @@ export default function Step12_Trust({ onNext, onBack, currentStep = 12, totalSt
 
             </div>
 
-            {/* Navigation */}
-            <div className="flex justify-between mt-6">
+            {/* Navigation (Responsive Buttons) */}
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-between gap-4 mt-6">
               <button onClick={onBack}
-                className="flex items-center gap-2 px-6 py-3 border border-gray-200 bg-white rounded-xl text-sm font-medium hover:bg-gray-50 transition">
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 border border-gray-200 bg-white rounded-xl text-sm font-medium hover:bg-gray-50 transition">
                 ← Back
               </button>
               <button onClick={onNext}
-                className="wbl-btn-inline text-white font-semibold px-6 sm:px-8 py-3 rounded-xl flex items-center gap-2 transition shadow-sm">
+                className="w-full sm:w-auto wbl-btn-inline text-white font-semibold px-6 sm:px-8 py-3 rounded-xl flex items-center justify-center gap-2 transition shadow-sm">
                 Continue to Activation
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6"/>
@@ -373,7 +369,6 @@ export default function Step12_Trust({ onNext, onBack, currentStep = 12, totalSt
                 ))}
               </div>
 
-              {/* Score summary */}
               <div className="mt-4 pt-4 border-t border-gray-100">
                 <p className="text-xs font-semibold text-gray-600 mb-2">Score breakdown:</p>
                 <div className="space-y-1.5">

@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 
 const stepLabels = [
   "Account", "Verify", "Type", "Profile", "Skills",
-  "Portfolio", "History", "Rates", "KYC", "Plan", "Payment", "Trust", "Go Live"
+  "Portfolio", "History", "Rates", "KYC", "Payment", "Trust", "Go Live"
 ];
 
 const idTypes  = ["Passport", "National ID Card", "Driver's License"];
@@ -59,7 +59,7 @@ function UploadSlot({ label, onUpload, uploaded }) {
   );
 }
 
-export default function Step9_KYC({ onNext, onBack, currentStep = 9, totalSteps = 13 }) {
+export default function Step9_KYC({ onNext, onBack, currentStep = 9, totalSteps = 12 }) {
   const [idType, setIdType]                   = useState("");
   const [idOpen, setIdOpen]                   = useState(false);
   const [uploads, setUploads]                 = useState({ front:false, back:false });
@@ -107,7 +107,7 @@ export default function Step9_KYC({ onNext, onBack, currentStep = 9, totalSteps 
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        * { font-family: 'Plus Jakarta Sans', sans-serif; }
+        * { font-family: 'Plus Jakarta Sans', sans-serif; box-sizing:border-box; }
         ${spinKf}
         .spin { animation: spin 1s linear infinite; }
         .wbl-gradient { background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%); }
@@ -139,23 +139,54 @@ export default function Step9_KYC({ onNext, onBack, currentStep = 9, totalSteps 
         }
         .action-btn:hover:not(:disabled) { background:#f9fafb; border-color:#d1d5db; }
         .action-btn:disabled { opacity:0.5; cursor:not-allowed; }
+
+        /* Responsive */
+        .main-layout { display:flex; gap:24px; align-items:flex-start; }
+        .main-col { flex:1; min-width:0; }
+        .sidebar-col { width:280px; flex-shrink:0; }
+
+        @media (max-width: 900px) {
+          .main-layout { flex-direction:column; }
+          .sidebar-col { width:100%; }
+          .sidebar-inner { position:static !important; }
+        }
+
+        @media (max-width: 640px) {
+          .main-card { padding:20px !important; }
+          .wbl-btn-primary { padding:11px 18px; font-size:13px; }
+          .wbl-btn-secondary { padding:11px 16px; font-size:13px; }
+          .page-title { font-size:20px !important; }
+          .step-label-text { display:none !important; }
+          .nav-row { gap:10px; }
+          .id-upload-grid { grid-template-columns:1fr !important; }
+          .address-row { flex-wrap:wrap; gap:10px; }
+          .address-row .action-btn { align-self:flex-start; }
+          .kyc-warning-text { font-size:11px !important; }
+        }
+
+        @media (max-width: 480px) {
+          .page-wrapper { padding:0 14px !important; }
+          .progress-wrapper { padding:0 14px !important; margin-top:20px !important; }
+          .header-inner { padding:10px 14px !important; }
+          .id-upload-grid { max-width:100% !important; }
+        }
       `}</style>
 
       <div className="min-h-screen pb-20" style={{ background:"#F4F9FF" }}>
 
         {/* Navbar */}
-<header style={{ background:"white", borderBottom:"1px solid #f0f0f0", padding:"12px 24px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
-  <img src="/weblance.jpeg" alt="Weblance" style={{ height:44, width:"auto" }} />
-  <button className="wbl-btn-secondary" style={{ padding:"8px 18px", fontSize:13 }}>
-    <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
-    </svg>
-    Save &amp; Exit
-  </button>
-</header>
+        <header className="header-inner" style={{ background:"white", borderBottom:"1px solid #f0f0f0", padding:"12px 24px", display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+          <img src="/weblance.jpeg" alt="Weblance" style={{ height: 54, width: 155, display: "block" }} />
+          <button className="wbl-btn-secondary" style={{ padding:"8px 18px", fontSize:13 }}>
+            <svg width="15" height="15" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/>
+            </svg>
+            Save &amp; Exit
+          </button>
+        </header>
 
         {/* Step Progress */}
-        <div style={{ maxWidth:1100, margin:"32px auto 24px", padding:"0 24px" }}>
+        <div className="progress-wrapper" style={{ maxWidth:1100, margin:"32px auto 24px", padding:"0 24px" }}>
           <div style={{ display:"flex", justifyContent:"space-between", marginBottom:12, fontSize:13 }}>
             <span style={{ fontWeight:600, color:"#374151" }}>Step {currentStep} of {totalSteps}</span>
             <span className="wbl-text-blue" style={{ fontWeight:700 }}>{percentComplete}% Complete</span>
@@ -172,7 +203,7 @@ export default function Step9_KYC({ onNext, onBack, currentStep = 9, totalSteps 
                     style={{ width:28, height:28, borderRadius:"50%", display:"flex", alignItems:"center", justifyContent:"center", border:"2px solid", fontSize:11, fontWeight:700, transition:"all .2s" }}>
                     {isDone ? <svg width="13" height="13" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/></svg> : i+1}
                   </div>
-                  <span style={{ fontSize:10, marginTop:5, fontWeight:600, color: isActive ? "#1B72C0" : "#9ca3af" }}>{label}</span>
+                  <span className="step-label-text" style={{ fontSize:10, marginTop:5, fontWeight:600, color: isActive ? "#1B72C0" : "#9ca3af" }}>{label}</span>
                 </div>
               );
             })}
@@ -180,18 +211,18 @@ export default function Step9_KYC({ onNext, onBack, currentStep = 9, totalSteps 
         </div>
 
         {/* Layout */}
-        <div style={{ maxWidth:1100, margin:"0 auto", padding:"0 24px", display:"flex", gap:24, alignItems:"flex-start", flexWrap:"wrap" }}>
+        <div className="main-layout page-wrapper" style={{ maxWidth:1100, margin:"0 auto", padding:"0 24px" }}>
 
           {/* Main Card */}
-          <div style={{ flex:1, minWidth:0 }}>
-            <div style={{ background:"white", borderRadius:20, border:"1px solid #f0f0f0", boxShadow:"0 2px 20px rgba(0,0,0,0.06)", padding:32 }}>
+          <div className="main-col">
+            <div className="main-card" style={{ background:"white", borderRadius:20, border:"1px solid #f0f0f0", boxShadow:"0 2px 20px rgba(0,0,0,0.06)", padding:32 }}>
 
               <div style={{ marginBottom:16 }}>
                 <span style={{ fontSize:11, fontWeight:800, border:"1.5px solid #22c55e", color:"#16a34a", padding:"4px 12px", borderRadius:100, textTransform:"uppercase", letterSpacing:"0.05em" }}>
                   KYC Verification
                 </span>
               </div>
-              <h1 style={{ fontSize:24, fontWeight:800, color:"#0f172a", marginBottom:4 }}>Verify Your Identity</h1>
+              <h1 className="page-title" style={{ fontSize:24, fontWeight:800, color:"#0f172a", marginBottom:4 }}>Verify Your Identity</h1>
               <p style={{ fontSize:13, color:"#94a3b8", marginBottom:24 }}>Required for receiving payments and accessing premium projects</p>
 
               {/* Required banner */}
@@ -199,7 +230,7 @@ export default function Step9_KYC({ onNext, onBack, currentStep = 9, totalSteps 
                 <span style={{ fontSize:16, flexShrink:0 }}>🔒</span>
                 <div>
                   <p style={{ fontSize:13, fontWeight:700, color:"#9a3412", margin:0 }}>Identity verification is required to:</p>
-                  <p style={{ fontSize:12, color:"#c2410c", margin:0, marginTop:4, lineHeight:1.6 }}>
+                  <p className="kyc-warning-text" style={{ fontSize:12, color:"#c2410c", margin:0, marginTop:4, lineHeight:1.6 }}>
                     ✓ Receive milestone payments &nbsp;•&nbsp; ✓ Withdraw earnings &nbsp;•&nbsp; ✓ Access $5,000+ projects &nbsp;•&nbsp; ✓ Build client trust
                   </p>
                 </div>
@@ -240,7 +271,7 @@ export default function Step9_KYC({ onNext, onBack, currentStep = 9, totalSteps 
                 </div>
 
                 {idSelected && config && (
-                  <div style={{ marginTop:16, display:"grid", gridTemplateColumns: needsBack ? "1fr 1fr" : "1fr", gap:14, maxWidth: needsBack ? "100%" : 280 }}>
+                  <div className="id-upload-grid" style={{ marginTop:16, display:"grid", gridTemplateColumns: needsBack ? "1fr 1fr" : "1fr", gap:14, maxWidth: needsBack ? "100%" : 280 }}>
                     <UploadSlot label={`${idType} — Front`} uploaded={uploads.front} onUpload={() => setUploads(p => ({ ...p, front:true }))} />
                     {needsBack && <UploadSlot label={`${idType} — Back`} uploaded={uploads.back} onUpload={() => setUploads(p => ({ ...p, back:true }))} />}
                   </div>
@@ -250,7 +281,7 @@ export default function Step9_KYC({ onNext, onBack, currentStep = 9, totalSteps 
               {/* Address Proof */}
               <div style={{ marginBottom:16 }}>
                 <label style={{ display:"block", fontSize:13, fontWeight:700, color:"#374151", marginBottom:10 }}>Address Proof</label>
-                <div style={{ display:"flex", alignItems:"center", gap:12, border:`1.5px solid ${addressUploaded ? "#86efac" : "#e5e7eb"}`, borderRadius:14, padding:"14px 16px", background: addressUploaded ? "#f0fdf4" : "white", transition:"all .2s" }}>
+                <div className="address-row" style={{ display:"flex", alignItems:"center", gap:12, border:`1.5px solid ${addressUploaded ? "#86efac" : "#e5e7eb"}`, borderRadius:14, padding:"14px 16px", background: addressUploaded ? "#f0fdf4" : "white", transition:"all .2s" }}>
                   <div style={{ width:36, height:36, borderRadius:10, background:"#eff6ff", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
                     <svg width="18" height="18" fill="none" stroke="#1B72C0" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
@@ -281,7 +312,7 @@ export default function Step9_KYC({ onNext, onBack, currentStep = 9, totalSteps 
                 <label style={{ display:"block", fontSize:13, fontWeight:700, color:"#374151", marginBottom:10 }}>
                   Selfie / Liveness Check <span style={{ fontSize:11, fontWeight:400, color:"#9ca3af" }}>(Optional — +20 trust pts)</span>
                 </label>
-                <div style={{ display:"flex", alignItems:"center", gap:12, border:`1.5px solid ${selfieVerified ? "#86efac" : "#e5e7eb"}`, borderRadius:14, padding:"14px 16px", background: selfieVerified ? "#f0fdf4" : "white", transition:"all .2s" }}>
+                <div className="address-row" style={{ display:"flex", alignItems:"center", gap:12, border:`1.5px solid ${selfieVerified ? "#86efac" : "#e5e7eb"}`, borderRadius:14, padding:"14px 16px", background: selfieVerified ? "#f0fdf4" : "white", transition:"all .2s" }}>
                   <div style={{ width:36, height:36, borderRadius:10, background:"#f3e8ff", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>
                     <svg width="18" height="18" fill="none" stroke="#a855f7" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
@@ -321,14 +352,14 @@ export default function Step9_KYC({ onNext, onBack, currentStep = 9, totalSteps 
                   </svg>
                   Until identity is verified:
                 </p>
-                <p style={{ fontSize:12, color:"#c2410c", margin:0, lineHeight:1.7 }}>
+                <p className="kyc-warning-text" style={{ fontSize:12, color:"#c2410c", margin:0, lineHeight:1.7 }}>
                   ❌ Cannot withdraw earnings &nbsp;•&nbsp; ❌ Cannot access $5,000+ projects &nbsp;•&nbsp; ✓ Can still browse and apply to small projects
                 </p>
               </div>
             </div>
 
             {/* Navigation */}
-            <div style={{ display:"flex", justifyContent:"space-between", marginTop:20 }}>
+            <div className="nav-row" style={{ display:"flex", justifyContent:"space-between", marginTop:20 }}>
               <button className="wbl-btn-secondary" onClick={onBack}>← Back</button>
               <button onClick={onNext} disabled={!canSubmit}
                 style={{ display:"inline-flex", alignItems:"center", gap:8, padding:"12px 28px", borderRadius:12, border:"none", fontWeight:700, fontSize:14, cursor: canSubmit ? "pointer" : "not-allowed", transition:"all .2s",
@@ -344,8 +375,8 @@ export default function Step9_KYC({ onNext, onBack, currentStep = 9, totalSteps 
           </div>
 
           {/* Sidebar */}
-          <div style={{ width:280, flexShrink:0 }}>
-            <div style={{ background:"white", borderRadius:20, border:"1px solid #f0f0f0", boxShadow:"0 2px 20px rgba(0,0,0,0.06)", padding:20, position:"sticky", top:24 }}>
+          <div className="sidebar-col">
+            <div className="sidebar-inner" style={{ background:"white", borderRadius:20, border:"1px solid #f0f0f0", boxShadow:"0 2px 20px rgba(0,0,0,0.06)", padding:20, position:"sticky", top:24 }}>
 
               <div style={{ display:"flex", alignItems:"center", gap:10, marginBottom:16 }}>
                 <div style={{ width:34, height:34, borderRadius:10, background:"#f3e8ff", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0 }}>

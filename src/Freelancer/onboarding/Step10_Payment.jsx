@@ -1,11 +1,11 @@
 import { useState } from "react";
 
-const stepLabels = [
+const stepLabels =[
   "Account", "Verify", "Type", "Profile", "Skills",
-  "Portfolio", "History", "Rates", "KYC", "Plan", "Payment", "Trust", "Go Live"
+  "Portfolio", "History", "Rates", "KYC", "Payment", "Trust", "Go Live"
 ];
 
-const paymentMethods = [
+const paymentMethods =[
   {
     id: "bank",
     name: "Bank Transfer",
@@ -52,12 +52,12 @@ const paymentMethods = [
   }
 ];
 
-const frequencyOptions = ["On request", "Weekly", "Bi-weekly", "Monthly"];
+const frequencyOptions =["On request", "Weekly", "Bi-weekly", "Monthly"];
 
-export default function Step10_Payment({ onNext, onBack, currentStep = 10, totalSteps = 13 }) {
+export default function Step10_Payment({ onNext, onBack, currentStep = 10, totalSteps = 12 }) {
   const [selectedMethod, setSelectedMethod] = useState("bank");
   const [bankSaved, setBankSaved]           = useState(false);
-  const [savingBank, setSavingBank]         = useState(false);
+  const[savingBank, setSavingBank]         = useState(false);
   const [minPayout, setMinPayout]           = useState(100);
   const [frequency, setFrequency]           = useState("On request");
 
@@ -100,7 +100,7 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
     ? <p className="text-red-500 text-xs mt-1">{bankErrors[f]}</p> : null;
 
   const getInsights = () => {
-    const insights = [];
+    const insights =[];
     insights.push({ status: "good", msg: `Payout method: ${selectedName}` });
     if (selectedMethod === "bank" && !bankSaved)
       insights.push({ status: "tip", msg: "Fill in your bank details below to complete setup." });
@@ -119,7 +119,6 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
   return (
     <>
       <style>{`
-        /* ── Weblance Theme ── */
         .wbl-bg, .wbl-btn-inline {
           background: linear-gradient(135deg, #0D2855 0%, #1B72C0 100%) !important;
         }
@@ -135,15 +134,15 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
         .wbl-step-active { border-color:#1B72C0 !important; color:#1B72C0 !important; }
         .wbl-step-done { background:linear-gradient(135deg,#6FDA44,#1B72C0) !important; border-color:transparent !important; }
         .wbl-text-active, .wbl-text-blue { color:#1B72C0 !important; }
-        /* ───────────────────── */
-
-        
-`}</style>
-    <div className="min-h-screen text-gray-900 pb-20" style={{ background:"#F6FEF0" }}>
+        /* Hide scrollbar for progress bar on mobile */
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+      `}</style>
+    <div className="min-h-screen text-gray-900 pb-20" style={{ background:"#F4F9FF" }}>
 
       {/* ── Navbar ── */}
       <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-3 flex items-center justify-between">
-        <img src="/weblance.jpeg" alt="Weblance" style={{ height: 44, width: "auto" }} />
+        <img src="/weblance.jpeg" alt="Weblance" style={{height: 54, width: 155, display: "block" }} />
         <div className="flex items-center gap-2 sm:gap-3">
           <button type="button" className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm text-gray-600 border border-gray-300 rounded-lg px-2 sm:px-4 py-2 hover:bg-gray-50 transition">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -151,7 +150,6 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
             </svg>
             <span className="hidden sm:inline">Save &amp; Exit</span>
           </button>
-          
         </div>
       </header>
 
@@ -161,32 +159,36 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
           <span className="font-medium text-gray-700">Step {currentStep} of {totalSteps}</span>
           <span className="wbl-text-blue font-semibold">{percentComplete}% Complete</span>
         </div>
-        <div className="relative flex items-start justify-between">
-          <div className="absolute top-3.5 sm:top-4 left-0 w-full h-1 bg-gray-200 z-0 rounded-full"></div>
-          <div className="absolute top-3.5 sm:top-4 left-0 h-1 wbl-bg z-0 rounded-full transition-all duration-500"
-            style={{ width: progressWidth }}></div>
-          {stepLabels.map((label, index) => {
-            const isActive = index + 1 === currentStep;
-            const isDone   = index + 1 < currentStep;
-            return (
-              <div key={index} className="flex flex-col items-center z-10 relative">
-                <div className={`w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center border-2 text-xs font-bold transition-all
-                  ${isActive ? "bg-white wbl-step-active shadow-md"
-                    : isDone  ? "wbl-bg border-green-400 text-white"
-                    :           "bg-white border-gray-300 text-gray-400"}`}>
-                  {isDone
-                    ? <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/>
-                      </svg>
-                    : <span className="text-[10px] sm:text-xs">{index + 1}</span>}
+        
+        {/* Responsive Progress Bar Wrapper */}
+        <div className="overflow-x-auto pb-4 -mx-4 px-4 sm:mx-0 sm:px-0 sm:pb-0 scrollbar-hide">
+          <div className="relative flex items-start justify-between min-w-[500px] sm:min-w-0">
+            <div className="absolute top-3.5 sm:top-4 left-0 w-full h-1 bg-gray-200 z-0 rounded-full"></div>
+            <div className="absolute top-3.5 sm:top-4 left-0 h-1 wbl-bg z-0 rounded-full transition-all duration-500"
+              style={{ width: progressWidth }}></div>
+            {stepLabels.map((label, index) => {
+              const isActive = index + 1 === currentStep;
+              const isDone   = index + 1 < currentStep;
+              return (
+                <div key={index} className="flex flex-col items-center z-10 relative">
+                  <div className={`w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center border-2 text-xs font-bold transition-all
+                    ${isActive ? "bg-white wbl-step-active shadow-md"
+                      : isDone  ? "wbl-bg border-green-400 text-white"
+                      :           "bg-white border-gray-300 text-gray-400"}`}>
+                    {isDone
+                      ? <svg className="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7"/>
+                        </svg>
+                      : <span className="text-[10px] sm:text-xs">{index + 1}</span>}
+                  </div>
+                  <span className={`text-[9px] sm:text-xs mt-1 font-medium hidden sm:block
+                    ${isActive ? "wbl-text-active" : "text-gray-400"}`}>
+                    {label}
+                  </span>
                 </div>
-                <span className={`text-[9px] sm:text-xs mt-1 font-medium hidden sm:block
-                  ${isActive ? "wbl-text-active" : "text-gray-400"}`}>
-                  {label}
-                </span>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
       </div>
 
@@ -196,7 +198,7 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
 
           {/* ── Main Card ── */}
           <div className="w-full lg:flex-1 min-w-0">
-            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 sm:p-8">
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 sm:p-8">
 
               <h1 className="text-xl sm:text-2xl font-bold mb-1">Set Up Your Payment Method</h1>
               <p className="text-sm text-gray-500 mb-5">Tell us where to send your earnings</p>
@@ -215,8 +217,8 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
                 </p>
               </div>
 
-              {/* Payment Method Grid */}
-              <div className="grid grid-cols-2 gap-3">
+              {/* Payment Method Grid (Responsive) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 {paymentMethods.map((method) => {
                   const isSelected = selectedMethod === method.id;
                   return (
@@ -250,26 +252,22 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
                 })}
               </div>
 
-              {/* ════════════════════════════════
-                  INLINE BANK TRANSFER FORM
-                  Slides in below the grid when Bank Transfer is selected
-              ════════════════════════════════ */}
               {selectedMethod === "bank" && (
-                <div className="mt-4 border-2 border-green-200 rounded-2xl overflow-hidden">
-
-                  {/* Form top bar */}
-                  <div className="bg-green-50 px-5 py-3.5 flex items-center gap-3 border-b border-green-200">
-                    <div className="w-8 h-8 rounded-lg bg-green-200 flex items-center justify-center flex-shrink-0">
-                      <svg className="w-4 h-4 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/>
-                      </svg>
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-green-800">Bank Account Details</p>
-                      <p className="text-xs text-green-600">Securely enter your bank information below</p>
+                <div className="mt-5 sm:mt-6 border-2 border-green-200 rounded-2xl overflow-hidden">
+                  <div className="bg-green-50 px-4 sm:px-5 py-3.5 flex flex-col sm:flex-row sm:items-center gap-3 border-b border-green-200">
+                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                      <div className="w-8 h-8 rounded-lg bg-green-200 flex items-center justify-center flex-shrink-0">
+                        <svg className="w-4 h-4 text-green-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/>
+                        </svg>
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-bold text-green-800 truncate">Bank Account Details</p>
+                        <p className="text-xs text-green-600 truncate">Securely enter your bank information below</p>
+                      </div>
                     </div>
                     {bankSaved && (
-                      <span className="ml-auto flex items-center gap-1.5 text-xs font-bold text-green-700 bg-white border border-green-300 px-2.5 py-1 rounded-full">
+                      <span className="sm:ml-auto inline-flex items-center gap-1.5 text-xs font-bold text-green-700 bg-white border border-green-300 px-2.5 py-1 rounded-full w-max">
                         <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd"/>
                         </svg>
@@ -278,11 +276,9 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
                     )}
                   </div>
 
-                  <div className="px-5 py-5 space-y-4 bg-white">
-
-                    {/* Security note */}
-                    <div className="flex items-center gap-2.5 bg-blue-50 border border-blue-100 rounded-xl px-3.5 py-2.5">
-                      <svg className="w-4 h-4 wbl-text-blue flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="px-4 sm:px-5 py-5 space-y-4 bg-white">
+                    <div className="flex items-start sm:items-center gap-2.5 bg-blue-50 border border-blue-100 rounded-xl px-3.5 py-2.5">
+                      <svg className="w-4 h-4 wbl-text-blue flex-shrink-0 mt-0.5 sm:mt-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                       </svg>
                       <p className="text-xs text-blue-700 font-medium">
@@ -290,7 +286,6 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
                       </p>
                     </div>
 
-                    {/* Account Holder Name */}
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-1.5">
                         Account Holder Name <span className="text-red-500">*</span>
@@ -302,7 +297,6 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
                       <Err f="accountName"/>
                     </div>
 
-                    {/* Bank Name */}
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-1.5">
                         Bank Name <span className="text-red-500">*</span>
@@ -314,8 +308,7 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
                       <Err f="bankName"/>
                     </div>
 
-                    {/* Account Number + Type */}
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                       <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-1.5">
                           Account Number <span className="text-red-500">*</span>
@@ -343,7 +336,6 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
                       </div>
                     </div>
 
-                    {/* Routing Number */}
                     <div>
                       <label className="block text-sm font-semibold text-gray-700 mb-1.5">
                         Routing / IFSC Number <span className="text-red-500">*</span>
@@ -355,8 +347,7 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
                       <Err f="routingNumber"/>
                     </div>
 
-                    {/* SWIFT + Currency */}
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                       <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-1.5">
                           SWIFT / BIC
@@ -382,15 +373,13 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
                       </div>
                     </div>
 
-                    {/* Fee badge */}
-                    <div className="flex items-center gap-2 bg-gray-50 rounded-xl px-3.5 py-2.5 text-xs text-gray-500">
-                      <svg className="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <div className="flex items-start sm:items-center gap-2 bg-gray-50 rounded-xl px-3.5 py-2.5 text-xs text-gray-500">
+                      <svg className="w-4 h-4 text-green-500 flex-shrink-0 mt-0.5 sm:mt-0" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
                       </svg>
                       3-5 business days · 1% platform fee · Lowest fee of all methods
                     </div>
 
-                    {/* Save / Saved */}
                     {!bankSaved ? (
                       <button onClick={handleSaveBank} disabled={savingBank}
                         className="w-full py-3 rounded-xl text-sm font-semibold text-white bg-green-500 hover:bg-green-600 disabled:opacity-60 flex items-center justify-center gap-2 transition shadow-sm">
@@ -405,13 +394,15 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
                         ) : "Save Bank Account"}
                       </button>
                     ) : (
-                      <div className="flex items-center gap-3 bg-green-50 border border-green-200 rounded-xl px-4 py-3">
-                        <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
-                        </svg>
-                        <span className="text-sm font-semibold text-green-800 flex-1">Bank account saved securely ✓</span>
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-3 bg-green-50 border border-green-200 rounded-xl px-4 py-3">
+                        <div className="flex items-center gap-2 flex-1">
+                          <svg className="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"/>
+                          </svg>
+                          <span className="text-sm font-semibold text-green-800">Bank account saved securely ✓</span>
+                        </div>
                         <button onClick={() => setBankSaved(false)}
-                          className="text-xs wbl-text-blue hover:underline font-medium">Edit</button>
+                          className="text-xs wbl-text-blue hover:underline font-medium text-left sm:text-right pl-7 sm:pl-0">Edit</button>
                       </div>
                     )}
                   </div>
@@ -455,14 +446,14 @@ export default function Step10_Payment({ onNext, onBack, currentStep = 10, total
               </div>
             </div>
 
-            {/* Navigation */}
-            <div className="flex justify-between mt-6">
+            {/* Navigation (Responsive) */}
+            <div className="flex flex-col-reverse sm:flex-row sm:justify-between gap-4 mt-6">
               <button onClick={onBack}
-                className="flex items-center gap-2 px-6 py-3 border border-gray-200 bg-white rounded-xl text-sm font-medium hover:bg-gray-50 transition">
+                className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 border border-gray-200 bg-white rounded-xl text-sm font-medium hover:bg-gray-50 transition">
                 ← Back
               </button>
               <button onClick={onNext}
-                className="wbl-btn-inline text-white font-semibold px-6 sm:px-8 py-3 rounded-xl flex items-center gap-2 transition shadow-sm">
+                className="w-full sm:w-auto wbl-btn-inline text-white font-semibold px-6 sm:px-8 py-3 rounded-xl flex items-center justify-center gap-2 transition shadow-sm">
                 Continue to Trust Level
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6"/>
